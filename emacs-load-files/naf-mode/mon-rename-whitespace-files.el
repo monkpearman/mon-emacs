@@ -2,8 +2,6 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2011 MON KEY. All rights reserved.
-;;; ================================================================
 
 ;; FILENAME: mon-rename-whitespace-files.el
 ;; AUTHOR: MON KEY
@@ -102,7 +100,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2011 MON KEY 
+;; Copyright © 2011-2024 MON KEY
 ;;; ==============================
 
 ;;; CODE:

@@ -1,10 +1,6 @@
 ;;; mon-doc-help-undocd.el --- { A one line description of: mon-doc-help-undocd. }
 ;; -*- mode: EMACS-LISP; no-byte-compile: t -*-
 
-;;; ================================================================
-;; Copyright © 2010 MON KEY. All rights reserved.
-;;; ================================================================
-
 ;; FILENAME: mon-doc-help-undocd.el
 ;; AUTHOR: MON KEY
 ;; MAINTAINER: MON KEY
@@ -96,7 +92,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010 MON KEY 
+;; Copyright © 2010-2024 MON KEY 
 ;;; ==============================
 
 ;;; CODE:

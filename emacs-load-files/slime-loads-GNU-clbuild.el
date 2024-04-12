@@ -2,8 +2,6 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2009-2012 MON KEY. All rights reserved.
-;;; ================================================================
 
 ;; FILENAME: slime-loads-GNU-clbuild.el
 ;; AUTHOR: MON KEY
@@ -283,7 +281,7 @@
 ;; MON KEY."
 
 ;;; ==============================
-;; Copyright © 2009-2012 MON KEY 
+;; Copyright © 2009-2024 MON KEY. All rights reserved.
 ;;; ==============================
 
 ;;; CODE:

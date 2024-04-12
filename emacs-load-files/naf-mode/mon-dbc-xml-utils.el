@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2011 MON KEY. All rights reserved.
+;; Copyright © 2011-2024 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-dbc-xml-utils.el
@@ -98,7 +98,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2011-2012 MON KEY 
+;; Copyright © 2011-2024 MON KEY
 ;;; ==============================
 
 ;;; CODE:

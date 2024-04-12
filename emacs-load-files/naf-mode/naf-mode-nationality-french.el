@@ -72,7 +72,7 @@
 ;;; and no Back-Cover Texts. A copy of the license is included in
 ;;; the section entitled "GNU Free Documentation License".
 ;;; ==============================
-;;; Copyright © 2009 MON KEY
+;; Copyright © 2009-2024 MON KEY
 ;;; ==============================
 ;;; CODE:
 

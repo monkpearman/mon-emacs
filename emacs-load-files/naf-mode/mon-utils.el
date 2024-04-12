@@ -1,7 +1,7 @@
 ;;; mon-utils.el --- common utilities and BIG require for other of MON packages
 ;; -*- mode: EMACS-LISP; -*-
 ;;; ================================================================
-;; Copyright © 2008-2012 MON KEY. All rights reserved.
+;; Copyright © 2008-2024 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-utils.el
@@ -450,7 +450,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ===================================
-;; Copyright © 2008-2012 MON KEY 
+;; Copyright © 2008-2024 MON KEY
 ;;; ===================================
 
 ;;; CODE:

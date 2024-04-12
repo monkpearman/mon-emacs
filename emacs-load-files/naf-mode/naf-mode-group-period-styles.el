@@ -69,7 +69,7 @@
 ;;; Foundation Web site at:
 ;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ================================================================
-;;; Copyright (C) 2009 by MON KEY
+;; Copyright © 2009 by MON KEY
 ;;; ==============================
 ;;; CODE:
 

@@ -3,8 +3,6 @@
 ;; -*- mode: EMACS-LISP; no-byte-compile: t -*-
 
 ;;; ================================================================
-;; Copyright © 2008-2012 MON KEY. All rights reserved.
-;;; ================================================================
 
 ;; FILENAME: mon-keybindings.el
 ;; AUTHOR: MON KEY
@@ -190,7 +188,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2008-2012 MON KEY 
+;; Copyright © 2008-2024 MON KEY. All rights reserved.
 ;;; ==============================
 
 ;;; CODE:

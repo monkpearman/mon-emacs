@@ -3,8 +3,6 @@
 ;; -*- mode: EMACS-LISP; no-byte-compile: t; -*-
 
 ;;; ================================================================
-;; Copyright © 2009-2012 MON KEY. All rights reserved.
-;;; ================================================================
 
 ;; FILENAME: mon-default-start-loads.el
 ;; AUTHOR: MON KEY
@@ -174,7 +172,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2009-2012 MON KEY 
+;; Copyright © 2009-2024 MON KEY. All rights reserved.
 ;;; ==============================
 
 ;;; CODE:
@@ -647,8 +645,6 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;;; :CREATED <Timestamp: #{2010-03-22T17:31:14-04:00Z}#{10121} - by MON KEY>
 (defun mon-set-infopath-init (&optional warn-only)
   "Put current running Emacs' info directory on `Info-directory-list'.\n
-This is mostly a W32 related fncn. Currenlty does nothing on GNU systems.\n
-Evauluated by `mon-run-post-load-hooks'.\n
 :NOTE to reset info :SEE info node `(emacs)General Variables'.\n
 :NOTE The hook: \(add-hook 'before-init-hook 'w32-init-info\)
 in :FILE lisp/w32-fns.el must be commented out for this to work properly.\n

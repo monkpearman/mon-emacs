@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010-2011 MON KEY. All rights reserved.
+;; Copyright © 2010-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-bzr-utils.el
@@ -100,7 +100,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010-2011 MON KEY 
+;; Copyright © 2010-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:

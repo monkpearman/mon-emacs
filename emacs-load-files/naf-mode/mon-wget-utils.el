@@ -212,7 +212,7 @@ o Kills temp-buffer and file on exit\n
                   (insert-file-contents tmp-wget-script)
                   (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
           (setq show-wget-script
-                (multiple-value-bind
+                (cl-multiple-value-bind
                       (d l UID GID ACCESSED MODIFIED s SIZE MODE gmod inod dev)
                     (file-attributes tmp-wget-script) ;; (buffer-file-name))
                   (format (concat "## :FILE #P %s\n## :UID %s\n## :GID %s\n"
@@ -292,7 +292,7 @@ directory containing or which is to contain WGET-FNAME.\n
         (erase-buffer)))
     (let ((mwlts 
            (mon-wget-list-to-script w-this-list w-base-url w-wget-fname (car w-these-flags))))
-      (case system-type
+      (cl-case system-type
         (windows-nt
          (shell-command 
           (concat (car (mon-wget-list-to-script-shell-command (car mwlts))) " &")

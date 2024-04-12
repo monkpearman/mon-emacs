@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2009-2010 MON KEY. All rights reserved.
+;; Copyright © 2009-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: naf-mode-ulan-utils.el

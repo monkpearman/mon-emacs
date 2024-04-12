@@ -96,10 +96,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-macs.el
 ;; FIRST-PUBLISHED:
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-macs. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-11-20T20:21:14-05:00Z}#{10466} - by MON KEY>
@@ -161,13 +158,14 @@
 ;;; :CREATED <Timestamp: #{2011-01-14T16:56:07-05:00Z}#{11025} - by MON KEY>
 (defgroup mon-macs nil
   "Customization group for variables and functions of :FILE mon-macs.el\n
-:SEE-ALSO .\n▶▶▶"
-  ;; :prefix "<PREFIX>"
-  :link '(url-link 
-          :tag ":EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/mon-macs.el')")
-  :link '(emacs-library-link 
-          :tag  ":FILE mon-macs.el" 
-          "mon-macs.el")
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter'.\n▶▶▶"
+  :link '(emacs-library-link  :tag  ":FILE mon-macs.el"  "mon-macs.el")
   :group 'mon-base)
 
 

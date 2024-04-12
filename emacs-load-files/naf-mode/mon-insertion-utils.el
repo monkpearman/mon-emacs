@@ -210,10 +210,13 @@
 ;;; :CREATED <Timestamp: #{2010-10-04T14:18:03-04:00Z}#{10401} - by MON KEY>
 (defgroup mon-insertion-utils nil
   "Variables and settings for `mon-*' functions which insert.\n
-:SEE-ALSO .\n▶▶▶"
-  :link '(url-link 
-          :tag ":EMACSWIKI-FILE" 
-          "http://www.emacswiki.org/emacs/mon-insertion-utils.el")
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter'.\n▶▶▶"
   :link '(emacs-library-link
           :tag ":FILE mon-insertion-utils.el"
           "mon-insertion-utils.el")
@@ -2094,30 +2097,30 @@ Default is to return with 68 char length comment dividers.\n
 ;;;  pathname of mift-fname to relative to that.
 ;;; :NOTE That we can't use `expand-file-name' to do this b/c it will expand to either a local pathname:
 ;;; (expand-file-name "some-file-name.el" 
-;;;                    "https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/")
+;;;                    "https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/")
 ;;; Or, expand to a remote pathname prefixed by "/ssh:"
 ;;;  (expand-file-name "some-file-name.el" 
-;;;                    "/https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/")
+;;;                    "/https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/")
 ;;; Or, expand to a pathname prefixed by "//https:"
 ;;;  (expand-file-name "some-file-name.el" 
-;;;                    "//https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/")
+;;;                    "//https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/")
 ;;; Better to use something like this: 
 ;;;  (file-truename (file-relative-name "some-file-name.el" "../emacs-load-files"))
 ;;; where the relative directory is either gleaned directly from the value of
 ;;; `*mon-github-pathname-url*' or from a second variable `*mon-github-pathname-default*'
 ;;; (expand-file-name "../naf-mode/some-file-name.el" 
-;;;                   "//https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/")
+;;;                   "//https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/")
 ;;; 
 ;;; "naf-mode")
 ;;; (file-truename 
 ;;
 ;; (let ((f-r-n (file-relative-name "some-file-name.el" "../emacs-load-files")))
-;; (concat "https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/"      
+;; (concat "https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/"      
 ;; (cond (string-match-p "../" 
  ;; (mon-set-difference 
  ;;  ;; (mon-string-split-pathname "")
  ;;  (mon-string-split-pathname (file-relative-name "some-file-name.el" "../emacs-load-files"))
- ;;  (mon-string-split-pathname "https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/")
+ ;;  (mon-string-split-pathname "https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/")
  ;;  #'string=)
 
 ;; (mon-string-split-pathname (file-relative-name "some-file-name.el" "../emacs-load-files"))
@@ -2127,7 +2130,7 @@ Default is to return with 68 char length comment dividers.\n
   "A Github username for constructing github URL pathname references when inserting file-templates.\n
 The username component of a github pathname occurs just after the 
 \"https://github.com/\" portion of the following URL:\n
- \"https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/\"
+ \"https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/\"
                       ^^^^^^^\n
 It should not be contained of leading or traling \"/\" characters.\n
 :EXAMPLE\n\"https://github.com/<USERNAME>/mon-emacs/raw/master/emacs-load-files/\"\n
@@ -2147,11 +2150,11 @@ It should not be contained of leading or traling \"/\" characters.\n
 references when inserting file-templates.\n
 A repository-name component of a github URL pathname occurs just after the
 username component, e.g.:
- \"https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/\"
+ \"https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/\"
                               ^^^^^^^^^\n
 It should not be contained of leading or trialing \"/\" characters.\n
 :EXAMPLE\n
- \"https://github.com/mon-key/<REPOSITORY-NAME>/raw/master/emacs-load-files/\"
+ \"https://github.com/monkpearman/<REPOSITORY-NAME>/raw/master/emacs-load-files/\"
 :SEE-ALSO `*mon-github-pathname-url*', `*mon-github-username-for-pathname*',
 `*mon-github-repository-name-for-pathname*',
 `*mon-github-repository-default-pathname*', `mon-insert-file-template',
@@ -2199,8 +2202,8 @@ whereas the incorrect value would yield an invalid github URL when expanded, e.g
 (defcustom *mon-github-pathname-url* nil
   "A URL pathname to a github user directory which contains git repositories
 Pathname should have one of the following forms:
- \"https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/\"\n
- \"https://github.com/mon-key/mon-emacs/raw/master/\"\n
+ \"https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/\"\n
+ \"https://github.com/monkpearman/mon-emacs/raw/master/\"\n
 and match either of the follwoing patterns:
 \"https://github.com/<GITHUB-USER-NAME>/<REPOSITORY>/raw/master/\"
 \"https://github.com/<GITHUB-USER-NAME>/<REPOSITORY>/raw/master/<REPO-SUBDIR>/\"

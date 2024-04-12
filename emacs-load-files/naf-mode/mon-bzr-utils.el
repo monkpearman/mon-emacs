@@ -58,11 +58,9 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-bzr-utils.el
-;; EMACSWIKI-URL: http://www.emacswiki.org/emacs/mon-bzr-utils.el
-;; FIRST-PUBLISHED:
+;; URL: https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-bzr-utils.el
 ;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-bzr-utils. }
+;; FIRST-PUBLISHED:
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-01-13T12:38:23-05:00Z}#{10023} - by MON KEY>
@@ -117,14 +115,20 @@
 ;;; :CREATED <Timestamp: #{2011-01-14T19:12:06-05:00Z}#{11025} - by MON KEY>
 (defgroup mon-bzr-utils nil
   "Customization group for variables and functions of :FILE mon-bzr-utils.el\n
-:SEE-ALSO .\n▶▶▶"
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter'.\n▶▶▶"
   ;; :prefix "<PREFIX>"
   :link '(url-link 
           :tag ":EMACSWIKI-FILE" 
           "http://www.emacswiki.org/emacs/mon-bzr-utils.el")
   :link '(url-link 
           :tag ":GITHUB-FILE" 
-          "https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-bzr-utils.el")
+          "https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-bzr-utils.el")
   :link '(emacs-library-link 
           :tag ":FILE mon-bzr-utils.el"
           "mon-bzr-utils.el")

@@ -63,12 +63,10 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; 
-;; URL: https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/mon-post-load-hooks.el
-;; EMACSWIKI-URL: http://www.emacswiki.org/emacs/mon-post-load-hooks.el
+;; URL: https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/mon-post-load-hooks.el
+;;
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-03-27T22:59:00-04:00Z} - by MON>
 ;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-post-load-hooks. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-03-24T11:27:54-04:00Z}#{10123} - by MON>
@@ -125,17 +123,17 @@
 ;;; :CREATED <Timestamp: #{2011-01-12T19:04:38-05:00Z}#{11023} - by MON KEY>
 (defgroup mon-post-load-hooks nil
   "Customization group for variables and functions of :FILE mon-post-load-hooks.el\n
-:SEE-ALSO .\n▶▶▶"
-  ;; :prefix "<PREFIX>"
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter'.\n▶▶▶"
   :link '(url-link 
-          :tag ":EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/mon-post-load-hooks.el')" 
-          "http://www.emacswiki.org/emacs/mon-post-load-hooks.el")
-  :link '(url-link 
-          :tag ":GITHUB-FILE (URL `https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/mon-post-load-hooks.el')" 
-          "https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/mon-post-load-hooks.el")
-  :link '(emacs-library-link 
-          :tag ":FILE mon-post-load-hooks.el" 
-          "mon-post-load-hooks.el")
+          :tag ":GITHUB-FILE (URL `https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/mon-post-load-hooks.el')" 
+          "https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/mon-post-load-hooks.el")
+  :link '(emacs-library-link :tag ":FILE mon-post-load-hooks.el" "mon-post-load-hooks.el")
   :group 'mon-base)
 
 ;;; ==============================

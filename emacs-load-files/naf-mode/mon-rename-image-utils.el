@@ -89,42 +89,33 @@
 ;;
 ;; REQUIRES:
 ;; mon-css-color.el (or the css-color.el provided with nXhtml)
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-css-color.el')
 ;;
 ;; mon-dir-locals-alist.el 
 ;;  | `*mon-nef-scan-drive*', `*mon-nef-scan-path*', `*mon-nef-scan-nefs-path*',
 ;;  | `*mon-nef-scan-nef2-path*', `*mon-ebay-images-path*',
 ;;  | -> `*mon-ebay-images-jpg-path*', `*mon-ebay-images-bmp-path*',
-;; :SEE (URL `http://www.emacswiki.org/downloads/mon-dir-locals-alist.el')
 ;;
 ;; mon-buffer-utils.el
 ;; | -> `mon-g2be'
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-buffer-utils.el')
 ;;
 ;; mon-seq-utils.el 
 ;; | -> `mon-mapcar',
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-seq-utils.el')
 ;;
 ;; mon-event-utils.el 
 ;; | -> `mon-toggle-read-only-point-motion',
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-event-utils.el')
 ;;
 ;; mon-line-utils.el 
 ;; | ->  `mon-line-bol-is-eol',
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-line-utils.el')
 ;;
 ;; mon-dir-utils.el
 ;; | -> `mon-get-buffer-parent-dir', `mon-string-split-buffer-name'
 ;; | -> `mon-truncate-path-for-prompt', `mon-buffer-written-p'
 ;; | -> `mon-dir-build-list'
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-dir-utils.el')
 ;;
 ;; mon-replacement-utils.el
 ;; |-> `mon-delete-back-up-list', `mon-cln-trail-whitespace'
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-replacement-utils.el')
 ;; 
 ;; mon-rename-image-utils-supplemental.el 
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-rename-image-utils-supplemental.el')
 ;;
 ;; :NOTE Additional discussion of required features is proved in the
 ;; installation and notes below.
@@ -257,7 +248,6 @@
 ;; If you have `mon-utils.el' in your load-path you can look at the read-only
 ;; buffer positions as well by evaluating the command:
 ;; `mon-toggle-read-only-point-motion' 
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-utils.el')
 ;;
 ;; Currently `mon-build-rename-buffer' is only accepts the arg IMAGE-TYPE.
 ;;
@@ -279,7 +269,6 @@
 ;;
 ;; :PATH-VARIABLES
 ;; The library mon-dir-locals-alist.el 
-;; :SEE (URL `http://www.emacswiki.org/downloads/mon-dir-locals-alist.el')
 ;; supplies the following variables:
 ;;  `*mon-nef-scan-drive*', `*mon-nef-scan-path*', `*mon-nef-scan-nefs-path*', 
 ;;  `*mon-nef-scan-nef2-path*', `*mon-ebay-images-path*', `*mon-ebay-images-jpg-path*' 
@@ -314,7 +303,6 @@
 ;; I use a local copy of `css-color.el' named `mon-css-color.el' 
 ;; This is a modified (re)incarnation of Niels Giesen's `css-color.el' 
 ;; :VERSION "0.03" of 2008. 
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-css-color.el')
 ;;
 ;; The css-color.el package was originally made available on the EmacsWiki: 
 ;; :SEE (URL `http://www.emacswiki.org/emacs/CssColor') 
@@ -367,21 +355,18 @@
 ;; :REQUIRED/RECOMMENDED-PACKAGES
 ;; Additional discussion for and usage notes regarding integration of this
 ;; package into a local system is available in the header of the following file:
-;; :SEE (URL `http://www.emacswiki.org/downloads/mon-rename-image-utils-supplemental.el')
+;; :FILE mon-rename-image-utils-supplemental.el
 ;;
 ;; This `supplemental' package provides additional functions which may be
 ;; needed when using the current package (e.g. mon-rename-image-utils.el). 
 ;; The procedures of the supplemental package are esp. recommended if you aren't
-;; already using the the litany of other `mon-*.el' packages e.g. those
-;; packages are avaiable at: 
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon_key')
+;; already using the the litany of other `mon-*.el' packages.
+
 ;;
 ;; =================================================================
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-rename-image-utils.el
 ;; FILE-PUBLISHED: <Timestamp: #{2009-09-20} - by MON KEY>
 ;;
-;; EMACSWIKI: http://www.emacswiki.org/emacs/RenameImageUtils
 ;; FILE-PUBLISHED: <Timestamp: #{2009-09-28} - by MON KEY>
 ;;
 ;; FILE-CREATED:

@@ -80,10 +80,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/naf-mode-dates.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-11-21T20:45:38-05:00Z}#{09477} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing naf-mode-dates. }
 ;;
 ;; FILE-CREATED: 2008
 ;; HEADER-ADDED: <Timestamp: #{2009-08-22T12:24:17-04:00Z}#{09346} - by MON>
@@ -142,10 +139,8 @@
 ;;; :CREATED <Timestamp: #{2011-01-11T18:19:47-05:00Z}#{11022} - by MON KEY>
 (defgroup naf-mode-dates nil
   "Customization group for variables and functions of :FILE naf-mode-dates.el\n
-:SEE-ALSO .\n▶▶▶"
-  ;; :prefix "<PREFIX>"
-  :link '(url-link 
-          :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/naf-mode-dates.el")
+:SEE-ALSO `naf-mode', `naf-mode-dates', `naf-mode-english-roles',
+`naf-mode-ulan-help-utils', `naf-mode-xrefs', `naf-mode-faces'.\n▶▶▶"
   :link '(emacs-library-link "naf-mode-dates.el")
   :group 'naf-mode)
 

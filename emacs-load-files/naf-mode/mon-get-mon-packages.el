@@ -41,10 +41,8 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-get-mon-packages.el
 ;; FIRST-PUBLISHED:
 ;;
-;; EMACSWIKI: {URL of an EmacsWiki describing mon-get-mon-packages.}
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-02-17T18:55:33-05:00Z}#{10073} - by MON KEY>
 ;;; ================================================================
@@ -229,8 +227,7 @@
     "naf-mode-benezit-flags.el"
     "naf-mode-ulan-utils.el"
     "naf-mode-xrefs.el")
-  "*A list of MON files published online EmacsWiki.\n
-:SEE (URL `http://www.emacswiki.org/emacs/mon_key')
+  "*A list of MON files.\n
 :SEE-ALSO `mon-wget-mon-pkgs', `mon-file-map-elisp-fileset'.\n▶▶▶")
 ;;
 ;;;(progn (makunbound '*mon-el-library*) (unintern '*mon-el-library*) )

@@ -130,10 +130,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-ps-pdf-utils.el
 ;; FIRST-PUBLISHED:
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-ps-pdf-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2009-10-27T15:54:10-04:00Z}#{09442} - by MON KEY>

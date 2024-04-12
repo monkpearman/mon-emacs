@@ -205,10 +205,9 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-aliases.el
-;; EMACSWIKI-URL: http://www.emacswiki.org/emacs/mon-aliases.el
-;; FIRST-PUBLISHED: <Timestamp: #{2010-11-10T22:28:27-05:00Z}#{10453} - by MON>
+;; URL: https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-aliases.el
 ;;
+;; FIRST-PUBLISHED: <Timestamp: #{2010-11-10T22:28:27-05:00Z}#{10453} - by MON>
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-11-04T20:03:21-04:00Z}#{10444} - by MON KEY>

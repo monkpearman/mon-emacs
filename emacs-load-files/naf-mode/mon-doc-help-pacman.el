@@ -60,10 +60,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-doc-help-pacman.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-12-08T13:58:20-05:00Z}#{09502} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-doc-help-pacman. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2009-12-08T13:16:32-05:00Z}#{09502} - by MON KEY>

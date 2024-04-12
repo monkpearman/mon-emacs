@@ -160,8 +160,6 @@
 (defgroup ebay-template-mode nil
   "Customization of `ebay-template-mode'.\n
 :SEE-ALSO `ebay-template-mode-faces'.\n▶▶▶"
-  ;; :link (url-link URL)
-  ;; :link (file-link FILE)
   :group 'mon-base
   :group 'local)
 
@@ -169,10 +167,8 @@
 ;;; :CREATED <Timestamp: #{2009-08-07T12:46:05-04:00Z}#{09325} - by MON>
 (defgroup ebay-template-mode-faces nil
   "Customization of `ebay-template-mode' font-locking faces.\n
-:SEE-ALSO .\n▶▶▶"
-  ;; :link (file-link FILE)
+:SEE-ALSO `ebay-template-mode'.\n▶▶▶"
   :group 'faces
-  ;; :group naf-mode-faces
   :group 'ebay-template-mode)
 
 ;;; ==============================

@@ -78,14 +78,10 @@
 ;; REQUIRES:
 ;; `mon-cln-pipes' <- `mon-string-from-sequence' -> :FILE mon-utils.el
 ;; `mon-cln-pipes' <- `mon-string-to-sequence'   -> :FILE mon-utils.el
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-utils.el')
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-mysql-utils.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-12-10T14:59:16-05:00Z}#{09504} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-mysql-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2009-12-10T11:11:41-05:00Z}#{09504} - by MON>

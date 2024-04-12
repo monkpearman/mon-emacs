@@ -373,8 +373,8 @@
 ;; from Pascal Bourguignon but I can no longer find the reference
 ;; to the source... I have it elsewhere as `escape-lisp-string-region'.
 ;;
-;; URL: https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-utils.el
-;; EMACSWIKI-URL: http://www.emacswiki.org/emacs/mon-doc-help-utils.el
+;; URL: https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-utils.el
+;;
 ;; FILE-PUBLISHED: <Timestamp: #{2009-08-15} - by MON KEY>
 ;;
 ;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/MonDocHelpUtilsDictionary')
@@ -455,11 +455,12 @@
 ;;; :CREATED <Timestamp: #{2010-02-06T11:43:27-05:00Z}#{10056} - by MON KEY>
 (defgroup mon-doc-help-utils nil
   "Extensions for help and documentation related procedures.\n
-:SEE (URL `http://www.emacswiki.org/emacs/MonDocHelpUtilsDictionary')\n
-:SEE-ALSO `mon-doc-help-utils-faces', `mon-doc-help-CL'.\n▶▶▶"
+:SEE-ALSO `mon-doc-help-utils', `mon-doc-help-utils-faces', `mon-doc-help-CL',
+`mon-doc-help-CL-hspec-parse', `mon-doc-help-char-encoding-lossage',
+`mon-doc-help-css'.\n▶▶▶"
 :link '(url-link 
           :tag ":GITHUB-FILE" 
-          "https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-utils.el")  
+          "https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-utils.el")  
 :link '(url-link 
           :tag ":EMACSWIKI-FILE" 
           "http://www.emacswiki.org/emacs/mon-doc-help-utils.el")
@@ -493,15 +494,15 @@
  inlined-regexp                                `mon-help-OLAY-RESULT-string-show'
  inlined-regexp                                `mon-help-OLAY-RESULT-match-show'\n
 :SEE :FILE mon-doc-help-utils.el\n
-:SEE-ALSO `mon-help-propertize-tags', `mon-help-mon-tags', `mon-help-insert-tags',
-`*mon-help-mon-tags-alist*', `mon-help-view-file', `mon-help-temp-docstring-display',
-`*mon-help-docstring-help-bffr*'.\n▶▶▶"
+:SEE-ALSO `mon-help-propertize-tags', `mon-help-mon-tags',
+`mon-help-insert-tags', `*mon-help-mon-tags-alist*', `mon-help-view-file',
+`mon-help-temp-docstring-display',
+`*mon-help-docstring-help-bffr*'`mon-doc-help-utils',
+`mon-doc-help-utils-faces', `mon-doc-help-CL', `mon-doc-help-CL-hspec-parse',
+`mon-doc-help-char-encoding-lossage', `mon-doc-help-css'.\n▶▶▶"
   :link '(emacs-library-link 
           :tag ":FILE mon-doc-help-utils.el"
           "mon-doc-help-utils.el")
-  :link '(url-link 
-          :tag ":EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/mon-doc-help-utils.el')"
-          "http://www.emacswiki.org/emacs/mon-doc-help-utils.el")
   :group 'mon-base
   :group 'mon-doc-help-utils
   :group 'faces)

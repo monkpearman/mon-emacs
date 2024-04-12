@@ -69,17 +69,12 @@
 ;; REQUIRES:
 ;;
 ;; lisp/image.el
-;; mon-utils.el      (URL `http://www.emacswiki.org/emacs/mon-utils.el')
-;; mon-time-utils.el (URL `http://www.emacswiki.org/emacs/mon-time-utils.el')
 ;;
 ;; ImageMagick, see discussion in :FILE mon-boxcutter.el for details
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-image-utils.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-11-20T19:16:47-05:00Z}#{10466} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-image-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-11-20T19:05:38-05:00Z}#{10466} - by MON KEY>
@@ -140,8 +135,13 @@
 ;;; :CREATED <Timestamp: #{2010-11-20T19:24:47-05:00Z}#{10466} - by MON KEY>
 (defgroup mon-image-utils nil
   "Customizations for mon-image-utils related features.\n
-▶▶▶"
-  :link  '(url-link :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/mon-image-utils.el")
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter'.\n▶▶▶"
   :link  '(emacs-library-link "mon-image-utils.el")
   :prefix "mon-image-"
   :group 'mon-base)

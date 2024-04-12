@@ -59,10 +59,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-iptables-vars.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-11-28T12:04:54-05:00Z}#{09486} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-iptables-vars. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2009-11-27T22:53:53-05:00Z}#{09485} - by MON KEY>

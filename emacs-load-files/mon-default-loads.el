@@ -79,8 +79,8 @@
 ;; AUTHOR: MON KEY
 ;; MAINTAINER: MON KEY
 ;;
-;; URL: https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/mon-default-loads.el
-;; EMACSWIKI-URL: http://www.emacswiki.org/emacs/mon-default-loads.el
+;; URL: https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/mon-default-loads.el
+;;
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-09-23T12:22:19-04:00Z}#{09393} - by MON>
 ;;
 ;; FILE-CREATED:
@@ -141,12 +141,16 @@
 ;;; :CREATED <Timestamp: #{2011-01-11T15:33:45-05:00Z}#{11022} - by MON KEY>
 (defgroup mon-default-loads nil
   "Customization group for variables and functions of :FILE mon-default-loads.el\n
-:SEE-ALSO .\n▶▶▶"
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter'.\n▶▶▶"
   :link '(url-link 
-          :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/mon-default-loads.el")
-  :link '(url-link 
-          :tag ":GITHUB-FILE (URL `https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/mon-default-loads.el')" 
-          "https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/mon-default-loads.el")
+          :tag ":GITHUB-FILE (URL `https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/mon-default-loads.el')" 
+          "https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/mon-default-loads.el")
   :link '(emacs-library-link "mon-default-loads.el")
   :group 'mon-base)
 

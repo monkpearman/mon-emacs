@@ -89,10 +89,8 @@
 
 (defgroup naf-mode-english-roles nil
   "Customization group for variables and functions of :FILE naf-mode-english-roles.el\n
-:SEE-ALSO .\n▶▶▶"
-  ;; :prefix "<PREFIX>"
-  :link '(url-link 
-          :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/naf-mode-english-roles.el")
+:SEE-ALSO `naf-mode', `naf-mode-dates', `naf-mode-english-roles',
+`naf-mode-ulan-help-utils', `naf-mode-xrefs', `naf-mode-faces'.\n▶▶▶"
   :link '(emacs-library-link "naf-mode-english-roles.el")
   :group 'naf-mode)
 

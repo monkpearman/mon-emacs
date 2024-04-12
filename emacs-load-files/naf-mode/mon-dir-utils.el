@@ -197,8 +197,8 @@
 ;;
 ;; THIRD PARTY CODE:
 ;; 
-;; URL: "https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-dir-utils.el"
-;; EMACSWIKI-URL: http://www.emacswiki.org/emacs/mon-dir-utils.el
+;; URL: "https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-dir-utils.el"
+;;
 ;; FILE-PUBLISHED: <Timestamp: #{2009-09-02} - by MON KEY>
 ;; 
 ;; FILE-CREATED:
@@ -249,8 +249,6 @@
              (bound-and-true-p *IS-MON-OBARRAY*))
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
-;; (declare-function edmacro-subseq "edmacro" (seq start &optional end))
-
 ;; Make sure `untranslated-canonical-name' is available for w32.
 (declare-function untranslated-canonical-name "dos-w32"  t t)
 (cl-eval-when (compile load) 
@@ -273,10 +271,16 @@
 ;;; :CREATED <Timestamp: #{2010-11-03T19:11:39-04:00Z}#{10443} - by MON KEY>
 (defgroup mon-dir-utils nil
   "Defaults for variables accessed by various `mon-*' functions.\n
-:SEE-ALSO .\n▶▶▶"
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter'.\n▶▶▶"
   :link '(url-link 
           :tag ":GITHUB-FILE" 
-          "https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-dir-utils.el")
+          "https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-dir-utils.el")
   :link '(url-link 
           :tag ":EMACSWIKI-FILE" 
           "http://www.emacswiki.org/emacs/mon-dir-utils.el")

@@ -57,10 +57,8 @@
 ;; 
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/slime-loads-GNU.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-09-07T11:31:22-04:00Z}#{10362} - by MON>
 ;;
-;; EMACSWIKI: { URL of an EmacsWiki describing slime-loads-GNU. }
 ;;
 ;; FILE-CREATED: <Timestamp: #{2009-09-06T10:19:19-04:00Z}#{09367} - by MON KEY>
 ;; 

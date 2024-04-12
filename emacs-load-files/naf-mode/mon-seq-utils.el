@@ -192,11 +192,7 @@
 ;; from Joe Ginder and Carl Ebeling). It is unclear how much has changed since
 ;; that time.
 ;;
-;;
-;; URL: http://www.emacswiki.org/emacs/mon-seq-utils.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-11-25T02:27:00-05:00Z}#{10476} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-seq-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-11-20T20:17:45-05:00Z}#{10466} - by MON KEY>
@@ -252,11 +248,13 @@
 ;;; :CREATED <Timestamp: #{2011-01-11T19:01:43-05:00Z}#{11022} - by MON KEY>
 (defgroup mon-seq-utils nil
   "Customization group for variables and functions of :FILE mon-seq-utils.el\n
-:SEE-ALSO .\n▶▶▶"
-  ;; :prefix "<PREFIX>"
-  :link '(url-link 
-          :tag "\n:EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/mon-seq-utils.el')" 
-          "http://www.emacswiki.org/emacs/mon-seq-utils.el")
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter'.\n▶▶▶"
   :link '(emacs-library-link 
           :tag ":FILE mon-seq-utils.el" 
           "mon-seq-utils.el")
@@ -1855,6 +1853,38 @@ If SEQ-END is omitted, it defaults to the length of SEQ.\n
 ;; | (mon-subseq  [0 1 2 3 4 5] -3  )
 ;; | (mon-subseq  nil  3  0)
 ;; `----
+
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-04-12T13:13:08-04:00Z}#{24155} - by MON KEY>
+(defun %mon-edmacro-subseq (seq start &optional end)
+  ":NOTE Backwards combpatability function for `edmacro-subseq' which is no longer
+available from :FILE edmarcro.el\n
+USE `mon-subseq' going forward.\n
+Return the subsequence of SEQ from START to END.
+If END is omitted, it defaults to the length of the sequence.
+If START or END is negative, it counts from the end."
+  (if (stringp seq) (substring seq start end)
+    (let (len)
+      (and end (< end 0) (setq end (+ end (setq len (length seq)))))
+      (if (< start 0) (setq start (+ start (or len (setq len (length seq))))))
+      (cond ((listp seq)
+	     (if (> start 0) (setq seq (nthcdr start seq)))
+	     (if end
+		 (let ((res nil))
+		   (while (>= (setq end (1- end)) start)
+		     (push (pop seq) res))
+		   (nreverse res))
+	       (copy-sequence seq)))
+	    (t
+	     (or end (setq end (or len (length seq))))
+	     (let ((res (make-vector (max (- end start) 0) nil))
+		   (i 0))
+	       (while (< start end)
+		 (aset res i (aref seq start))
+		 (setq i (1+ i) start (1+ start)))
+	       res))))))
+
 
 ;;; ==============================
 ;;; :PREFIX "msbl-"

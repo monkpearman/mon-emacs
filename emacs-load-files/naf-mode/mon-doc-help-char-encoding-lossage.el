@@ -78,10 +78,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-doc-help-char-encoding-lossage.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2011-03-07T16:54:01-05:00Z}#{11101} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-doc-help-char-encoding-lossage. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2011-03-06T00:18:18-05:00Z}#{11097} - by MON KEY>
@@ -138,11 +135,9 @@
 ;;; :CREATED <Timestamp: #{2011-03-07T16:02:21-05:00Z}#{11101} - by MON KEY>
 (defgroup mon-doc-help-char-encoding-lossage nil
   "Customization group for variables and functions of :FILE mon-doc-help-char-encoding-lossage.el\n
-:SEE-ALSO .\n▶▶▶"
-  ;; :prefix "<PREFIX>"
-  :link '(url-link 
-          :tag ":EMACSWIKI-FILE"
-          "http://www.emacswiki.org/emacs/mon-doc-help-char-encoding-lossage.el")
+:SEE-ALSO `mon-doc-help-utils', `mon-doc-help-utils-faces', `mon-doc-help-CL',
+`mon-doc-help-CL-hspec-parse', `mon-doc-help-char-encoding-lossage',
+`mon-doc-help-css'.\n▶▶▶"
   :link '(emacs-library-link 
           :tag ":FILE mon-doc-help-char-encoding-lossage.el"
           "mon-doc-help-char-encoding-lossage.el")

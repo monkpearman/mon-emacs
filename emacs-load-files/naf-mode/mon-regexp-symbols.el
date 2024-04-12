@@ -162,11 +162,14 @@
 ;;; :CREATED <Timestamp: #{2011-01-11T15:24:47-05:00Z}#{11022} - by MON KEY>
 (defgroup mon-regexp-symbols nil
   "Customization group for variables and functions of :FILE mon-regexp-symbols.el\n
-:SEE-ALSO `*mon-regexp-xrefs'.\n▶▶▶"
+:SEE-ALSO `*mon-regexp-xrefs',`mon-base', `mon-xrefs', `mon-macs',
+`mon-dir-locals', `mon-error-warn', `mon-regexp-symbols', `mon-dir-utils',
+`mon-line-utils', `mon-seq-utils', `mon-plist-utils', `mon-string-utils',
+`mon-insertion-utils', `mon-replacement-utils', `mon-buffer-utils',
+`mon-window-utils', `mon-button-utils', `mon-type-utils', `mon-type-utils-vars',
+`mon-image-utils', `mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils',
+`mon-error-utils', `mon-url-utils', `mon-boxcutter'.\n▶▶▶"
   :prefix "*regexp-"
-  :link '(url-link 
-          :tag "\n:EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/mon-regexp-symbols.el')" 
-          "http://www.emacswiki.org/emacs/mon-regexp-symbols.el")
   :link '(emacs-library-link 
           :tag "\n:FILE mon-regexp-symbols.el"
           "mon-regexp-symbols.el")

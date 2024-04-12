@@ -103,10 +103,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/naf-mode.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-09-22T18:04:57-04:00Z}#{09392} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing naf-mode. }
 ;;
 ;; HEADER-ADDED: <Timestamp: #{2009-08-13T11:05:02-04:00Z}#{09334} - by MON KEY>
 ;;
@@ -208,25 +205,16 @@
 ;;; ==============================
 (defgroup naf-mode nil
   "Customizations for `naf-mode'.\n
-:SEE-ALSO .\n▶▶▶"
-  :link  '(url-link 
-           :tag ":EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/naf-mode.el')" 
-           "http://www.emacswiki.org/emacs/naf-mode.el")
-  :link  '(emacs-library-link 
-           :tag ":FILE naf-mode.el"
-           "naf-mode.el")
+:SEE-ALSO `naf-mode', `naf-mode-dates', `naf-mode-english-roles',
+`naf-mode-ulan-help-utils', `naf-mode-xrefs', `naf-mode-faces'.\n▶▶▶"
+  :link  '(emacs-library-link :tag ":FILE naf-mode.el" "naf-mode.el")
   :group 'mon-base)
 
 (defgroup naf-mode-faces nil
   "Customization of `naf-mode' font-locking faces.\n
-:SEE-ALSO .\n▶▶▶"
-  ;; :link (url-link URL)
-  :link '(emacs-library-link 
-          :tag ":FILE naf-mode-faces.el"
-          "naf-mode-faces.el")
-  :link '(url-link 
-          :tag ":EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/naf-mode-faces.el')" 
-          "http://www.emacswiki.org/emacs/naf-mode-faces.el")
+:SEE-ALSO `naf-mode', `naf-mode-dates', `naf-mode-english-roles',
+`naf-mode-ulan-help-utils', `naf-mode-xrefs'.\n▶▶▶"
+  :link '(emacs-library-link :tag ":FILE naf-mode-faces.el" "naf-mode-faces.el")
   :group 'faces
   :group 'mon-base
   :group 'naf-mode)

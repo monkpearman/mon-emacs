@@ -74,10 +74,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-randomize-utils.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-11-25T02:27:00-05:00Z}#{10476} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-randomize-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-11-22T11:57:09-05:00Z}#{10471} - by MON KEY>

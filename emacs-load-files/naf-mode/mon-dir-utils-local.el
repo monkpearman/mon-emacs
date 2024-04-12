@@ -96,18 +96,13 @@
 ;;
 ;; :FILE mon-dir-locals-alist.el
 ;;  |-> `*mon-nefs_photos_nefs-alist*' `*mon-nef-scan-nefs-path*' `*mon-ebay-images-bmp-path*'
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-dir-locals-alist.el')
 ;;
 ;; :FILE mon-hash-utils.el
 ;;  |-> `mon-dir-hash-images', `mon-dir-hashed-complete' -> `mon-hash-all-keys'
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-hash-utils.el')
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-dir-utils-local.el
 ;; FIRST-PUBLISHED:
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-dir-utils-local. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-11-04T19:38:33-04:00Z}#{10444} - by MON KEY>

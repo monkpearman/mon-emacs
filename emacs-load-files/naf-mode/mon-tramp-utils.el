@@ -161,10 +161,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-tramp-utils.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-11-20T13:45:12-05:00Z}#{09475} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-tramp-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2009-11-19T14:05:04-05:00Z}#{09474} - by MON>

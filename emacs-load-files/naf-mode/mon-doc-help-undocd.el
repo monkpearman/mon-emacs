@@ -51,10 +51,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-doc-help-undocd.el
 ;; FIRST-PUBLISHED:
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-doc-help-undocd. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-09-08T14:30:24-04:00Z}#{10363} - by MON KEY>

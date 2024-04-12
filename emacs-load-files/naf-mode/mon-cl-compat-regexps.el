@@ -136,10 +136,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-cl-compat-regexps.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-01-17T23:06:27-05:00Z}#{10027} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-cl-compat-regexps. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-01-17T02:42:34-05:00Z}#{10027} - by MON>

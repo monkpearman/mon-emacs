@@ -200,13 +200,14 @@
 ;;; :CREATED <Timestamp: #{2010-10-04T14:07:58-04:00Z}#{10401} - by MON KEY>
 (defgroup mon-url-utils nil
   "Variables required by various `mon-*' web and url related functions.\n
-:SEE-ALSO .\n▶▶▶"
-  :link '(url-link 
-          :tag "\n:EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/mon-url-utils.el')" 
-          "http://www.emacswiki.org/emacs/mon-url-utils.el")
-  :link '(emacs-library-link 
-          :tag "\n:FILE mon-url-utils.el"
-          "mon-url-utils.el")
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter'.\n▶▶▶"
+  :link '(emacs-library-link  :tag "\n:FILE mon-url-utils.el" "mon-url-utils.el")
   :group 'mon-base)
 
 ;;; ==============================

@@ -58,14 +58,10 @@
 ;;
 ;; REQUIRES:
 ;; Requires mon-wget-utils.el
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-wget-utils.el')
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-get-freenode-lisp-logs.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-03-27T17:21:04-04:00Z}#{10126} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-get-freenode-lisp-logs. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-02-18T14:20:54-05:00Z}#{10074} - by MON KEY>

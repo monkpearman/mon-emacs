@@ -70,10 +70,7 @@
 ;; and Rusty Russell <- :NETFILTER-CORE-TEAM
 ;; :SEE (URL `http://www.netfilter.org/')
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-iptables-regexps.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-11-27T16:43:19-05:00Z}#{09485} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-iptables-regexps. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2009-11-25T14:34:37-05:00Z}#{09483} - by MON>

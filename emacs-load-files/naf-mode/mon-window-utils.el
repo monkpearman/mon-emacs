@@ -86,10 +86,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-window-utils.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-11-25T02:27:00-05:00Z}#{10476} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-window-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-11-22T16:17:39-05:00Z}#{10471} - by MON KEY>
@@ -145,10 +142,13 @@
 ;;; :CREATED <Timestamp: #{2011-01-11T18:38:41-05:00Z}#{11022} - by MON KEY>
 (defgroup mon-window-utils nil
   "Customization group for variables and functions of :FILE mon-window-utils.el\n
-:SEE-ALSO .\n▶▶▶"
-  ;; :prefix "<PREFIX>"
-  :link '(url-link 
-          :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/mon-window-utils.el")
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter'.\n▶▶▶"
   :link '(emacs-library-link "mon-window-utils.el")
   :group 'mon-base)
 

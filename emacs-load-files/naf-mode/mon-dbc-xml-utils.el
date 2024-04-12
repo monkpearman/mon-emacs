@@ -57,10 +57,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-dbc-xml-utils.el
 ;; FIRST-PUBLISHED:
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-dbc-xml-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2011-01-07T16:02:29-05:00Z}#{11015} - by MON KEY>

@@ -113,10 +113,7 @@
 ;; :FROM                 -> :TO
 ;; `hash-table-complete' -> `mon-hash-table-complete'
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-hash-utils.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-09-22} - by MON KEY>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-hash-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2009-05-15T14:18:14-04:00Z}#{} - by MON KEY>

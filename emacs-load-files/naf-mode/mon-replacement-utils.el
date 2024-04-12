@@ -99,7 +99,7 @@
 ;;
 ;; REQUIRES:
 ;; Regexps for functions defined here are set with defvar forms in the file:
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-regexp-symbols.el')
+;; :FILE mon-regexp-symbols.el
 ;;
 ;; References the following: CONSTANTS OR VARIABLES:
 ;; `*regexp-philsp-months*',`*regexp-philsp-apos*', `*regexp-philsp-location*',
@@ -132,11 +132,6 @@
 ;; (eq (buffer-local-value 'major-mode (current-buffer)) 'naf-mode)
 ;;
 ;; THIRD PARTY CODE:
-;;
-;; URL: http://www.emacswiki.org/emacs/mon-replacement-utils.el
-;; FIRST-PUBLISHED: <Timestamp: #{2009-09-20} - by MON KEY>
-;;
-;; EMACSWIKI:
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2009-03-08T13:16:02-04:00Z} - by MON KEY>
@@ -194,14 +189,14 @@
 ;;; :CREATED <Timestamp: #{2011-01-20T18:59:00-05:00Z}#{11034} - by MON KEY>
 (defgroup mon-replacement-utils nil
   "Customization group for variables and functions of :FILE mon-replacement-utils.el\n
-:SEE-ALSO .\n▶▶▶"
-  ;; :prefix "<PREFIX>"
-  :link '(url-link 
-          :tag "\n:EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/mon-replacement-utils.el')" 
-          "http://www.emacswiki.org/emacs/mon-replacement-utils.el")
-  :link '(emacs-library-link 
-          :tag "\n:FILE mon-replacement-utils.el"
-          "mon-replacement-utils.el")
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter'.\n▶▶▶"
+  :link '(emacs-library-link :tag "\n:FILE mon-replacement-utils.el" "mon-replacement-utils.el")
   :group 'mon-base)
 
 ;;; ==============================

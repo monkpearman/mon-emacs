@@ -82,10 +82,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-empty-registers.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-09-02T17:12:10-04:00Z} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-empty-registers. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2009-08-04T19:31:09-04:00Z}#{} - by MON KEY>

@@ -167,10 +167,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/naf-mode-faces.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-09-20} - by MON KEY>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing naf-mode-faces. }
 ;;
 ;; FILE-CREATED: Spring 2008
 ;;

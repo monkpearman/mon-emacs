@@ -76,10 +76,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-env-proc-utils.el
 ;; FIRST-PUBLISHED:
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-env-proc-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-11-23T19:12:48-05:00Z}#{10472} - by MON KEY>
@@ -136,11 +133,14 @@
 ;;; :CREATED <Timestamp: #{2011-01-19T15:54:00-05:00Z}#{11033} - by MON KEY>
 (defgroup mon-env-proc-utils nil
   "Customization group for variables and functions of :FILE mon-env-proc-utils.el\n
-:SEE-ALSO .\n▶▶▶"
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter'.\n▶▶▶"
   ;; :prefix "<PREFIX>"
-  :link '(url-link 
-          :tag "\n:EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/mon-env-proc-utils.el')" 
-          "http://www.emacswiki.org/emacs/mon-env-proc-utils.el")
   :link '(emacs-library-link 
           :tag "\n:FILE mon-env-proc-utils.el"
           "mon-env-proc-utils.el")

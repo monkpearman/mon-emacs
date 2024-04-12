@@ -86,10 +86,7 @@
 ;; does not in any way represent the ULAN, J. Paul Getty Trust, www.getty.edu, nor
 ;; their associates or affiliates.
 ;;
-;; URL: http://www.emacswiki.org/emacs/naf-mode-ulan-utils.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-11-21T20:19:51-05:00Z}#{09477} - by MON KEY>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing naf-mode-ulan-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2009-09-01T11:30:04-04:00Z}#{09362} - by MON>
@@ -152,9 +149,9 @@
 ;;; :CHANGESET 2292
 ;;; :CREATED <Timestamp: #{2010-11-09T19:26:16-05:00Z}#{10452} - by MON KEY>
 (defgroup naf-mode-ulan-help-utils nil
-  "Customizations for ULAN utils for use with `naf-mode'.\n▶▶▶"
-  :link  '(url-link :tag ":EMACSWIKI-FILE" 
-                    "http://www.emacswiki.org/emacs/naf-mode-ulan-utils.el")
+  "Customizations for ULAN utils for use with `naf-mode'
+:SEE-ALSO `naf-mode', `naf-mode-dates', `naf-mode-english-roles',
+`naf-mode-ulan-help-utils', `naf-mode-xrefs', `naf-mode-faces'.\n▶▶▶"
   :link  '(emacs-library-link "naf-mode-ulan-utils.el")
   :group 'naf-mode
   :group 'mon-base)

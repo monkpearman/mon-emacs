@@ -58,11 +58,10 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-rename-whitespace-files.el
-;; EMACSWIKI-URL: http://www.emacswiki.org/emacs/mon-rename-whitespace-files.el
+;; URL: https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-rename-whitespace-files.el
+;;
 ;; FIRST-PUBLISHED:
 ;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-rename-whitespace-files. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2011-06-28T17:44:19-04:00Z}#{11262} - by MON KEY>

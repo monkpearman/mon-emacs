@@ -386,7 +386,7 @@ Does not move point.\n
                                     volume)
                                " page" (cond ((numberp page) 
                                                (concat " " (number-to-string page)))
-                                              ((not (eq (string-to-char (edmacro-subseq page 0 1)) 32))
+                                              ((not (eq (string-to-char (%mon-edmacro-subseq page 0 1)) 32))
                                                (concat " " page))))
                        ,(mon-accessed-stamp)
                        "-") "\n")))

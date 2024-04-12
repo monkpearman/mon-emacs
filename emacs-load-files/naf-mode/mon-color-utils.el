@@ -98,10 +98,7 @@
 ;; FOLLOWING: `list-colors-display', `list-colors-key', `list-colors-sort', `rgb-to-hsv'
 ;; FROM: SOURCE: (URL `http://lists.gnu.org/archive/html/emacs-devel/2009-08/msg00188.html')
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-color-utils.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-09-22} - by MON KEY>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-color-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2009-09-04T16:06:46-04:00Z}#{09365} - by MON KEY>

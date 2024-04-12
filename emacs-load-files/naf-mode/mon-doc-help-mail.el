@@ -57,8 +57,8 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-mail.el
-;; EMACSWIKI-URL: http://www.emacswiki.org/emacs/mon-doc-help-mail.el
+;; URL: https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-mail.el
+;; 
 ;; FIRST-PUBLISHED:
 ;;
 ;; FILE-CREATED:
@@ -110,7 +110,7 @@
 ;; :SEE-ALSO `mon-doc-help-utils-faces'.\n▶▶▶"
 ;;   :link '(url-link 
 ;;           :tag ":GITHUB-FILE" 
-;;           "https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-utils.el")
+;;           "https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-utils.el")
 ;;   :link '(url-link 
 ;;           :tag ":EMACSWIKI-FILE" 
 ;;           "http://www.emacswiki.org/emacs/mon-doc-help-mail.el")

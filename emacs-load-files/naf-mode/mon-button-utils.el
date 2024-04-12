@@ -61,11 +61,9 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-button-utils.el
-;; EMACSWIKI-URL:  http://www.emacswiki.org/emacs/mon-button-utils.el
-;; FIRST-PUBLISHED:<Timestamp: #{2010-09-14T20:58:02-04:00Z}#{10372} - by MON>
+;; URL: https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-button-utils.el
 ;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-button-utils. }
+;; FIRST-PUBLISHED:<Timestamp: #{2010-09-14T20:58:02-04:00Z}#{10372} - by MON>
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-09-14T17:56:12-04:00Z}#{10372} - by MON KEY>
@@ -123,12 +121,18 @@
 ;;; :CREATED <Timestamp: #{2011-01-11T14:21:04-05:00Z}#{11022} - by MON KEY>
 (defgroup mon-button-utils nil
   "Customization group for variables and functions of :FILE mon-button-utils.el.\n
-:SEE-ALSO .\n▶▶▶"
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter'.\n▶▶▶"
   :link '(url-link 
           :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/mon-button-utils.el")
   :link '(url-link 
           :tag ":GITHUB-FILE" 
-          "https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-button-utils.el")
+          "https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-button-utils.el")
   :link '(emacs-library-link "mon-button-utils.el")
   :group 'mon-base)
 

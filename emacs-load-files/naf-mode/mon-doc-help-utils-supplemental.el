@@ -21,7 +21,6 @@
 ;; DESCRIPTION:
 ;; mon-doc-help-utils-supplemental provides functions to bootstrap
 ;; mon-doc-help-utils.el
-;;  :SEE (URL `http://www.emacswiki.org/emacs/mon-doc-help-utils.el').
 ;;
 ;; This package, mon-doc-help-utils-supplemental.el may or may not be required
 ;; at loadtime to initialize mon-doc-help-utils but it should be present in
@@ -35,22 +34,18 @@
 ;; :FILE mon-insertion-utils.el 
 ;;       | -> `mon-insert-lisp-testme'
 ;;       | -> `mon-comment-divider'
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-insertion-utils.el')
 ;;
 ;; :FILE mon-regexp-symbols.el 
 ;;       | -> `*regexp-symbol-defs*'          
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-regexp-symbols.el')
 ;;
 ;; :FILE mon-utils.el
 ;;       | -> `mon-string-index'      
 ;;       | -> `mon-string-upto-index' 
 ;;       | -> `mon-string-after-index'
 ;;       | -> `mon-string-justify-left'
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-utils.el')
 ;;
 ;; :FILE mon-cl-compat.el
 ;;       | -> `cl::subseq'
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-cl-compat.el')
 ;;
 ;; :NOTE While mon-doc-help-utils-supplemental.el will provide the necessary
 ;; features in order to get mon-doc-help-utils bootstrapped wherever possible
@@ -113,10 +108,8 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-doc-help-utils-supplemental.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-12-21T21:20:06-05:00Z}#{09522} - by MON>
 ;;
-;; EMACSWIKI: (URL `http://www.emacswiki.org/emacs/MonDocHelpUtilsDictionary')
 ;; FIRST-PUBLISHED <Timestamp: #{2010-01-09T01:03:52-05:00Z}#{10016} - by MON>
 ;;
 ;; FILE-CREATED:
@@ -500,7 +493,6 @@ Default is to remove any trailing whiespace at end of lines.\n
 
 
 ;;; ==============================
-;; :NOTE Using `edmacro-subseq' now instead:
 ;;; <Timestamp: #{2010-09-06T12:59:25-04:00Z}#{10361} - by MON KEY>
 ;;; :LOAD-SPECIFIC-PROCEDURES :IF-NOT-FEATURE-P `mon-cl-compat.el'
 ;;; `cl::subseq'

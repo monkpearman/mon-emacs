@@ -202,7 +202,9 @@
 ;;; :CREATED <Timestamp: #{2010-08-16T14:30:02-04:00Z}#{10331} - by MON KEY>
 (defgroup mon-doc-help-CL nil
   "Extensions for help and documentation of Common Lisp related procedures.\n
-:SEE-ALSO .\n▶▶▶"
+:SEE-ALSO `mon-doc-help-utils', `mon-doc-help-utils-faces', `mon-doc-help-CL',
+`mon-doc-help-CL-hspec-parse', `mon-doc-help-char-encoding-lossage',
+`mon-doc-help-css'.\n▶▶▶"
   :link '(url-link 
           :tag "\n:EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/mon-doc-help-CL.el')" 
           "http://www.emacswiki.org/emacs/mon-doc-help-CL.el")
@@ -2177,7 +2179,6 @@ RETURN-PARSE-IN-BUFFER prior to insertion.\n
   "Emacs lisp functions equivalent to a cl.el feature but without warnings.\n
 ;; :EMACS-CL-NO-WARN
 `completion--some' ;<- `some'
-`edmacro-subseq'   ;<- `subseq'\n
 :SEE :FILE mon-cl-compat.el mon-cl-compat-regexps.el mon-doc-help-CL.el
 :SEE-ALSO `mon-help-CL-error-condition-restart',
 `mon-help-CL-file-dir-functions', `mon-help-CL-pkgs', `mon-help-CL-symbols',

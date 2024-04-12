@@ -59,10 +59,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-jg-directory-creator.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-03-16T19:46:03-04:00Z}#{10112} - by MON>
-;;
-;; EMACSWIKI: 
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-03-16T15:54:29-04:00Z}#{10112} - by MON>

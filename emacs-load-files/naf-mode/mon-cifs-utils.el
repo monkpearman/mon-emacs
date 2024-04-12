@@ -104,8 +104,8 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-cifs-utils.el
-;; EMACSWIKI: (URL `http://www.emacswiki.org/emacs/MonCifsUtils')
+;; URL: https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-cifs-utils.el
+;;
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-01-06T15:49:01-05:00Z}#{10013} - by MON>
 ;;
 ;; FILE-CREATED:

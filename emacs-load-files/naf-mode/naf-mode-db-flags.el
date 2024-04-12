@@ -85,11 +85,8 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/naf-mode-db-flags.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-11-21T20:42:32-05:00Z}#{09477} - by MON>
 ;; 
-;; EMACSWIKI: { URL of an EmacsWiki describing naf-mode-db-flags. }
-;;
 ;; HEADER-ADDED: <Timestamp: #{2009-08-09T12:13:36-04:00Z}#{09327} - by MON>
 ;;
 ;; FILE-CREATED:

@@ -55,10 +55,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-word-count-utils.el
 ;; FIRST-PUBLISHED:
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-word-count-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-11-23T20:54:09-05:00Z}#{10472} - by MON KEY>

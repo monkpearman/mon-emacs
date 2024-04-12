@@ -89,10 +89,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-name-utils.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-09-22} - by MON KEY>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-name-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2009-06-22T13:11:57-04:00Z} - by MON KEY>

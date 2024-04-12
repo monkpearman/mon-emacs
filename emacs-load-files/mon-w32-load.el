@@ -60,10 +60,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-w32-load.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-09-23T16:06:39-04:00Z}#{09393} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-w32-load. }
 ;;
 ;; HEADER-ADDED: <Timestamp: #{2009-09-23T16:12:48-04:00Z}#{09393} - by MON KEY>
 ;;

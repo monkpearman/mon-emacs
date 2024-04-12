@@ -51,7 +51,6 @@
 ;; `process-environment' returns a list of this process' environment.
 ;; (getenv "SystemDrive") ;=> "C:" on w3
 ;; 
-;; URL: http://www.emacswiki.org/emacs/mon-site-local-defaults.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-09-23T14:44:53-04:00Z}#{09393} - by MON>
 ;;
 ;; FILE-CREATED:

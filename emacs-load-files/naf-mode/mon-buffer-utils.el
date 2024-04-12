@@ -86,11 +86,8 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-buffer-utils.el
-;; EMACSWIKI-URL: http://www.emacswiki.org/emacs/mon-buffer-utils.el
+;; URL: https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-buffer-utils.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-11-25T02:27:00-05:00Z}#{10476} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-buffer-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-11-22T15:55:11-05:00Z}#{10471} - by MON KEY>
@@ -147,14 +144,16 @@
 ;;; :CREATED <Timestamp: #{2011-01-11T18:44:19-05:00Z}#{11022} - by MON KEY>
 (defgroup mon-buffer-utils nil
   "Customization group for variables and functions of :FILE mon-buffer-utils.el\n
-:SEE-ALSO .\n▶▶▶"
-  ;; :prefix "<PREFIX>"
-  :link '(url-link 
-          :tag ":EMACSWIKI-FILE" 
-          "http://www.emacswiki.org/emacs/mon-buffer-utils.el")
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter'.\n▶▶▶"
   :link '(url-link 
           :tag ":GITHUB-FILE" 
-          "https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-buffer-utils.el")
+          "https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-buffer-utils.el")
   :link '(emacs-library-link 
           :tag ":FILE mon-buffer-utils.el"
           "mon-buffer-utils.el")

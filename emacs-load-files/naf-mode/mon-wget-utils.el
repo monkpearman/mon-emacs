@@ -64,10 +64,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-wget-utils.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-02-18T17:10:38-05:00Z}#{10074} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-wget-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-02-18T17:09:29-05:00Z}#{10074} - by MON KEY>

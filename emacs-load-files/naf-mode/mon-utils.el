@@ -468,15 +468,16 @@
 ;;; :CREATED <Timestamp: #{2010-10-02T11:32:40-04:00Z}#{10396} - by MON KEY>
 (defgroup mon-base nil
   "Top level group from which other mon related packages and groups inherit.\n
-:SEE-ALSO .\n▶▶▶"
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter'.\n▶▶▶"
   :prefix "mon-"
   :prefix "*mon-"
-  :link '(url-link 
-          :tag "\n:EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/mon-utils.el')"
-          "http://www.emacswiki.org/emacs/mon-utils.el")
-  :link '(emacs-library-link 
-          :tag "\n:FILE mon-utils.el" 
-          "mon-utils.el")
+  :link '(emacs-library-link :tag "\n:FILE mon-utils.el" "mon-utils.el")
   :group 'local)
 
 ;;; ==============================
@@ -508,10 +509,14 @@ special value to hold the hash-table.\n
 Note also that we do not consider either `defcustom' or is the package feature
 of Emacs 24+ \(at least in their current configurations\) applicable to these
 needs.\n
-:SEE-ALSO `*mon-xrefs-xrefs*'.\n▶▶▶"
-  :link '(emacs-library-link 
-          :tag "\n:FILE mon-utils.el" 
-          "mon-utils.el")
+:SEE-ALSO `*mon-xrefs-xrefs*', `mon-base', `mon-xrefs', `mon-macs',
+`mon-dir-locals', `mon-error-warn', `mon-regexp-symbols', `mon-dir-utils',
+`mon-line-utils', `mon-seq-utils', `mon-plist-utils', `mon-string-utils',
+`mon-insertion-utils', `mon-replacement-utils', `mon-buffer-utils',
+`mon-window-utils', `mon-button-utils', `mon-type-utils', `mon-type-utils-vars',
+`mon-image-utils', `mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils',
+`mon-error-utils', `mon-url-utils', `mon-boxcutter'.\n▶▶▶"
+  :link '(emacs-library-link :tag "\n:FILE mon-utils.el" "mon-utils.el")
   :group 'mon-base)
 
 (require 'edebug)

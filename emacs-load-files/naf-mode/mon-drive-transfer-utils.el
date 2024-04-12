@@ -62,10 +62,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-drive-transfer-utils.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-05-06T21:27:28-04:00Z}#{10184} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-drive-transfer-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-05-06T21:21:43-04:00Z}#{10184} - by MON KEY>

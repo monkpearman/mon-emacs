@@ -88,10 +88,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-region-utils.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-11-25T02:27:00-05:00Z}#{10476} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-region-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-11-23T17:48:50-05:00Z}#{10472} - by MON KEY>

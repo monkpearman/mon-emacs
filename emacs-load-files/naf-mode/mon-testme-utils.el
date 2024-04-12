@@ -110,10 +110,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-testme-utils.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-02-11T19:48:58-05:00Z}#{10065} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-testme-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-01-22T17:20:30-05:00Z}#{10035} - by MON KEY>
@@ -170,13 +167,15 @@
 ;;; :CREATED <Timestamp: #{2010-10-07T16:02:18-04:00Z}#{10404} - by MON KEY>
 (defgroup mon-testme-utils nil
   "Customization group for `mon-*-TEST' functions.\n
-:SEE-ALSO `*mon-testme-utils-xrefs*'.\n▶▶▶"
-  :link '(url-link 
-          :tag "\n:EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/mon-testme-utils.el')" 
-          "http://www.emacswiki.org/emacs/mon-testme-utils.el")
-  :link '(emacs-library-link 
-          :tag "\n:FILE mon-test-me-utils.el"
-          "mon-test-me-utils.el")
+:SEE-ALSO `*mon-testme-utils-xrefs*', `mon-base', `mon-xrefs', `mon-macs',
+`mon-dir-locals', `mon-error-warn', `mon-regexp-symbols', `mon-dir-utils',
+`mon-line-utils', `mon-seq-utils', `mon-plist-utils', `mon-string-utils',
+`mon-insertion-utils', `mon-replacement-utils', `mon-buffer-utils',
+`mon-window-utils', `mon-button-utils', `mon-type-utils', `mon-type-utils-vars',
+`mon-image-utils', `mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils',
+`mon-error-utils', `mon-url-utils', `mon-boxcutter'.\n▶▶▶"
+  :link '(emacs-library-link :tag "\n:FILE mon-test-me-utils.el" "mon-test-me-utils.el")
+                             
   :group 'mon-base)
 
 ;;; ==============================

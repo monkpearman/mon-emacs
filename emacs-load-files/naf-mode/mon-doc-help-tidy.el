@@ -67,10 +67,7 @@
 ;; Tidy is released under the MIT Licence.
 ;; :SEE (URL `http://tidy.sourceforge.net/') 
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-doc-help-tidy.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-06-20T18:30:07-04:00Z}#{10247} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-doc-help-tidy. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-06-20T18:00:54-04:00Z}#{10247} - by MON KEY>

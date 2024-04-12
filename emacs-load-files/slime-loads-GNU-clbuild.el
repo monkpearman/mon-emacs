@@ -236,8 +236,8 @@
 ;; THIRD-PARTY-CODE: 
 ;; :SEE comments above. 
 ;;
-;; URL: https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/slime-loads-GNU-clbuild.el
-;; EMACSWIKI-URL: http://www.emacswiki.org/emacs/slime-loads-GNU-clbuild.el
+;; URL: https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/slime-loads-GNU-clbuild.el
+;;
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-09-07T11:31:31-04:00Z}#{10362} - by MON>
 ;;
 ;; FILE-CREATED:
@@ -318,35 +318,25 @@
 ;;; :CREATED <Timestamp: #{2011-01-12T14:04:51-05:00Z}#{11023} - by MON KEY>
 (defgroup mon-slime nil
   "Customization group for variables and functions of :FILE slime-loads-GNU-clbuild.el\n
-:SEE-ALSO .\n▶▶▶"
-  ;; :prefix "<PREFIX>"
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter'.\n▶▶▶"
+  :link '(url-link  :tag "\n:SLIME-DEVEL (URL `http://news.gmane.org/gmane.lisp.slime.devel')"
+                    "http://news.gmane.org/gmane.lisp.slime.devel")
+  :link '(info-link :tag "\n:SLIME-INFO-NODE" "(info-node)slime")  
+  :link '(emacs-library-link :tag "\n:FILE slime-autoloads.el" "slime-autoloads.el")
+  :link '(emacs-library-link  :tag "\n:FILE slime.el"  "slime.el")
+  :link '(url-link  :tag "\n:SLIME-URL (URL `http://www.common-lisp.net/project/slime/')"
+                    "http://www.common-lisp.net/project/slime/")
+  :link '(custom-group-link  :tag "\n:CUSTOM-GROUP mon-qucklisp" 'mon-qucklisp)  
   :link '(url-link 
-          :tag "\n:SLIME-DEVEL (URL `http://news.gmane.org/gmane.lisp.slime.devel')"
-          "http://news.gmane.org/gmane.lisp.slime.devel")
-  :link '(info-link
-          :tag "\n:SLIME-INFO-NODE"
-          "(info-node)slime")  
-  :link '(emacs-library-link 
-          :tag "\n:FILE slime-autoloads.el"
-          "slime-autoloads.el")
-  :link '(emacs-library-link 
-          :tag "\n:FILE slime.el" 
-          "slime.el")
-  :link '(url-link 
-          :tag "\n:SLIME-URL (URL `http://www.common-lisp.net/project/slime/')"
-          "http://www.common-lisp.net/project/slime/")
-  :link '(custom-group-link  
-          :tag "\n:CUSTOM-GROUP mon-qucklisp"
-          'mon-qucklisp)  
-  :link '(url-link 
-          :tag "\n:EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/slime-loads-GNU-clbuild.el')" 
-          "http://www.emacswiki.org/emacs/slime-loads-GNU-clbuild.el")
-  :link '(url-link 
-          :tag "\n:GITHUB-FILE (URL `https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/slime-loads-GNU-clbuild.el')" 
-          "https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/slime-loads-GNU-clbuild.el")
-  :link '(emacs-library-link 
-          :tag "\n:FILE slime-loads-GNU-clbuild.el" 
-          "slime-loads-GNU-clbuild.el")
+          :tag "\n:GITHUB-FILE (URL `https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/slime-loads-GNU-clbuild.el')" 
+          "https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/slime-loads-GNU-clbuild.el")
+  :link '(emacs-library-link :tag "\n:FILE slime-loads-GNU-clbuild.el" "slime-loads-GNU-clbuild.el")
   :group 'mon-base)
 
 ;;; ==============================
@@ -1891,7 +1881,14 @@ CL-USER> \(find-symbol \"*RUNTIME-PATHNAME*\"\)
 ;;; :NOTE this was brought in from :FILE slime-quicklisp-inspect.el
 ;;; :CREATED <Timestamp: #{2024-03-11T14:54:55-04:00Z}#{24111} - by MON KEY>
 (defgroup slime-quicklisp-inspect nil
-  "Shortcuts for Quicklisp inspection."
+  "Shortcuts for Quicklisp inspection.
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter'.\n▶▶▶"
   ;; :prefix "slime-quicklisp-"
   :group 'slime)
 

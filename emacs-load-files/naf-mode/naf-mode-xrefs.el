@@ -63,10 +63,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/naf-mode-xrefs.el
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-10-02T20:39:41-04:00Z}#{09406} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing naf-mode-xrefs. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2009-10-01T18:34:04-04:00Z}#{09404} - by MON>
@@ -114,10 +111,8 @@
 
 (defgroup naf-mode-xrefs nil
   "Customization group for variables and functions of :FILE naf-mode-xrefs.el\n
-:SEE-ALSO .\n▶▶▶"
-  ;; :prefix "<PREFIX>"
-  :link '(url-link 
-          :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/naf-mode-xrefs.el")
+:SEE-ALSO `naf-mode', `naf-mode-dates', `naf-mode-english-roles',
+`naf-mode-ulan-help-utils', `naf-mode-xrefs', `naf-mode-faces'.\n▶▶▶"
   :link '(emacs-library-link "naf-mode-xrefs.el")
   :group 'naf-mode
   :group 'mon-base)

@@ -148,8 +148,8 @@
 ;;    'some-function-name)))
 ;;
 ;;
-;; URL: https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/mon-keybindings.el
-;; EMACSWIKI-URL: http://www.emacswiki.org/emacs/mon-keybindings.el
+;; URL: https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/mon-keybindings.el
+;;
 ;; FIRST-PUBLISHED:
 ;;
 ;; HEADER-ADDED: <Timestamp: #{2009-09-14T14:59:44-04:00Z}#{09381} - by MON KEY>
@@ -205,14 +205,16 @@
 ;;; :CREATED <Timestamp: #{2011-01-12T13:31:53-05:00Z}#{11023} - by MON KEY>
 (defgroup mon-keybindings nil
   "Customization group for variables and functions of :FILE mon-keybindings.el\n
-:SEE-ALSO .\n▶▶▶"
-  ;; :prefix "<PREFIX>"
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter' .\n▶▶▶"
   :link '(url-link 
-          :tag ":EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/mon-keybindings.el')" 
-          "http://www.emacswiki.org/emacs/mon-keybindings.el")
-  :link '(url-link 
-          :tag ":GITHUB-FILE (URL `https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/mon-keybindings.el')" 
-          "https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/mon-keybindings.el")
+          :tag ":GITHUB-FILE (URL `https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/mon-keybindings.el')" 
+          "https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/mon-keybindings.el")
   :link '(emacs-library-link 
           :tag ":FILE mon-keybindings.el"
           "mon-keybindings.el")

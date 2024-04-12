@@ -110,10 +110,7 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: http://www.emacswiki.org/emacs/mon-text-property-utils.el
 ;; FIRST-PUBLISHED:
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-text-property-utils. }
 ;;
 ;; FILE-CREATED:
 ;; <Timestamp: #{2010-09-04T12:51:48-04:00Z}#{10356} - by MON KEY>

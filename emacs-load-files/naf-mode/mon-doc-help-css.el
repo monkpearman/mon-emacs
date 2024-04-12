@@ -77,8 +77,8 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-css.el
-;; EMACSWIKI-URL: http://www.emacswiki.org/emacs/mon-doc-help-css.el
+;; URL: https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-css.el
+;;
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-06-08T18:57:54-04:00Z}#{10232} - by MON>
 ;;
 ;; FILE-CREATED:
@@ -139,10 +139,12 @@
 ;;; ==============================
 (defgroup mon-doc-help-css nil
   "Extends mon-doc-help-utils with CSS related help.\n
-:SEE-ALSO .\n▶▶▶"
+:SEE-ALSO `mon-doc-help-utils', `mon-doc-help-utils-faces', `mon-doc-help-CL',
+`mon-doc-help-CL-hspec-parse', `mon-doc-help-char-encoding-lossage',
+`mon-doc-help-css'.\n▶▶▶"
   :link '(url-link 
           :tag ":GITHUB-FILE" 
-          "https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-css.el")  
+          "https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-css.el")  
   :link '(url-link 
           :tag ":EMACSWIKI-FILE" 
           "http://www.emacswiki.org/emacs/mon-doc-help-css.el")

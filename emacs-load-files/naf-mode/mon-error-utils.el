@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010-2011 MON KEY. All rights reserved.
+;; Copyright © 2010-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-error-utils.el
@@ -112,7 +112,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010-2011 MON KEY 
+;; Copyright © 2010-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -374,7 +374,7 @@ leading newline, it is stripped but any subesequent chars remain.
 `bool-vector-p', `*mon-function-object-types*'.\n▶▶▶
 \n\(fn &key W-FUN W-SPEC W-ARGS W-DELIM\)"
  ;; \n\(fn &key W-FUN <SYMBOL> W-SPEC <OBJECT> W-ARGS <OBJECT> W-DELIM <STRING>|<BOOLEAN>\)"
-  (destructuring-bind (w-fun w-spec w-args w-delim)
+  (cl-destructuring-bind (w-fun w-spec w-args w-delim)
       (%mon-format-chk-keys fmt-keys)
     (apply
      (or (and (null w-fun) #'format)
@@ -557,7 +557,7 @@ leading newline, it is stripped but any subesequent chars remain.
 ;;; ==============================
 ;;; :CHANGESET 2174
 ;;; :CREATED <Timestamp: #{2010-10-02T11:10:54-04:00Z}#{10396} - by MON KEY>
-(defun* mon-message (&key msg-spec msg-args msg-delim (msg-fun *mon-message-function*))
+(cl-defun mon-message (&key msg-spec msg-args msg-delim (msg-fun *mon-message-function*))
   "Like `message' but supports keyword args and multi-line delimited messages.\n
 Keywords supported: :MSG-FUN :MSG-SPEC :MSG-ARGS :MSG-DELIM\n
 Keyword :MSG-FUN is a symbol naming a function to apply to :MSG-SPEC and :MSG-ARGS.
@@ -595,7 +595,7 @@ indicated with the following table:\n
 ;;; ==============================
 ;;; :CHANGESET 2358
 ;;; :CREATED <Timestamp: #{2010-12-08T21:35:58-05:00Z}#{10493} - by MON KEY>
-(defun* mon-string-not-null-nor-zerop-ERROR (&key fun-name locus got-val w-error)
+(cl-defun mon-string-not-null-nor-zerop-ERROR (&key fun-name locus got-val w-error)
   "Format and maybe signal error for `mon-string-not-null-nor-zerop'.\n
 Keyword :FUN-NAME is the function orginating the error.\n
 Keyword :LOCUS is a symbol naming the paramter which can not be satisfied.\n
@@ -640,7 +640,7 @@ Keyword :W-ERROR when non-nil will pass generated format string to error.\n
 ;;; ==============================
 ;;; :CHANGESET 2370
 ;;; :CREATED <Timestamp: #{2010-12-31T13:24:02-05:00Z}#{10525} - by MON KEY>
-(defun* mon-symbol-void-ERROR (&key fun-name locus got-val w-error)
+(cl-defun mon-symbol-void-ERROR (&key fun-name locus got-val w-error)
   "Format and maybe signal error for void or uninterned symbols not in obarray.\n
 Keyword :FUN-NAME is the function orginating the error.\n
 Keyword :LOCUS is a symbol naming the paramter which can not be satisfied.\n
@@ -651,18 +651,18 @@ Keyword :W-ERROR when non-nil will pass generated format string to error.\n
                        :locus \":tt-locus\" 
                        :got-val \(symbol-name 
                                  \(make-symbol 
-                                  \(format \"%d--%s\" \(incf *gensym-counter*\) \"nope\"\)\)\)\)\n
+                                  \(format \"%d--%s\" \(incf gensym-counter\) \"nope\"\)\)\)\)\n
 \(mon-symbol-void-ERROR :w-error t
                        :fun-name \"tt--fun\" 
                        :locus \":tt-locus\" 
                        :got-val \(symbol-name
                                  \(make-symbol 
-                                  \(format \"%d--%s\" \(incf *gensym-counter*\) \"nope\"\)\)\)\)\n
+                                  \(format \"%d--%s\" \(incf gensym-counter\) \"nope\"\)\)\)\)\n
 ;; Following will fail successfully b/c keyword :GOT-VAL is not `stringp'\n
 \(mon-symbol-void-ERROR :fun-name \"tt--fun\" 
                        :locus \":tt-locus\" 
                        :got-val \(make-symbol 
-                                 \(format \"%d--%s\" \(incf *gensym-counter*\) \"nope\"\)\)\)\n
+                                 \(format \"%d--%s\" \(incf gensym-counter\) \"nope\"\)\)\)\n
 :SEE-ALSO `mon-string-not-null-nor-zerop-ERROR', `mon-vectorp-ERROR',
 `mon-file-non-existent-ERROR', `mon-buffer-non-existent-ERROR', `assert',
 `mon-format', `mon-message', `mon-error',
@@ -686,7 +686,7 @@ Keyword :W-ERROR when non-nil will pass generated format string to error.\n
 ;;; ==============================
 ;;; :CHANGESET 2370
 ;;; :CREATED <Timestamp: #{2010-12-31T15:38:45-05:00Z}#{10525} - by MON KEY>
-(defun* mon-vectorp-ERROR (&key fun-name locus got-val w-error)
+(cl-defun mon-vectorp-ERROR (&key fun-name locus got-val w-error)
   "Format and maybe signal error for failed `vectorp' constraint.\n
 Keyword :FUN-NAME is the function orginating the error.\n
 Keyword :LOCUS is a symbol naming the paramter which can not be satisfied.\n
@@ -724,7 +724,7 @@ Keyword :W-ERROR when non-nil will pass generated format string to error.\n
 ;;; ==============================
 ;;; :CHANGESET 2389
 ;;; :CREATED <Timestamp: #{2011-01-12T19:56:11-05:00Z}#{11023} - by MON KEY>
-(defun* mon-file-non-existent-ERROR (&key fun-name locus got-val w-error)
+(cl-defun mon-file-non-existent-ERROR (&key fun-name locus got-val w-error)
   "Format and maybe signal error for failed `file-exists-p' constraint.\n
 Keyword :FUN-NAME is the function orginating the error.\n
 Keyword :LOCUS is a symbol naming the paramter which can not be satisfied.\n
@@ -758,7 +758,7 @@ Keyword :W-ERROR when non-nil will pass generated format string to error.\n
 ;;; ==============================
 ;;; :CHANGESET 2389
 ;;; :CREATED <Timestamp: #{2011-01-14T12:42:04-05:00Z}#{11025} - by MON KEY>
-(defun* mon-buffer-non-existent-ERROR (&key fun-name locus got-val w-error)
+(cl-defun mon-buffer-non-existent-ERROR (&key fun-name locus got-val w-error)
   "Format and maybe signal error for failed `mon-buffer-exists-p' constraint.\n
 Keyword :FUN-NAME is the function orginating the error.\n
 Keyword :LOCUS is a symbol naming the paramter which can not be satisfied.\n
@@ -797,7 +797,7 @@ Keyword :W-ERROR when non-nil will pass generated format string to error.\n
 ;;; ==============================
 ;;; :CHANGESET 2405
 ;;; :CREATED <Timestamp: #{2011-01-20T17:04:16-05:00Z}#{11034} - by MON KEY>
-(defun* mon-list-proper-p-ERROR (&key fun-name locus got-val w-error)
+(cl-defun mon-list-proper-p-ERROR (&key fun-name locus got-val w-error)
   "Format and maybe signal error for failed `mon-list-proper-p' constraint.\n
 Keyword :FUN-NAME is the function orginating the error.\n
 Keyword :LOCUS is a symbol naming the paramter which can not be satisfied.\n
@@ -844,7 +844,7 @@ Keyword :W-ERROR when non-nil will pass generated format string to error.\n
 ;;
 ;;; ==============================
 ;; num-predicate is one of:
-;; (defun* mon-error-not-a-number-err-format (&key fun-name locus num-predicate got-val w-error) 
+;; (cl-defun mon-error-not-a-number-err-format (&key fun-name locus num-predicate got-val w-error) 
 ;; (case num-predicate
 ;; (wholenump  <arg>)
 ;; (natnump   <arg>)
@@ -944,7 +944,7 @@ This function is called from `mon-error'.\n
 (put 'mon-error-toplevel 'error-message ":MON-ERROR-TOPLEVEL")
 
 ;;; ==============================
-(defun* mon-error (&key signaler function format-control format-arguments handler)
+(cl-defun mon-error (&key signaler function format-control format-arguments handler)
   "
 Keyword :FUNCTION a symbol identifying the function originating the error.\n
 Keyword :SIGNALER a symbol designating the error type specific to the problem.
@@ -1202,7 +1202,7 @@ Reset it with `mon-error-gather-reset'.\n
 ;;; helper functions.
 ;;; :CHANGESET 2195
 ;;; :CREATED <Timestamp: #{2010-10-18T15:02:34-04:00Z}#{10421} - by MON KEY>
-(eval-when (compile load eval)
+(cl-eval-when (compile load eval)
   (lexical-let (mws-gthr)
     ;;
     (defun %mon-write-string-pusher (%mwsp-chr) ;; %mwsp-chr
@@ -1283,7 +1283,7 @@ state resets the value of the currrently captured string-stack state.\n
 ;;; :TODO Add support for :start :end indexes into string as per CL's `write-string'
 ;;; :CHANGESET 2195
 ;;; :CREATED <Timestamp: #{2010-10-18T21:01:35-04:00Z}#{10421} - by MON KEY>
-(defun* mon-write-string (&key w-string read-current reset-null reset-bind)
+(cl-defun mon-write-string (&key w-string read-current reset-null reset-bind)
   "Capture/access lexical environment value of current string-stack state.\n
 When keyword W-STRING is non-nil it is a string to push onto the current string
 stack by passing W-STRING to `%mon-write-string-mapper'.\n

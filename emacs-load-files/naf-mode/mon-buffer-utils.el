@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010-2011 MON KEY. All rights reserved.
+;; Copyright © 2010-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-buffer-utils.el
@@ -128,17 +128,18 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010-2011 MON KEY 
+;; Copyright © 2010-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
 
 
-(eval-when-compile (require 'cl))
+;; deprecated
+;; (eval-when-compile (require 'cl))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
-(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
+  (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 
 ;;; ==============================
@@ -557,13 +558,16 @@ size of the narrowed-region is = `buffer-size', esp. when not
 `mon-buffer-name-print-readably', `mon-buffer-written-p',
 `mon-buffer-append-to', `mon-buffer-do-with-undo-disabled',
 `mon-buffer-end'.\n▶▶▶"
-  (let (chk-bffr or-chk-wdn)
-    (with-current-buffer (if buffer-or-name
-                             (or (setq chk-bffr (get-buffer buffer-or-name))
-                                 (mon-format :w-fun #'error
-                                             :w-spec '(":FUNCTION `mon-buffer-narrowed-p' "
-                                                       "-- optional arg BUFFER-OR-NAME "
-                                                       " does not find buffer: `%S'")
+  (let ((chk-bffr)
+        (or-chk-wdn))
+    (with-current-buffer 
+        (if buffer-or-name
+            (or (and (get-buffer buffer-or-name)
+                  (setq chk-bffr (get-buffer buffer-or-name)))
+                (mon-format :w-fun #'error
+                            :w-spec '(":FUNCTION `mon-buffer-narrowed-p' "
+                                      "-- optional arg BUFFER-OR-NAME "
+                                      " does not find buffer: `%S'")
                                              :w-args buffer-or-name))
                            (setq chk-bffr (current-buffer)))
       (setq or-chk-wdn `[,(mon-g2be -1 t) ,(mon-g2be 1 t) ,(buffer-size chk-bffr)])
@@ -572,7 +576,7 @@ size of the narrowed-region is = `buffer-size', esp. when not
         (or (>  (aref or-chk-wdn 0) 1)
             (/= (aref or-chk-wdn 1) (1+ (aref or-chk-wdn 2)))
             (/= (- (aref or-chk-wdn 1) (aref or-chk-wdn 0)) (aref or-chk-wdn 2))
-            (setq or-chk-wdn))
+            (setq or-chk-wdn nil))
         (save-restriction 
           (widen)
           (setq or-chk-wdn `(t . [,(mon-g2be -1 t) ,(mon-g2be 1 t) ,@(append or-chk-wdn nil)]))))
@@ -776,7 +780,7 @@ Default is to return a list of consed pairs each of the form:\n
                             (and (string-match-p hidden-regexp (car mkrib-L-1))
                                  (or (and buffer-name-only (car mkrib-L-1))
                                      mkrib-L-1)))
-                        (mon-get-hidden-buffers)))))
+                        (mon-get-buffer-hidden)))))
 
 ;;; ==============================
 ;;; :CHANGESET 2390
@@ -794,7 +798,7 @@ return a list of what would have been killed with car of returned list as
 :ALIASED-BY `mon-kill-hidden-buffer-if'\n
 :SEE-ALSO`mon-get-buffer-hidden', `mon-buffer-name-is-file-name-p'.\n▶▶▶"
   (unless (not (mon-string-not-null-nor-zerop kill-matching-regexp))
-    (loop for mbkhi-L in (mon-get-buffer-hidden-if kill-matching-regexp)
+    (cl-loop for mbkhi-L in (mon-get-buffer-hidden-if kill-matching-regexp)
           collect (and (buffer-live-p (cdr mbkhi-L))
                        (or (and test-first t)
                            (kill-buffer (cdr mbkhi-L)))
@@ -875,7 +879,7 @@ not already visible. Default is to consider all buffers on all frames.\n
 `mon-string-split-buffer-parent-dir', `with-current-buffer', `with-temp-file',
 `with-temp-buffer', `mon-help-buffer-functions'.\n▶▶▶"
   ;; 
-  (loop for mgbwm-bfr in (buffer-list)
+  (cl-loop for mgbwm-bfr in (buffer-list)
         when (and (with-current-buffer mgbwm-bfr (eq major-mode w-mode))
                   (not (string-match-p "^ " (buffer-name mgbwm-bfr)))
                   (null (if not-visible-only

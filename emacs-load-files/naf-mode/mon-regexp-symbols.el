@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2008-2011 MON KEY. All rights reserved.
+;; Copyright © 2008-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-regexp-symbols.el
@@ -145,7 +145,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2008-2011 MON KEY 
+;; Copyright © 2008-2012 MON KEY 
 ;;; ==============================
 
 
@@ -1067,10 +1067,13 @@ The is a car regexp the cadr is its replacement.\n
 ;;;(progn (makunbound '*regexp-philsp-fix-month-dates*)
 ;;;       (unintern "*regexp-philsp-fix-month-dates*" obarray) )
 
+
 ;;; ==============================
 ;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T13:51:26-05:00Z}#{11022} - by MON KEY>
-(defcustom *regexp-clean-irc-logs* "^[[:digit:]:]+ -+ \\(join\\|quit\\|part\\): .*$"
+(defcustom *regexp-clean-irc-logs* "^[[:digit:]:]+ -+ \\(join\\|quit\\|part\\|nick\\): .*$"
+  ;; "^[[:digit:]:]+ -+ \\(join\\|quit\\|part\\|nick\\|log\\): .*$"
+  ;; "^[[:digit:]:]+ -+ \\(join\\|quit\\|part\\): .*$"
   "Regexp replacement pairs to match IRC join/part/quit lines.\n
 Matches lines which have the following general pattern:\n
 NN:NN:NN --- join: <USER1> (~<USER1>@some.ip.address.abc) joined #<CHANNEL>

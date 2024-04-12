@@ -98,7 +98,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2011 MON KEY 
+;; Copyright © 2011-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -109,6 +109,131 @@
              (bound-and-true-p *IS-MON-OBARRAY*))
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
+(defvar *mon-ampersand-sharp-diacritic-pairs* 
+  ;; (setq *mon-ampersand-sharp-diacritic-pairs*
+  ;; (let ((latin-withs ()))
+  ;;   (dolist (un (ucs-names)) ;; ucs-names is now a hash-table (hash-table-count ucs-names)
+  ;;     (when (string-match-p "LATIN \\(SMALL\\|CAPITAL\\) LETTER *" (car un))
+  ;;       (push (cdr un) latin-withs)))
+  ;;   (let ((decomps ())
+  ;;         (formatted-pairs ()))
+  ;;     (dolist (lw latin-withs)
+  ;;       (let ((maybe-push-decomp (get-char-code-property lw 'decomposition)))
+  ;;         (when maybe-push-decomp
+  ;;           (push (list maybe-push-decomp lw) decomps))))
+  ;;     (dolist (dc decomps (delete-dups formatted-pairs))
+  ;;                                       ; caar =>  121
+  ;;                                       ; cadar => 771
+  ;;                                       ; cadr => 7929
+  ;;       (when (and (= (length (car dc)) 2)
+
+
+
+
+  ;;                  (mon-every #'integerp (car dc)))
+  ;;         (push (cons (format "%c&#%d;" (caar dc) (cadar dc))
+  ;;                     (format "%c" (cadr dc)))
+  ;;               formatted-pairs)))))
+
+;; :NOTE the var `ucs-namse' has changed from an alist with elements of form
+;; (CHARNAME . CHAR-CODE)  ("VARIATION-SELECTOR" . 917999)
+  ;; We need to do something here to make sure the pairs get consd up the way we need.
+  ;; end result shold be that value of global var `*mon-ampersand-sharp-diacritic-pairs*' is an alist with elements that have the form: ("S&#807" . "Ş")
+
+  (let  ((tbl (ucs-names))
+         (latin-withs ()))
+    (loop 
+     for unk being the hash-keys of tbl
+     when (string-match-p "LATIN \\(SMALL\\|CAPITAL\\) LETTER *" unk)
+     do (push (gethash unk ucs-names) latin-withs))
+         
+    (let ((decomps ())
+          (formatted-pairs ()))
+      (dolist (lw latin-withs)
+        (let ((maybe-push-decomp (get-char-code-property lw 'decomposition)))
+          (when maybe-push-decomp
+            (push (list maybe-push-decomp lw) decomps))))
+      (dolist (dc decomps (delete-dups formatted-pairs))
+                                        ; caar =>  121
+                                        ; cadar => 771
+                                        ; cadr => 7929
+        (when (and (= (length (car dc)) 2)
+                   (mon-every #'integerp (car dc)))
+          (push (cons (format "%c&#%d;" (caar dc) (cadar dc))
+                      (format "%c" (cadr dc)))
+                formatted-pairs))))))
+
+(defun mon-replace-ampersand-sharp-chars-in-buffer ()
+  (interactive)
+  (with-current-buffer (current-buffer)
+    (save-excursion
+      (let ((case-fold-search nil)
+            (cnt 0))
+        (dolist (i *mon-ampersand-sharp-diacritic-pairs* 
+                   (message "replaced %d characters in buffer" cnt))
+          (mon-g2be -1)
+          (while (search-forward-regexp (car i) nil t) 
+            (setf cnt (1+ cnt))
+            (replace-match (cdr i) t)))))))
+
+;; (progn (search-forward-regexp "^\\( (\\)\\(\".*\"\\)\\( +\\)\\(.*\\)\\()\\)" nil t)
+;;        (replace-match "(\\4\n:initarg :\\4\n:accessor \\4\n:documentation \":ORIGINAL-FIELD \\2\")"))
+(defun mon-dbc-replace-consed-pairs-region-with-parsed-defclass-slots (start end)
+  "Replace each consed pair in region insert a defclass template.\n
+Elements of CONSED-PAIRS are as per the consed pairs of FIELD-TO-ACCESSOR-ALIST
+arg to CL function `dbc::make-parsed-class-field-slot-accessor-mapping' and
+should have the form:\n
+ \(<MATCH-STRING> . <TRANSFORM-SYMBOL>\)\n
+Inserted template has the format:\n
+ \(<SLOT>
+  :initarg :<INITARG>
+  :accessor <ACCESSOR>
+  :documentation \":ORIGINAL-FIELD \\\"<FIELD>\\\"\"\)\n
+:EXAMPLE\n\n
+:SEE-ALSO `mon-dbc-xml-parse-clean-fields', `mon-dbc-xml-insert-parsed-defclass-slots'.\n▶▶▶"
+  (interactive "r")  
+  (save-excursion
+    (narrow-to-region start end)
+    (mon-g2be -1)
+    (while (search-forward-regexp "\\([\\[:blank:]]?(\\)\\(\".*\"\\)\\([\\[:blank:]]+\\.[\\[:blank:]]+\\)\\(.*\\)\\()\\)" nil t)
+      (let* ((match-4 (match-string-no-properties 4))
+             ;;(match-2 (princ (match-string-no-properties 2)))
+             (match-2 (read-from-string (match-string-no-properties 2)))
+             (replacement 
+              (format 
+               ;; "%s\n:initarg :%s\n:accessor %s\n:documentation \":ORIGINAL-FIELD %s\"
+               "(%s\n:initarg :%s\n:accessor %s\n:documentation \":ORIGINAL-FIELD \\\"%s\\\"\")\n"
+               match-4
+               match-4
+               match-4
+               (car match-2))))
+        (replace-match replacement t t)))
+    (widen)))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2011-10-03T20:05:44-04:00Z}#{11401} - by MON KEY>
+(defun mon-insert-parsed-defclass-slots (consed-pairs)
+  "For each consed pair in CONSED-PAIRS insert a defclass template.\n
+Elements of CONSED-PAIRS are as per the consed pairs of FIELD-TO-ACCESSOR-ALIST
+arg to CL function `dbc::make-parsed-class-field-slot-accessor-mapping' and
+should have the form:\n
+ \(<MATCH-STRING> . <TRANSFORM-SYMBOL>\)\n
+Inserted template has the format:\n
+ \(<SLOT>
+  :initarg :<INITARG>
+  :accessor <ACCESSOR>
+  :documentation \":ORIGINAL-FIELD \\\"<FIELD>\\\"\"\)\n
+:SEE-ALSO `mon-dbc-replace-consed-pairs-region-with-parsed-defclass-slots', `mon-dbc-xml-parse-clean-fields'.\n▶▶▶"
+  (dolist (p consed-pairs)
+    (let ((sym   (car p))
+          (field (cdr p)))
+      (princ
+       (format "(%s\n :initarg :%s\n :accessor %s\n :documentation \":ORIGINAL-FIELD \\\"%s\\\"\")\n"
+               ;;'control-id-doc-num-artist 'control-id-doc-num-artist 'control-id-doc-num-artist "bio")
+               field field field sym)
+       (current-buffer)))))
+
+(defalias 'mon-dbc-xml-insert-parsed-defclass-slots 'mon-insert-parsed-defclass-slots)
 
 ;;; ==============================
 ;;; :CHANGESET 2383
@@ -128,7 +253,7 @@ Return value has the format:\n
  ;; :EXAMPLE-VALUES 
  ;;\n
 :EXAMPLE\n\n
-:SEE-ALSO .\n▶▶▶"
+:SEE-ALSO `mon-dbc-replace-consed-pairs-region-with-parsed-defclass-slots' `mon-insert-parsed-defclass-slots'.\n▶▶▶"
   (interactive "r")
   (unwind-protect
       (progn 
@@ -147,6 +272,25 @@ Return value has the format:\n
           (while (search-forward-regexp (car r) nil t)
             (replace-match (cdr r)))))
     (widen)))
+
+;; (let ((latin-withs ()))
+;;    (dolist (un (ucs-names))
+;;      (when (string-match-p "LATIN \\(SMALL\\|CAPITAL\\) LETTER *" (car un))
+;;        (push (cdr un) latin-withs)))
+;;    (let ((decomps ())
+;;          (formatted-pairs ()))
+;;      (dolist (lw latin-withs)
+;;        (let ((maybe-push-decomp (get-char-code-property lw 'decomposition)))
+;;          (when maybe-push-decomp
+;;            (push (list maybe-push-decomp lw)decomps))))
+;;      (dolist (dc decomps (princ formatted-pairs))
+;;                                         ; caar =>  121
+;;                                         ; cadar => 771
+;;                                         ; cadr => 7929
+;;        (when (and (= (length (car dc)) 2)
+;;                   (mon-every #'integerp (car dc)))
+;;          (push (format "(\"%c&#%d;\" . \"%c\")" (caar dc) (cadar dc) (cadr dc))
+;;                formatted-pairs)))))
 
 ;;; ==============================
 (provide 'mon-dbc-xml-utils)

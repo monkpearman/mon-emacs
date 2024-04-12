@@ -247,7 +247,7 @@ copy_emacs_load_files ()
         else                         # On to next.
          cp "$EMACS_LOAD_FILES_SRC/$f" "$EMACS_LOAD_FILES_DEST/$f";
          echo "Copied :FILE $f"; 
-         echo "From   :SOURCE $EMACS_LOAD_FILES_SRC/ to :DESTINATION $EMACS_LOAD_FILES_DEST/";
+         echo "From   :SOURCE $EMACS_LOAD_FILES_SRC/ --> :DESTINATION $EMACS_LOAD_FILES_DEST/";
          echo
      fi
  done;
@@ -264,7 +264,7 @@ copy_naf_mode_files ()
       else
          cp "$NAF_MODE/$f" "$NAF_MODE_GIT/$f";
          echo "Copied :FILE $f"; 
-         echo "From   :SOURCE $NAF_MODE/ to :DESTINATION $NAF_MODE_GIT/";
+         echo "From   :SOURCE $NAF_MODE/ --> :DESTINATION $NAF_MODE_GIT/";
          echo
      fi
  done;
@@ -281,7 +281,7 @@ copy_ebay_template_files ()
       else
          cp "$EBAY/$f" "$EBAY_GIT/$f";
          echo "Copied :FILE $f"; 
-         echo "From   :SOURCE $EBAY/ to :DESTINATION $EBAY_GIT/";
+         echo "From   :SOURCE $EBAY/ --> :DESTINATION $EBAY_GIT/";
          echo
      fi
  done;
@@ -298,7 +298,7 @@ copy_themes_files ()
       else
          cp "$THEMES/$f" "$THEMES_GIT/$f";
          echo "Copied :FILE $f"; 
-         echo "From   :SOURCE $THENMES/ to :DESTINATION $EBAY_GIT/";
+         echo "From   :SOURCE $THEMES/ --> :DESTINATION $EBAY_GIT/";
          echo
      fi
  done;

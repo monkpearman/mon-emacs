@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010-2011 MON KEY. All rights reserved.
+;; Copyright © 2010-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-window-utils.el
@@ -25,7 +25,8 @@
 ;; `mon-map-windows->plist', `mon-twin-horizontal', `mon-twin-vertical',
 ;; `mon-toggle-menu-bar', `mon-scratch', `mon-switch-to-messages',
 ;; `mon-kill-completions', `mon-flip-windows', `frame-live-visible-graphic-p',
-;; `mon-map-windows->plist'
+;; `mon-map-windows->plist', `mon-delete-completion-window', 
+;; `mon-temp-buffer-show-finish',
 ;;
 ;; FUNCTIONS:◀◀◀
 ;;
@@ -126,7 +127,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010-2011 MON KEY 
+;; Copyright © 2010-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -156,15 +157,10 @@
 ;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T18:40:17-05:00Z}#{11022} - by MON KEY>
 (defcustom *mon-window-utils-xrefs*
-  '(mon-frame-live-visible-graphic-p
-    mon-map-windows->plist
-    mon-twin-horizontal
-    mon-twin-vertical
-    mon-toggle-menu-bar
-    mon-scratch
-    mon-switch-to-messages
-    mon-kill-completions
-    mon-flip-windows
+  '(mon-frame-live-visible-graphic-p mon-map-windows->plist mon-twin-horizontal
+    mon-twin-vertical mon-toggle-menu-bar mon-scratch mon-switch-to-messages
+    mon-kill-completions mon-flip-windows mon-delete-completion-window
+    mon-temp-buffer-show-finish
     *mon-window-utils-xrefs*)
   "Xrefing list of mon window/frame related symbols, functions constants, and variables.\n
 The symbols contained of this list are defined in :FILE mon-window-utils.el\n
@@ -360,6 +356,61 @@ current-buffer is \"*scratch*\" erase buffer contents else find an empty scratch
       (progn
 	(switch-to-completions)
 	(delete-completion-window)))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2011-07-02T19:15:01-04:00Z}#{11266} - by MON KEY>
+(defun mon-delete-completion-window ()
+  "Like `delete-completion-window' but triess not to get quites so frazzled around `one-window-p'.
+:EXAMPLE\n\n
+:SEE-ALSO .\n▶▶▶"
+  (interactive)
+  (if (and (get-buffer "*Completions*")
+           (eq (window-buffer (selected-window))
+               (get-buffer-window (get-buffer "*Completions*") (selected-frame))))
+      ;; (declare-special completion-reference-buffer
+      (progn
+        (with-current-buffer (get-buffer "*Completions*")
+          (let ((mdcw-crb (buffer-local-value 'completion-reference-buffer (current-buffer))))
+            (when (or (eq mdcw-crb (current-buffer))
+                      (null (buffer-live-p mdcw-crb)))
+              (set (make-local-variable 'completion-reference-buffer)
+                   (other-buffer (current-buffer) nil (selected-frame))))))
+        (let ((completion-reference-buffer 
+               (get-buffer (buffer-local-value 'completion-reference-buffer (current-buffer)))))
+          (with-current-buffer completion-reference-buffer
+            (with-selected-window (select-window
+                                   (or (get-buffer-window (current-buffer) (selected-frame))
+                                       (window-buffer (display-buffer (current-buffer) t (selected-frame))))
+                                   t)
+              (delete-completion-window)))))
+    (delete-completion-window)))
+
+;;; ==============================
+;;; FUCK! this doesn't work either. Hey emacs-devels, When you provide hooks and
+;;; other interfaces for tweaking window display, it would be nice if these
+;;; weren't already so completely globalized by a small set of _core_ features as
+;;; to make the hooks and user level APIs useless... thanks for making 23.3's
+;;; `split-window-sensibly' step all over my established workflow... This ain't progress.
+;;; :CREATED <Timestamp: #{2011-07-02T19:35:52-04:00Z}#{11266} - by MON>
+(defun mon-temp-buffer-show-finish ()
+  "Finish setup of the \"*Completions*\" and \"*Help*\" buffers.\n
+Called from `temp-buffer-show-hook'.
+Set the local `window-size-fixed' variable non-nilin the respective buffers' windows and mark them as dedicated.
+:EXAMPLE\n\n
+:SEE-ALSO `help-mode-finish', `completion-list-mode-finish', `mon-set-split-window-init'.\n▶▶▶"
+  (let ((mclmf-bfr  (or (and (eq major-mode 'completion-list-mode)
+                             (get-buffer-create "*Completions*"))
+                        (and (eq major-mode 'help-mode)
+                             (get-buffer (help-buffer))))))
+    (when mclmf-bfr
+      ;; `temp-buffer-show-hook' says we are already in mclmf-bfr with window
+      ;; selected but just-in case...
+      (with-current-buffer mclmf-bfr
+        (if (string-equal (buffer-name mclmf-bfr) "*Help*")
+            (set (make-local-variable 'window-size-fixed) 'height)
+          (set (make-local-variable 'window-size-fixed) t))
+        (with-selected-window (get-buffer-window mclmf-bfr (selected-frame))
+          (set-window-dedicated-p (selected-window) t))))))
 
 ;;; ==============================
 (defun mon-flip-windows ()

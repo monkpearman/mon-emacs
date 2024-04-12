@@ -179,8 +179,8 @@ signalled if not.\n
   (let ((mmeplt-err-str (concat "mapping key as consed pair: %S\n "
                                 "but value neither `integerp' nor `stringp',\n "
                                 "got: %S\n type-of: %s")))
-    (loop for vl in table-vals
-          collect (loop for k in table-keys
+    (cl-loop for vl in table-vals
+          collect (cl-loop for k in table-keys
                         for v in vl
                         append  (if (consp k)
                                     (or (and (integerp v) (list (car k) v))
@@ -538,7 +538,7 @@ Return value inserted in buffer W-BUFFER.\n
 ;;; ==============================
 ;;; :CHANGESET 2420
 ;;; :CREATED <Timestamp: #{2011-03-06T00:24:46-05:00Z}#{11097} - by MON KEY>
-(defun* mon-get-encoding-point-hist-map-plists (w-plists w-rules &optional w-raw-byte
+(cl-defun mon-get-encoding-point-hist-map-plists (w-plists w-rules &optional w-raw-byte
                                                          &key w-buffer-named w-buffer-header)
   "Interface function for presenting character encoding conversion lossage.\n
 W-PLISTS a list of plists to map according to values of W-RULES.\n

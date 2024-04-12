@@ -11,7 +11,6 @@
 ;; 4. ~/Documents//HG-Repos/mon-default-start-loads.el
 ;;  - The :FILE mon-default-start-loads.el in turn does the following:
 ;; `mon-set-system-specific-and-load-init'
-;; -> (require 'grep)
 ;; -> (require 'slime-loads-GNU-clbuild)
 ;; -> (mon-slime-setup-init)
 ;; -> (mon-define-common-lisp-style)
@@ -247,7 +246,7 @@
 ;; (global-set-key (kbd "≈") 'execute-extended-command) ; Replace ≈ with whatever your option-x produces
 
 ;;; ==============================
-;; :NOTE C-M-q locks the screen, this maps to Conntrol Command Q which the Darwin GIUI eats first. 
+;; :NOTE C-M-q locks the screen, this maps to Conntrol Command Q which the Darwin GUI eats first. 
 ;; How to inhibit or get around this???
 ;; (key-binding (kbd "C-M-q")) ;; -> `indent-pp-sexp'
 
@@ -323,19 +322,6 @@
 ;;; ==============================
 ;; (require 'show-point-mode)
 
-;;; ==============================
-;; The old .emacs file had code that would load the following in sequence, BUT check first
-;; 
-;; site-local-private.el
-;; mon-default-start-loads.el
-;; mon-default-loads.el
-;;
-;; :WAS
-;; (load (substitute-in-file-name "$DEVHOME/emacs-load-files/site-local-private.el"))
-;; (load (substitute-in-file-name "$DEVHOME/emacs-load-files/mon-default-loads.el"))
-;; (load (substitute-in-file-name "$DEVHOME/emacs-load-files/mon-default-start-loads.el"))
-
-;;; ==============================
 
 ;;; ==============================
 ;; (getenv "MON_EMACS_LOAD")
@@ -367,6 +353,24 @@
 
 
 ;;; ==============================
+;;; :NOTE The following three files are loaded in succession to bring up a sane Emacsen on Mon systems.
+;;; :FILE site-local-private.el defines the following global variables which are used to pull private and
+;;; site-specific configs that we don't necessarily want to share publically or
+;;; which are otherwise irrelevant to others:
+;;; `*IS-MON-OBARRAY*'  <- tells us if this is our system. we intern symbols here instead of into the global obarray
+;;; `*mon-emacsd*' <- Alist to encapusulate common site local and default system paths
+;;; `*mon-misc-path-alist*' <- alist of miscellaneous paths not available on all MON systems
+;;; `*MON-NAME*' <- List of MON nameform representations needed with various `mon-*' functions.
+;;; `*MON-ORG-NAME*' <- "List mapping key (integer) to values (strings) either an organization or URL.
+;;;  `*mon-lisp-safe-local-variable-values*' <- List of `safe-local-variable-values' appearing in Common Lisp files.
+;;; 
+;;; `mon-user-name-conditionals'   <- interrogates the current environment to determine if it is a MON system.
+;;; `mon-system-type-conditionals' <- interrogates the current environment to determine which type of MON system we're on.
+;;; `mon-gnu-system-conditionals'  <- helps setup the environment for a GNU based MON system.
+;;;
+;;; :SEE the DESCRIPTION section at header of :FILE mon-default-loads.el and :FILE mon-default-start-loads.el
+;;; for additional discussion of how these files configure the remainder of the MON system configs.
+
 (load "site-local-private.el")
 (load "mon-default-loads.el")
 (load "mon-default-start-loads.el")

@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2009-2011 MON KEY. All rights reserved.
+;; Copyright © 2009-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-replacement-utils.el
@@ -57,6 +57,8 @@
 ;; `mon-cln-mail-headers', `mon-cln-xml-escapes',
 ;; `mon-replace-unintern-w-query',
 ;; `mon-make-iso-latin-1-approximation-loadtime', `mon-cln-freenode-log',
+;; `mon-cln-irc-log-buffer', `%mon-filter-regexp-file-if',
+;; `%mon-filtering-regexp-file-list',
 ;; FUNCTIONS:◀◀◀
 ;; 
 ;; MACROS:
@@ -172,7 +174,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2009-2011 MON KEY 
+;; Copyright © 2009-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -231,6 +233,8 @@
     mon-trans-cp1252-to-latin1 mon-ital-date-to-eng mon-defranc-dates
     mon-defranc-places mon-cln-benezit mon-cln-benezit-fields
     mon-replace-common-abbrevs bug-cln-gilt-group
+    %mon-filter-regexp-file-if %mon-filtering-regexp-file-list
+    mon-cln-irc-log-buffer
     ;; :VARIABLES
     *naf-mode-buffer-local-llm* *iso-latin-1-approximation* *mon-regexp-unintern*
     *mon-replacement-utils-xrefs*)
@@ -379,12 +383,12 @@ to test for active naf-mode before evaluating body.\n
 :SEE-ALSO `*iso-latin-1-approximation*',`mon-make-iso-latin-1-approximation',
 `mon-trans-cp1252-to-latin1', `mon-make-iso-latin-1-approximation-loadtime'.\n▶▶▶"
   (setq *iso-latin-1-approximation* (make-vector 256 0))
-  (loop for i from 0 to 127 
+  (cl-loop for i from 0 to 127 
      do (aset *iso-latin-1-approximation* i i))
-  (loop for i from 128 below 160 
+  (cl-loop for i from 128 below 160 
      for c from 0 below 32 
      do (aset *iso-latin-1-approximation* i c))
-  (loop for i from 160 to 255
+  (cl-loop for i from 160 to 255
      for c across (concat " !cL$Y|S\"Ca<--R\"o~23'uP.,1o>***?"
                           "AAAAAAECEEEEIIIITNOOOOOxOUUUUYPs"
                           "aaaaaaeceeeeiiiitnooooo/ouuuuypy")
@@ -417,7 +421,7 @@ This is done only for ISO-5581-1 characters. Return the modified string.\n
   (unless *iso-latin-1-approximation* 
     (mon-make-iso-latin-1-approximation))
   (let ((result (make-string (length string) 0)))
-    (loop for p from 0 below (length string)
+    (cl-loop for p from 0 below (length string)
           do 
           (aset result p (aref *iso-latin-1-approximation* 
                                (% (aref string p) 256))))
@@ -480,7 +484,7 @@ Pascal Bourguignon's functions have extensive examples:
 (defun mon-walk-regexps-in-file (w-fl w-rep bfr-mrkr)
   "Helper function for `mon-replace-regexps-in-file-list'.\n
 W-FL is a file to find.\n
-W-REP is a list of regexp/replace pairs.\n
+W-REP is a list of regexp/replace pairs, where a pair is a proper-list.\n
 BFR-MRKR is a buffer marker to print match/replace logs to.\n
 :SEE-ALSO .\n▶▶▶"
   (let ((the-rg w-rep)
@@ -490,7 +494,7 @@ BFR-MRKR is a buffer marker to print match/replace logs to.\n
                                 (mon-g2be -1)
                                 (setq this-rep-cnt 0)
                                 (while (search-forward-regexp (car this-rgx) nil t)
-                                  (incf this-rep-cnt)
+                                  (cl-incf this-rep-cnt)
                                   (replace-match (cadr this-rgx)))
                                 (when (> this-rep-cnt 0)
                                   (princ (format "\n\n:%d-TIMES\n:W-REGEXP %S\n:REPLACED %S"
@@ -500,6 +504,31 @@ BFR-MRKR is a buffer marker to print match/replace logs to.\n
     (mon-g2be -1)
     (funcall map-rg the-rg bfr-mrkr)))
 
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2011-07-06T16:52:08-04:00Z}#{11273} - by MON KEY>
+(defun %mon-filter-regexp-file-if (file)
+  ;; Return FILE if file satisfies the following constraints:
+  ;; - it is stringp
+  ;; - it does not end in either ~ or #
+  ;; - is file-readable-p
+  ;; - is not file-symlink-p
+  ;; - is not file-directory-p
+  (and (stringp file)
+       (not (string-match-p ".*[~#]$"  file))
+       (file-readable-p file)
+       (not (file-symlink-p file))
+       (not (file-directory-p file))
+       file))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2011-07-06T16:51:56-04:00Z}#{11273} - by MON KEY>
+(defun %mon-filtering-regexp-file-list (file-list)
+  ;; Filter FILE-LIST with `%mon-filter-regexp-file-if'.
+  ;; Returned list has duplicates and null elements removed.
+  (mon-delete-if 'null
+                 (delete-dups (mapcar #'%mon-filter-regexp-file-if file-list))))
+
 ;;; ==============================
 ;;; :PREFIX "mrrifl-"
 ;;; :CREATED <Timestamp: #{2010-03-11T19:30:29-05:00Z}#{10105} - by MON KEY>
@@ -507,7 +536,8 @@ BFR-MRKR is a buffer marker to print match/replace logs to.\n
   "Replace in FILE-LIST the match/replace pairs in REGEXP-LIST.\n
 FILE-LIST is a list of files to perform replacements in. It has the form:\n
  \(\"<FILENAME>\" \"<FILENAME1>\" \"<FILENAME2>\"\)\n
-REGEXP-LIST is a list of match replace pairs with the form:\n
+REGEXP-LIST is a list of match/replace pairs. 
+Each pair is a proper-list of the form:\n
  \(\(<REGEXP-STRING>  <REPLACE-STRING>)
   \(<REGEXP-STRING1> <REPLACE-STRING1>)
   \(<REGEXP-STRING2> <REPLACE-STRING2>)\)\n
@@ -521,30 +551,40 @@ IOW do this:\n
 This is an aggressive procedure; be careful looping over large file-sets
 with poorly formed regexps -- consider invoking this procedure on backups
 first.\n
+:NOTE An element of FILE-LIST  satisfy the following constraints:\n
+  - it is `stringp'
+  - it does not end in either ~ or #
+  - is `file-readable-p'
+  - is not `file-symlink-p'
+  - is not `file-directory-p'\n
+When an element does not meet the above constraints it is removed from FILE-LIST.\n
+If FILE-LIST is empty after filtering no other action is taken.\n
 :SEE-ALSO `mon-walk-regexps-in-file', `mon-get-file-mod-times'.\n▶▶▶"
-  (let ((mrrifl-fl file-list)
+  (let ((mrrifl-fl (%mon-filtering-regexp-file-list file-list))
         (mrrifl-rl regexp-list)
-        (mrrifl-rep-hst (get-buffer-create "*REGEXP-REPLACE-HISTORY*"))
+        (mrrifl-rep-hst "*REGEXP-REPLACE-HISTORY*")
         (mrrifl-rrh-mrk (make-marker))
         (mrrifl-fl-mod #'(lambda (flmod) (concat "\n\n" (make-string 68 59) "\n"
                                                  (mon-get-file-mod-times flmod)
                                                  "\n" (make-string 68 59)))))
-    (with-current-buffer mrrifl-rep-hst
-      (set (make-local-variable 'comment-start) ";;")
-      (erase-buffer)  
-      (mon-g2be -1)
-      (princ (concat ":INVOCATION-TIME " (mon-format-iso-8601-time) "\n\n"
-                     ":WITH-REGEXP-LIST\n" (pp-to-string mrrifl-rl) "\n" 
-                     ":IN-THESE-FILES\n" (mapconcat #'identity mrrifl-fl "\n") 
-                     "\n") (current-buffer))
-      (set-marker mrrifl-rrh-mrk (point))
-      ;; :WAS (comment-region (buffer-end 0) (marker-position mrrifl-rrh-mrk)))
-      (comment-region (mon-g2be -1 t) (marker-position mrrifl-rrh-mrk)))
-    (mapc #'(lambda (mrrifl-wlk-in-fl)
-              (princ (funcall mrrifl-fl-mod mrrifl-wlk-in-fl) mrrifl-rrh-mrk)
-              (mon-walk-regexps-in-file mrrifl-wlk-in-fl mrrifl-rl mrrifl-rrh-mrk))
-          mrrifl-fl)
-    (display-buffer mrrifl-rep-hst t)))
+    (when mrrifl-fl
+      (setq mrrifl-rep-hst (get-buffer-create mrrifl-rep-hst))
+      (with-current-buffer mrrifl-rep-hst
+        (set (make-local-variable 'comment-start) ";;")
+        (erase-buffer)  
+        (mon-g2be -1)
+        (princ (concat ":INVOCATION-TIME " (mon-format-iso-8601-time) "\n\n"
+                       ":WITH-REGEXP-LIST\n" (pp-to-string mrrifl-rl) "\n" 
+                       ":IN-THESE-FILES\n" (mapconcat #'identity mrrifl-fl "\n") 
+                       "\n") (current-buffer))
+        (set-marker mrrifl-rrh-mrk (point))
+        ;; :WAS (comment-region (buffer-end 0) (marker-position mrrifl-rrh-mrk)))
+        (comment-region (mon-g2be -1 t) (marker-position mrrifl-rrh-mrk)))
+      (mapc #'(lambda (mrrifl-wlk-in-fl)
+                (princ (funcall mrrifl-fl-mod mrrifl-wlk-in-fl) mrrifl-rrh-mrk)
+                (mon-walk-regexps-in-file mrrifl-wlk-in-fl mrrifl-rl mrrifl-rrh-mrk))
+            mrrifl-fl)
+      (display-buffer mrrifl-rep-hst t))))
 
 
 ;;; ==============================
@@ -657,10 +697,10 @@ For example the follow are all valid forms:\n
         mcs-elt-idx-typ
         mcs-rslt)
     (while (and (not mcs-did-mtch) (<= mcs-idx-cnt mcs-itm-cnt))
-      (setq mcs-elt-at-idx (case mcs-tbl-type
+      (setq mcs-elt-at-idx (cl-case mcs-tbl-type
                              (vector  (aref canon-table mcs-idx-cnt))
                              (cons    (elt canon-table mcs-idx-cnt)))
-            mcs-elt-idx-typ (case (type-of mcs-elt-at-idx)
+            mcs-elt-idx-typ (cl-case (type-of mcs-elt-at-idx)
                               (vector `(,(aref mcs-elt-at-idx 0) . ,(aref mcs-elt-at-idx 1)))
                               (cons `(,(car mcs-elt-at-idx) . ;Is it a dotted list?
                                       ,(if (mon-list-proper-p mcs-elt-at-idx)
@@ -669,9 +709,11 @@ For example the follow are all valid forms:\n
       (when (string-match-p (car mcs-elt-idx-typ)  canonize-string)        
         (setq mcs-did-mtch t)
         (setq mcs-rslt (cdr mcs-elt-idx-typ)))
-      (incf  mcs-idx-cnt)
-      (setq  mcs-elt-at-idx)
-      (setq  mcs-elt-idx-typ))
+      (cl-incf  mcs-idx-cnt)
+      ;; (setq  mcs-elt-at-idx)
+      ;; (setq  mcs-elt-idx-typ))
+      (setq  mcs-elt-at-idx nil)
+      (setq  mcs-elt-idx-typ nil))
     mcs-rslt))
 ;;
 ;;; :TEST-ME (mon-string-canonical "b"  [["a"   "α"] ["γ"   "g"] ["b"   "β"]])
@@ -1006,7 +1048,8 @@ unk84240548\n\[500006383]\nFRBNF12656015\nFRBNF32759170\n◀\n
                            (symbol-value (car (read-from-string (read-string "Which symbol: "))))
                          (read-regexp "Provide a regexp: ")))
                      nil))
-  (eval-when-compile (require 'boxquote)) ;; boxquote-text
+  ;; (eval-when-compile (require 'boxquote)) ;; boxquote-text
+  ;; (eval-when-compile (require 'boxquote)) 
   (let* ((mrmmir-rgx w-regexp)
          (mrmmir-opt (regexp-opt-depth mrmmir-rgx))
          mrmmir-gthr
@@ -1169,7 +1212,8 @@ function.\n
               ";; :AT-TIME " (mon-format-iso-8601-time) "\n"
               mruwq-div)
       ;; Unbind `mruwq-md` it for reuse below.
-      (setq mruwq-md))
+      ;; (setq mruwq-md))
+      (setq mruwq-md nil))
     (unwind-protect 
         (save-excursion  
           (while (search-forward-regexp *mon-regexp-unintern* nil t)
@@ -1445,7 +1489,7 @@ Zipcode: 000000
 		      (delim-row-w delim-row-w)
 		      (t ";")))
            (mccf-ln-delm (and (or (and w-line-delim-char
-                                       (or (and (mon-proper-list-p w-line-delim-char) 
+                                       (or (and (mon-list-proper-p w-line-delim-char) 
                                                 (and (wholenump (car w-line-delim-char))
                                                      (characterp (cadr w-line-delim-char))))
                                            (error (concat ":FUNCTION `mon-cln-csv-fields' "
@@ -1535,6 +1579,35 @@ Zipcode: 000000
 ;; |  ("Name: " "Title: " "Institution: " "Address: " "City: " "State: " "Zipcode: ") "`" "|" t)
 ;; `----
 
+;;; :CREATED <Timestamp: #{2012-06-04T11:27:16-04:00Z}#{12231} - by MON KEY>
+(defun mon-cln-irc-log-buffer ()
+  "Clean IRC join/part/quit/log/nick lines from current-buffer.\n
+Does not move point.\n
+Lines matching `*regexp-clean-irc-logs*' which have the following general
+patterns are removed from current-buffer:\n
+NN:NN:NN --- join: <USER1> (~<USER1>@some.ip.address.abc) joined #<CHANNEL>
+NN:NN:NN --- quit: <USER2> (<ACTION-OR-REASON>)
+NN:NN:NN --- part: <USER3> left #<CHANNEL>\n
+NN:NN:NN --- nick: <USER> -> <NICK>\n
+Intended for cleaning raw irc log files pulled from
+\(URL `http://tunes.org/~nef/logs/lisp/'\)\n
+\(URL `http://tunes.org/~nef/logs/old/'\)\n
+:SEE-ALSO `mon-cln-irc-log-buffer', `*regexp-clean-irc-logs*',
+`mon-cln-freenode-log', `mon-cln-freenode-log-TEST',
+`mon-wget-freenode-lisp-logs', `*freenode-lisp-logs*',
+`mon-help-CL-minion'.\n▶▶▶"
+  (interactive)
+  (save-excursion
+    (let ((search-upper-case t))
+      ;; (dolist (i '("^.*--- join: .*$"
+      ;;              "^.*--- quit: .*$"
+      ;;              "^.*--- part: .*$"
+      ;;              "^.*--- log: .*$"
+      ;;              "^.*--- nick: .*$"))
+      ;;   (mon-g2be -1)
+      ;;   (delete-matching-lines i)))))
+      (delete-matching-lines *regexp-clean-irc-logs*))))
+
 ;;; ==============================
 ;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T12:46:10-05:00Z}#{11022} - by MON KEY>
@@ -1542,20 +1615,24 @@ Zipcode: 000000
 (defun mon-cln-freenode-log ()
 "Clean IRC join/part/quit lines from current-buffer.\n
 Does not move point.\n
-Lines matching `*regexp-clean-IRC-logs*' which have the following general
+Lines matching `*regexp-clean-irc-logs*' which have the following general
 patterns are removed from current-buffer:\n
 NN:NN:NN --- join: <USER1> (~<USER1>@some.ip.address.abc) joined #<CHANNEL>
 NN:NN:NN --- quit: <USER2> (<ACTION-OR-REASON>)
 NN:NN:NN --- part: <USER3> left #<CHANNEL>\n
 :EXAMPLE\n\n\(mon-cln-freenode-log-TEST\)\n
-:SEE-ALSO `mon-cln-freenode-log-TEST', `mon-wget-freenode-lisp-logs',
-`*freenode-lisp-logs*', `mon-help-CL-minion'.\n▶▶▶"
+:SEE-ALSO `mon-cln-irc-log-buffer', `mon-cln-freenode-log-TEST',
+`mon-wget-freenode-lisp-logs', `*freenode-lisp-logs*',
+`mon-help-CL-minion'.\n▶▶▶"
   (interactive)
-  (save-excursion 
-    (while (search-forward-regexp *regexp-clean-irc-logs* nil t)
-      (replace-match "")
-      (backward-delete-char 1))))
-
+  ;; :WAS
+  ;; (save-excursion 
+  ;;   (while (search-forward-regexp *regexp-clean-irc-logs* nil t)
+  ;;     (replace-match "")
+  ;;     (backward-delete-char 1)
+  ;;     (mon-g2be -1)))
+  (mon-cln-irc-log-buffer)
+  )
 
 ;;; ==============================
 ;;; :PREFIX "mcfns-"
@@ -2006,7 +2083,7 @@ When W-RESULTS is non-nil or called-interactively message results.\n
 	       (mtcr-m-end    (match-end 1))
                (mtcr-m-str (mon-buffer-sub-no-prop mtcr-m-start mtcr-m-end)))
 	  (funcall mtcr-ud mtcr-m-start mtcr-m-end)
-	  (incf mtcr-m-cnt) ;; (setq mtcr-m-cnt (+ mtcr-m-cnt 1))
+	  (cl-incf mtcr-m-cnt) ;; (setq mtcr-m-cnt (+ mtcr-m-cnt 1))
           (if (or w-results intrp)
               (setq mtcr-msg (cons 
                          (format "(:MATCH-NUMBER %d :MATCH-START %s :MATCH-END %s :MATCHED %s)"
@@ -2251,9 +2328,14 @@ For interactive whitespace region adjustment use `mon-cln-BIG-whitespace',
 `mon-spacep-is-after-eol-then-graphic'.\n▶▶▶"
   (interactive); "p")
   (while (mon-spacep-at-eol)
-    (goto-char (point-at-eol))
+    ;; function (as of 29.1); use ‘line-end-position’ or ‘pos-eol’ instead.
+    ;; (goto-char (point-at-eol))
+    (goto-char (line-end-position))
     (delete-char -1)
-    (goto-char (point-at-bol))))
+    ;; 
+    ;; (goto-char (point-at-bol))))
+    ;; function (as of 29.1); use ‘line-beginning-position’ or ‘pos-bol’ instead.
+    (goto-char (line-beginning-position))))
 
 ;;; ==============================
 ;;; :PREFIX "mcstaeoi-"
@@ -2274,7 +2356,8 @@ For interactive whitespace region adjustment use `mon-cln-BIG-whitespace',
 	      (mon-g2be -1)
 	      (while (mon-spacep-at-eol)
 		(mon-cln-spc-tab-eol)
-		(goto-char (1+ (point-at-eol))))
+		;; (goto-char (1+ (point-at-eol))))
+                (goto-char (1+ (line-end-position))))
               (buffer-substring (mon-g2be -1 t) (mon-g2be 1 t))))
       (delete-region start end)
       (insert mcstaeoir-rtn))))
@@ -2536,7 +2619,8 @@ For additional specs:\n
                        (mon-g2be 1)
                        (while (> (point) 1)
                          (if (and (eolp) (bolp))
-                             (delete-backward-char 1)
+                             ;; :WAS (delete-backward-char 1)
+                             (delete-char -1)
                            (beginning-of-line))
                          (goto-char (1- (point))))
                        (mon-g2be 1)

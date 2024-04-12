@@ -660,7 +660,7 @@ Return results and display in buffer named \"*WORD-COUNT*\".\n
     (save-excursion
       (goto-char beginning)
       (while (and (< (point) end) (search-forward-regexp "\\w+\\W*" end t))
-        (incf mwccr-wrd-cnt))
+        (cl-incf mwccr-wrd-cnt))
       (if intrp 
           (message  (concat ":FUNCTION `mon-word-count-chars-region' "
                             "-- counted :WORDS %d :CHARS %d")

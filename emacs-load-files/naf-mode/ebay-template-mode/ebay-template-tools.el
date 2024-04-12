@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; no-byte-compile: t; -*-
 
 ;;; ================================================================
-;; Copyright © 2009-2011 MON KEY. All rights reserved.
+;; Copyright © 2009-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: ebay-template-tools.el
@@ -137,7 +137,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2009-2011 MON KEY 
+;; Copyright © 2009-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -353,7 +353,6 @@ Account choices returned according to variable `*mon-ebay-account-ids*'.\n
 	  (with-temp-buffer 
 	    (mon-insert-ebay-template)
 	    (setq html-temp (buffer-string))))
-    ;;(message "%s" html-string)))
     html-string))
 
 ;;; ==============================
@@ -419,12 +418,6 @@ Helper function for `mon-insert-ebay-dirs'.\n
 			       "\\(\\([[:alnum:]]\\)\\([^-]$\\)\\)" "\\2\\3-" fix-sfx nil nil))
 			fix-sfx))
 		     ((numberp ff-suffix) (format "-%d-" ff-suffix)))))
-    ;;(if numberp sffx)
-    ;;	(fincr (cond ((numberp ff-incr) ff-incr)
-    ;; 	    ((or (not ff-prefix) (not (stringp ff-prefix)))
-    ;; 		  "e")))
-					;`(,prfx ,sffx)))
-					;(mon-make-ebay-dir-list 1 3 "Big Bubba " 3)
     (setq starting start-from)
     (setq put-dirs ())
     (while (not (= starting (1+ end-at)))
@@ -483,8 +476,6 @@ Path determined according to globar var `*mon-ebay-images-temp-path*'.\n
 	(make-directory (concat into-path "/BMP-Scans/" put-list) t)
 	(let ((put-file (concat into-path "/BMP-Scans/" put-list "/" put-list ".dbc"))
               (make-html "(insert (mon-make-html-tree))" ))
-          ;;(make-html (mon-make-html-tree)))
-	  ;;setting buffer-local val becus Bugs with-temp-file isn't setting unix-lf'sand  gettting 's in file :(
 	  (with-temp-file put-file 
 	    (set (make-local-variable 'buffer-file-coding-system) 'utf-8-unix)	    
 	    (insert (format *mon-ebay-template* put-file make-html put-list put-list put-list ))))
@@ -533,10 +524,6 @@ Use `mon-insert-ebay-dbc-template' to insert a buffer local template.
                                       (concat (file-name-nondirectory (directory-file-name default-directory)) ".dbc")))
                         (concat default-directory (file-name-nondirectory (directory-file-name default-directory))".dbc")
                       default-directory))
-                   ;; ((and (mon-buffer-written-p)
-                   ;;       (or (string-match (concat *mon-ebay-images-temp-path* "/BMP-Scans/*") default-directory)
-                   ;;           (string-match  (concat *mon-ebay-images-bmp-path* "/*") default-directory))
-                   ;;default-directory))
                    ((and (mon-buffer-written-p)
                          (or (string-match (concat *mon-ebay-images-temp-path* "/BMP-Scans/*") default-directory)
                              (string-match  (concat *mon-ebay-images-bmp-path* "/*") default-directory)))
@@ -549,7 +536,6 @@ Use `mon-insert-ebay-dbc-template' to insert a buffer local template.
                                               ((string-match  *mon-ebay-images-path* default-directory)
                                                default-directory)
                                               (t (concat *mon-ebay-images-temp-path* "/BMP-Scans/"))))
-                            ;;*mon-ebay-images-bmp-path*)))
                             (new-dir))
                         (setq new-dir (read-directory-name 
                                        (concat "Not a good directory name to use w/ template insertion. "
@@ -634,25 +620,21 @@ Evaluate the global var `*mon-ebay-template*' and insert ebay html with
                             curr-dir))
          ;; convert: *mon-ebay-images-temp-path* -> *mon-ebay-images-bmp-path* 
          (put-file 
-          ;; (if (= (string-match catch-path put-file-or-dir) 0)
-          ;; (replace-regexp-in-string catch-path fix-catch put-file-or-dir nil nil 2)
-          ;; put-file-or-dir))
           (cond ((not (string-match catch-path put-file-or-dir))
                  put-file-or-dir)
                 ((= (string-match catch-path put-file-or-dir) 0)
                  (replace-regexp-in-string catch-path fix-catch put-file-or-dir nil nil 2))))
-	 (put-dir (file-name-directory put-file)) ;save for later - will prob. need
-	 (file-no-d (file-name-nondirectory put-file)) ;save for later - will prob. need
+	 (put-dir (file-name-directory put-file)) ;; save for later - will prob. need
+	 (file-no-d (file-name-nondirectory put-file)) ;; save for later - will prob. need
 	 (file-no-ext (file-name-sans-extension put-file))
-	 ;;(make-html (mon-make-html-tree))
 	 (make-html "(insert (mon-make-html-tree))"))
     (let ((put-temp (format 
                      *mon-ebay-template* 
-                     put-file           ;this file is:\n%s 
-                     make-html          ;<!-- html-template-starts-here
-                     put-dir            ;file-no-ext ;URLs inserted below for photo:
-                     put-dir            ;file-no-ext ;URLs inserted below for photo:
-                     (file-name-sans-extension file-no-d)          ;%s.dbc ends here
+                     put-file           ;; this file is:\n%s 
+                     make-html          ;; <!-- html-template-starts-here
+                     put-dir            ;; file-no-ext ;URLs inserted below for photo:
+                     put-dir            ;; file-no-ext ;URLs inserted below for photo:
+                     (file-name-sans-extension file-no-d)          ;; %s.dbc ends here
                     )))
            (if (or insertp intrp)
                (insert put-temp)

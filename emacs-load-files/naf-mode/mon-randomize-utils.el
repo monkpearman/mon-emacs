@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010-2011 MON KEY. All rights reserved.
+;; Copyright © 2010-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-randomize-utils.el
@@ -115,7 +115,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010-2011 MON KEY 
+;; Copyright © 2010-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -254,6 +254,7 @@ invocations per seed symbol. IOW one might create an average of ~9948 unique
                       (mon-nshuffle-vector mgcr-merp)
                       (let (mgcr-gthr)
                         (dotimes (i 5 
+                                    ;; (setq mgcr-gthr (ASH (apply '+ mgcr-gthr) ;; subst ash for lsh
                                     (setq mgcr-gthr (lsh (apply '+ mgcr-gthr) 
                                                          (- (aref mgcr-merp 0) (aref mgcr-merp 1)))))
                           (push (* (aref mgcr-pr2 i) (aref mgcr-pr3 i) mgcr-stl-char) mgcr-gthr))))
@@ -325,7 +326,7 @@ invocations per seed symbol. IOW one might create an average of ~9948 unique
                  vector-cells-consed 
                  symbols-consed
                  string-chars-consed 
-                 misc-objects-consed 
+                 ;; misc-objects-consed   ;; free variable warning at compile time unknown symbol
                  intervals-consed
                  strings-consed
                  pure-bytes-used
@@ -358,7 +359,7 @@ Item b is a Featured-Bug®.\n
   (eval-when-compile (require 'sha1))
   (let ((mgpi-cnt (if cnt cnt 1))
         mgpi-gthr)
-    (do* ((mgpi-i 1 (1+ mgpi-i))
+    (cl-do* ((mgpi-i 1 (1+ mgpi-i))
           (mgpi-j (sha1 (mon-generate-prand-seed)) (sha1 (car mgpi-gthr)))
           (mgpi-k (push mgpi-j mgpi-gthr) (push mgpi-j mgpi-gthr)))
         ((>= mgpi-i mgpi-cnt) mgpi-k))
@@ -470,7 +471,7 @@ On MON system min. 0.85 seconds is needed between calls to produce unique id's.\
                                        (setq lcgc-lt-1 lcgc-lt-2))))))
                         lcgc-lt-1))))
     (setq mswnky-wrds (make-list wonkify-n-times (car (funcall mswnky-seqify mswnky-wrds))))
-    (do ((mswnky-D-1 wonkify-n-times))
+    (cl-do ((mswnky-D-1 wonkify-n-times))
          ((< mswnky-D-1 0)  mswnky-wrds)
       (setq mswnky-D-1 (1- mswnky-D-1))
       (setq mswnky-wrds (apply 'vector mswnky-wrds))

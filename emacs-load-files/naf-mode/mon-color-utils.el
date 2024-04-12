@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2009-2011 MON KEY. All rights reserved.
+;; Copyright © 2009-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-color-utils.el
@@ -139,7 +139,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2009-2011 MON KEY 
+;; Copyright © 2009-2012 MON KEY 
 ;;; ==============================
 
 
@@ -203,6 +203,12 @@ Return value displaye in buffer \"*COLOR-MIX-RESULTS*\".\n
         (dolist (mcm-D-1 `(("color1" ,(concat "#" (apply #'css-color:rgb-to-hex color1)))
                            ("color2" ,(concat "#" (apply #'css-color:rgb-to-hex color2)))
                            ("MIXED"  ,(concat "#" (apply #'css-color:rgb-to-hex color3)))))
+        ;;; (color-rgb-to-hex (color-values (read-color "color: ")))
+        ;; (apply #'color-rgb-to-hex  (color-values (read-color "color: ")))
+        ;; (dolist (mcm-D-1 `(("color1" ,(concat "#" (apply #'color-rgb-to-hex color1)))
+        ;;                    ("color2" ,(concat "#" (apply #'color-rgb-to-hex color2)))
+        ;;                    ("MIXED"  ,(concat "#" (apply #'color-rgb-to-hex color3)))))
+        
           (insert (propertize (car mcm-D-1) 'face `(:foreground ,(cadr mcm-D-1)))
                   "\n")))
       (princ (format (concat ";;; color mix results\n"

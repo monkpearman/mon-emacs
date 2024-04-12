@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010-2011 MON KEY. All rights reserved.
+;; Copyright © 2010-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-string-utils.el
@@ -154,7 +154,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010-2011 MON KEY 
+;; Copyright © 2010-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -251,7 +251,7 @@ return value of following form will always be equal W-STRING-TO-SPLIT:\n
                (mch-end  (and mch-beg (match-end 0)))
                (limit-to (or (and limit-to (1- limit-to)))))
           (when mch-end
-            (while (and (or (null limit-to) (and (>= (decf limit-to) 0)))
+            (while (and (or (null limit-to) (and (>= (cl-decf limit-to) 0)))
                         mch-end 
                         (string-match split-pattern w-string-to-split mch-end))
               (setq mch-beg (match-beginning 0))
@@ -853,7 +853,7 @@ When W-SPC is non-nil return string with whitespace interspersed.\n
 ;;; ==============================
 ;;; :PREFIX "msths-"
 ;;; :CREATED <Timestamp: #{2009-11-06T17:41:33-05:00Z}#{09455} - by MON>
-(defun* mon-string-to-hex-string (&key hxify-str w-dlim prand-hex-len)
+(cl-defun mon-string-to-hex-string (&key hxify-str w-dlim prand-hex-len)
   "Return HXIFY-STR as a string of hex numbers.
 When keyword W-DLIM is non-nil delimit hex numbers W-DLIM.\n
 When keyword PRAND-HEX-LEN \(an integer >= 80\) is non-nil, return a
@@ -1024,7 +1024,7 @@ INFIX-STR is a string to intersperse with.
  \"-\"\)\n
 :SEE-ALSO `mon-string-split', `mon-string-infix', `mon-string-splice-sep',
 `mon-string->strings-splice-sep'.\n▶▶▶"
-  (loop 
+  (cl-loop 
    for mse-itr across w-str 
    collect (format "%c" mse-itr)))
 
@@ -1270,7 +1270,7 @@ When optional arg MATCH-FROM is non-nil match from position in MATCH-STR as if
 by `string-match-p'.\n
 :EXAMPLE\n\n
 :SEE-ALSO .\n▶▶▶"
-  (assert (and (mon-string-not-null-nor-zerop match-str)
+  (cl-assert (and (mon-string-not-null-nor-zerop match-str)
                (or (not match-from)
                    (and match-from (<= match-from (length match-from))))))
   (catch 'msmil-mtched
@@ -1279,6 +1279,20 @@ by `string-match-p'.\n
                    (throw 'msmil-mtched match-str)))
           regexp-lst)
     nil))
+
+(defun mon-string-convert-loc (char-and-code) 
+"Compose a string from CHAR-AND-CODE  to something the buffer can display.\n
+CHAR-AND-CODE is a string with the format:\n
+  \"<CHAR>&#<CODE>;\"\n
+:EXAMPLE\n
+ \(mon-string-convert-loc \"i&#65056;\"\)\n
+ \(insert \(mon-string-convert-loc \"i&#65056;\"\)\)\n
+:SEE-ALSO .\n▶▶▶"
+  (let ((mscl-splits (split-string char-and-code "[&#;]" t)))
+    (compose-string
+     (compose-chars 
+      (string-to-char (car mscl-splits))
+      (string-to-number (cadr mscl-splits))))))
 
 ;;; ==============================
 (provide 'mon-string-utils)

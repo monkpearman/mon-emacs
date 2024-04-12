@@ -181,7 +181,7 @@
 ;;; ==============================
 ;;; :CHANGESET 2360
 ;;; :CREATED <Timestamp: #{2010-12-09T18:23:25-05:00Z}#{10494} - by MON KEY>
-(defun* mon-get-text-property-intervals (&key w-prop w-buffer w-disp from to)
+(cl-defun mon-get-text-property-intervals (&key w-prop w-buffer w-disp from to)
   "Iterate :W-BUFFER find intervals :W-PROP in range :FROM :TO maybe :W-DISP.\n
 An \"interval\" is a range in which all text-properties are constant.
 Each interval is represented as a consed pair of start and end positions, where
@@ -230,6 +230,7 @@ list property values e.g. 'face, 'font-lock-face, etc.\n
                                              :w-disp  t\)\n
 :SEE-ALSO .\n▶▶▶"
   (let ( ;;(mgtpbpi-prop w-prop)
+        (mgtpbpi-tp  w-prop)
         (mgtpbpi-bfr (or 
                       (and w-buffer
                            (or (and (stringp w-buffer) (mon-buffer-exists-p w-buffer))
@@ -261,7 +262,7 @@ list property values e.g. 'face, 'font-lock-face, etc.\n
     ;; Should the proposed patch be accepted we can then allow this syntax instead:
     ;; (loop for tp being the intervals of mgtpbpi-bfr of property mgtpbpi-prop from from to to
     (with-current-buffer mgtpbpi-bfr
-      (loop for mgtpbpi-tp being the intervals of mgtpbpi-bfr property w-prop from from to to
+      (cl-loop for mgtpbpi-tp being the intervals of mgtpbpi-bfr property w-prop from from to to
             collecting 
             ;;`(,(cadr (memq mgtpbpi-prop (text-properties-at (car mgtpbpi-tp)))) ,mgtpbpi-tp) 
             `(,(cadr (memq w-prop (text-properties-at (car mgtpbpi-tp)))) ,mgtpbpi-tp) 
@@ -284,7 +285,8 @@ list property values e.g. 'face, 'font-lock-face, etc.\n
                              (setq w-disp t)
                              (mon-g2be -1 t))
                         (erase-buffer) 
-                        (setq w-disp))
+                        ;; (setq w-disp))
+                        (setq w-disp nil))
                     (princ (mon-format :w-spec 
                                        `(,(make-string 68 59)
                                          ";; :FUNCTION `mon-get-text-property-intervals' "
@@ -473,7 +475,7 @@ Return a list of properties found. Return value has the form:\n
  ( ( <PROP> ( <PROP-START-PSN> . <PROP-END-PSN> ))* )\n
 :EXAMPLE\n\n
 :SEE-ALSO `mon-get-text-properties-region-prop-list', `mon-get-text-properties-region'.\n▶▶▶"
-  (loop for position = (if (get-text-property start prop)
+  (cl-loop for position = (if (get-text-property start prop)
                            start
                            (next-single-property-change start prop))
         then (next-single-property-change position prop)
@@ -608,7 +610,7 @@ When BUFFER is non-nil list its text-properties instead.\n
       ;;;     nconc (delete-duplicates (mon-plist-keys (text-properties-at i nil))))))))      
       (delete-dups
        ;;(loop for i from (or start-range (point-min)) to (or end-range (point-max)) ;; (mon-g2be 1 t)
-       (loop for i from (or start-range (mon-g2be -1 t)) to (or end-range (mon-g2be 1 t))
+       (cl-loop for i from (or start-range (mon-g2be -1 t)) to (or end-range (mon-g2be 1 t))
              nconc (delete-dups (mon-plist-keys (text-properties-at i (current-buffer)))))))))
 ;;
 ;;; ==============================
@@ -842,7 +844,9 @@ When non-nil optional arg TP-BUFF names a buffer as required by
       (save-excursion (print some-el-string (current-buffer)))
     (emacs-lisp-mode)
     (font-lock-fontify-syntactically-region  (buffer-end 0) (buffer-end 1))
-    (font-lock-fontify-buffer)
+    ;; font-lock-ensure’ or ‘font-lock-flush’ instead.
+    ;; (font-lock-fontify-buffer)
+     (font-lock-ensure)
     ;; (current-buffer)
     (mon-get-text-properties-print (buffer-end 0) (buffer-end 1) mgtpfes-buf))
     ;; (substring mgtpfes-buf 0 (1- (length mgtpfes-buf))) "-STRING*"))
@@ -877,7 +881,7 @@ For use with:\n
 `typecase', `etypecase', `deftype', `typep', `type-of', `mon-function-object-p',
 `mon-sequence-mappable-p', `mon-equality-or-predicate',
 `*mon-equality-or-predicate-function-types*'.\n▶▶▶"
-  (typecase prop-val
+  (cl-typecase prop-val
     (string  'equal)           
     (integer 'eq)
     (symbol  'eq) 
@@ -999,7 +1003,7 @@ Format of PROPS-IN-SYM are as per `mon-get-text-properties-parse-buffer-or-sym'.
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-05T13:41:29-05:00Z}#{10095} - by MON KEY>
-(defun* mon-get-text-properties-parse-buffer-or-sym (prop prop-val &key 
+(cl-defun mon-get-text-properties-parse-buffer-or-sym (prop prop-val &key 
                                                           read-prop-sym 
                                                           read-prop-buffer)
   "Filter text-property list for sublists containing the PROP and PROP-VAL.\n
@@ -1135,7 +1139,7 @@ PROP is the name of a text property.\n
 `mon-get-text-properties-parse-buffer-or-sym',
 `mon-help-text-property-functions-ext', `mon-help-text-property-functions',
 `mon-help-text-property-properties', `mon-help-overlay-functions'.\n▶▶▶"
-  (assert (get-text-property (point) prop))  
+  (cl-assert (get-text-property (point) prop))  
   (let ((mgtpb-end (next-single-char-property-change (point) prop)))
     (list (previous-single-char-property-change mgtpb-end prop) mgtpb-end)))
 

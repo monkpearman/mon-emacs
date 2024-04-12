@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2009-2011 MON KEY. All rights reserved.
+;; Copyright © 2009-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-doc-help-utils.el
@@ -101,7 +101,7 @@
 ;; `mon-help-display-table-functions', `mon-help-bind-help-keys-loadtime',
 ;; `mon-help-byte-compile-functions', `mon-update-tags-tables-loadtime',
 ;; `mon-help-marker-functions', `mon-help-predicate-functions', 
-;; `mon-help-number-functions',
+;; `mon-help-number-functions', `mon-help-unix-usage',
 ;; FUNCTIONS:◀◀◀
 ;;
 ;; MACROS:
@@ -419,7 +419,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ================================================================
-;; Copyright © 2009-2011 MON KEY 
+;; Copyright © 2009-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -562,7 +562,7 @@
       mon-help-bind-help-keys-loadtime mon-help-keys
       mon-help-keys-wikify-anchors mon-help-keys-wikify-heading
       mon-help-keys-wikify mon-help-escape-for-ewiki mon-help-unescape-for-ewiki
-      mon-help-utils-loadtime
+      mon-help-utils-loadtime mon-help-unix-usage
       ;; :FACES
       mon-help-KEY-tag mon-help-DYNATAB-tag mon-help-META-tag mon-help-PNTR-tag
       mon-help-COMMENT-tag mon-help-INNER-KEY-tag mon-help-URL-wrap-tag
@@ -1589,7 +1589,8 @@ regenerated.\n
           (mon-message :msg-spec
                        `(":FUNCTION `mon-help-permanent-locals-find' "
                          "-- variable `*mon-help-permanent-locals*' "
-                         ,(case bnd-or-rgn-msg
+                         ;;,(case bnd-or-rgn-msg
+                         ,(cl-case bnd-or-rgn-msg
                             (regen-bnd  "was non-nil and regenerated")
                             (msg-bnd     "was non-nil now rebound")
                             (msg-anyway 
@@ -2482,7 +2483,7 @@ display the \"*MON-SHOW- *DOC*-BUFFER*\".\n
 `mon-help-function-spit-doc', `mon-help-function-arity',
 `mon-help-swap-var-doc-const-val', `mon-help-put-var-doc-val->func',
 `doc-directory', `internal-doc-file-name', `elint-scan-doc-file',
-`documentation-property', `byte-compile-output-docform', `lambda-list-keywords',
+`documentation-property', `byte-compile-output-docform', `cl--lambda-list-keywords',
 `subr-arity', `help-function-arglist', `byte-compile-arglist-signature',
 `help-add-fundoc-usage', `apropos-documentation-property'.\n▶▶▶"
   (let ((get*doc (get-buffer " *DOC*")))
@@ -2637,10 +2638,12 @@ When optional arg CALL-PROC is non-nil pass each generated shell-commands to
                           ;; :NOTE Uncomment to background-it, not needed though:
                           ;; (push (concat (mapconcat #'identity (nreverse spec-cur) " ") " &") gthr)))
                           (push (mapconcat #'identity (nreverse spec-cur) " ") gthr)))
-          (case (cadr spec-l)
+          ;; (case (cadr spec-l)
+          (cl-case (cadr spec-l)
             (E (push (format mttl-e (nth (car spec-l) mttl)) spec-cur))
-            (T (case (caddr spec-l)
-                 (O (push (format mttl-o (nth (car spec-l) mttl)) spec-cur))
+            ;; (T (case (caddr spec-l)
+             (T (cl-case (caddr spec-l)
+            (O (push (format mttl-o (nth (car spec-l) mttl)) spec-cur))
                  (I (push (format mttl-i (nth (car spec-l) mttl)) spec-cur))
                  (t (push 'bad-spec spec-cur))))
             (t (push 'bad-spec spec-cur))))))
@@ -2676,7 +2679,10 @@ with paths held by `*mon-tags-table-list*'.\n
 :SEE-ALSO `mon-tags-apropos', `*mon-tags-table-list*', `mon-update-tags-tables'.
 ▶▶▶"
   (interactive)
-  (tags-apropos "naf.*\\|\*naf\\|.*-naf"))
+  ;; :WAS (tags-apropos "naf.*\\|\*naf\\|.*-naf"))
+  (xref-find-apropos "naf.*\\|\*naf\\|.*-naf"))
+  
+  
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-21T18:57:08-04:00Z}#{09345} - by MON KEY>
@@ -2686,7 +2692,8 @@ with paths held by `*mon-tags-table-list*'.\n
 :SEE-ALSO `mon-tags-naf-apropos', `*mon-tags-table-list*', 
 `mon-update-tags-tables'.\n▶▶▶"
   (interactive)
-  (tags-apropos "mon-.*\\|\*mon\\|.*-mon-.*"))
+  ;; :WAS (tags-apropos "mon-.*\\|\*mon\\|.*-mon-.*"))
+  (xref-find-apropos "mon-.*\\|\*mon\\|.*-mon-.*"))
 
 
 ;;; ==============================
@@ -2743,7 +2750,7 @@ When non-nil PST-V-STR is a string to insert after value string of var-name.\n
 \(mon-help-put-var-doc-val->func '<VAR-NAME> '<FUNC-NAME>
 \"\\nPRE-V-STR\\n\" nil \"PST-V-STR\"\)\n
 :SEE-ALSO `mon-help-swap-var-doc-const-val', `documentation-property',
-`apropos-documentation-property', `lambda-list-keywords', `subr-arity',
+`apropos-documentation-property', `cl--lambda-list-keywords', `subr-arity',
 `help-function-arglist', `byte-compile-arglist-signature',
 `byte-compile-output-docform', `help-add-fundoc-usage',
 `elint-put-function-args', `mon-help-buffer-spc-*DOC*'.\n▶▶▶"
@@ -2751,7 +2758,7 @@ When non-nil PST-V-STR is a string to insert after value string of var-name.\n
   (let ((putf-doc (make-symbol "putf-doc"))
         (getv-doc (make-symbol "getv-doc"))
         (getv-val (make-symbol "getv-val")))
-    `(let ((,getv-val (symbol-value ,var-name))
+    `(let ((,getv-val (symbol-value ,var-name)) ;
            (,getv-doc (if ,cut-v-str
                           `(,(mon-string-upto-index
                               ;; (get ,var-name 'variable-documentation)
@@ -2830,7 +2837,7 @@ similiar functionality to any derived mode which generates font-lock keywords
 from lists bound variables.\n
 :SEE-ALSO `mon-help-put-var-doc-val->func', `documentation-property',
 `apropos-documentation-property', `byte-compile-output-docform',
-`lambda-list-keywords', `subr-arity', `help-function-arglist',
+`cl--lambda-list-keywords', `subr-arity', `help-function-arglist',
 `help-add-fundoc-usage', `elint-put-function-args',
 `mon-help-buffer-spc-*DOC*'.\n▶▶▶"
   ;;  (declare (indent 2) (debug t))
@@ -2989,7 +2996,7 @@ value returned is of the form:
 ;;;  of 2009-06-30 on LENNART-69DE564 (patched)"
 ;;;  Not sure what is happening with that. Interpreted vars are fine...
 ;;; :CREATED <Timestamp: Thursday July 02, 2009 @ 05:16.20 PM - by MON KEY>
-(defun* mon-help-function-spit-doc (sym-name &key alt-cookie do-var insertp
+(cl-defun mon-help-function-spit-doc (sym-name &key alt-cookie do-var insertp
                                              do-face do-group do-theme)
   "Return documentation for function with SYM-NAME.\n
 When keyword :ALT-COOKIE \(a string\) is non-nil overrides the default comment
@@ -3019,7 +3026,7 @@ inside a defgroup form.\n
 `mon-help-xref-symbol-value', `mon-help-insert-documentation',
 `mon-help-function-args', `mon-help-buffer-spc-*DOC*', `documentation-property',
 `apropos-documentation-property', `byte-compile-output-docform',
-`lambda-list-keywords', `subr-arity', `help-function-arglist',
+`cl--lambda-list-keywords', `subr-arity', `help-function-arglist',
 `help-add-fundoc-usage', `elint-put-function-args'.\n▶▶▶"
   ;; (eval-when-compile (require 'mon-cl-compat nil t))
   (let (mk-docstr)
@@ -3293,7 +3300,7 @@ FUNCTION must be a function \(or special form\) according to
 :NOTE The CL-seq functions with &keys e.g. `reduce' returns 'many'
 as the cl-keys occurs in the &rest parameter position. This also occurs with
 functions defined with the CL packages `defun*' macro.
-:SEE `lambda-list-keywords'.\n
+:SEE `cl--lambda-list-keywords'.\n
 :ALIASED-BY `mon-function-arity'\n
 :SEE-ALSO `mon-help-function-args', `documentation-property',
 `apropos-documentation-property' `byte-compile-output-docform',
@@ -3427,11 +3434,11 @@ Used to generate docstring of `mon-help-errors'.\n
 ;;
 ;;; :PREFIX "mhe-
 ;;; Now build the docstring up from values in variable `*mon-help-emacs-errors*'.
-(eval-when (compile load eval)
+(cl-eval-when (compile load eval)
   (let (mhe-gthr mhe-gthr-msg mhe-gthr-tmp)
     (dolist (mhe-D-0 (car *mon-help-emacs-errors*)
                      (dolist (mhe-D-1 (setq mhe-gthr (nreverse mhe-gthr))
-                                      (setq mhe-gthr (nreverse mhe-gthr-msg)))
+                                      (setq mhe-gthr (nreverse mhe-gthr-msg))) ;
                        (push mhe-D-1 mhe-gthr-msg)
                        (dolist (mhe-D-2 (plist-get (car *mon-help-emacs-errors*) mhe-D-1)
                                         (push (concat "\n" 
@@ -3444,13 +3451,18 @@ Used to generate docstring of `mon-help-errors'.\n
                                        (or (get mhe-D-2 'error-conditions) 'NULL)
                                        (or (get mhe-D-2 'error-message) ""))
                                mhe-gthr-tmp))
-                       (setq mhe-gthr-tmp)))
+                       ;; TESTING wrong-number-of-arguments at loadtime so doing (setq <FOO> nil) now
+                       ;; (setq mhe-gthr-tmp)))
+                       (setq mhe-gthr-tmp nil)))
       (unless (consp mhe-D-0)
         (push mhe-D-0 mhe-gthr)))
     ;; Now build the second list, but don't look for error-conditions or
     ;; error-message props because the packages may not be in the environment.
-    (setq mhe-gthr-tmp)
-    (setq mhe-gthr-msg)
+    ;; (setq mhe-gthr-tmp)
+    ;; (setq mhe-gthr-msg)
+    ;; TESTING wrong-number-of-arguments at loadtime so doing (setq <FOO> nil) now
+    (setq mhe-gthr-tmp nil)
+    (setq mhe-gthr-msg nil)
     (dolist (mhe-D-3 (cadr *mon-help-emacs-errors*)
                      (setq mhe-gthr-msg (mapconcat #'identity (nreverse mhe-gthr-msg) "")))
       (if (not (consp mhe-D-3))
@@ -3616,7 +3628,7 @@ Used to generate docstring of `mon-help-errors'.\n
 ;; Following was defined with CL arg-list with &key\n
 \(mon-help-function-args 'mon-help-function-spit-doc\)\n 
 :NOTE May return misleading results when the CL marcros are in play.\n
-:SEE `lambda-list-keywords'.\n
+:SEE `cl--lambda-list-keywords'.\n
 :CALLED-BY `mon-help-insert-documentation'.\n
 :ALIASED-BY `mon-function-args'\n
 :SEE-ALSO `mon-help-function-arity', `mon-help-xref-symbol-value',
@@ -3625,7 +3637,7 @@ Used to generate docstring of `mon-help-errors'.\n
 `apropos-documentation-property' `subr-arity', `help-function-arglist',
 `help-add-fundoc-usage', `byte-compile-arglist-signature',
 `byte-compile-output-docform', `elint-put-function-args'
-`lambda-list-keywords'.\n▶▶▶"
+`cl--lambda-list-keywords'.\n▶▶▶"
   (let ((mhfa-def (help-function-arglist w-func))
         mhfa-tst-def)
     (when (and mhfa-def (memq '&rest mhfa-def))
@@ -3794,29 +3806,39 @@ is a string value delimited by `<' and `>'.\n
                                    ;; :NOTE we can make `assoc-string' is
                                    ;; case-sensitive so we can extend the list
                                    ;; `*mon-help-interactive-spec-alist*' as needed.
-                                   (concat (cadr (assoc-string (edmacro-subseq mhpis-L-1 0 1) mhpis-int-spec)) 
-                                           " " (edmacro-subseq mhpis-L-1 1)))
+                                   (concat 
+                                    (cadr (assoc-string (cl-subseq mhpis-L-1 0 1) mhpis-int-spec)) 
+                                    " " 
+                                    (cl-subseq mhpis-L-1 1)))
                                (save-match-data (split-string (cadr mhpis-int-t) "\n"))
                                "\n;;; ")))
                   ;; :NOTE Leave the trailing line for `mon-insert-documentation'.
                   ((listp (cadr mhpis-int-t)) "<INTERACTIVE-SPEC-IS-LIST>")))))
     mhpis-int-has-spec))
-;)
+;;)
 ;;
+
+;; (fmakunbound 'mon-help-parse-interactive-spec)
+;; (put 'mon-help-parse-interactive-spec 'function-documentation nil)
+;; (get 'mon-help-parse-interactive-spec 'function-documentation )
+;; (documentation-property sym-name 'function-documentation)
 ;; Now put a doc-string on `mon-help-parse-interactive-spec'
 ;; using value & docstring of var `*mon-help-interactive-spec-alist*'.
-(eval-when (compile load)
+(cl-eval-when (compile load)
   (mon-help-put-var-doc-val->func
       '*mon-help-interactive-spec-alist*
       'mon-help-parse-interactive-spec
     ;; PRE-V-STR
-    (concat "The arg FNAME names a function which has an interactive spec.\n\n"
-            "Return spec of fname from value lookup in var `*mon-help-interactive-spec-alist*':\n\n")
-    ;; CUT-V-STR
-   ":CALLED-BY `mon-help-parse-interactive-spec'."
-   ;; PST-V-STR
-   "\n:EXAMPLE\n\n\(mon-help-parse-interactive-spec 'mon-insert-lisp-testme\)")
+     "The arg FNAME names a function which has an interactive spec.\n\nReturn spec of fname from value lookup in var `*mon-help-interactive-spec-alist*':\n\n"
+     ;; CUT-V-STR
+     ;; nil ;; ":CALLED-BY `mon-help-parse-interactive-spec'."
+     "";; "\n:EXAMPLE\n\n\(mon-help-parse-interactive-spec 'mon-insert-lisp-testme\)"
+     ;; PST-V-STR
+      "\n:EXAMPLE\n\n\(mon-help-parse-interactive-spec 'mon-insert-lisp-testme\)"
+      )
   )
+
+;; (mon-string-after-index (documentation-property '*mon-help-interactive-spec-alist* 'variable-documentation) ":CALLED-BY `mon-help-parse-interactive-spec'.")
 ;;
 ;;; :TEST-ME (describe-function 'mon-help-parse-interactive-spec)
 ;;; :TEST-ME (mon-help-parse-interactive-spec  'mon-insert-file-in-dirs)
@@ -13016,7 +13038,7 @@ evaling, interrogation, deconstructing, etc.\n
 `internal-interpreter-environment'           ;<LEXBIND-VARIABLE>
 `gensym'
 `gentemp'                                    ; :NOTE Misnomer, interns a symbol
-`*gensym-counter*'                           ;<VARIABLE>
+`gensym-counter'                             ;<VARIABLE>
 `make-symbol'\n
 ;; :SYMBOL-CONSTRUCTORS-LOCAL
 `lambda'
@@ -14373,7 +14395,8 @@ done
 :SEE info node `(coreutils)du invocation'\n
 :SEE (man \"du\")\n
 :SEE-ALSO `mon-help-du-incantation', `mon-async-du-dir', `get-free-disk-space',
-`directory-free-space-program', `directory-free-space-args'.\n▶▶▶"
+`directory-free-space-program', `directory-free-space-args'
+.\n▶▶▶"
   :type  '(alist :key-type string 
                  :value-type (choice string (const :tag "nil" nil)))
   :group 'mon-doc-help-utils)
@@ -14383,26 +14406,32 @@ done
 (unless (and (intern-soft "*regexp-clean-du-flags*" obarray)
              (bound-and-true-p *regexp-clean-du-flags*))
   (setq *regexp-clean-du-flags*
-        '(("-a" . "--all")
+        '(
+          ("-0" ."--null")  ;;
+          ("-a" . "--all")
           ("--apparent-size")
           ("-b" . "--bytes")
           ("-B" . "--block-size")       ;SIZE & =SIZE
           ("-c" . "--total")
           ("-D" . "--dereference-args")
-          ("--files-from")             ;=FILE
+          ("--files0-from")             ;=FILE
           ("-h" . "--human-readable")
           ("-H")
           ("-k")
           ("-l" . "--count-links")
           ("-L" . "--dereference")
+          ("-m")
           ("-P" . "--no-dereference")
           ("--max-depth")               ;=DEPTH
           ;; ("-0" . "--null")
           ("--si")
           ("-s" . "--summarize")
+          ("--time") ;; =ctime =status =use
+          ("--time-style") ;; =full-iso =long-iso =iso =+<FORMAT> 
           ("-S" . "--separate-dirs")
           ("-x" . "--one-file-system")
           ("--exclude")                 ;=PATTERN
+          ("-x" . "--one-file-system")
           ("-X" . "--exclude-from"))    ;FILE & =FILE)
         )
   (custom-note-var-changed '*regexp-clean-du-flags*))
@@ -14448,7 +14477,11 @@ done
     ;; CUT-V-STR
     nil 
     ;; PST-V-STR
-    (concat "\n\n:EXAMPLE\n shell> du -s --si <DIR>\n\n"
+    (concat "\n\n:EXAMPLE\n\n"
+            ";; Show sumarry of total size with SI-style abbreviations\n\n"
+            " shell> du -s --si <DIR>\n\n"
+            ";; Show human readable size of each separte directoy in DIR\n\n"
+            " shell> du -S -h <DIR>\n\n"
             ":SEE info node `(coreutils)du invocation'\n"
             ":SEE (man \"du\")\n"
             ":SEE-ALSO `*regexp-clean-du-flags*', `get-free-disk-space'\n"
@@ -14885,7 +14918,7 @@ tput
 type
 uname     ; :SEE info node `(coreutils)uname invocation'
 whatis
-:SEE-ALSO `mon-help-permissions', `mon-help-crontab', `mon-help-tar-incantation', \n▶▶▶"
+:SEE-ALSO `mon-help-unix-usage', `mon-help-permissions', `mon-help-crontab', `mon-help-tar-incantation', \n▶▶▶"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-unix-commands :insertp t)
@@ -14895,6 +14928,273 @@ whatis
 ;;; :TEST-ME (mon-help-unix-commands t)
 ;;; :TEST-ME (describe-function 'mon-help-unix-commands)
 ;;; :TEST-ME (apply 'mon-help-unix-commands '(t))
+
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2011-06-27T12:53:19-04:00Z}#{11261} - by MON KEY>
+(defun mon-help-unix-usage (&optional insertp intrp)
+  "Categorized list of commonly used *nix command idioms with examples of their usage.\n
+
+;; :COMMAND-HELP
+
+  apropos whatis -- Show commands pertinent to string. :SEE-ALSO `threadsafe`.
+  man -t ascii | ps2pdf - > ascii.pdf -- Make a pdf of a manual page.
+  which <command> -- Show full path name of command.
+  time <command> -- See how long a command takes.
+  time cat -- Start stopwatch. Ctrl-d to stop. :SEE-ALSO `sw`.
+
+;; :DIRECTORY-NAVIGATION
+
+  cd - -- Go to previous directory.
+  cd -- Go to $HOME directory.
+  -- \(cd dir && command\) -- Go to dir, execute command and return to current dir.
+  pushd . -- Put current dir on stack so you can popd back to it.
+
+;; :FILE-SEARCHING
+
+  alias l='ls -l --color=auto' -- Quick dir listing.
+  ls -lrt -- List files by date. :SEE-ALSO `newest` and `find_mm_yyyy`.
+  ls /usr/bin | pr -T9 -W$COLUMNS -- Print in 9 columns to width of terminal.
+  find -name '*.[ch]' | xargs grep -E 'expr' -- Search 'expr' in this dir and below. :SEE-ALSO `findrepo`.
+  find -type f -print0 | xargs -r0 grep -F 'example' -- Search all regular files for 'example' in this dir and below.
+  find -maxdepth 1 -type f | xargs grep -F 'example' -- Search all regular files for 'example' in this dir.
+  find -maxdepth 1 -type d | while read dir; do echo $dir; echo cmd2; done -- Process each item with multiple commands \(in while loop\).
+  find -type f ! -perm -444 -- Find files not readable by all \(useful for web site\).
+  find -type d ! -perm -111 -- Find dirs not accessible by all \(useful for web site\).
+  locate -r 'file[^/]*\\.txt' -- Search cached index for names. This regexp is like glob *file*.txt
+  look reference -- Quickly search \(sorted\) dictionary for prefix.
+  grep --color reference /usr/share/dict/words -- Highlight occurances of regular expression in dictionary.
+
+;; :ARCHIVES-AND-COMPRESSION
+
+  gpg -c file -- Encrypt file.
+  gpg file.gpg -- Decrypt file.
+  tar -c dir/ | bzip2 > dir.tar.bz2 -- Make compressed archive of dir/.
+  bzip2 -dc dir.tar.bz2 | tar -x -- Extract archive \(use gzip instead of bzip2 for tar.gz files\).
+  tar -c dir/ | gzip | gpg -c | ssh user@remote 'dd of=dir.tar.gz.gpg' -- Make encrypted archive of dir/ on remote machine.
+  find dir/ -name '*.txt' | tar -c --files-from=- | bzip2 > dir_txt.tar.bz2 -- Make archive of subset of dir/ and below.
+  find dir/ -name '*.txt' | xargs cp -a --target-directory=dir_txt/ --parents -- Make copy of subset of dir/ and below.
+  \( tar -c /dir/to/copy \) | \( cd /where/to/ && tar -x -p \) -- Copy \(with permissions\) copy/ dir to /where/to/ dir.
+  \( cd /dir/to/copy && tar -c . \) | \( cd /where/to/ && tar -x -p \) -- Copy \(with permissions\) contents of copy/ dir to /where/to/.
+  \( tar -c /dir/to/copy \) | ssh -C user@remote 'cd /where/to/ && tar -x -p'  -- Copy \(with permissions\) copy/ dir to remote:/where/to/ dir.
+  dd bs=1M if=/dev/sda | gzip | ssh user@remote 'dd of=sda.gz' -- Backup harddisk to remote machine.
+
+;; :RSYNC -- Network efficient file copier. :NOTE Use the --dry-run option for testing.
+
+  rsync -P rsync://rsync.server.com/path/to/file file -- Only get diffs. Do multiple times for troublesome downloads.
+  rsync --bwlimit=1000 fromfile tofile -- Locally copy with rate limit. It's like nice for I/O.
+  rsync -az -e ssh --delete ~/public_html/ remote.com:'~/public_html' -- Mirror web site \(using compression and encryption\).
+  rsync -auz -e ssh remote:/dir/ . && rsync -auz -e ssh . remote:/dir/ -- Synchronize current directory with remote one.
+
+;; :SSH - Secure SHell
+
+  ssh $USER@$HOST command -- Run command on $HOST as $USER \(default command=shell\).
+  ssh -f -Y $USER@$HOSTNAME xeyes -- Run GUI command on $HOSTNAME as $USER.
+  scp -p -r $USER@$HOST: file dir/ -- Copy with permissions to $USER's home directory on $HOST.
+  scp -c arcfour $USER@$LANHOST: bigfile -- Use faster crypto for local LAN. This might saturate GigE.
+  ssh -g -L 8080:localhost:80 root@$HOST -- Forward connections to $HOSTNAME:8080 out to $HOST:80.
+  ssh -R 1434:imap:143 root@$HOST -- Forward connections from $HOST:1434 in to imap:143.
+  ssh-copy-id $USER@$HOST  -- Install public key for $USER@$HOST for password-less log in.
+
+;; :WGET  -- a multi purpose download tool
+
+  \(cd dir/ && wget -nd -pHEKk http://www.pixelbeat.org/cmdline.html\) -- Store local browsable version of a page to the current dir.
+  wget -c http://www.example.com/large.file -- Continue downloading a partially downloaded file.
+  wget -r -nd -np -l1 -A '*.jpg' http://www.example.com/dir/ -- Download a set of files to the current directory.
+  wget ftp://remote/file[1-9].iso/ -- FTP supports globbing directly.
+  wget -q -O- http://www.pixelbeat.org/timeline.html | grep 'a href' | head -- Process output directly.
+  echo 'wget url' | at 01:00 -- Download url at 1AM to current dir.
+  wget --limit-rate=20k url -- Do a low priority download \(limit to 20KB/s in this case\).
+  wget -nv --spider --force-html -i bookmarks.html -- Check links in a file.
+  wget --mirror http://www.example.com/ -- Efficiently update a local copy of a site \(handy from cron\).
+
+;; :NETWORKING ; :NOTE ifconfig, route, mii-tool, nslookup commands are obsolete
+
+  ethtool eth0 -- Show status of ethernet interface eth0.
+  ethtool --change eth0 autoneg off speed 100 duplex full -- Manually set ethernet interface speed.
+  iwconfig eth1 -- Show status of wireless interface eth1.
+  iwconfig eth1 rate 1Mb/s fixed -- Manually set wireless interface speed.
+  iwlist scan -- List wireless networks in range.
+  ip link show -- List network interfaces.
+  ip link set dev eth0 name wan -- Rename interface eth0 to wan.
+  ip link set dev eth0 up -- Bring interface eth0 up \(or down\).
+  ip addr show -- List addresses for interfaces.
+  ip addr add 1.2.3.4/24 brd + dev eth0 -- Add \(or del\) ip and mask \(255.255.255.0\).
+  ip route show -- List routing table.
+  ip route add default via 1.2.3.254 -- Set default gateway to 1.2.3.254.
+  host pixelbeat.org -- Lookup DNS ip address for name or vice versa.
+  hostname -i -- Lookup local ip address \(equivalent to host `hostname`\).
+  whois pixelbeat.org -- Lookup whois info for hostname or ip address.
+  netstat -tupl -- List internet services on a system.
+  netstat -tup -- List active connections to/from system.
+
+;; :WINDOWS-NETWORKING ; :NOTE samba is the package that provides all this windows specific networking support
+
+  smbtree -- Find windows machines. :SEE-ALSO `findsmb`
+  nmblookup -A 1.2.3.4 -- Find the windows \(netbios\) name associated with ip address.
+  smbclient -L windows_box -- List shares on windows machine or samba server.
+  mount -t smbfs -o fmask=666,guest //windows_box/share /mnt/share -- Mount a windows share.
+  echo 'message' | smbclient -M windows_box -- Send popup to windows machine \(off by default in XP sp2\).
+
+;; :TEXT-MANIPULATION  ; :NOTE sed uses stdin and stdout. Newer versions support inplace editing with the -i option
+
+  sed 's/string1/string2/g' -- Replace string1 with string2.
+  sed 's/\\\(.*\\\)1/\\12/g' -- Modify anystring1 to anystring2.
+  sed '/ *#/d; /^ *$/d' -- Remove comments and blank lines.
+  sed ':a; /\\\\$/N; s/\\\\\\n//; ta' -- Concatenate lines with trailing \\.
+  sed 's/[ \\t]*$//' -- Remove trailing spaces from lines.
+  sed 's/\\\([`\"$\\]\\\)/\\\\\\1/g' -- Escape shell metacharacters active within double quotes.
+  seq 10 | sed \"s/^/      /; s/ *\\\(.\\{7,\\}\\\)/\\1/\" -- Right align numbers.
+  sed -n '1000{p;q}' -- Print 1000th line.
+  sed -n '10,20p;20q' -- Print lines 10 to 20.
+  sed -n 's/.*<title>\\\(.*\\\)<\\/title>.*/\\1/ip;T;q' -- Extract title from HTML web page.
+  sed -i 42d ~/.ssh/known_hosts -- Delete a particular line.
+  sort -t. -k1,1n -k2,2n -k3,3n -k4,4n -- Sort IPV4 ip addresses.
+  echo 'Test' | tr '[:lower:]' '[:upper:]' -- Case conversion.
+  tr -dc '[:print:]' < /dev/urandom -- Filter non printable characters.
+  tr -s '[:blank:]' '\\t' </proc/diskstats | cut -f4 -- Cut fields separated by blanks.
+  history | wc -l -- Count lines.
+
+;; :SET-OPERATIONS ; :NOTE You can export LANG=C for speed. Also, these assume no duplicate lines within a file.
+
+  sort file1 file2 | uniq -- Union of unsorted files.
+  sort file1 file2 | uniq -d -- Intersection of unsorted files.
+  sort file1 file1 file2 | uniq -u -- Difference of unsorted files.
+  sort file1 file2 | uniq -u -- Symmetric Difference of unsorted files.
+  join -t'\\0' -a1 -a2 file1 file2 -- Union of sorted files.
+  join -t'\\0' file1 file2 -- Intersection of sorted files.
+  join -t'\\0' -v2 file1 file2 -- Difference of sorted files.
+  join -t'\\0' -v1 -v2 file1 file2 -- Symmetric Difference of sorted files.
+
+;; :MATH
+
+  echo '\(1 + sqrt\(5\)\)/2' | bc -l -- Quick math \(Calculate φ\). :SEE-ALSO `bc`.
+  seq -f '4/%g' 1 2 99999 | paste -sd-+ | bc -l -- Calculate π the unix way.
+  echo 'pad=20; min=64; \(100*10^6\)/\(\(pad+min\)*8\)' | bc -- More complex \(int\) e.g. this shows max FastE packet rate.
+  echo 'pad=20; min=64; print \(100E6\)/\(\(pad+min\)*8\)' | python -- Python handles scientific notation.
+  echo 'pad=20; plot [64:1518] \(100*10**6\)/\(\(pad+x\)*8\)' | gnuplot -persist -- Plot FastE packet rate vs packet size.
+  echo 'obase=16; ibase=10; 64206' | bc -- Base conversion \(decimal to hexadecimal\).
+  echo $\(\(0x2dec\)\) -- Base conversion \(hex to dec\) \(\(shell arithmetic expansion\)\).
+  units -t '100m/9.58s' 'miles/hour' -- Unit conversion \(metric to imperial\).
+  units -t '500GB' 'GiB' -- Unit conversion \(SI to IEC prefixes\).
+  units -t '1 googol' -- Definition lookup.
+  seq 100 | \(tr '\\n' +; echo 0\) | bc -- Add a column of numbers. :SEE-ALSO `add` and `funcpy`.
+
+;; :CALENDAR
+
+  cal -3 -- Display a calendar.
+  cal 9 1752 -- Display a calendar for a particular month year.
+  date -d fri -- What date is it this Friday. SEE-ALSO `day`
+  [ $\(date -d '12:00 +1 day' +%d\) = '01' ] || exit -- Exit a script unless it's the last day of the month.
+  date --date='25 Dec' +%A -- What day does xmas fall on this year?
+  date --date='@2147483647' -- Convert seconds since the epoch \(1970-01-01 UTC\) to date
+  TZ='America/Los_Angeles' date -- What time is it on west coast of US \(use tzselect to find TZ\)
+  date --date='TZ=\"America/Los_Angeles\" 09:00 next Fri' -- What's the local time for 9AM next Friday on west coast US?
+
+;; :LOCALES
+
+  printf \"%'d\\n\" 1234 -- Print number with thousands grouping appropriate to locale.
+  BLOCK_SIZE=\\'1 ls -l -- Use locale thousands grouping in ls. :SEE-ALSO `l`.
+  echo \"I live in `locale territory`\"	-- Extract info from locale database.
+  LANG=en_IE.utf8 locale int_prefix -- Lookup locale info for specific country. :SEE-ALSO `ccodes`
+  locale -kc $\(locale | sed -n 's/\\\(LC_.\\{4,\\}\\\)=.*/\\1/p'\) | less -- List fields available in locale database.
+
+;; :RECODE :NOTE Obsoletes iconv, dos2unix, unix2dos
+
+  recode -l | less -- Show available conversions \(aliases on each line\).
+  recode windows-1252.. file_to_change.txt -- \"Windows ANSI\" to local charset \(auto does CRLF conversion\).
+  recode utf-8/CRLF.. file_to_change.txt -- Windows utf8 to local charset.
+  recode iso-8859-15..utf8 file_to_change.txt -- Latin9 \(western europe\) to utf8.
+  recode ../b64 < file.txt > file.b64 -- Base64 encode.
+  recode /qp.. < file.qp > file.txt -- Quoted printable decode.
+  recode ..HTML < file.txt > file.html -- Text to HTML.
+  recode -lf windows-1252 | grep euro -- Lookup table of characters.
+  echo -n 0x80 | recode latin-9/x1..dump -- Show what a code represents in latin-9 charmap.
+  echo -n 0x20AC | recode ucs-2/x2..latin-9/x -- Show latin-9 encoding.
+  echo -n 0x20AC | recode ucs-2/x2..utf-8/x -- Show utf-8 encoding.
+
+;; :COMPACT-DISCS
+
+  gzip < /dev/cdrom > cdrom.iso.gz -- Save copy of data cdrom.
+  mkisofs -V LABEL -r dir | gzip > cdrom.iso.gz -- Create cdrom image from contents of dir.
+  mount -o loop cdrom.iso /mnt/dir -- Mount the cdrom image at /mnt/dir \(read only\).
+  cdrecord -v dev=/dev/cdrom blank=fast -- Clear a CDRW.
+  gzip -dc cdrom.iso.gz | cdrecord -v dev=/dev/cdrom - -- Burn cdrom image \(use dev=ATAPI -scanbus to confirm dev\).
+  cdparanoia -B -- Rip audio tracks from CD to wav files in current dir.
+  cdrecord -v dev=/dev/cdrom -audio -pad *.wav -- Make audio CD from all wavs in current dir. :SEE-ALSO `cdrdao`.
+  oggenc --tracknum='track' track.cdda.wav -o 'track.ogg' -- Make ogg file from wav file.
+
+;; :DISK-SPACE
+
+  ls -lSr -- Show files by size, biggest last.
+  du -s * | sort -k1,1rn | head -- Show top disk users in current dir.
+  du -hs /home/* | sort -k1,1h -- Sort paths by easy to interpret disk usage.
+  df -h -- Show free space on mounted filesystems.
+  df -i -- Show free inodes on mounted filesystems.
+  fdisk -l -- Show disks partitions sizes and types \(run as root\).
+  rpm -q -a --qf '%10{SIZE}\\t%{NAME}\\n' | sort -k1,1n -- List all packages by installed size \(Bytes\) on rpm distros.
+  dpkg-query -W -f='${Installed-Size;10}\\t${Package}\\n' | sort -k1,1n -- List all packages by installed size \(KBytes\) on deb distros.
+  dd bs=1 seek=2TB if=/dev/null of=ext3.test -- Create a large test file \(taking no space\). :SEE-ALSO `truncate`.
+  > file -- Truncate data of file or create an empty file.
+
+;; :MONITORING/DEBUGGING
+
+  tail -f /var/log/messages -- Monitor messages in a log file.
+  strace -c ls >/dev/null -- Summarise/profile system calls made by command.
+  strace -f -e open ls >/dev/null -- List system calls made by command.
+  strace -f -e trace=write -e write=1,2 ls >/dev/null -- Monitor what's written to stdout and stderr.
+  ltrace -f -e getenv ls >/dev/null -- List library calls made by command.
+  lsof -p $$ -- List paths that process id has open.
+  lsof ~ -- List processes that have specified path open.
+  tcpdump not port 22 -- Show network traffic except ssh.
+  ps -e -o pid,args --forest -- List processes in a hierarchy.
+  ps -e -o pcpu,cpu,nice,state,cputime,args --sort pcpu | sed '/^ 0.0 /d' -- List processes by % cpu usage.
+  ps -e -orss=,args= | sort -b -k1,1n | pr -TW$COLUMNS -- List processes by mem \(KB\) usage.
+  ps -C firefox-bin -L -o pid,tid,pcpu,state -- List all threads for a particular process.
+  ps -p 1,$$ -o etime= -- List elapsed wall time for particular process IDs.
+  last reboot -- Show system reboot history.
+  free -m -- Show amount of \(remaining\) RAM \(-m displays in MB\).
+  watch -n.1 'cat /proc/interrupts' -- Watch changeable data continuously.
+  udevadm monitor -- Monitor udev events to help configure rules.
+
+;; :SYSTEM INFORMATION  ; :NOTE lines prefixed with '#' indicate root access is required.
+
+  uname -a -- Show kernel version and system architecture.
+  head -n1 /etc/issue -- Show name and version of distribution.
+  cat /proc/partitions -- Show all partitions registered on the system.
+  grep MemTotal /proc/meminfo -- Show RAM total seen by the system.
+  grep \"model name\" /proc/cpuinfo -- Show CPU\(s\) info.
+  lspci -tv -- Show PCI info.
+  lsusb -tv -- Show USB info.n
+  mount | column -t -- List mounted filesystems on the system \(and align output\).
+  grep -F capacity: /proc/acpi/battery/BAT0/info -- Show state of cells in laptop battery.
+  # dmidecode -q | less -- Display SMBIOS/DMI information.
+  # smartctl -A /dev/sda | grep Power_On_Hours -- How long has this disk \(system\) been powered on in total.
+  # hdparm -i /dev/sda -- Show info about disk sda.
+  # hdparm -tT /dev/sda -- Do a read speed test on disk sda.
+  # badblocks -s /dev/sda -- Test for unreadable blocks on disk sda.
+
+;; :INTERACTIVE
+
+  readline -- Line editor used by bash, python, bc, gnuplot, etc.
+  screen -- Virtual terminals with detach capability, etc.
+  mc -- Powerful file manager that can browse rpm, tar, ftp, ssh, etc.
+  gnuplot -- Interactive/scriptable graphing.
+  links -- Web browser.
+  xdg-open . -- open a file or url with the registered desktop application.
+
+:SOURCE http://www.pixelbeat.org/cmdline.html :DATE 2008-01-07
+
+:SEE-ALSO `mon-help-unix-commands'.\n▶▶▶"
+  (interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-unix-usage :insertp t)
+    (mon-help-message-intrp "mon-help-unix-usage")))
+;;
+;;; :TEST-ME (mon-help-unix-usage)
+;;; :TEST-ME (describe-function 'mon-help-unix-usage)
+;;; :TEST-ME (mon-help-unix-usage t)
+;;; :TEST-ME (apply 'mon-help-unix-usage '(t))
 
 
 ;;; ==============================
@@ -16869,9 +17169,10 @@ When predicate `IS-MON-SYSTEM-P' returns non-nil evaluate:\n
              (when (mon-help-bind-help-keys-loadtime t)
                (push ":EVALUATED `mon-help-bind-help-keys-loadtime'" myb-msg-usr)
                (setq w-msg-user t))
-             (when (mon-check-feature-for-loadtime 'mon-doc-help-pacman) 
-               (push ":REQUIRED `mon-doc-help-pacman'" myb-msg-usr)
-               (setq w-msg-user t))
+             ;; FIXME DARWIN we don't need this anylonger as were not using pacman
+             ;; (when (mon-check-feature-for-loadtime 'mon-doc-help-pacman) 
+             ;;   (push ":REQUIRED `mon-doc-help-pacman'" myb-msg-usr)
+             ;;   (setq w-msg-user t))
              (when (mon-check-feature-for-loadtime 'mon-doc-help-css) 
                (push ":REQUIRED `mon-doc-help-css'" myb-msg-usr)
                (setq w-msg-user t)) 

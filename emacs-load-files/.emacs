@@ -1,138 +1,201 @@
-;;; ~/.emacs  --- MON dot emacs 
-;; -*- mode: EMACS-LISP; -*-
-
-;;; ================================================================
-;; Copyright © 2008-2011 MON KEY. All rights reserved.
-;;; ================================================================
-
-;; FILENAME: ~/.emacs
-;; AUTHOR: MON KEY
-;; MAINTAINER: MON KEY
-;; CREATED: 2011-04-20T21:43:12-04:00Z
-;; VERSION: 1.0.0
-;; COMPATIBILITY: Emacs23.*
-;; KEYWORDS: dotfile
-
-;;; ================================================================
-
-;;; COMMENTARY: 
-
-;; =================================================================
-;; DESCRIPTION:
-
-;; MON .emacs provides load-paths/code specific to the site local Emacs 
-;; allowing for for better portability/granularity across MON systems.
-;;
-;; Replace `<LOCAL-PATH-TO>' with a path appropriate to local system.
-;; I use $DEVHOME 
-;; Following enumerates what the `load'ed files referenced below do:
-;;
-;; - mon-site-local-defaults.el 
-;; Where MON stores elisp that encapsulates private user data. 
-;; This allows exposing more code in public forums:
-;;
-;; (load-file "<LOCAL-PATH-TO>/mon-site-local-defaults.el")
-;;
-;; - mon-default-loads.el
-;; Bootstrap core load-paths.
-;; The constants/variables established are needed across all MON systems.
-;; 
-;; (load-file "<LOCAL-PATH-TO>/mon-default-loads.el")
-;;
-;; - mon-default-start-loads.el
-;; Finish loading required packages and site-local procedures.
-;; The here routines are evaluated conditional to current MON system. 
-;;
-;; (load-file "<LOCAL-PATH-TO>/mon-default-start-loads.el")
-;;
-;;
-;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/monDOTemacs.el)
-;; FIRST-PUBLISHED: <Timestamp: #{2009-09-23T11:40:39-04:00Z}#{09393} - by MON>
-;;
-;; FILE-CREATED: Autumn 2008
-;; HEADER-ADDED: <Timestamp: #{2009-09-23T11:29:10-04:00Z}#{09393} - by MON>
-;;
-;; =================================================================
-
-;;; LICENSE:
-
-;; =================================================================
-;; This file is not part of GNU Emacs.
-
-;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License as
-;; published by the Free Software Foundation; either version 3, or
-;; (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;; General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program; see the file COPYING.  If not, write to
-;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;; Floor, Boston, MA 02110-1301, USA.
-;; =================================================================
-;; Permission is granted to copy, distribute and/or modify this
-;; document under the terms of the GNU Free Documentation License,
-;; Version 1.3 or any later version published by the Free Software
-;; Foundation; with no Invariant Sections, no Front-Cover Texts,
-;; and no Back-Cover Texts. A copy of the license is included in
-;; the section entitled ``GNU Free Documentation License''.
-;; 
-;; A copy of the license is also available from the Free Software
-;; Foundation Web site at:
-;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
+;;; :FILE-CREATED <Timestamp: #{2024-02-16} - by MON KEY>
+;;; :FILE ~/.emacs
 ;;; ==============================
-;; Copyright © 2008-2011 MON KEY 
+;;
+;; The Bare bones installation requirements to get a sane Emacs up and running.
+;; use this sequence for  loading the emacs files:
+;;
+;; 1. ~/.emacs is loaded
+;; 2. ~/Documents/HG-Repos/site-local-private.el
+;; 3. ~/Documents/HG-Repos/mon-default-loads.el
+;; 4. ~/Documents//HG-Repos/mon-default-start-loads.el
+;;  - The :FILE mon-default-start-loads.el in turn does the following:
+;; `mon-set-system-specific-and-load-init'
+;; -> (require 'grep)
+;; -> (require 'slime-loads-GNU-clbuild)
+;; -> (mon-slime-setup-init)
+;; -> (mon-define-common-lisp-style)
+;; -> (mon-set-common-lisp-hspec-init)
+;; -> (require 'mon-utils) ;; !!!!!! :NOTE This is where evyerthing else of the mon-*.el packages gets loaded. !!!!!!
+;; 
+;; ==============================
+;; ‘C-x C-c’   Kill Emacs. Note, behaves specially if you are using Emacs as a server.  If
+;; you type it from a client frame, it closes the client connection.  *Note
+;;
+;; (server-running-p)
+;; server-process
+;;
 ;;; ==============================
-
-;;; CODE:
-
-(eval-when-compile (require 'cl))
+;; Some useful functions and variables to interogate/inspect a new Emacs install
+;; environment while we get the full Mon system up and running:
+;;
+;; user-emacs-directory
+;; user-init-file
+;; init-file-user
+;; site-run-file
+;; default-directory
+;; process-environment
+;; initial-environment
+;; invocation-name ;; emacs
+;; invocation-directory
+;; (emacs-pid)
+;; system-type
+;; system-name
+;; (system-name) 
+;; (user-login-name)
+;; (user-original-login-name (user-real-uid))
+;;
+;; (setenv "<ENV-VAR>"
+;;
+;; (getenv "PATH")
+;; (getenv "HOME")
+;; (getenv "USER")
+;; (getenv "SHELL")
+;; (getenv "TERM")
+;; (getenv "LANG")
+;; (getenv "USER")
+;; (getenv "LOGNAME")
+;;
+;; Envritonmental Variables we set to make Mon system configuration sane.
+;; (getenv "DEVHOME")
+;; (getenv "MON_HOME")
+;; (getenv "CL_MON_CODE")
+;; (getenv "SBCL_SOURCE_ROOT")
+;; (getenv "SBCL_HOME")
+;; (getenv "MON_EMACS_LOAD")
+;;
+;;
+;; (substitute-env-vars "${DEVHOME}/SDP_EMACS/emacs-load-files")
+;; (dired-other-window (substitute-env-vars "${DEVHOME}/SDP_EMACS/emacs-load-files"))
+;; (expand-file-name (pwd))
+;; (pwd)
+;;
+;; ==============================
+;; Keybinding Interrogation for Darwin:
+;; 
+;; mac-function-modifier ;; none
+;; mac-control-modifier ;; control
+;; mac-command-modifier ;; super
+;; mac-option-modifier ;; meta - consider making this something different.
+;; mac-right-command-modifier
+;; mac-right-control-modifier
+;; mac-right-option-modifier
+;; mac-right-option-modifier
+;;
+;; 
+;; initial-buffer-choice
+;;
+;; ==============================
 
 
-(cd (getenv "HOME"))
-;; (pwd)
+;; FIRST THINGS FIRST:
+;; Make left Command 'alt/option
+(when (eq system-type 'darwin)
+  (setq mac-command-modifier 'meta))
 
-(when (and (member "GDMSESSION=xfce" process-environment)
-           (setq *mon-fixing-faces* t)
-           (file-exists-p "emacs-environment"))
-  (load (expand-file-name "emacs-environment") t nil t))
-
-
-;; (URL `ftp://ftp.x.org/pub/DOCS/registry') 2001/06/01
-;; (fontset-font "fontset-default"  9658)
-;; (fontset-font "fontset-standard"  9658)
-;; (fontset-font "fontset-startup"  9658)
-;; :NOTE  `setup-default-fontset' is the guy finding mutt-clearlyu !
-(when (string-equal (x-get-resource "emacs" "FontBackend") "x")
-   (let ((props (font-face-attributes (x-get-resource "emacs" "font"))))
-     (remf props :height)
-     (setq props (apply #'font-spec :registry "iso10646-1" props))
-     (set-fontset-font "fontset-standard"                    ;; t for "fontset-default"
-                       (cons #x25b0 #x25bf) ;; <TARGET>
-                       props                ;; <FONT-SPEC>
-                       nil                  ;; <FRAME>
-                       'append)))
-  ;; (set-fontset-font "fontset-default"
-  ;;                   'unicode-bmp
-  ;;                   '("terminus" . "iso10646-1")))
-  ;; (set-fontset-font "fontset-standard"
-  ;;                   'unicode
-  ;;                   '("terminus" . "iso10646-1"))
-
-;; (set-fontset-font "fontset-default"                 ;; NAME
-;;                   nil                               ;; TARGET
-;;                   '("terminus" . "iso10646-1") ;; FONT-SPEC  (<FAMILY> . <REGISTRY>)
-;;                   nil                               ;; FRAME
-;;                   'prepend                          ;; ADD
-;;                   )
-
-
-;; make sure we're not driven crazy.
+;; Make sure we're not driven crazy.
 (blink-cursor-mode -1)
+
+;; (setq tool-bar-mode nil)
+;; (setq tool-bar-mode t)
+
+;; Enough with the yes or no questions
+(setq use-short-answers t)
+
+;; Turn off the infernal ringing
+(setq ring-bell-function 'ignore)
+;; (setq visible-bell nil)
+
+;; This from mon-default-start-loads
+(unless show-paren-mode (show-paren-mode 1))
+
+;; (set-scroll-bar-mode 'left)
+;; (set-scroll-bar-mode 'right)
+;; (set-scroll-bar-mode nil)
+(unless (null scroll-bar-mode) (scroll-bar-mode -1))
+(unless (null tool-bar-mode) (tool-bar-mode -1))
+
+;; Comment this out we need it at moment
+;; (unless (null menu-bar-mode) (menu-bar-mode -1)) 
+
+(setq-default cursor-type '(bar . 3))
+(setq-default indent-tabs-mode nil)
+(setq inhibit-startup-message t)
+
+;; Set this later elsewhere, and make sure we open into the emacs-load-files directory.
+;; (setq initial-buffer-choice "*scratch*")
+
+(setq text-quoting-style 'grave)
+(custom-note-var-changed 'text-quoting-style)
+
+;; :NOTE Fullscreen on macOS is a bit special, in that apps get their own
+;; desktop where other windows normally can’t exit behind or in front of the
+;; app. Personally I hate this for of fullscreen, but emacs supports using a
+;; non-native fullscreen mode: (setq ns-use-native-fullscreen nil) This turns
+;; off the native macOS fullscreen mode, and instead make the current emacs
+;; frame simply take up the whole screen on the current desktop. This means you
+;; can switch to other apps/windows, and they’ll appear on top of emacs.
+;; :SOURCE https://www.reddit.com/r/emacs/comments/n68q16/fullscreen_and_makeframe_on_osx/
+(setq ns-use-native-fullscreen nil)
+
+
+;; Begin setting up the local Emacs environment:
+(let* ((uname  (apply 'concat (mapcar 'char-to-string  '(109 111 110 107 112 101 97 114 109 97 110))))
+       (user  (concat "USER=" uname))
+       (home  (concat "/Users/" uname))
+       (uhome  (concat "HOME=" home)))
+  (when (and  (member user process-environment)
+              (member uhome process-environment)
+              (string-equal (getenv "HOME") home))
+    (cd (getenv "HOME"))
+    (unless (equal (getenv "DEVHOME") (substitute-in-file-name "${HOME}/Documents/HG-Repos"))
+      (setenv "DEVHOME" (substitute-in-file-name "${HOME}/Documents/HG-Repos")))
+    ;; On i3_i3_i3 GNU This was i the file ~/emacs-environment because xdg didn't pick it up otherwise, do it here instead.
+    (let ((environs '(("MON_HOME"    .  "$HOME")
+                      ("MON_EMACS_LOAD" . "${DEVHOME}/SDP_EMACS/emacs-load-files")
+                      ;; ("DEVHOME"     . "$MON_HOME/Documents/HG-Repos") ;; already set above keep here for reference
+                      ;; ("LOCAL_MON"   .  "$MON_HOME/LOCAL-MON")
+	              ;; ("BIN_MON"     . "$LOCAL_MON/BIN-MON")
+	              ;; ("MON_SCRIPTS" . "$BIN_MON/mon-scripts")
+                      ;; ("PATH"        . "$PATH:/usr/local/bin:$BIN_MON:$BIN_MON/mon-scripts")
+                      ;;
+                      ;; ("SHARE_MON"   . "$LOCAL_MON/SHARE-MON")
+	              ;; ("DOC_MON"     . "$SHARE_MON/DOC-MON")
+                      ;; :NOTE "INFO_MON" is a directory where we store site local info files like the ansicl info spec
+                      ;; Don't add the trailing "/" we add it later in mon-default-start-loads with `file-name-as-directory'
+	              ("INFO_MON"    .  "$DEVHOME/SDP_INFO") 
+	              ;; ("MAN_MON"     . "$SHARE_MON/MAN-MON")
+                      ("SBCL_HOME"  . "opt/homebrew/lib/sbcl")
+                      ("SBCL_SOURCE_ROOT" . "/opt/homebrew/Cellar/sbcl/2.4.1/share/sbcl/src")
+	              ("QUICKLISP_HOME" . "${DEVHOME}/quicklisp")
+                      ;; :NOTE on i3-i3 there was a directory "CL-repo-HG" we aren't using that anymore.
+                      ;; ("CL_MON_CODE" . "$DEVHOME/CL-repo-HG/CL-MON-CODE") 
+                      ;; (let ((env '("CL_MON_CODE" . "$DEVHOME/CL-MON-CODE"))) 
+                      ;;   (setenv (car env) (substitute-env-vars (cdr env))))
+                      ("CL_MON_CODE" . "$DEVHOME/CL-MON-CODE") ;; (getenv "CL_MON_CODE")
+                      )))
+      (mapcar #'(lambda (x) (setenv (car x) (substitute-env-vars (cdr x)))) environs))
+    ;; Push emacs-load-files onto the `load-path'. :NOTE This should be moved out if granularity requires it.
+    (add-to-list 'load-path (substitute-env-vars "${MON_EMACS_LOAD}"))))
+
+
+;;; ==============================
+;; On i3_i3_i3 GNU This was i the file ~/emacs-environment because xdg didn't pick it up otherwise
+;; keep it here for future reference in case it's neeeded
+;; (let ((environs '(("EMACSCLIENT" . "emacsclient -c")
+;; 	          ("EDITOR"      . "$EMACSCLIENT")
+;; 	          ("VISUAL"      . "$EMACSCLIENT")
+;; 	          ("EMACS"       . "$EDITOR")
+;; 	          ("ALTERNATE_EDITOR" . "emacsclient --alternate-editor emacs +%d %s"))))
+;;   (mapc #'(lambda (x) (setenv (car x) (substitute-env-vars (cdr x)))) environs))
+
+;;; ==============================
+;; This from the i3_i3_i3 Gnu .emacs
+;;
+;; (when (and (member "GDMSESSION=xfce" process-environment)
+;;            (setq *mon-fixing-faces* t)
+;;            (file-exists-p "emacs-environment"))
+;;   (load (expand-file-name "emacs-environment") t nil t))
 
 
 ;;; ==============================
@@ -152,7 +215,6 @@
 (setq window-system-default-frame-alist
       '((x   (menu-bar-lines . 0) (tool-bar-lines   . 0))
         (nil (menu-bar-lines . 0) (tool-bar-lines   . 0))))
-;;
 (custom-note-var-changed 'window-system-default-frame-alist)
 
 ;; `default-frame-alist'
@@ -166,133 +228,148 @@
         (cursor-color . "yellow")
         (foreground-color . "white")
         (mouse-color . "white")
-        (menu-bar-lines . 0)
-        ))
-;;
+        (menu-bar-lines . 0)))
 (custom-note-var-changed 'default-frame-alist)
-;;
+
 ;; When they do become visible, put them on the right.
 (setq default-frame-scroll-bars 'right)
 
-;; initial-frame-alist
-;;
-;; display
-;; top
-;; font 
-;; font-parameter
-;; font-backend
-;; wait-for-wm
-;; font-backend
-;; environment
-;; 
-;; minibuffer-frame-alist
-
-;; x-gtk-use-old-file-dialog
-;; (x-uses-old-gtk-dialog)
-;; use-file-dialog
-;; use-dialog-box
-;; x-gtk-use-system-tooltips
-;; x-gtk-whole-detached-tool-bar
-;; gtk-version-string
-;; (getenv "XENVIRONMENT")
-
-(setq x-gtk-show-hidden-files t)
-(custom-note-var-changed 'x-gtk-show-hidden-files)
-;; :EXAMPLE (x-file-dialog "file" (file-name-as-directory (getenv "HOME")))
 
-;;;;; 
-;; (process-get server-process :server-file)
-;; (getenv-internal "DISPLAY" (process-get server-process 'env))
-;; (and server-use-tcp (process-get server-process :auth-key))
-;; process-environment  initial-environment
-;;;;;
-(if (memq system-type (list 'gnu 'gnu/linux 'gnu/linux 'gnu/kfreebsd))
-    ;;This won't work b/c server-socket-dir isn't in the environment yet!
-    ;; (if (file-exists-p (expand-file-name "server" server-socket-dir))
-    (if (file-exists-p (expand-file-name (format "/tmp/emacs%d/server" (truncate (user-uid)))))
-	(let* ((catch-proc '())
-	       (curr-comm invocation-name)
-	       ;; :NOTE Neither of these work when emacs was initialized from an xdg session...
-	       ;; (file-name-nondirectory  (getenv "_")) 
-	       ;; (assoc-string  "_" initial-environment)
-	       (match-comm (concat curr-comm ".*"))
-	       (curr-pid (emacs-pid))
-	       (curr-usr (truncate (user-uid)))) ;; (truncate (user-real-uid))
-	  (dolist (proc-iter (list-system-processes)
-			     (and catch-proc
-				  (warn (concat "Declining to initialize a new server with `server-start'\n"
-						"Found these existing server(s) already running:\n %S") catch-proc)))
-	    (let* ((proc-att (process-attributes proc-iter))
-		   (get-comm   (cdr (assq 'comm proc-att)))
-		   (get-comm-if (and (string-match-p "emacs.*" get-comm) get-comm))
-		   (get-pgrp   (and get-comm-if (cdr (assq 'pgrp proc-att))))
-		   (get-pgrp-if (and get-pgrp
-				     (unless (eq get-pgrp curr-pid)
-				       get-pgrp)))
-		   (get-euid (when get-pgrp-if
-			       (cdr (assq 'euid proc-att))))
-		   (get-euid-if (and (eq curr-usr get-euid) get-euid)))
-	      (when (and get-euid-if (string-match-p match-comm get-comm-if)) ;; "<EMACS-?>.*"
-		(unless (string-match-p "emacsclient.*" get-comm)
-		  (push (list get-comm get-pgrp) catch-proc))))))
-      (and (server-start) (server-mode t)))
-  (unless server-running-p 
-    (server-start) 
-    (server-mode t)))
+;;; ==============================
+;; If you want to use the default shortcuts for copy, paste, cut etc. macOS, put this is your .init.el.
+;;  Since M-x is overwritten in line 2, don’t forget to reassign it. See the last line as an example.
+;;
+;; (global-set-key (kbd "M-c") 'kill-ring-save) ; ⌘-c = Copy
+;; (global-set-key (kbd "M-x") 'kill-region) ; ⌘-x = Cut
+;; (global-set-key (kbd "M-v") 'yank) ; ⌘-v = Paste
+;; (global-set-key (kbd "M-a") 'mark-whole-buffer) ; ⌘-a = Select all
+;; (global-set-key (kbd "M-z") 'undo) ; ⌘-z = Undo
+;; (global-set-key (kbd "≈") 'execute-extended-command) ; Replace ≈ with whatever your option-x produces
 
-;; (setq debug-on-error t) 
+;;; ==============================
+;; :NOTE C-M-q locks the screen, this maps to Conntrol Command Q which the Darwin GIUI eats first. 
+;; How to inhibit or get around this???
+;; (key-binding (kbd "C-M-q")) ;; -> `indent-pp-sexp'
 
-(setq inhibit-default-init t)
-(custom-note-var-changed 'inhibit-default-init)
+;;; ==============================
+(global-set-key "\C-x\C-d"            'dired)
+(global-set-key (kbd "<C-backspace>") 'backward-kill-word)
+(global-set-key (kbd "<S-backspace>") (kbd "DEL"))
+(global-set-key "\C-cflr"             'fill-region)
+(global-set-key "\C-cvm"              'view-mode)                        
+(global-set-key "\C-c\M-/"            'hippie-expand)
+;; (global-set-key "\M-n"             'mon-scroll-up-in-place)
+;; (global-set-key "\M-p"             'mon-scroll-down-in-place)
+;; (global-set-key "\C-cu:"           'mon-cln-up-colon)
+;; (global-set-key "\C-cwou"          'mon-wrap-one-url)
 
-(setq init-file-user load-file-name)
+;;; ==============================
+;; Define this early so we can read the info files for the local Environment with sanity.
+(defun mon-info-mode-hook ()
+  "Function executed on the `ido-minibuffer-setup-hook' which adds bindings to
+`Info-mode-map' for `Info-mode'.
+:SEE-ALSO `mon-ido-completion-map-hook', `mon-post-load-hooks'"
+  ;; (define-key Info-mode-map "\M-n" 'mon-scroll-up-in-place) 
+  ;; :NOTE follwing synch w/ MON binding for `help-go-forward' and `help-go-back'
+  ;; Move back in history to the last node you were at.
+    (define-key Info-mode-map "\C-c\C-b" 'Info-history-back)
+  ;; Move forward in history to the node you returned from after using l.
+    (define-key Info-mode-map "\C-c\C-f" 'Info-history-forward)
+    (define-key Info-mode-map "\C-cia" 'info-apropos))
+    
+(add-hook 'Info-mode-hook 'mon-info-mode-hook) 
 
+;;; ==============================
+(defun mon-ido-completion-map-hook ()
+  "Function executed on the `ido-minibuffer-setup-hook' which adds bindings to
+`ido-completion-map' for `ido-complete'.
+:SEE-ALSO `mon-info-mode-hook', `mon-post-load-hooks'.\n▶▶▶ ."
+  (define-key ido-completion-map (kbd "<backtab>") 'ido-complete))
+
+(add-hook 'ido-minibuffer-setup-hook 'mon-ido-completion-map-hook)
+
+
+;;; ==============================
+;; (setq-default x-select-enable-clipboard 1)
+
+;; Not sure why/if we need this anymore:
+;;
+;; (put 'narrow-to-region  'disabled nil)
+;; (put 'downcase-region   'disabled nil)
+;; (put 'upcase-region     'disabled nil)
+;; (put 'capitalize-region 'disabled nil)
+;; (put 'eval-expression   'disabled nil)
+
+;;; ==============================
+;; From mon-default-start-loads.el functions `mon-set-split-window-init'
+(custom-set-variables 
+    '(split-width-threshold  180 t nil ":DEFAULT 160")
+    '(split-height-threshold 50  t nil ":DEFAULT 80")
+    '(even-window-heights    nil t nil ":DEFAULT t"))
+
+;;; ==============================
+;; From `mon-set-color-themes-init'
+(custom-set-variables 
+      '(font-lock-verbose (1+ (* 8 1024)) t nil ":DEFAULT 0")
+      '(global-font-lock-mode t)
+      '(font-lock-maximum-decoration t))
+
+;;; ==============================
+(custom-set-variables
+    '(ibuffer-default-shrink-to-minimum-size t)
+    '(ibuffer-always-show-last-buffer nil)
+    '(ibuffer-use-header-line t))
+
+;;; ==============================
+;; (require 'show-point-mode)
+
+;;; ==============================
+;; The old .emacs file had code that would load the following in sequence, BUT check first
+;; 
+;; site-local-private.el
+;; mon-default-start-loads.el
+;; mon-default-loads.el
+;;
 ;; :WAS
 ;; (load (substitute-in-file-name "$DEVHOME/emacs-load-files/site-local-private.el"))
 ;; (load (substitute-in-file-name "$DEVHOME/emacs-load-files/mon-default-loads.el"))
 ;; (load (substitute-in-file-name "$DEVHOME/emacs-load-files/mon-default-start-loads.el"))
 
-;; (getenv "LANG")
-;; (getenv "USER")
-;; (getenv "LOGNAME")
-;; (user-original-login-name (user-real-uid))
-(let* ((if-exists (getenv "DEVHOME"))
-       (devhome (when if-exists
-		  (substitute-in-file-name "${DEVHOME}/emacs-load-files/"))))
-  (if (and devhome (file-exists-p devhome))
-      (setq if-exists nil)
-    (setq devhome nil))
-  (if devhome
-    (dolist (chk-name (list "site-local-private.el"
-			    "mon-default-loads.el"
-			    "mon-default-start-loads.el")
-		      (when (and if-exists (eq (length if-exists) 3))
-			(dolist (load-exist (nreverse if-exists))
-			  (load load-exist))))
-      (let ((chk-if (expand-file-name chk-name devhome)))
-	;; This version takes care to ensure that we expanded into a file name 
-	;; (if (and chk-if (not (string= devhome (file-name-as-directory chk-if))))	     
-	(if (file-exists-p chk-if)
-	    (push chk-if if-exists)
-	  (setq if-exists nil))))
-    (progn
-      (set-scroll-bar-mode nil)
-      (tool-bar-mode -1)
-      (menu-bar-mode -1)
-      (setq inhibit-startup-message t)
-      ;; site-run-file ;; use --no-site-file
-      ;; 
-      ;; (executable-find "emacs")
-    )))
+;;; ==============================
+
+;;; ==============================
+;; (getenv "MON_EMACS_LOAD")
+;; uncomment to load everything at inti.
+;; (let* ((melf (getenv "MON_EMACS_LOAD"))
+;;        ;; (if-exists (and (stringp melf)
+;;        ;;                 (file-exists-p melf)
+;;        ;;                 ;; (setq user-emacs-directory (concat melf "/"))
+;;        ;;                 melf))
+;;        ;; just assume they loadfiles exist and are there and exist at this point.
+;;        (loademup (mapcar #'(lambda (x) (substitute-in-file-name  (concat "${MON_EMACS_LOAD}/" x)))
+;;                          (list "site-local-private.el"
+;; 	                       "mon-default-loads.el"
+;;                                "mon-default-start-loads.el"))))
+;;   (when (and loademup (eq (length loademup) 3))
+;;     (mapc #'(lambda (y) (load y)) loademup)))
 
 
 ;;; ==============================
-;; :NOTE getting at the TRUNK
-;;
-;; bzr checkout $DEVHOME/TRUNKS/emacs-load-files-BZR/trunk emacs-load-files-TRUNK
-;; bzr branch $DEVHOME/TRUNKS/emacs-load-files-TRUNK emacs-load-files
-;;
+;; Make sure our init-file is .emacs Note, this won't prevent site-start.el from being loaded tho.
+;; (setq init-file-user load-file-name)
+
 ;;; ==============================
+;; `debug-ignored-errors' `inhibit-debugger'
+;; (setq debug-on-error t)
+;; (setq debug-on-error nil)
+(toggle-debug-on-error t)
+
+
+
+;;; ==============================
+(load "site-local-private.el")
+(load "mon-default-loads.el")
+(load "mon-default-start-loads.el")
 
 ;;; ================================================================
 ;;; MON .emacs ends here

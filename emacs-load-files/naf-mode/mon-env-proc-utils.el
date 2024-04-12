@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010-2011 MON KEY. All rights reserved.
+;; Copyright © 2010-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-env-proc-utils.el
@@ -117,7 +117,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010-2011 MON KEY 
+;; Copyright © 2010-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -314,7 +314,7 @@ When called-interactively pretty-print return value in buffer named
                       ;; MON-LOCAL-VARS                          
                       (when (bound-and-true-p *mon-misc-path-alist*)
                         (cadr (assq 'the-emacs-vars *mon-misc-path-alist*)))
-                      (do* ((i '( ;; :LENNART-EMACS-W32-VARS
+                      (dl-do* ((i '( ;; :LENNART-EMACS-W32-VARS
                                  EMACSCLIENT_STARTING_SERVER EMACS_SERVER_FILE
                                  ;; :GNUS-MAIL
                                  ;; MH NNTPSERVER REPLYTO SAVEDIR SMTPSERVER  MAIL
@@ -474,7 +474,8 @@ this function can match multiple processes with identical invocation commands.\n
                                          (equal (cdr mgp-L1-flcl) 
                                                 (if proc-comm 
                                                     proc-comm 
-                                                  (invocation-name)))))
+                                                  ;;(invocation-name)))))
+                                                  invocation-name))))
                                 (process-attributes mgp-L-1))))
                   (when mgp-L1-lcl-mtch 
                     (if (not mpg-prc-lst)

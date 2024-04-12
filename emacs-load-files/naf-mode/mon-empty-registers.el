@@ -484,6 +484,7 @@ When `IS-MON-SYSTEM-P' evaluated at loadtime by `mon-after-mon-utils-loadtime'.\
 ;;
 (unless (bound-and-true-p  *mon-digit-shifted-registers*)
   (setq *mon-digit-shifted-registers*
+        ;; '(?! ?@ ?# ?$ ?% ?^ ?& ?* ?( ?))))
         '(?! ?@ ?# ?$ ?% ?^ ?& ?* ?( ?))))
 ;;
 ;;; :TEST-ME  *mon-digit-shifted-registers*
@@ -640,7 +641,8 @@ Does not move point.\n
 ;;; ==============================
 ;;; :PREFIX "mrr-"
 ;;; :CREATED <Timestamp: #{2009-08-08T17:04:24-04:00Z}#{09326} - by MON KEY>
-(defun* mon-reset-registers (&key intrp cntrl digit digit-S symbol upper lower all)
+;;(defun* mon-reset-registers (&key intrp cntrl digit digit-S symbol upper lower all)
+(cl-defun mon-reset-registers (&key intrp cntrl digit digit-S symbol upper lower all)
   "Reset the contents each all registers associated with keywords.\n
 :CNTRL    -> `*mon-cntl-char-registers*';
 :DIGIT    -> `*mon-digit-registers*';

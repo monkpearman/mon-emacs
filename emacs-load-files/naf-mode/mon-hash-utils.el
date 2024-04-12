@@ -276,7 +276,7 @@ HASH-STRING-OR-SYMBOL-NAME is void.
         (and (not (cadr as-cons))
              (setq hash-string-or-symbol-name
                    `(nil 
-                     ,@(case (type-of hash-string-or-symbol-name)
+                     ,@(cl-case (type-of hash-string-or-symbol-name)
                          (symbol 
                           `(symbol 
                             ,(setq as-cons 
@@ -406,7 +406,7 @@ When KEY is already present in TABLE generate a new KEY such that:\n
 `mon-hash-describe', `mon-hash-describe-descend'.\n▶▶▶"
   (when (gethash key table)
     (setq key
-          (loop for i = 1 then (1+ i)
+          (cl-loop for i = 1 then (1+ i)
                 for name = (format "%s<%d>" key i)
                 while (gethash name table)
                 finally return name)))
@@ -438,7 +438,7 @@ When KEY is already present in TABLE generate a new KEY such that:\n
            (mhrf-cnt 0))
       (dolist (mhrf-D-1 mhrf-rd-lst)
         (puthash mhrf-cnt mhrf-D-1 file-table)
-        (incf mhrf-cnt)))))
+        (cl-incf mhrf-cnt)))))
 ;;
 ;;; :PREFIX "mhrb-"
 (defun mon-hash-readlines-buffer (buffer buffer-table)
@@ -458,7 +458,7 @@ When KEY is already present in TABLE generate a new KEY such that:\n
            (mhrb-cnt 0))
       (dolist (mhrb-D-1 mhrb-rd-lst)
         (puthash mhrb-cnt mhrb-D-1 buffer-table)
-        (incf mhrb-cnt)))))
+        (cl-incf mhrb-cnt)))))
 
 ;;; ==============================
 ;;; COURTESY: Xah Lee

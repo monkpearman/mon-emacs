@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010-2011 MON KEY. All rights reserved.
+;; Copyright © 2010-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-type-utils.el
@@ -172,7 +172,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010-2011 MON KEY 
+;; Copyright © 2010-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -316,7 +316,8 @@ An autoload symbol, note <TYPE> may be a quoted symbol either macro or keymap:\n
   (or ;; Its a lambda form, e.g.: 
    ;; (indirect-function (lambda (x) x)) (indirect-function #'(lambda (x) x))
    (and (consp fncn-sym) 
-        (eq (car-safe (indirect-function fncn-sym t)) 'lambda)
+        ;; (eq (car-safe (indirect-function fncn-sym t)) 'lambda)
+        (eq (car-safe (indirect-function fncn-sym )) 'lambda)
         'lambda)
    ;; Some other thing we can't stop now want and/or if we find what we want now.
    (car (memq (type-of fncn-sym) '(;; We special case `compiled-function` here b/c
@@ -374,8 +375,10 @@ An autoload symbol, note <TYPE> may be a quoted symbol either macro or keymap:\n
                                             (fboundp fncn-sym))
                                        (and (symbolp fncn-sym) 
                                             (boundp fncn-sym)))
-                                   (indirect-function fncn-sym t))
-                              (indirect-function fncn-sym t)))))
+                                   ;;(indirect-function fncn-sym t))
+                                   (indirect-function fncn-sym ))
+                              ;; (indirect-function fncn-sym t)))))
+                              (indirect-function fncn-sym )))))
          mfop-cot)
      ;; :NOTE What about `advice'?
      (unless (null mfop-lkng) ;; Prob can't happen
@@ -407,12 +410,15 @@ An autoload symbol, note <TYPE> may be a quoted symbol either macro or keymap:\n
          ;; (listp (cdr-safe (indirect-function 'some-compiled-macro)))
          ;; Also, what to do about autoload macros? e.g. `apropos-macrop'
          ;; 
-         (when (eq (car-safe (indirect-function mfop-lkng t)) 'macro)
+         ;; (when (eq (car-safe (indirect-function mfop-lkng t)) 'macro)
+         (when (eq (car-safe (indirect-function mfop-lkng )) 'macro)
            ;; (if (mon-list-proper-p (indirect-function mfop-lkng))
            (setq mfop-cot 'macro)))
        (unless mfop-cot 
-         (when (and (eql (length (indirect-function mfop-lkng t)) 5)
-                    (eq (car-safe (indirect-function mfop-lkng t)) 'autoload))
+         ;; (when (and (eql (length (indirect-function mfop-lkng t)) 5)
+         (when (and (eql (length (indirect-function mfop-lkng )) 5)
+                    ;; (eq (car-safe (indirect-function mfop-lkng t)) 'autoload))
+                    (eq (car-safe (indirect-function mfop-lkng )) 'autoload))
            ;; Does it make sense to return these as conses instead? e.g.: 
            ;; (keymap . autoload) (macro  . autoload) (function .autoload)
            (setq mfop-cot 
@@ -483,7 +489,7 @@ key/value pairs with the format:\n
   (let (mscb-is-bnd 
         mscb-gthr
         (mscb-ob (or (and w-obarray 
-                          (typecase w-obarray 
+                          (cl-typecase w-obarray 
                             (vector (cons nil w-obarray))
                             (symbol (or 
                                      (or (and (null (boundp (bound-and-true-p w-obarray)))
@@ -508,7 +514,8 @@ key/value pairs with the format:\n
                  (and mscb-is-bnd 
                       (list :symbol-p mscb-is-bnd
                             :symbol-value-p (boundp mscb-is-bnd)
-                            :symbol-function-p (and (indirect-function mscb-is-bnd t) t)
+                            ;; :symbol-function-p (and (indirect-function mscb-is-bnd t) t)
+                             :symbol-function-p (and (indirect-function mscb-is-bnd ) t)
                             :symbol-plist-p 
                             (and (symbol-plist (intern-soft sym-string (or (cdr mscb-ob) obarray))) t)))
                  (list :symbol-obarray (or (and (symbolp (car mscb-ob))
@@ -887,7 +894,8 @@ according to some heuristic per the type indicated at `caar'.\n
          ;; (or (memq (mon-function-object-p w-map-fun) (remq 'macro *mon-function-object-types*)) 
          ;;
          ;; Reusing MSAB-ARGS. Reset to nil for use below, but don't kick out of the conditional.
-         (progn (setq msab-args) t))
+         ;; (progn (setq msab-args) t))
+         (progn (setq msab-args nil) t))
     (catch 'failed-at
       (and w-type-on-fail (setq w-type-on-fail 0))
       (setq msab-args 
@@ -1342,7 +1350,7 @@ W-CHAR is a char-literal, string, or symbol.\n
 `digit-char-p', `mon-alpha-char-p', `*mon-whitespace-chars*',
 `*mon-ascii-alpha-chars*', `*mon-digit-chars*'.\n▶▶▶"
   (let ((rtn-char
-         (case (type-of w-char)
+         (cl-case (type-of w-char)
            (integer (abs w-char))
            (string (string-to-char w-char))
            (symbol (aref (symbol-name w-char) 0))

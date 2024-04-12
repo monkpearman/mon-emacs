@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010-2011 MON KEY. All rights reserved.
+;; Copyright © 2010-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-line-utils.el
@@ -211,7 +211,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010-2011 MON KEY 
+;; Copyright © 2010-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -817,7 +817,7 @@ Jean-Paul Fizaine\nRob Havelt\nChris Wysopal\n◀\n
   (let ((mlsitc-col-n (if (and intrp (or (not col-num) 
                                          (not (integerp col-num))
                                          (<= col-num 0)))
-                          (loop 
+                          (cl-loop 
                            for rn = (read-number "Indent to column number (must be greater than 0): ")
                            until (> rn 0)
                            finally (return rn))
@@ -1021,7 +1021,8 @@ Useful for building piped lists in sections of `naf-mode' .naf files including:
 		 (mpl-bkwd-cnt (skip-chars-backward "[:space:]"))
 		 (mpl-empt (and (eolp) (bolp))))
 	    (when mpl-empt
-	      (delete-backward-char 1))
+              ;; (delete-backward-char 1))
+              (delete-char -1))
 	    (when (< mpl-bkwd-cnt 0)
 	      (let* ((mpl-cnt-bak (abs mpl-bkwd-cnt)))
 		(delete-char mpl-cnt-bak)))
@@ -1505,7 +1506,7 @@ The split line inserted with each word on a new line in `current-buffer'.\n
                                       "-- arg BUFFER-W-LINE does not exist")))
                       (t (current-buffer))))
         (mldiw-w-insrt #'(lambda (mldiw-L-2-typ mldiw-L-2-insrt-str &optional mldiw-L-2-insrt-at)
-                           (case mldiw-L-2-typ
+                           (cl-case mldiw-L-2-typ
                              ;; Interactive calls don't pass BUFFER.
                              ;; Safe to move point and insert in `current-buffer'.
                              (intrp (save-excursion 
@@ -1737,9 +1738,10 @@ point is a 'space'.\n
 `mon-spacep-at-eol', `mon-cln-spc-tab-eol', `*mon-whitespace-chars*',
 `*regexp-whitespace-chars*'.\n▶▶▶"
   (interactive "p")
-  (let* ((mspnb-char-bol (char-after (point-at-bol)))
-	 (mspnb-not-spc (not (memq mspnb-char-bol *mon-whitespace-chars*))))
-    (cond (intrp (message (concat ":FUNCTION `mon-spacep-not-bol' "
+  ;;(let* ((mspnb-char-bol (char-after (point-at-bol)))
+  (let* ((mspnb-char-bol (char-after (line-beginning-position)))  
+	(mspnb-not-spc (not (memq mspnb-char-bol *mon-whitespace-chars*))))
+   (cond (intrp (message (concat ":FUNCTION `mon-spacep-not-bol' "
                                   "-- char after point at BOL"
                                   (if mspnb-not-spc " _NOT_ " " IS ") "whitespace")))
           (t mspnb-not-spc))))
@@ -1758,9 +1760,10 @@ point is a 'space'.\n
 `mon-spacep-at-eol', `mon-cln-spc-tab-eol', `*mon-whitespace-chars*',
 `*regexp-whitespace-chars*'.\n▶▶▶"
   (interactive "p")
-  (let* ((msib-chr-bol (char-after (point-at-bol)))
+  ;;  (let* ((msib-chr-bol (char-after (point-at-bol)))
+  (let* ((msib-chr-bol (char-after (line-beginning-position)))  
 	 (msib-is-spc (and (car (memq msib-chr-bol *mon-whitespace-chars*)))))
-    (cond (intrp (message (concat ":FUNCTION `mon-spacep-is-bol' "
+  (cond (intrp (message (concat ":FUNCTION `mon-spacep-is-bol' "
                                   "-- char after point at BOL"
                                   (if msib-is-spc " IS " " _NOT_ ") "whitespace")))
           (t msib-is-spc))))
@@ -1826,9 +1829,11 @@ point is a 'space'.\n
 `mon-spacep-is-after-eol-then-graphic', `*mon-whitespace-chars*',
 `*regexp-whitespace-chars*'.\n▶▶▶"
   (interactive "p")
-  (let ((rtrn  (or (= (char-before (point-at-eol)) 9)
-                   (= (char-before (point-at-eol)) 32))))
-    (cond (intrp (message (concat ":FUNCTION `mon-spacep-at-eol' "
+  ;; (let ((rtrn  (or (= (char-before (point-at-eol)) 9)
+  ;;                  (= (char-before (point-at-eol)) 32))))
+   (let ((rtrn  (or (= (char-before (line-end-position)) 9)
+                    (= (char-before (line-end-position)) 32))))
+     (cond (intrp (message (concat ":FUNCTION `mon-spacep-at-eol' "
                                   "-- space or tab" (if rtrn " _IS_ " " _NOT_ ")
                                   "at EOL")))
           (t rtrn))))
@@ -1937,7 +1942,8 @@ When not called-interactively MOVE-TIMES arg examines Nth previos line.\n
 `mon-spacep-is-after-eol', `mon-spacep-is-after-eol-then-graphic',
 `*mon-whitespace-chars*', `*regexp-whitespace-chars*'.\n▶▶▶"
   (interactive "p")
-  (let ((mleie-rtrn (= (point-at-eol) (mon-g2be 1 t)))) ;(buffer-end 1) )))
+  ;; (let ((mleie-rtrn (= (point-at-eol) (mon-g2be 1 t)))) ;(buffer-end 1) )))
+  (let ((mleie-rtrn (= (line-end-position) (mon-g2be 1 t)))) ;(buffer-end 1) )))
     (cond (intrp
            (concat 
             ":FUNCTION `mon-line-eol-is-eob' "
@@ -1986,8 +1992,10 @@ Instances of such chars are be skipped.\n
 (defun mon-backspace  ()
    (interactive)
    (or (while (memq (char-before (point)) *mon-whitespace-chars*)
-         (delete-backward-char 1))
-       (delete-backward-char 1)))
+         ;; (delete-backward-char 1)
+         (delete-char -1))
+       ;;(delete-backward-char 1)
+       (delete-char -1)))
 
 
 ;;; ==============================

@@ -140,7 +140,8 @@
 ;; in the `*css-complete-props-and-vals*' list
 
 ;;; Code:
-
+;; (locate-library "css-mode")
+;; "/opt/homebrew/Cellar/emacs-plus@29/29.2/share/emacs/29.2/lisp/textmodes/css-mode.el"
 (require 'css-mode)
 
 ;;; ==============================
@@ -279,7 +280,8 @@ to value of `*css-complete-media-ids*' at loadtime with `mon-css-complete-loadti
 `mon-help-css-check', `mon-help-css-color'.\n▶▶▶")
 ;;
 (unless (bound-and-true-p *css-complete-pseudo-ids*)
-  (setq *css-complete-pseudo-ids* css-pseudo-ids))
+  ;; (setq *css-complete-pseudo-ids* css-pseudo-ids))
+  (setq *css-complete-pseudo-ids* css-pseudo-class-ids))
 
 ;;; ==============================
 ;; :WAS `css-props-and-vals'
@@ -552,8 +554,10 @@ Elts of array map as follows:\n
          (make-symbol 
           (format "rtn-css-clct%d"
                   (prog1 
-                      *gensym-counter* 
-                    (setq *gensym-counter* (1+ *gensym-counter*)))))))
+                      ;; *gensym-counter* 
+                      ;; (setq *gensym-counter* (1+ *gensym-counter*)))))))
+                      gensym-counter 
+                    (setq gensym-counter (1+ gensym-counter)))))))
     `(let (,rtn-css-clct)
        (mapc #'(lambda (css-v)
                  (when (funcall #',css-test-fun css-v)

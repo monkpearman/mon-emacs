@@ -281,7 +281,7 @@ Run on the `kill-buffer-hook'.\n
 `css-check-applied-face', `css-check-unapplied-face'.\n▶▶▶"
   (when (get-buffer *CSS-CHECK*)
     (with-current-buffer (buffer-name (get-buffer *CSS-CHECK*))
-      (setq *css-check-file*))))
+      (setq *css-check-file* nil))))
 ;;
 ;; (remove-hook 'kill-buffer-hook 'css-check-kill-buffer-hook)
 
@@ -377,7 +377,7 @@ Run on the `kill-buffer-hook'.\n
         (message (concat ":FUNCTION `css-check-apply-line-at-p' "
                          "-- line has already been applied"))
       ;; :WAS (let ((ccalap-buffer (current-buffer)))  ;; :MOVED-UP
-      (multiple-value-bind (oldtext newtext)
+      (cl-multiple-value-bind (oldtext newtext)
           (save-excursion
             (end-of-line)
             (search-backward-regexp
@@ -397,7 +397,8 @@ Run on the `kill-buffer-hook'.\n
           ;; :WAS (save-excursion          
           ;; (replace-string oldtext newtext nil (line-beginning-position) (line-end-position)))
           (save-excursion
-            (while (search-forward oldtext (point-at-eol) t)
+            ;; (while (search-forward oldtext (point-at-eol) t)
+            (while (search-forward oldtext (line-end-position) t)
               (replace-match newtext t t)))
           (switch-to-buffer-other-window ccalap-buffer)
           (save-excursion
@@ -424,7 +425,7 @@ Run on the `kill-buffer-hook'.\n
       (message (concat ":FUNCTION `css-check-undo-application-at-p' "
                        "-- line has not been applied"))
     (let ((ccuap-buffer (current-buffer)))
-      (multiple-value-bind (newtext oldtext)
+      (cl-multiple-value-bind (newtext oldtext)
           (save-excursion
             (end-of-line)
             (search-backward-regexp
@@ -446,7 +447,8 @@ Run on the `kill-buffer-hook'.\n
             ;;
             ;; :WAS (replace-string oldtext newtext nil (line-beginning-position) (line-end-position)))            
             (save-excursion
-              (while (search-forward oldtext (point-at-eol) t)
+              ;; (while (search-forward oldtext (point-at-eol) t)
+              (while (search-forward oldtext (line-end-position) t)
                 (replace-match newtext t t)))
           (switch-to-buffer-other-window ccuap-buffer)
           (save-excursion

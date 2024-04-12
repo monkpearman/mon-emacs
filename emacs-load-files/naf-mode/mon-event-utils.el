@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010-2011 MON KEY. All rights reserved.
+;; Copyright © 2010-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-event-utils.el
@@ -140,7 +140,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010-2011 MON KEY 
+;; Copyright © 2010-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -225,7 +225,11 @@ for invoking 'one off functions' such-as `kill-line' without
 the tedium of building the entire scaffolding.\n
 :SEE-ALSO `mon-inhibit-read-only', `mon-inhibit-modification-hooks',
 `mon-toggle-read-only-point-motion'.\n▶▶▶"
-  (let ((re-inhibit (if (not inhibit-point-motion-hooks) t nil)))
+  (let ((re-inhibit 
+         ;; (if (not inhibit-point-motion-hooks) t nil)))
+         ;; use ‘cursor-intangible-mode’ or ‘cursor-sensor-mode’ instead         
+         ;; (not inhibit-point-motion-hooks)
+         (if (not (cursor-sensor-mode)) t nil)))
     (unwind-protect
 	(progn 
           ;; why setq?
@@ -378,7 +382,7 @@ When W-KBD-QUIT is non-nil a when C-g is caught tail of list is non-nil.\n
         caught-cg-flag)
     (while
         (let ((char (read-key (concat prompt mrkas-read))))
-          (case char
+          (cl-case char
             ((?\e ?\r) nil) ;; RET or ESC break the search loop.
             ;; :NOTE Uncomment below to re-enable C-g `keyboard-quit'
             ;; (?\C-g (setq caught-cg-flag t) nil)
@@ -451,7 +455,7 @@ When non-nil PROMPT args should be ommitted.\n
                 (and (null multi-fun) 
                      (setq multi-fun 'read-string)
                      (cons (format ":FUNCTION `%s' " multi-fun)
-                           (case multi-fun 
+                           (cl-case multi-fun 
                              (read-string "string") 
                              (read-directory-name "directory")
                              (read-file-name "file")
@@ -810,6 +814,7 @@ at loadtime with `mon-keybind-put-hooks-init'.\n
   (with-current-buffer (current-buffer)
     (and (string-match-p 
           (or w-regex
+              ;; change-log-name not defined
               (concat (regexp-opt '("src"  "lisp" "trunk")) "/" (change-log-name)))
           (buffer-file-name))
          (set (make-local-variable 'isearch-mode-hook)

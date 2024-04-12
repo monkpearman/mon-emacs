@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; no-byte-compile: t -*-
 
 ;;; ================================================================
-;; Copyright © 2010-2011 MON KEY. All rights reserved.
+;; Copyright © 2010-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-post-load-hooks.el
@@ -108,7 +108,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010-2011 MON KEY 
+;; Copyright © 2010-2012 MON KEY 
 ;;; ==============================
 
 
@@ -119,7 +119,7 @@
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
-(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
+  (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 
 ;;; ==============================
@@ -238,6 +238,22 @@ When this buffer exists it is killed by `mon-run-post-load-hooks'.\n
 ;;;(progn (makunbound '*mon-post-load-hook-trigger-buffer*)
 ;;;       (unintern "*mon-post-load-hook-trigger-buffer*" obarray) )
 
+
+;; 
+(defun mon-run-post-load-hooks-helper ()
+  "helper function for `mon-run-post-load-hooks'. Used for references as a hook
+function for `add-hook' and `kill-hook' when frobbing buffer
+`*mon-post-load-hook-trigger-buffer*'.\n"
+  (let ((default-directory (or (caar *mon-tags-table-list*) default-directory)))
+    (visit-tags-table default-directory (or tags-file-name t))
+    ;; (visit-tags-table (caar *mon-tags-table-list*))
+    ;; (visit-tags-table-buffer t)
+    (mon-message :msg-spec '(":FUNCTION `mon-run-post-load-hooks' "
+                             "-- evaluated `visit-tags-table-buffer' at loadtime"))
+    (mon-message :msg-spec'(":FUNCTION `mon-run-post-load-hooks' "
+                            "-- value of current `tags-file-name': #P%S")
+                 :msg-args tags-file-name)))
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-23T22:53:41-04:00Z}#{10122} - by MON KEY>
 (defun mon-run-post-load-hooks ()
@@ -251,7 +267,9 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
 `mon-help-utils-CL-loadtime', `mon-bind-doc-help-proprietery-vars-at-loadtime'.\n▶▶▶"
   (unwind-protect
       ;;
-      (with-current-buffer (get-buffer-create *mon-post-load-hook-trigger-buffer*)
+      (with-current-buffer
+          ;; (get-buffer-create *mon-post-load-hook-trigger-buffer*) ;DARWIN inhibit the the hooks
+        (get-buffer-create *mon-post-load-hook-trigger-buffer* t)
         ;;
         ;; :NOTE What instead setting a local variable with a function object as its value
         ;;       and then doing running that on the kill-buffer-hook:
@@ -263,6 +281,14 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
         (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
                    ;; (bound-and-true-p IS-MON-P-GNU))
                    (bound-and-true-p IS-MON-SYSTEM-P))
+          ;; IS-DARWIN-P  ;; FIXME VERIFY DARWIN
+          (when (and (intern-soft "IS-DARWIN-P" obarray) ;; *IS-MON-OBARRAY*
+                     (bound-and-true-p IS-DARWIN-P))
+            (mon-help-utils-CL-loadtime t)
+            (add-hook 'kill-buffer-hook 'mon-purge-cl-symbol-buffers-on-load nil t)
+            ;; (remove-hook 'kill-buffer-hook 'mon-update-tags-tables-loadtime  t)
+            (add-hook 'kill-buffer-hook 'mon-update-tags-tables-loadtime nil t))
+          
           ;; IS-MON-P-GNU
           (when (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
                      (bound-and-true-p IS-MON-P-GNU))
@@ -270,35 +296,48 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
             (add-hook 'kill-buffer-hook 'mon-purge-cl-symbol-buffers-on-load nil t)
             ;; (remove-hook 'kill-buffer-hook 'mon-update-tags-tables-loadtime  t)
             (add-hook 'kill-buffer-hook 'mon-update-tags-tables-loadtime nil t))
-          ;; IS-W32-P
+          
           (when (and (intern-soft "IS-W32-P" obarray) ;; *IS-MON-OBARRAY*
                      (bound-and-true-p IS-W32-P)
                      (fboundp  'mon-maximize-frame-w32))
             (add-hook 'kill-buffer-hook 'mon-maximize-frame-w32 nil t))
+
           ;; Instantiate the tags-table w/ visit-tags-table on 
-          (add-hook 'kill-buffer-hook 
-                    #'(lambda ()
-                        (let ((default-directory 
-                                (or (caar *mon-tags-table-list*) default-directory)))
-                          (when (and (visit-tags-table default-directory) 
-                                     ;; (visit-tags-table (caar *mon-tags-table-list*))
-                                     ;; (visit-tags-table-buffer t)
-                                     tags-file-name)
-                            (mon-message :msg-spec '(":FUNCTION `mon-run-post-load-hooks' "
-                                                     "-- evaluated `visit-tags-table-buffer' at loadtime"))
-                            (mon-message :msg-spec'(":FUNCTION `mon-run-post-load-hooks' "
-                                                    "-- value of current `tags-file-name': #P%S")
-                                         :msg-args tags-file-name))))
-                    t t))
+          (add-hook 'kill-buffer-hook 'mon-run-post-load-hooks-helper 0 t)) 
+        ;; (add-hook 'kill-buffer-hook #'(lambda ()
+          ;;               (let ((default-directory 
+          ;;                       (or (caar *mon-tags-table-list*) default-directory)))
+          ;;                 (when (and (visit-tags-table default-directory) 
+          ;;                            ;; (visit-tags-table (caar *mon-tags-table-list*))
+          ;;                            ;; (visit-tags-table-buffer t)
+          ;;                            tags-file-name)
+          ;;                   (mon-message :msg-spec '(":FUNCTION `mon-run-post-load-hooks' "
+          ;;                                            "-- evaluated `visit-tags-table-buffer' at loadtime"))
+          ;;                   (mon-message :msg-spec'(":FUNCTION `mon-run-post-load-hooks' "
+          ;;                                           "-- value of current `tags-file-name': #P%S")
+          ;;                                :msg-args tags-file-name))))
+          ;;           t t))
         ;; :DEBUGGING
         ;; (buffer-local-value 'kill-buffer-hook (current-buffer))
         ;; (prin1 (buffer-local-variables (current-buffer)) (current-buffer))
         ;;
         (when (get-buffer *mon-post-load-hook-trigger-buffer*)
-          (kill-buffer (get-buffer *mon-post-load-hook-trigger-buffer*))))
+          (remove-hook 'mon-run-post-load-hooks-helper t)
+          (setq-local kill-buffer-hook nil)
+          (mapc 
+           #'(lambda (buffer) 
+               (when (string-match *mon-post-load-hook-trigger-buffer* (buffer-name buffer))(kill-buffer buffer)))
+           (buffer-list)))
+        )  ;; wcb
     ;; PROTECTED-FORM
     (when (get-buffer *mon-post-load-hook-trigger-buffer*)
-      (kill-buffer (get-buffer *mon-post-load-hook-trigger-buffer*)))
+      (with-current-buffer (get-buffer *mon-post-load-hook-trigger-buffer*)
+        (remove-hook 'mon-run-post-load-hooks-helper t)
+        (setq-local kill-buffer-hook nil)
+        (mapc #'(lambda (buffer) 
+                  (when (string-match *mon-post-load-hook-trigger-buffer* (buffer-name buffer))
+                    (kill-buffer buffer)))
+           (buffer-list))))
     ))
 
 
@@ -449,16 +488,52 @@ Empty/Delete the following when the `kill-emacs-hook' is run:\n
 ;; Now, add-hook to purge the directory on quit.
 (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
            (bound-and-true-p IS-MON-SYSTEM-P)
+           *emacs2html-temp*
+           ;; FIXME DARWIN
            (file-directory-p *emacs2html-temp*))
   (add-hook 'kill-emacs-hook 'mon-purge-emacs-temp-files-on-quit))
 ;;
 ;;; (remove-hook 'kill-emacs-hook 'mon-purge-emacs-temp-files-on-quit)
 
+;; (locate-library "mon-dir-utils-local")
+(declare-function mon-bind-nefs-photos-at-loadtime "mon-dir-utils-local")
+
+(declare-function mon-help-put-var-doc-val->func "mon-doc-help-utils.el" 
+                  (var-name func-name &optional pre-v-str cut-v-str pst-v-str))
+
+;;; ==============================
+(defun mon-scratch-postload ()
+  "Switch to a fresh *scratch* buffer setting buffer-local value of
+`default-directory' `*mon-emacs-root*'\n
+:SEE-ALSO `mon-scratch'"
+  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+             (bound-and-true-p IS-MON-SYSTEM-P)
+             *mon-emacs-root*)
+    (if (get-buffer "*scratch*")
+        (with-current-buffer (get-buffer "*scratch*")
+          (setq-local default-directory *mon-emacs-root*)
+          (goto-char 0)
+          (insert ";;; ==============================\n" ";;; "(mon-timestamp) "\n"
+                  (format ";;; current-directory is %s\n" default-directory))
+          (emacs-lisp-mode)
+          (display-buffer (current-buffer)))
+      (with-current-buffer (get-buffer-create "*scratch*")
+        (setq-local default-directory *mon-emacs-root*)
+        (goto-char 0)
+        (insert ";;; ==============================\n" ";;; "(mon-timestamp) "\n"
+                (format ";;; current-directory is %s\n" default-directory))
+        (emacs-lisp-mode)
+        (display-buffer (current-buffer))))))
+
+;; (mon-scratch-postload)
+
 ;;; ==============================
 (eval-after-load "mon-utils"
   '(let ((message-log-max t))
      (mon-after-mon-utils-loadtime)
-     (mon-run-post-load-hooks)))
+     (mon-run-post-load-hooks)
+     (mon-scratch-postload)))
+    
 
 ;;; ==============================
 (provide 'mon-post-load-hooks)

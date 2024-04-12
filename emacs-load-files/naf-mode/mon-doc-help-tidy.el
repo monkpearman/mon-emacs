@@ -30,9 +30,9 @@
 ;; On MON system this is:
 ;; :FILE (URL `file:///usr/doc/tidy-20090604T2303/tidy_man.html')
 ;;
-;; FUNCTIONS:►►►
+;; FUNCTIONS:▶▶▶
 ;; `mon-help-tidy'
-;; FUNCTIONS:◄◄◄
+;; FUNCTIONS:◀◀◀
 ;;
 ;; MACROS:
 ;;
@@ -1575,7 +1575,7 @@ For more about the HTML Tidy Project:
 :SEE (man \"tidy\")\n
 :ALIASED-BY `mon-help-html-tidy'\n
 :SEE-ALSO `mon-help-css-mode', `mon-help-css-color', `mon-help-css-complete',
-`mon-help-css-check', `mon-help-ebay-template-mode', `mon-help-tidy'.\n►►►"
+`mon-help-css-check', `mon-help-ebay-template-mode', `mon-help-tidy'.\n▶▶▶"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-tidy :insertp t)

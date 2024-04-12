@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010-2011 MON KEY. All rights reserved.
+;; Copyright © 2010-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-seq-utils.el
@@ -234,7 +234,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010-2011 MON KEY 
+;; Copyright © 2010-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -465,9 +465,9 @@ uses O(log n) space.\n
 `mon-sublist', `mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace',
 `mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
 `slime-shuffle-list', `shuffle-vector'.\n▶▶▶"
-  (labels ((mrndz-f (mrndz-p mrndz-len mrndz-tl)
+  (cl-labels ((mrndz-f (mrndz-p mrndz-len mrndz-tl)
               (cond ((null mrndz-p) mrndz-tl)
-                   (t (loop
+                   (t (cl-loop
                          with mrndz-ne = (random mrndz-len)
                          with mrndz-e = nil
                          with mrndz-n1 = 0
@@ -483,16 +483,16 @@ uses O(log n) space.\n
                                   (cond ((zerop (random 2))
                                          (setf (cdr mrndz-p) mrndz-l1)
                                           (setf mrndz-l1 mrndz-p)
-                                         (incf mrndz-n1))
+                                         (cl-incf mrndz-n1))
                                         (t
                                          (setf (cdr mrndz-p) mrndz-l2)
                                          (setf mrndz-l2 mrndz-p)
-                                         (incf mrndz-n2)))))
-                           (decf mrndz-ne)
+                                         (cl-incf mrndz-n2)))))
+                           (cl-decf mrndz-ne)
                            (setf mrndz-p mrndz-nxt)
                          finally
                            (setf (cdr mrndz-e) mrndz-tl)
-                           (return (if (> mrndz-n1 mrndz-n2)
+                           (cl-return (if (> mrndz-n1 mrndz-n2)
                                        (mrndz-f mrndz-l1 mrndz-n1 (mrndz-f mrndz-l2 mrndz-n2 mrndz-e))
                                        (mrndz-f mrndz-l2 mrndz-n2 (mrndz-f mrndz-l1 mrndz-n1 mrndz-e)))))))))
     (mrndz-f mk-list-random (length mk-list-random) nil)))
@@ -628,7 +628,7 @@ is `eq'.
   ;; :NOTE `defsubst'd in bytecomp.el
   ;; (byte-compile-delete-first list-elt in-list))
   (if ;; :WAS (eq (car in-list) list-elt)
-      (case w-pred
+      (cl-case w-pred
         (equal (equal (car in-list) list-elt))
         (eql   (eql (car in-list) list-elt))
         (t     (eq (car in-list) list-elt)))
@@ -637,7 +637,7 @@ is `eq'.
     (let ((mdf-total in-list))
       (while (and (cdr in-list)
                   ;; :WAS (not (eq (cadr in-list) list-elt))
-                  (not (case w-pred
+                  (not (cl-case w-pred
                          (equal (equal (cadr in-list) list-elt))
                          (eql   (eql   (cadr in-list) list-elt))
                          (t     (eq    (cadr in-list) list-elt)))))
@@ -1522,7 +1522,7 @@ the resulting sequence.\n
          (mmp1-arg-lsts (mon-copy-list-mac original-arglists))
          (mmp1-rtn-list (list nil))
          (mmp1-tmp mmp1-rtn-list))
-    (do ((mmp1-rslt nil)
+    (cl-do ((mmp1-rslt nil)
          (mmp1-args '() '()))
         ((catch 'mmp1-is-null ;; :ADDED
            (dolist (mmp1-thrw mmp1-arg-lsts nil) 
@@ -1531,12 +1531,12 @@ the resulting sequence.\n
          (if accumulate
              (cdr mmp1-rtn-list)
            (car original-arglists)))
-      (do ((mmp1-arg-l mmp1-arg-lsts (cdr mmp1-arg-l)))
+      (cl-do ((mmp1-arg-l mmp1-arg-lsts (cdr mmp1-arg-l)))
           ((null mmp1-arg-l))
         (push (if take-car (caar mmp1-arg-l) (car mmp1-arg-l)) mmp1-args)
         (setf (car mmp1-arg-l) (cdar mmp1-arg-l)))
       (setq mmp1-rslt (apply fun-designator (nreverse mmp1-args)))
-      (case accumulate
+      (cl-case accumulate
         (:nconc (setq mmp1-tmp (last (nconc mmp1-tmp mmp1-rslt))))
         ;; :WAS (:list (rplacd mmp1-tmp (list mmp1-rslt)) (setq mmp1-tmp (cdr mmp1-tmp)))
         (:list (setcdr mmp1-tmp (list mmp1-rslt)) (setq mmp1-tmp (cdr mmp1-tmp))))))) 
@@ -2010,7 +2010,7 @@ TREE-TO-FLATTEN is a proper-list, consed pair, or vector.\n
 `mon-list-reorder', `mon-nshuffle-vector', `mon-list-nshuffle',
 `mon-list-shuffle-safe'.\n▶▶▶"
   ;; (copy-tree tree-to-flatten)
-  (do ((mfltn-rslt   nil)
+  (cl-do ((mfltn-rslt   nil)
        (mfltn-stack  nil))
       ((not (or tree-to-flatten mfltn-stack)) (nreverse mfltn-rslt))
     (cond ((null tree-to-flatten)
@@ -2423,13 +2423,13 @@ PERM-LST is a list of lists.\n
 This one accumulates permutations as if by `loop'.\n
 :SEE-ALSO `mon-list-permute-1', `mon-list-permute-variants',
 `mon-list-variant-forms', `mon-permute-combine', `mon-permute-combine-1'.\n▶▶▶"
-  (if (< (length perm-lst) 2)
+  (if (< (length perm-lst) 2) ;; (null (cdr perm-lst))
       (list perm-lst)
-    (loop with len = (length perm-lst)
+    (cl-loop with len = (length perm-lst)
           with first-element = (car perm-lst)
           with result = nil
           for seq in (mon-list-permute-2 (cdr perm-lst))
-          do (loop for i below (length perm-lst)
+          do (cl-loop for i below (length perm-lst)
                    as tail = seq then (cdr tail)
                    do (push ;; :WAS (nconc (subseq seq 0 i)
                        (nconc  (mon-subseq seq 0 i)

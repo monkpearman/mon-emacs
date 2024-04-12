@@ -767,7 +767,8 @@ Helper function for `mon-get-ebay-css-pp' don't evaluate elsewhere.
      (beginning-of-line)
      (setq start-pnt (point))
      (forward-line 16)
-     (goto-char (point-at-eol))
+     ;; (goto-char (point-at-eol))
+     (goto-char (line-end-position))
      (setq end-pnt (point))
     (let ((css-start start-pnt)
 	  (css-end end-pnt)
@@ -930,7 +931,7 @@ build a list of filenames of IMAGE-TYPE in resulting path.
       (setq default-directory  starting))
     (let* ((long-names 
             (sort (cadddr rnm-prompt) 
-                  '(lambda (x y) (not (file-newer-than-file-p x y)))))
+                  #'(lambda (x y) (not (file-newer-than-file-p x y)))))
 	   (img-seq (number-sequence 1 (car rnm-prompt)))
 	   (img-pth (caddr rnm-prompt)) 
 	   (img-pth-len (length (file-name-as-directory img-pth)))
@@ -1376,7 +1377,7 @@ image-rename-prefix: [ ]\nimage-rename-suffix: [ ]\nimage-rename-start#: [ ]
                        img-rnm-div  img-rnm-in-dir    img-rnm-dir  img-rnm-div
                        img-rnm-typ  img-rnm-cnt       img-rnm-div  img-rnm-prfx
                        img-rnm-sfx  img-rnm-strt-num  img-rnm-div)  (current-buffer))
-        (mapc '(lambda (x) 
+        (mapc #'(lambda (x) 
                  (let ((tail-nm (cdr x)))
                    (princ (format "\n%s" tail-nm) (current-buffer)))) 
               image-nm-frmt)

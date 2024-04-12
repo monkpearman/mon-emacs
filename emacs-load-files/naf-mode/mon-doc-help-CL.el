@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2009-2011 MON KEY. All rights reserved.
+;; Copyright © 2009-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-doc-help-CL.el
@@ -48,7 +48,7 @@
 ;; `mon-help-CL-package-functions', `mon-help-CL-intern-symbol',
 ;; `mon-help-CL-sharpsign-syntax', `mon-help-CL-types', `mon-help-CL-format',
 ;; `mon-help-CL-format-usage', `mon-cln-ansi-info', `mon-help-CL-lambda-list',
-;; `mon-help-CL-method-combination',
+;; `mon-help-CL-method-combination', `mon-cln-cxml-docs',
 ;; FUNCTIONS:◀◀◀
 ;;
 ;; MACROS:
@@ -184,7 +184,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2008-2011 MON KEY 
+;; Copyright © 2008-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -254,6 +254,7 @@
     mon-help-CL-slime-keys mon-help-CL-lambda-list mon-help-slime-functions
     mon-help-CL-swank-functions mon-help-CL-local-time mon-help-CL-minion
     mon-help-utils-CL-loadtime mon-help-CL-symbols mon-help-CL-lispdoc
+    mon-cln-cxml-docs
     ;; :VARIABLES
     *mon-help-CL-cmu-ai-repo* *mon-help-CL-ext-pkg-map*
     *mon-help-CL-ext-pkg-map-no-pull* mon-hspec-root-dir* *mon-hspec-parse-buffer*
@@ -871,7 +872,7 @@ loop returns the absent URL's:\n
                            (concat default-directory 
                                    "wget-script-" 
                                    (format-time-string "%Y-%m-%d"))))
-        (sys (case system-type
+        (sys (cl-case system-type
                ((gnu/linux linux gnu/kfreebsd) 'gnu)
                ;(darwin aix berkeley-unix hpux irix lynxos usg-unix-v 'nix-like)
                (windows-nt 'wnz)))) ;; ms-dos cygwin
@@ -932,7 +933,7 @@ loop returns the absent URL's:\n
 `mon-wget-list-to-script-shell-command', `mon-wget-mon-pkgs', `mon-wget-rfc',
 `mon-wget-unicodedata-files'.\n▶▶▶"
   (let ((fnm-tst-wgt (file-name-nondirectory wget-fname))
-        (mjcwpfsc-sys (case system-type
+        (mjcwpfsc-sys (cl-case system-type
                ((gnu/linux linux gnu/kfreebsd) 'gnu)
                ;;(darwin aix berkeley-unix hpux irix lynxos usg-unix-v 'nix-like)
                ;; ms-dos cygwin
@@ -5453,7 +5454,25 @@ Is roughly equivalent to:
  \(format nil \"~[~;~v@{1~@*~:}~:;~@*~\(~vR~\)~]\" 1 42\) 
  ;=> \"111111111111111111111111111111111111111111\"
 
+;; :CL-FORMAT-RADIX
+
+ \(format nil \"~R\" 4\)
+ ;=> \"four\"
+
+ \(format nil \"~R\" 4\)
+ ;=> \"fourth\"
+
+ \(format nil \"~:R\" 4\)
+ ;=> \"fourth\"
+
+ \(format nil \"~:@R\" 4\)
+ ;=> \"IIII\"
+
+ \(format nil \"~@R\" 4\)
+ ;=> \"IV\"
+
 :SEE info node `(ansicl)Examples of FORMAT'\n
+:SEE info node `(ansicl)Formatted Output'\n
 :SEE-ALSO `slime-format-string-expand', `mon-help-CL-format',
 `mon-help-CL-streams', `mon-help-CL-print', `mon-help-CL-reader',
 `mon-help-CL-strings', `mon-help-CL-chars'.\n▶▶▶"
@@ -9022,7 +9041,7 @@ the example directory of cl-irc:
     ;; with addition of for Hspec v3 entries.     
     (setq *clhs-symbol-v3-or-v7*
           (append *clhs-symbol-v3-or-v7*
-                  (case (length (cadr (assoc-string "&whole" *clhs-symbol-v3-or-v7*)))
+                  (cl-case (length (cadr (assoc-string "&whole" *clhs-symbol-v3-or-v7*)))
                     (13 ;; (eq (length "sec_3-4-4.htm") 13) <- Hspec v3
                      '(("#"   "sec_2-4-8.html")    ;; 2.4.8
                        ("##"  "sec_2-4-16.html")   ;; 2.4.8.16   Sharpsign Sharpsign
@@ -9201,6 +9220,60 @@ java-applet e.g.\n
 ;;; :TEST-ME (mon-help-CL-symbols nil nil)
 ;;; :TEST-ME (mon-help-CL-symbols "defclass" t)
 ;;; :TEST-ME (mon-help-CL-symbols nil nil t)
+
+
+
+;;; :CREATED <Timestamp: #{2012-05-31T12:34:50-04:00Z}#{12224} - by MON KEY>
+(defun mon-cln-cxml-docs (start end)
+  "Convert the markup of the CXML docstring between START and END to something more human friendly."
+  (interactive "r")
+  (with-current-buffer (current-buffer)
+    (save-excursion
+      (save-restriction
+        (narrow-to-region start end)
+        (unwind-protect        
+            (progn
+
+              (goto-char (point-min))
+              (while (search-forward-regexp "\\(@fun{\\)\\(.*?\\)\\(},?\\)" nil t)
+                (replace-match "`\\2',"))
+
+              (goto-char (point-min))
+              (while (search-forward-regexp "\\(@class{\\)\\(.*?\\)\\(}\\)" nil t)
+                (replace-match "\\2" t))
+
+              (goto-char (point-min))              
+              (while (search-forward-regexp "\\(@var{\\)\\(.*?\\)\\(}\\)" nil t)
+                (replace-match (upcase (match-string-no-properties 2)) t))
+
+              (goto-char (point-min))
+              (while (search-forward-regexp "\\(@arg\\[\\)\\(.*?\\)\\(\\]{\\)" nil t)
+                (replace-match (concat "Arg " (upcase (match-string-no-properties 2)) " - ") t))
+
+              (goto-char (point-min))
+              (while (search-forward-regexp "\\(@code{\\)\\(.*?\\)\\(}\\)" nil t)
+                (replace-match (upcase (match-string-no-properties 2)) t))
+
+              (goto-char (point-min))
+              (while (search-forward-regexp "\\(@return{\\)\\(.*?\\)\\(}$\\)" nil t)
+                (replace-match (concat "Return " (match-string-no-properties 2)) t))
+
+              (goto-char (point-min))
+              (while (search-forward-regexp "\\(@begin\\|@end\\){itemize}$" nil t)
+                (replace-match "" t))
+
+              (goto-char (point-min))
+              (while (search-forward-regexp "@item{\\(.*\\)}$" nil t)
+                (replace-match "- \\1" t))
+
+              (goto-char (point-min))
+              (while (search-forward-regexp "@pre{" nil t)
+                (replace-match "\n" t))
+
+              (goto-char (point-min))
+              (while (search-forward-regexp "\\(}\\)\\(\"\\)?$" nil t)
+                (replace-match "\\2" t)))
+          (widen))))))
 
 
 ;;; ==============================

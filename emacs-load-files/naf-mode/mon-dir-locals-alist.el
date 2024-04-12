@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2009-2011 MON KEY. All rights reserved.
+;; Copyright © 2009-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-dir-locals-alist.el
@@ -128,7 +128,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2009-2011 MON KEY 
+;; Copyright © 2009-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -139,6 +139,8 @@
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
+
+(declare-function mon-bind-nefs-photos-at-loadtime "mon-dir-utils-local")
 
 ;;; ==============================
 ;;; :CHANGESET 2178
@@ -261,6 +263,7 @@ Used primarily over ERC to exchange paths w32 network share paths.\n
 ;;
 ;;;(progn (makunbound '*bug-HG-path*) (unintern "*bug-HG-path*" obarray) )
 
+;; :FIXME DARWIN Do we need this anymore???
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-11T18:12:47-04:00Z}#{09332} - by MON KEY>
 (defcustom *mon-record-current-directory* nil
@@ -278,6 +281,7 @@ EXAMPLE:\n\n\(cons *mon-record-current-directory*
 ;;;(progn (makunbound '*mon-record-current-directory*) 
 ;;;       (unintern "*mon-record-current-directory*" obarray) )
 
+;; :FIXME DARWIN Do we need this anymore???
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2010-04-02T12:11:11-04:00Z}#{10135} - by MON KEY>
 (defcustom *emacs2html-temp* nil
@@ -294,6 +298,7 @@ EXAMPLE:\n\n\(cons *mon-record-current-directory*
 ;;
 ;;;(progn (makunbound '*emacs2html-temp*) (unintern "*emacs2html-temp*" obarray) )
 
+;; :FIXME DARWIN Do we need this anymore???
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-04-02T12:37:47-04:00Z}#{10135} - by MON KEY>
 (defcustom *mon-html-fontify-file-name-template* nil
@@ -582,7 +587,7 @@ For example the following backqute template would expand to valid valus:\n
                    string    ;; :tag "mode-name" 
                    directory 
                    string )) ;; :tag "extension"
-  :group 'mon-dir-locals)
+ :group 'mon-dir-locals)
 ;;
 ;;; :NESETED-SYTLE-ALIST
 ;;; `(("eBay-Template"  (,*mon-ebay-images-bmp-path* ".dbc"))
@@ -626,297 +631,345 @@ For example the following backqute template would expand to valid valus:\n
 ;;;            (unintern "*mon-bind-dir-locals-alist*" obarray))))
 
 
+
+
+;;; ==============================
+;; <Timestamp: #{2024-03-09T16:48:38-05:00Z}#{24106} - by ANONYMOUS>
+;; :NOTE Notes for frobbing the Darwin paths. Most of these will need to check the presence of /Volumes/MONK_4TB is mounted first. Bother.
+;;
+;; *mon-smith-poster-HG-path*
+;; *mon-CL-scratch-path*
+;; *mon-record-current-directory*  ;; NEEDED???
+;; *emacs2html-temp*                ;; NEEDED???
+;; *mon-artist-naf-path*
+;; *mon-brand-naf-path*
+;; *mon-nef-scan-drive* ;; Use this for value of "/Volumes/MONK_4TB" ?? and/or define a new vairable, ugh.
+;; *mon-nef-scan-base-path*
+;; *mon-nef-scan-path*
+;; *mon-nef-scan-nefs-path*       ;; /Volumes/MONK_4TB/NEF-DRV-A/ <- !!!! That's not the one.
+;; *mon-nefs_photos_nefs-alist*   ;; :NOTE Var loaded from `mon-dir-utils.el' at loadtime.
+;; *mon-nef-scan-nef2-path*        ;; PAY ATTENBTION, one of these things is not like the other
+;; *mon-ebay-images-path*         ;; /Volumes/MONK_4TB/NEF-DRV-A/EBAY
+;; *mon-ebay-images-bmp-path*
+;; *mon-ebay-images-jpg-path*
+;; *mon-ebay-images-lookup-path*
+;;;
+;; :NOTE following returns nil (nth 1 (assoc "NAF-mode" *mon-buffer-mode-defaults*) ) we need to set this with value of the naf path. same for "Lisp" key witch defaults to *mon-CL-scratch-path*
+;; *mon-buffer-mode-defaults*  
+;;;
+;;; stub code to account for Darwin only. but check first how to check a mount pointn on Darwin
+;;
+;; (let* ((putative-directory "/Volumes/MONK_4TB/NEF-DRV-A/EBAY")
+;;       (yep-itsa-dir (and putative-directory
+;;                          (stringp putative-directory)
+;;                          (> (length putative-directory))
+;;                          (file-directory-p putative-directory)
+;;                          putative-directory)))
+;;   yep-itsa-dir)
+
+
 ;;; ==============================
 ;;; :NOTE Everything below sets up mon-local requirements per the custom forms above:
-(eval-when (compile load eval)
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)  ;; *IS-MON-OBARRAY*
-             (bound-and-true-p IS-MON-SYSTEM-P))
-    (unless (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
-                 (bound-and-true-p *mon-bind-dir-locals-alist*))
-      (setq *mon-bind-dir-locals-alist* t))))
-;;
-(unless (and (and (intern-soft "*mon-HG-root-path*" obarray) ;; *IS-MON-OBARRAY*
-                  (bound-and-true-p *mon-HG-root-path*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
-                       (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
-             (bound-and-true-p IS-MON-SYSTEM-P))  
-    (let ((mhrp (nth 5 (assoc (cond (IS-MON-P-W32     1)
-                                    (IS-BUG-P-REMOTE  4)
-                                    (IS-BUG-P         3)
-                                    (IS-MON-P-GNU     2))
-                              *mon-emacsd*))))
-      (setq *mon-HG-root-path* mhrp))))
-;;
-(unless (and (and (intern-soft "*mon-smith-poster-HG-path*" obarray) ;; *IS-MON-OBARRAY*
-                  (bound-and-true-p *mon-smith-poster-HG-path*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray)  ;; *IS-MON-OBARRAY*
-                       (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
-             (bound-and-true-p IS-MON-SYSTEM-P))
-    (setq *mon-smith-poster-HG-path* 
-          (funcall 
-           (cadr (assoc 'the-smith-poster-docs-pth *mon-misc-path-alist*))))))
-;;
-(unless (and (and (intern-soft "*mon-CL-scratch-path*" obarray)
-                  (bound-and-true-p *mon-CL-scratch-path*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
-                       (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (intern-soft "IS-MON-SYSTEM-P" obarray)
-    (setq *mon-CL-scratch-path*
-          (when IS-MON-P
-            (let ((clscrtch (concat *mon-HG-root-path* 
-                                    (cadr (assoc 'the-CL-path 
-                                                 *mon-misc-path-alist*)))))
-              (expand-file-name "CL-NOTES" clscrtch))))))
-;;
-(when (intern-soft "IS-MON-SYSTEM-P" obarray)              ;; *IS-MON-OBARRAY*
-  (unless (and (and (intern-soft "*bug-HG-path*" obarray) ;; *IS-MON-OBARRAY*
-                    (bound-and-true-p *bug-HG-path*))
-               (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray)  ;; *IS-MON-OBARRAY*
-                         (bound-and-true-p *mon-bind-dir-locals-alist*))))
-    (setq *bug-HG-path* 
-          (cond (IS-MON-P-W32 (nth 6 (assoc 3 *mon-emacsd* ))) ;; Get path from BUG alist.
-                ((or IS-BUG-P-REMOTE IS-BUG-P IS-MON-P-GNU) *mon-emacs-root*)))))
-;;
-(unless (and (and (intern-soft "*mon-record-current-directory*" obarray) ;; *IS-MON-OBARRAY*
-                  (bound-and-true-p *mon-record-current-directory*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
-                       (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (intern-soft "IS-MON-SYSTEM-P" obarray)   ;; *IS-MON-OBARRAY*
-    (setq *mon-record-current-directory* 
-          (concat *mon-emacs-root* "/current-directory"))))
-;;
-;;; :NOTE `*emacs2html-temp*' is provided in :FILE htmlfontify.el and _may_
-;;;        already be `bound-and-true-p'. So, it is better to bind it directly
-;;;        with setq.
-;;; :WAS (unless (bound-and-true-p *emacs2html-temp*)
-(unless  (and (and (intern-soft "*emacs2html-temp*" obarray) ;; *IS-MON-OBARRAY*
-                   (bound-and-true-p *emacs2html-temp*))
-              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
-                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (let ((e2ht (cond ((and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
-                          (bound-and-true-p IS-MON-SYSTEM-P))
-                     (concat *mon-local-emacs-temp-dir* "/emacs2html-temp"))
-                    (t (concat 
-                        (if (string-match-p "/$" user-emacs-directory)
-                            ;; :NOTE Knock of the trailing / e.g. when:
-                            ;;       `user-emacs-directory' => "~/.emacs.d/"
-                            (replace-regexp-in-string "/$" "" user-emacs-directory t)
-                          user-emacs-directory)
-                        "/emacs2html-temp")))))
-    (if (file-exists-p e2ht)
-        (setq *emacs2html-temp* e2ht)
-      ;; Shouldn't write to file system when `IS-NOT-A-MON-SYSTEM'
-      (if (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
-               (bound-and-true-p IS-MON-SYSTEM-P))
-          (progn 
-            (mkdir e2ht)
-            (setq *emacs2html-temp* e2ht))
-        (progn
-          (setq *emacs2html-temp* e2ht)
-          (warn (concat
-                 "The :VARIABLE `*emacs2html-temp*' -- was bound to non-existent directory:\n"
-                 "\n %18c%s\n\n"
-                 "%17c This path is required by functions:\n\n"
-                 "%17c `mon-htmlfontify-dir-purge-on-quit'\n"              
-                 "%17c `mon-htmlfontify-buffer-to-firefox'\n"
-                 "%17c `mon-htmlfontify-region-to-firefox'\n\n"
-                 "%17c Before using these functions verify path and/or \(re\)bind accordingly")
-                32 *emacs2html-temp* 32 32 32 32 32))))))
-;;
-(unless (and (and (intern-soft "*mon-html-fontify-file-name-template*" obarray) ;; *IS-MON-OBARRAY*
-                  (bound-and-true-p *mon-html-fontify-file-name-template*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray)
-                       (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) 
-             (bound-and-true-p IS-MON-SYSTEM-P))
-    (setq *mon-html-fontify-file-name-template* "%s/emacs2firefox-%d.html")))
-;;
-(unless (and (and (intern-soft "*mon-artist-naf-path*" obarray) ;; *IS-MON-OBARRAY*
-                  (bound-and-true-p *mon-artist-naf-path*))
-             (and (intern-soft "*mon-emacsd*" obarray) ;; *IS-MON-OBARRAY*
-                  (bound-and-true-p *mon-emacsd*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray)  ;; *IS-MON-OBARRAY*
-                       (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
-             (bound-and-true-p IS-MON-SYSTEM-P))
-    (let ((anp (nth 7 (assoc 
-                       ;; :NOTE Conditionals are fall through cases, order is important.
-                       (cond ((and (intern-soft "IS-MON-P-W32" obarray) ;; *IS-MON-OBARRAY*
-                                   (bound-and-true-p IS-MON-P-W32))    1)
-                             ((and (intern-soft "IS-BUG-P-REMOTE" obarray) ;; *IS-MON-OBARRAY*
-                                   (bound-and-true-p IS-BUG-P-REMOTE)) 4) 
-                             ((and (intern-soft "IS-BUG-P" obarray)     ;; *IS-MON-OBARRAY*
-                                   (bound-and-true-p IS-BUG-P))        3)
-                             ((and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY* 
-                                   (bound-and-true-p IS-MON-P-GNU))    2)
-                             (t nil))
-                       *mon-emacsd*))))
-      (setq *mon-artist-naf-path* (concat anp "/ARTISTS")))))
-;;
-(unless (and (and (intern-soft "*mon-brand-naf-path*" obarray)  ;; *IS-MON-OBARRAY*
-                  (bound-and-true-p *mon-brand-naf-path*))    
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray)  ;; *IS-MON-OBARRAY*
-                       (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)  ;; *IS-MON-OBARRAY*
-             (bound-and-true-p IS-MON-SYSTEM-P))
-    (setq *mon-brand-naf-path*
-          (cond ((or (and (intern-soft "IS-MON-P-W32" obarray) ;; *IS-MON-OBARRAY*
-                          (bound-and-true-p IS-MON-P-W32 ))
-                     (and (intern-soft "IS-BUG-P" obarray) ;; *IS-MON-OBARRAY*
-                          (bound-and-true-p IS-BUG-P)))
-                 (concat *mon-artist-naf-path* "/BRANDS"))
-                ((and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
-                      (bound-and-true-p IS-MON-P-GNU))
-                 (concat (directory-file-name 
-                          (file-name-directory *mon-artist-naf-path*)) "/BRANDS"))
-                ;; Not available on following machine kept here for completeness:
-                ((and (intern-soft "IS-BUG-P-REMOTE" obarray)         ;; *IS-MON-OBARRAY*
-                      (bound-and-true-p IS-BUG-P-REMOTE)) nil)))))
-;;
-(unless (and (and (intern-soft "*mon-nef-scan-drive*" obarray) ;; *IS-MON-OBARRAY*
-                  (bound-and-true-p *mon-nef-scan-drive*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
-                       (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
-             (bound-and-true-p IS-MON-SYSTEM-P))
-    (setq *mon-nef-scan-drive* (cadr (assoc 'the-nef-drv *mon-misc-path-alist*)))))
-;;
-(unless (and (and (intern-soft "*mon-nef-scan-base-path*" obarray) ;; *IS-MON-OBARRAY*
-                  (bound-and-true-p *mon-nef-scan-base-path*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray)  ;; *IS-MON-OBARRAY*
-                       (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)  ;; *IS-MON-OBARRAY*
-             (bound-and-true-p IS-MON-SYSTEM-P))
-    ;; :NOTE Filesystems, dirs, mounts etc. change periodically across
-    ;;  OS's so we must do this silliness.
-    (setq *mon-nef-scan-base-path*  
-          (concat *mon-nef-scan-drive*
-                  (cond ((and (intern-soft "IS-W32-P" obarray) ;; *IS-MON-OBARRAY*
-                              (bound-and-true-p IS-W32-P)) "/")
-                        ( ;; :WAS (IS-MON-P-GNU (concat (nth 3 (assoc 2 *mon-emacsd*)) "/"))))
-                         (and (intern-soft "IS-MON-P-GNU" obarray)  ;; *IS-MON-OBARRAY*
-                              (bound-and-true-p IS-MON-P-GNU)) "-"))))))
-;;
-(unless (and (and (intern-soft "*mon-nef-scan-path*" obarray) ;; *IS-MON-OBARRAY*
-                  (bound-and-true-p *mon-nef-scan-path*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
-                       (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
-    (setq *mon-nef-scan-path* 
-          (cond (IS-W32-P (concat *mon-nef-scan-base-path* "NEFS_PHOTOS"))
-                (IS-MON-P-GNU (concat *mon-nef-scan-base-path* "\x42"))))))
-;;
-(unless (and (and (intern-soft "*mon-nef-scan-nefs-path*" obarray)
-                  (bound-and-true-p *mon-nef-scan-nefs-path*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
-                       (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (intern-soft "IS-MON-SYSTEM-P" obarray)
-    (setq *mon-nef-scan-nefs-path* 
-          (cond (IS-W32-P (concat *mon-nef-scan-base-path* "NEF_Drive2"))
-                (IS-MON-P-GNU (concat *mon-nef-scan-base-path* "\x42"))))))
-;;
-(unless (and (and (intern-soft "*mon-nef-scan-nef2-path*" obarray)
-                  (bound-and-true-p *mon-nef-scan-nef2-path*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
-                       (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
-             (bound-and-true-p IS-MON-SYSTEM-P))
-    ;; :NOTE This needs to happen this way because of occasional filesystem shifts.
-    (setq *mon-nef-scan-nef2-path*
-          (if IS-MON-P-GNU 
-              (concat (substring *mon-nef-scan-nefs-path* 0 -1) "\x41")
-            *mon-nef-scan-nefs-path*))))
-;;
-(unless (and (and (intern-soft "*mon-ebay-images-path*")
-                  (bound-and-true-p *mon-ebay-images-path*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*") 
-                       (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P")     ;; *IS-MON-OBARRAY*
-             (bound-and-true-p IS-MON-SYSTEM-P))
-    (setq *mon-ebay-images-path* (concat *mon-nef-scan-nef2-path* "/EBAY"))))
-;;
-(unless (and (and (intern-soft "*mon-ebay-images-bmp-path*" obarray)
-                  (bound-and-true-p *mon-ebay-images-bmp-path*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
-                       (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) 
-             (bound-and-true-p IS-MON-SYSTEM-P))  ;; *IS-MON-OBARRAY*
-    (setq *mon-ebay-images-bmp-path* (concat *mon-ebay-images-path* "/BMP-Scans"))))
-;;
-(unless (and (and (intern-soft "*mon-ebay-images-jpg-path*" obarray)
-                  (bound-and-true-p *mon-ebay-images-jpg-path*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
-                       (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
-             (bound-and-true-p IS-MON-SYSTEM-P))
-    (setq *mon-ebay-images-jpg-path* (concat *mon-ebay-images-path* "/BIG-cropped-jpg"))))
-;;
-(unless (and (and (intern-soft "*mon-ebay-images-temp-path*" obarray)
-                  (bound-and-true-p *mon-ebay-images-temp-path*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
-                       (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
-             (bound-and-true-p IS-MON-SYSTEM-P))
-    (setq *mon-ebay-images-temp-path* (concat *mon-ebay-images-path* "/temp-batch"))))
-;;
-(unless (and (and (intern-soft "*mon-ebay-images-lookup-path*" obarray)
-                  (bound-and-true-p *mon-ebay-images-lookup-path*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
-                       (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
-             (bound-and-true-p IS-MON-SYSTEM-P))
-    (setq *mon-ebay-images-lookup-path*
-	  '((".nef" *mon-ebay-images-bmp-path*  "BMP-Scans") ;; *mon-nef-img-hash*)
-            (".bmp" *mon-ebay-images-bmp-path*  "BMP-Scans")
-            (".tiff" *mon-ebay-images-bmp-path* "BMP-Scans")
-            (".pnm" *mon-ebay-images-bmp-path*  "BMP-Scans")
-            (".ppm" *mon-ebay-images-bmp-path*  "BMP-Scans")
-            (".pgm" *mon-ebay-images-bmp-path*  "BMP-Scans")
-            (".pbm" *mon-ebay-images-bmp-path*  "BMP-Scans")
-            (".png" *mon-ebay-images-jpg-path*  "BIG-cropped-jpg")
-	    (".jpg" *mon-ebay-images-jpg-path*  "BIG-cropped-jpg") ;; *mon-jpg-img-hash*)
-	    (".jpeg" *mon-ebay-images-jpg-path* "BIG-cropped-jpg") ;; *mon-jpg-img-hash*)
-	    )))) ;; *mon-bmp-img-hash*))))
-;;
-(unless (and (and (intern-soft "*mon-buffer-mode-defaults*" obarray)
-                  (bound-and-true-p *mon-buffer-mode-defaults*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
-                       (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
-             (bound-and-true-p IS-MON-SYSTEM-P))
-    (setq *mon-buffer-mode-defaults*
-          `(("eBay-Template"  ,*mon-ebay-images-bmp-path* ".dbc")
-            ("NAF-mode"       ,*mon-artist-naf-path*      ".naf")
-            ("Emacs-Lisp"     ,*mon-naf-mode-root*        ".el")
-            ("Lisp"           ,*mon-CL-scratch-path*      ".lisp")))))
-;;
-;; Inform custom that her kittens await.
-(dolist (in-bnd '("*mon-ebay-images-lookup-path*"
-                  "*mon-ebay-images-temp-path*"
-                  "*mon-ebay-images-jpg-path*"
-                  "*mon-ebay-images-bmp-path*"
-                  "*mon-ebay-images-path*"
-                  "*mon-nef-scan-nef2-path*"
-                  "*mon-nefs_photos_nefs-alist*"
-                  "*mon-nef-scan-nefs-path*"
-                  "*mon-nef-scan-path*"
-                  "*mon-nef-scan-base-path*"
-                  "*mon-nef-scan-drive*"
-                  "*mon-brand-naf-path*"
-                  "*mon-artist-naf-path*"
-                  "*mon-html-fontify-file-name-template*"
-                  "*mon-record-current-directory*"
-                  "*bug-HG-path*"
-                  "*mon-CL-scratch-path*"
-                  "*mon-smith-poster-HG-path*"
-                  "*emacs2html-temp*        "
-                  "*mon-buffer-mode-defaults*"
-                  "*mon-HG-root-path*"))
-  (let* ((is-int (intern-soft in-bnd)))
-    (when (and is-int (funcall #'boundp (quote is-int)) is-int)
-      (funcall #'custom-note-var-changed is-int)))) ;;(quote is-int) )))
+;; ,----
+;; | (eval-when (compile load eval)
+;; |   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)  ;; *IS-MON-OBARRAY*
+;; |              (bound-and-true-p IS-MON-SYSTEM-P))
+;; |     (unless (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
+;; |                  (bound-and-true-p *mon-bind-dir-locals-alist*))
+;; |       (setq *mon-bind-dir-locals-alist* t))))
+;; | ;;
+;; | (unless (and (and (intern-soft "*mon-HG-root-path*" obarray) ;; *IS-MON-OBARRAY*
+;; |                   (bound-and-true-p *mon-HG-root-path*))
+;; |              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
+;; |                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+;; |              (bound-and-true-p IS-MON-SYSTEM-P))  
+;; |     (let ((mhrp (nth 5 (assoc (cond (IS-MON-P-W32     1)
+;; |                                     (IS-BUG-P-REMOTE  4)
+;; |                                     (IS-BUG-P         3)
+;; |                                     (IS-MON-P-GNU     2))
+;; |                               *mon-emacsd*))))
+;; |       (setq *mon-HG-root-path* mhrp))))
+;; | ;;
+;; | (unless (and (and (intern-soft "*mon-smith-poster-HG-path*" obarray) ;; *IS-MON-OBARRAY*
+;; |                   (bound-and-true-p *mon-smith-poster-HG-path*))
+;; |              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
+;; |                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+;; |              (bound-and-true-p IS-MON-SYSTEM-P))
+;; |     (setq *mon-smith-poster-HG-path* 
+;; |           (funcall 
+;; |            (cadr (assoc 'the-smith-poster-docs-pth *mon-misc-path-alist*))))))
+;; | ;;
+;; | (unless (and (and (intern-soft "*mon-CL-scratch-path*" obarray)
+;; |                   (bound-and-true-p *mon-CL-scratch-path*))
+;; |              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+;; |                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (when (intern-soft "IS-MON-SYSTEM-P" obarray)
+;; |     (setq *mon-CL-scratch-path*
+;; |           (when IS-MON-P
+;; |             (let ((clscrtch (concat *mon-HG-root-path* (cadr (assq 'the-CL-path *mon-misc-path-alist*))))
+;; |                   (clscrth-sub (cdr (assq 0 (assq 'numeric-mnts *mon-misc-path-alist*)))))
+;; |               (when (and clscrtch clscrth-sub)
+;; |                 (expand-file-name clscrth-sub clscrtch)))))))
+;; | ;;
+;; | (when (intern-soft "IS-MON-SYSTEM-P" obarray)              ;; *IS-MON-OBARRAY*
+;; |   (unless (and (and (intern-soft "*bug-HG-path*" obarray) ;; *IS-MON-OBARRAY*
+;; |                     (bound-and-true-p *bug-HG-path*))
+;; |                (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray)  ;; *IS-MON-OBARRAY*
+;; |                          (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |     (setq *bug-HG-path* 
+;; |           (cond (IS-MON-P-W32 (nth 6 (assoc 3 *mon-emacsd* ))) ;; Get path from BUG alist.
+;; |                 ((or IS-BUG-P-REMOTE IS-BUG-P IS-MON-P-GNU) *mon-emacs-root*)))))
+;; | ;;
+;; | (unless (and (and (intern-soft "*mon-record-current-directory*" obarray) ;; *IS-MON-OBARRAY*
+;; |                   (bound-and-true-p *mon-record-current-directory*))
+;; |              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+;; |                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (when (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+;; |     (setq *mon-record-current-directory* 
+;; |           (concat *mon-emacs-root* (cdr (assq 1 (assq 'numeric-mnts *mon-misc-path-alist*)))))))
+;; | ;;
+;; | ;;; :NOTE `*emacs2html-temp*' is provided in :FILE htmlfontify.el and _may_
+;; | ;;;        already be `bound-and-true-p'. So, it is better to bind it directly
+;; | ;;;        with setq.
+;; | ;;; :WAS (unless (bound-and-true-p *emacs2html-temp*)
+;; | (unless  (and (and (intern-soft "*emacs2html-temp*" obarray) ;; *IS-MON-OBARRAY*
+;; |                    (bound-and-true-p *emacs2html-temp*))
+;; |               (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
+;; |                         (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (let* ((e2ht-assq (cdr (assq 0 (assq 'numeric-mnts *mon-misc-path-alist*))))
+;; |          (e2ht (cond ((and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+;; |                            (bound-and-true-p IS-MON-SYSTEM-P)
+;; |                            e2ht-assq)
+;; |                       (concat *mon-local-emacs-temp-dir* e2ht-assq))
+;; |                      (t (concat 
+;; |                          (if (string-match-p "/$" user-emacs-directory)
+;; |                              ;; :NOTE Knock of the trailing / e.g. when:
+;; |                              ;;       `user-emacs-directory' => "~/.emacs.d/"
+;; |                              (replace-regexp-in-string "/$" "" user-emacs-directory t)
+;; |                            user-emacs-directory)
+;; |                          e2ht-assq)))))
+;; |     (if (file-exists-p e2ht)
+;; |         (setq *emacs2html-temp* e2ht)
+;; |       ;; Shouldn't write to file system when `IS-NOT-A-MON-SYSTEM'
+;; |       (if (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+;; |                (bound-and-true-p IS-MON-SYSTEM-P))
+;; |           (progn 
+;; |             (mkdir e2ht)
+;; |             (setq *emacs2html-temp* e2ht))
+;; |         (progn
+;; |           (setq *emacs2html-temp* e2ht)
+;; |           (warn (concat
+;; |                  "The :VARIABLE `*emacs2html-temp*' -- was bound to non-existent directory:\n"
+;; |                  "\n %18c%s\n\n"
+;; |                  "%17c This path is required by functions:\n\n"
+;; |                  "%17c `mon-htmlfontify-dir-purge-on-quit'\n"              
+;; |                  "%17c `mon-htmlfontify-buffer-to-firefox'\n"
+;; |                  "%17c `mon-htmlfontify-region-to-firefox'\n\n"
+;; |                  "%17c Before using these functions verify path and/or \(re\)bind accordingly")
+;; |                 32 *emacs2html-temp* 32 32 32 32 32))))))
+;; | ;;
+;; | (unless (and (and (intern-soft "*mon-html-fontify-file-name-template*" obarray) ;; *IS-MON-OBARRAY*
+;; |                   (bound-and-true-p *mon-html-fontify-file-name-template*))
+;; |              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray)
+;; |                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) 
+;; |              (bound-and-true-p IS-MON-SYSTEM-P))
+;; |     (setq *mon-html-fontify-file-name-template* 
+;; |           (concat (cdr (assq 3 (assq 'numeric-mnts *mon-misc-path-alist*)))))))
+;; | 
+;; | ;;
+;; | (unless (and (and (intern-soft "*mon-artist-naf-path*" obarray) ;; *IS-MON-OBARRAY*
+;; |                   (bound-and-true-p *mon-artist-naf-path*))
+;; |              (and (intern-soft "*mon-emacsd*" obarray) ;; *IS-MON-OBARRAY*
+;; |                   (bound-and-true-p *mon-emacsd*))
+;; |              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
+;; |                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+;; |              (bound-and-true-p IS-MON-SYSTEM-P))
+;; |     (let ((anp (nth 7 (assoc 
+;; |                        ;; :NOTE Conditionals are fall through cases, order is important.
+;; |                        (cond ((and (intern-soft "IS-MON-P-W32" obarray) ;; *IS-MON-OBARRAY*
+;; |                                    (bound-and-true-p IS-MON-P-W32))    1)
+;; |                              ((and (intern-soft "IS-BUG-P-REMOTE" obarray) ;; *IS-MON-OBARRAY*
+;; |                                    (bound-and-true-p IS-BUG-P-REMOTE)) 4) 
+;; |                              ((and (intern-soft "IS-BUG-P" obarray) ;; *IS-MON-OBARRAY*
+;; |                                    (bound-and-true-p IS-BUG-P))        3)
+;; |                              ((and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY* 
+;; |                                    (bound-and-true-p IS-MON-P-GNU))    2)
+;; |                              (t nil))
+;; |                        *mon-emacsd*))))
+;; |       (setq *mon-artist-naf-path* (concat anp (cdr (assq 4 (assq 'numeric-mnts *mon-misc-path-alist*))))))))
+;; | ;;
+;; | (unless (and (and (intern-soft "*mon-brand-naf-path*" obarray) ;; *IS-MON-OBARRAY*
+;; |                   (bound-and-true-p *mon-brand-naf-path*))    
+;; |              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
+;; |                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+;; |              (bound-and-true-p IS-MON-SYSTEM-P))
+;; |     (let ((assq5 (cdr (assq 5 (assq 'numeric-mnts *mon-misc-path-alist*)))))
+;; |       (setq *mon-brand-naf-path*
+;; |             (cond ((or (and (intern-soft "IS-MON-P-W32" obarray) ;; *IS-MON-OBARRAY*
+;; |                             (bound-and-true-p IS-MON-P-W32 ))
+;; |                        (and (intern-soft "IS-BUG-P" obarray) ;; *IS-MON-OBARRAY*
+;; |                             (bound-and-true-p IS-BUG-P)))
+;; |                    (concat *mon-artist-naf-path* assq5))
+;; |                   ((and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
+;; |                         (bound-and-true-p IS-MON-P-GNU))
+;; |                    (concat (directory-file-name 
+;; |                             (file-name-directory *mon-artist-naf-path*)) assq5))
+;; |                   ;; Not available on following machine kept here for completeness:
+;; |                   ((and (intern-soft "IS-BUG-P-REMOTE" obarray) ;; *IS-MON-OBARRAY*
+;; |                         (bound-and-true-p IS-BUG-P-REMOTE)) nil))))))
+;; | ;;
+;; | (unless (and (and (intern-soft "*mon-nef-scan-drive*" obarray) ;; *IS-MON-OBARRAY*
+;; |                   (bound-and-true-p *mon-nef-scan-drive*))
+;; |              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
+;; |                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+;; |              (bound-and-true-p IS-MON-SYSTEM-P))
+;; |     (setq *mon-nef-scan-drive* (cadr (assq 'the-nef-drv *mon-misc-path-alist*)))))
+;; | ;;
+;; | (unless (and (and (intern-soft "*mon-nef-scan-base-path*" obarray) ;; *IS-MON-OBARRAY*
+;; |                   (bound-and-true-p *mon-nef-scan-base-path*))
+;; |              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
+;; |                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+;; |              (bound-and-true-p IS-MON-SYSTEM-P))
+;; |     ;; :NOTE Filesystems, dirs, mounts etc. change periodically across
+;; |     ;;  OS's so we must do this silliness.
+;; |     (setq *mon-nef-scan-base-path*
+;; |           (concat *mon-nef-scan-drive* (cdr (assq 6 (assq 'numeric-mnts *mon-misc-path-alist*)))))))
+;; | ;;
+;; | (unless (and (and (intern-soft "*mon-nef-scan-path*" obarray) ;; *IS-MON-OBARRAY*
+;; |                   (bound-and-true-p *mon-nef-scan-path*))
+;; |              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
+;; |                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (when (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+;; |     (setq *mon-nef-scan-path*
+;; |           ;; *mon-nef-scan-base-path*
+;; |           (cdr (assq 7 (assq 'numeric-mnts *mon-misc-path-alist*))))))
+;; | ;;
+;; | (unless (and (and (intern-soft "*mon-nef-scan-nefs-path*" obarray)
+;; |                   (bound-and-true-p *mon-nef-scan-nefs-path*))
+;; |              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+;; |                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (when (intern-soft "IS-MON-SYSTEM-P" obarray)
+;; |     (setq *mon-nef-scan-nefs-path* 
+;; |           (concat *mon-nef-scan-base-path*
+;; |                   ;; *mon-nef-scan-nefs-path*
+;; |                   (cdr (assq 9 (assq 'numeric-mnts *mon-misc-path-alist*)))))))
+;; | ;;
+;; | (unless (and (and (intern-soft "*mon-nef-scan-nef2-path*" obarray)
+;; |                   (bound-and-true-p *mon-nef-scan-nef2-path*))
+;; |              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+;; |                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+;; |              (bound-and-true-p IS-MON-SYSTEM-P))
+;; |     ;; :NOTE This needs to happen this way because of occasional filesystem shifts.
+;; |     ;; *mon-nef-scan-nefs-path*
+;; |     (setq *mon-nef-scan-nef2-path*
+;; |           (if IS-MON-P-GNU 
+;; |               (concat (cdr (assq 14 (assq 'numeric-mnts *mon-misc-path-alist*)))
+;; |                       (substring *mon-nef-scan-nefs-path* 5 -1) 
+;; |                       (cdr (assq 8 (assq 'numeric-mnts *mon-misc-path-alist*))))))))
+;; | ;;
+;; | (unless (and (and (intern-soft "*mon-ebay-images-path*")
+;; |                   (bound-and-true-p *mon-ebay-images-path*))
+;; |              (not (and (intern-soft "*mon-bind-dir-locals-alist*") 
+;; |                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (when (and (intern-soft "IS-MON-SYSTEM-P")     ;; *IS-MON-OBARRAY*
+;; |              (bound-and-true-p IS-MON-SYSTEM-P))
+;; |     (setq *mon-ebay-images-path* 
+;; |           (concat *mon-nef-scan-nef2-path* (cdr (assq 10 (assq 'numeric-mnts *mon-misc-path-alist*)))))))
+;; | ;;
+;; | (unless (and (and (intern-soft "*mon-ebay-images-bmp-path*" obarray)
+;; |                   (bound-and-true-p *mon-ebay-images-bmp-path*))
+;; |              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+;; |                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) 
+;; |              (bound-and-true-p IS-MON-SYSTEM-P)) ;; *IS-MON-OBARRAY*
+;; |     (setq *mon-ebay-images-bmp-path* 
+;; |           (concat *mon-ebay-images-path* (cdr (assq 11 (assq 'numeric-mnts *mon-misc-path-alist*)))))))
+;; | ;;
+;; | (unless (and (and (intern-soft "*mon-ebay-images-jpg-path*" obarray)
+;; |                   (bound-and-true-p *mon-ebay-images-jpg-path*))
+;; |              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+;; |                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+;; |              (bound-and-true-p IS-MON-SYSTEM-P))
+;; |     (setq *mon-ebay-images-jpg-path* 
+;; |           (concat *mon-ebay-images-path* (cdr (assq 12 (assq 'numeric-mnts *mon-misc-path-alist*)))))))
+;; | ;;
+;; | (unless (and (and (intern-soft "*mon-ebay-images-temp-path*" obarray)
+;; |                   (bound-and-true-p *mon-ebay-images-temp-path*))
+;; |              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+;; |                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+;; |              (bound-and-true-p IS-MON-SYSTEM-P))
+;; |     (setq *mon-ebay-images-temp-path* 
+;; |           (concat *mon-ebay-images-path* (cdr (assq 13 (assq 'numeric-mnts *mon-misc-path-alist*)))))))
+;; | ;;
+;; | (unless (and (and (intern-soft "*mon-ebay-images-lookup-path*" obarray)
+;; |                   (bound-and-true-p *mon-ebay-images-lookup-path*))
+;; |              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+;; |                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+;; |              (bound-and-true-p IS-MON-SYSTEM-P))
+;; |     (let ((assq11 (cdr (assq 11 (assq 'numeric-mnts  *mon-misc-path-alist*))))
+;; |           (assq12 (cdr (assq 12 (assq 'numeric-mnts *mon-misc-path-alist*)))))
+;; |       (when (and assq11 assq12)
+;; |         (setq *mon-ebay-images-lookup-path*
+;; |               `((".nef"  *mon-ebay-images-bmp-path*  ,assq11) ;; *mon-nef-img-hash*)
+;; |                 (".bmp"  *mon-ebay-images-bmp-path*  ,assq11)
+;; |                 (".tiff" *mon-ebay-images-bmp-path* ,assq11)
+;; |                 (".pnm"  *mon-ebay-images-bmp-path*  ,assq11)
+;; |                 (".ppm" *mon-ebay-images-bmp-path*  ,assq11)
+;; |                 (".pgm" *mon-ebay-images-bmp-path*  ,assq11)
+;; |                 (".pbm" *mon-ebay-images-bmp-path*  ,assq11)
+;; |                 (".png" *mon-ebay-images-jpg-path*  ,assq12)
+;; |                 (".jpg" *mon-ebay-images-jpg-path*  ,assq12) ; *mon-jpg-img-hash*)
+;; |                 (".jpeg" *mon-ebay-images-jpg-path* ,assq12))))))) ; *mon-jpg-img-hash*)
+;; | ;;
+;; | (unless (and (and (intern-soft "*mon-buffer-mode-defaults*" obarray)
+;; |                   (bound-and-true-p *mon-buffer-mode-defaults*))
+;; |              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+;; |                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
+;; |   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+;; |              (bound-and-true-p IS-MON-SYSTEM-P))
+;; |     (setq *mon-buffer-mode-defaults*
+;; |           `(("eBay-Template"  ,*mon-ebay-images-bmp-path* ".dbc")
+;; |             ("NAF-mode"       ,*mon-artist-naf-path*      ".naf")
+;; |             ("Emacs-Lisp"     ,*mon-naf-mode-root*        ".el")
+;; |             ("Lisp"           ,*mon-CL-scratch-path*      ".lisp")))))
+;; | ;;
+;; | ;; Inform custom that her kittens await.
+;; | (dolist (in-bnd '("*mon-ebay-images-lookup-path*"
+;; |                   "*mon-ebay-images-temp-path*"
+;; |                   "*mon-ebay-images-jpg-path*"
+;; |                   "*mon-ebay-images-bmp-path*"
+;; |                   "*mon-ebay-images-path*"
+;; |                   "*mon-nef-scan-nef2-path*"
+;; |                   "*mon-nefs_photos_nefs-alist*"
+;; |                   "*mon-nef-scan-nefs-path*"
+;; |                   "*mon-nef-scan-path*"
+;; |                   "*mon-nef-scan-base-path*"
+;; |                   "*mon-nef-scan-drive*"
+;; |                   "*mon-brand-naf-path*"
+;; |                   "*mon-artist-naf-path*"
+;; |                   "*mon-html-fontify-file-name-template*"
+;; |                   "*mon-record-current-directory*"
+;; |                   "*bug-HG-path*"
+;; |                   "*mon-CL-scratch-path*"
+;; |                   "*mon-smith-poster-HG-path*"
+;; |                   "*emacs2html-temp*        "
+;; |                   "*mon-buffer-mode-defaults*"
+;; |                   "*mon-HG-root-path*"))
+;; |   (let* ((is-int (intern-soft in-bnd)))
+;; |     (when (and is-int (funcall #'boundp (quote is-int)) is-int)
+;; |       (funcall #'custom-note-var-changed is-int)))) ;;(quote is-int) )))
+;; `----
                
 
 ;;; ==============================

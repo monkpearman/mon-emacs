@@ -3,7 +3,7 @@
 ;; -*- mode: EMACS-LISP; no-byte-compile: t; -*-
 
 ;;; ================================================================
-;; Copyright © 2009-2011 MON KEY. All rights reserved.
+;; Copyright © 2009-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-default-start-loads.el
@@ -51,7 +51,8 @@
 ;; `mon-set-boxcutter-init', `mon-set-mon-feature-customs-init',
 ;; `mon-set-image-dired-init', `mon-set-org-init',
 ;; `mon-set-custom-customizations-init', `mon-set-show-paren-init',
-;; `mon-set-github-paths-init', `mon-set-bbdb-init',
+;; `mon-set-github-paths-init', `mon-set-bbdb-init', `mon-set-printer-postscript-init',
+;; `mon-set-split-window-init', `mon-set-vc-init', `mon-set-magit-init',
 ;; FUNCTIONS:◀◀◀
 ;; 
 ;; MACROS:
@@ -173,7 +174,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2009-2011 MON KEY 
+;; Copyright © 2009-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -219,6 +220,7 @@
   (unless (null tool-bar-mode) (tool-bar-mode -1))
   (unless (null blink-cursor-mode) (blink-cursor-mode -1))
   (setq-default cursor-type '(bar . 3))
+  (setq-default indent-tabs-mode nil)
   (when (and (intern-soft "IS-MON-P" obarray)  ;; *IS-MON-OBARRAY*
              (bound-and-true-p IS-MON-P))
     (unless (null menu-bar-mode) (menu-bar-mode -1)))
@@ -238,7 +240,8 @@
                       mon-keybind-completions
                       mon-keybind-emacs-lisp-mode
                       mon-keybind-lisp-interaction-mode
-                      mon-keybind-slime))
+                      mon-keybind-slime
+                      mon-keybind-slime-fuzzy-completions))
   (declare-function kybnd-fncn "mon-keybindings" t t))
 
 ;;; ==============================
@@ -284,6 +287,9 @@ The symbols contained of this list are defined in :FILE mon-default-start-loads.
           mon-set-github-paths-init
           mon-set-bbdb-init
           mon-set-split-window-init
+          mon-set-printer-postscript-init
+          mon-set-vc-init
+          mon-set-magit-init
           ;; :VARIABLES 
           *mon-default-start-load-sanity*
           *mon-default-start-load-sanity-WARN-ONLY*
@@ -382,7 +388,10 @@ non-nil to will also override all error signaling.\n
 
 
 ;;; ==============================
-;;; `same-window-regexps', `special-display-regexps', `same-window-buffer-names',
+;;; :NOTE Soon to be obsolete in favor of `display-buffer-alist': 
+;;;  `special-display-regexps', `special-display-buffer-names' 
+;;; 
+;;; `same-window-regexps',  `same-window-buffer-names',
 ;;; `display-buffer-reuse-frames', `display-buffer-mark-dedicated',
 ;;; `pop-up-frames', `completion-setup-hook', 
 ;;; :CREATED <Timestamp: #{2011-06-21T21:09:49-04:00Z}#{11252} - by MON KEY>
@@ -392,28 +401,22 @@ non-nil to will also override all error signaling.\n
 `split-window-sensibly', `split-window-preferred-function',
 `display-buffer-mark-dedicated', `help-buffer'.\n▶▶▶"
   (mon-default-start-error/sane 
-   'mon-set-ispell-init warn-only
-   (custom-set-variables 
-    '(split-width-threshold 100 t nil ":DEFAULT 160")
-    '(split-height-threshold 50 t nil ":DEFAULT 80")
-    '(even-window-heights nil t nil ":DEFAULT t"))
-   (with-current-buffer (get-buffer-create "*Completions*")
-     (set (make-local-variable 'window-size-fixed)  t)
-     (display-buffer (current-buffer) t)
-     (select-window
-      (get-buffer-window (current-buffer) t))
-     (with-selected-window (selected-window)
-       (set-window-dedicated-p (selected-window) t)))
-   (with-current-buffer (get-buffer-create (help-buffer)) 
-     ;;(set (make-local-variable 'window-size-fixed) 'width)
-     (set (make-local-variable 'window-size-fixed) 'height)
-     (display-buffer (current-buffer) t)
-     (select-window
-      (get-buffer-window (current-buffer) t))
-     (with-selected-window (selected-window)
-       (set-window-dedicated-p (selected-window) t)))))
-;;
-(mon-set-split-window-init)
+   'mon-set-split-window-init warn-only
+   ;; (cl-case (mon-user-name-conditionals t)
+   (when (eq (mon-user-name-conditionals t) 'IS-MON-P-DARWIN)
+     (custom-set-variables 
+       '(split-width-threshold 160 t nil ":DEFAULT 160")
+       '(split-height-threshold 80 t nil ":DEFAULT 80")
+       ;; '(even-window-sizes nil t nil ":DEFAULT t"))))
+       ;; '(even-window-sizes nil t nil ":DEFAULT t"))))
+       '(even-window-sizes t))))
+
+      ;; this doesn't seem to work.
+   ;;   (add-hook 'temp-buffer-show-hook 'mon-temp-buffer-show-finish)
+   )
+;; 
+;; (mon-set-split-window-init t)
+(mon-set-split-window-init t)
 
 ;;; ==============================
 ;; :LOAD-PATH-SETUP
@@ -442,18 +445,20 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 		     ,*mon-naf-mode-root*
 		     ,*mon-ebay-tmplt-mode-root*)))
      (dolist (m-silp mon-silp)
-       (add-to-list 'load-path m-silp))
+       (add-to-list 'load-path m-silp)
+       ;; *mon-site-lisp-root*
+)
      ;; :NOTE This may cause problems when (not IS-BUG-P-REMOTE).
-     (setq user-emacs-directory (file-name-as-directory *mon-user-emacsd*))
-     (unless (and (file-exists-p *mon-user-emacsd*) 
+     ;; (setq user-emacs-directory (file-name-as-directory *mon-user-emacsd*))
+     (unless (and (file-exists-p *mon-user-emacsd*)
                   (file-directory-p *mon-user-emacsd*))
        (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
                   (bound-and-true-p IS-MON-SYSTEM-P))
-         (make-directory *mon-user-emacsd*)))
-      (message (concat ":FUNCTION `mon-set-load-path-init' -- "
+         (make-directory *mon-user-emacsd*)
+	 (message (concat ":FUNCTION `mon-set-load-path-init' -- "
                        "created new directory for value of `user-emacs-directory' at loadtime\n "
-                       "created directory: %s") user-emacs-directory))
-   user-emacs-directory))
+                       "created directory: %s") user-emacs-directory)))
+     user-emacs-directory)))
 ;; 
 ;; (mon-set-load-path-init t)
 (mon-set-load-path-init)
@@ -627,7 +632,17 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 
 ;;; ==============================
 ;; :INFOPATH-SETUP
+;; (substitute-env-vars "$MON_HOME/INFO-MON")
+;; (setenv "INFO_MON" (substitute-env-vars "$DEVHOME/SDP_INFO"))
+;; (getenv "INFO_MON")
+;; (getenv "MON_HOME")
+;; MON_LOCAL_INFO
+;; Info-directory-list
+;; IS-MON-P-DARWIN
+;; (getenv "INFO_MON")
 
+
+  
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-22T17:31:14-04:00Z}#{10121} - by MON KEY>
 (defun mon-set-infopath-init (&optional warn-only)
@@ -647,36 +662,96 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 `Info-default-dirs'.\n▶▶▶"
   (mon-default-start-error/sane 
    'mon-set-info-path-init warn-only
-   (when (and (intern-soft "IS-MON-P-W32" obarray)  ;; *IS-MON-OBARRAY*
-              (bound-and-true-p IS-MON-P-W32))
-     (when (and (intern-soft  "Info-dir-contents" obarray)
-                (bound-and-true-p Info-dir-contents))
-       (setq Info-dir-contents nil))
-     (when (and (intern-soft  "Info-dir-contents-directory" obarray) ;; *IS-MON-OBARRAY*
-                (bound-and-true-p Info-dir-contents-directory))
-       (setq Info-dir-contents-directory nil))
-     (let ((emc-pth (getenv "EMC_PTH"))
-           (info-pth (file-truename  (getenv "INFOPATH")))
-           gthr-info-pth)
-       ;; :NOTE Assume there is only one path specified by INFOPATH env-var.
-       ;; When there are more than one, this should be a `split-string' instead.
-       (when info-pth 
-         (push (concat (replace-regexp-in-string "[:;]$" ""  info-pth) "/") gthr-info-pth))
-       (when (and emc-pth (file-directory-p emc-pth))
-         (setq emc-pth (file-truename (concat (directory-file-name emc-pth) "/info/")))
-         (push emc-pth gthr-info-pth))
-       (dolist (gip gthr-info-pth)
-         (pushnew gip Info-default-directory-list :test 'equal))
-       (when (member "c:/emacs/info/" Info-default-directory-list)
-         (setq Info-default-directory-list 
-               (delete "c:/emacs/info/" Info-default-directory-list))))
-     (setq Info-default-directory-list 
-           (delete-dups Info-default-directory-list)))
-   ))
+   (let* ((sys-type (mon-user-name-conditionals t))
+          (geim (getenv "INFO_MON"))  ;; (push  (file-name-as-directory (getenv "INFO_MON")) Info-directory-list) 
+          (geim-p (and geim (file-name-as-directory geim)))) ;; on Darwin, we set this in ~/.emacs 
+     (if geim ;; variable is set require `info' and do some stuff, else bail.
+         (progn 
+           (cl-eval-when (compile load eval) 
+             (unless (featurep 'info) (require 'info)))
+           (cond 
+            ;; First we look for IS-MON-P-DARWIN
+            ((eq sys-type 'IS-MON-P-DARWIN)
+             ;; ;; 
+             (let ((brew  "/opt/homebrew/share/info/")
+                   (brewmacs "/opt/homebrew/Cellar/emacs-plus@29/29.2/share/info/emacs/"))
+             ;; (file-name-as-directory (getenv "INFO_MON")) 
+             (cond (geim-p ;; only possible if we have INFO_MON non nil
+                    (cond ;; Info-directory-list non-nill and INFO_MON alrealy present
+                     ((and Info-directory-list (member geim-p Info-directory-list))
+                      (format ":FUNCTION `mon-set-info-path-init'
+                                       \n - Value of environmental variable INFO_MON [%s] already present in global variable `Info-directory-list'
+                                       \n - Declining to add it again.\n" geim-p))
+                     ;; Info-directory-list non-nil but INFO_MON not present
+                     ((and Info-directory-list (not (member geim-p Info-directory-list)))
+                      (format ":FUNCTION `mon-set-info-path-init'
+                                      \n - Adding value of environmental variable INFO_MON [%s] 
+                                      \n - Global variable `Info-directory-list' updated\n" geim-p)
+                      (push geim-p Info-directory-list)
+                      (push brew Info-directory-list)
+                      (push brewmacs Info-directory-list))
+                     ;; Info-directory-list nil so skip it and load it to `Info-default-directory-list' instead.
+                     ;; :NOTE `Info-directory-list' may not be in our environment yet                    
+                     ((null Info-directory-list)
+                      (if (member geim-p Info-default-directory-list)
+                          (format ":FUNCTION `mon-set-info-path-init' - global variable `Info-directory-list' null at loadtime.
+                                          \n - Value of environmental variable INFO_MON [%s] already present in global variable `Info-default-directory-list'
+                                          \n - Declining to add it again." geim-p)
+                        (progn
+                          (format ":FUNCTION `mon-set-info-path-init'
+                                          \n - Global variable `Info-directory-list' null at loadtime.
+                                          \n - Aadding value of environmental variable INFO_MON is\n - [%s]\n 
+                                          \n- Global variable `Info-default-directory-list' updated  instead.\n" geim-p)
+                          (push geim-p Info-default-directory-list)
+                          (push brew Info-default-directory-list)
+                          (push brewmacs Info-directory-list)
+                          (format ":FUNCTION `mon-set-info-path-init'
+                                          \n - Value of global variable `Info-default-directory-list' is now %S\n" Info-default-directory-list)))))))))
+            ;; Next check IS-MON-P-GNU.
+            ((eq sys-type 'IS-MON-P-GNU)
+             ;; DO STUFF HERE
+             )
+            ;; Finally check IS-MON-P-W32.
+            ((eq sys-type 'IS-MON-P-W32)
+             (when (and (intern-soft  "Info-dir-contents" obarray)
+                        (bound-and-true-p Info-dir-contents))
+               (setq Info-dir-contents nil))
+             (when (and (intern-soft  "Info-dir-contents-directory" obarray) ;; *IS-MON-OBARRAY*
+                        (bound-and-true-p Info-dir-contents-directory))
+               (setq Info-dir-contents-directory nil))
+             (let ((emc-pth (getenv "EMC_PTH"))
+                   (info-pth (and (getenv "INFOPATH") (file-truename  (getenv "INFOPATH"))))
+                   gthr-info-pth)
+               ;; :NOTE Assume there is only one path specified by INFOPATH env-var.
+               ;; When there are more than one, this should be a `split-string' instead.
+               (when info-pth 
+                 (push (concat (replace-regexp-in-string "[:;]$" ""  info-pth) "/") gthr-info-pth))
+               (when (and emc-pth (file-directory-p emc-pth))
+                 (setq emc-pth (file-truename (concat (directory-file-name emc-pth) "/info/")))
+                 (push emc-pth gthr-info-pth))
+               (dolist (gip gthr-info-pth)
+                 ;; (pushnew gip Info-default-directory-list :test 'equal))
+                 (cl-pushnew gip Info-default-directory-list :test 'equal))
+               (when (member "c:/emacs/info/" Info-default-directory-list)
+                 (setq Info-default-directory-list 
+                       (delete "c:/emacs/info/" Info-default-directory-list))))
+             (setq Info-default-directory-list 
+                   (delete-dups Info-default-directory-list)))
+            ;; Anything else isn't our system. Don't do anything, but report it.
+            (t (format ":FUNCTION `mon-set-info-path-init'
+                      \n - :FUNCTION `mon-user-name-conditionals' returned [%S]\n 
+                      \n- :FUNCTION `system-type' returned [%S]
+                      \n - Declining to add alue of environmental variable INFO_MON [%S] 
+                      \n - Global variable `Info-directory-list' `Info-default-directory-list' unchanged\n" sys-type system-type geim-p))))
+       ;; Fallthru on the `if' block, the value of geim-p is null, so fail gracefully but note we did so.
+       (format ":FUNCTION `mon-set-infopath-init'
+                \n - Evaluated at loadtime, but value of environmental variable `INFO_MON' null.
+                \n - Declining to frob variable(s) `Info-directory-list' or `Info-default-directory-list'.\n")))))
 ;;
 ;;; :TEST-ME Info-directory-list
 ;;
 ;; (mon-set-infopath-init t)
+;;
 (mon-set-infopath-init)
 
 ;;; ==============================
@@ -763,7 +838,7 @@ to help make it a little less so.\n
      (let ((wmn-p 
             (mapcar #'(lambda (this-csf) 
                         (let ((this-csf-file ;;(convert-standard-filename 
-                               (file-truename this-csf)))
+                               (and this-csf (file-truename this-csf))))
                           (unless (null this-csf-file)
                             (when (file-exists-p this-csf-file) this-csf-file))))
                     `( ;; :CROSS-SITE-MAN
@@ -904,8 +979,10 @@ Sets the following variables:\n
    (let* ((mon-bbdb-lisp-dir (expand-file-name "bbdb-GIT/lisp" *mon-site-lisp-root*))
           (mon-bbdb-dir (expand-file-name "bbdb-shared/" *mon-emacs-root*))
           (bbdb-file-name-pfx
-            (or (cadr (assoc 7 (or (and IS-MON-P *MON-NAME*)
-                                   (and IS-BUG-P *BUG-NAME*))))))
+           (or (cadr (assoc 7 (or (and IS-MON-P *MON-NAME*)
+                                  (and IS-BUG-P *BUG-NAME*)
+                                  ;; (and IS-DARWIN-P *MON-NAME*)
+                                  )))))
           (name-for-bbdb-file 
            (concat ".bbdb"
                    (and bbdb-file-name-pfx (concat "-" (downcase bbdb-file-name-pfx))))))
@@ -939,6 +1016,74 @@ Sets the following variables:\n
 
 ;; (mon-set-bbdb-init)
 
+;;; ==============================
+;;; :NOTE At this point `user-emacs-directory' should be outside of ~/ (on MON systems)
+;;; However we wan't to store desktop related stuff in ~/.emacs.d/ so we need
+;;; bind the `desktop-*' vars manually; specifically `desktop-path'.
+;;; :CREATED <Timestamp: #{2011-07-04T12:29:16-04:00Z}#{11271} - by MON KEY>
+(defun mon-set-desktop-init (&optional warn-only)
+  "
+ :EXAMPLE\n\n
+ :SEE-ALSO `desktop-save-mode'.\n▶▶▶"
+  (mon-default-start-error/sane 
+   'mon-set-desktop-init warn-only
+   user-emacs-directory
+   (setq desktop-path `("." ,(substitute-env-vars "$HOME/.emacs.d/") "~"))
+   (custom-note-var-changed 'desktop-path)
+   (require 'desktop)
+   ))
+;; 
+;; (mon-set-desktop-init t)
+
+;; show-trailing-whitespace t
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2011-06-25T14:04:27-04:00Z}#{11256} - by MON KEY>
+;;; ps-print-* (Postscript print)
+(defun mon-set-printer-postscript-init (&optional warn-only)
+  "Set Postscript printing variables.\n
+:SEE-ALSO `ps-value', `ps-get', `ps-put', `ps-del', `ps-showline-count',
+`ps-print-color-scale', `ps-print-control-characters', `ps-print-face-alist',
+`ps-print-face-extension-alist', `ps-print-face-map-alist', `ps-print-height',
+`ps-print-hook', `ps-print-only-one-header', `ps-print-page-p',
+`ps-print-prologue-0', `ps-print-prologue-1', `ps-print-prologue-header',
+`ps-print-region-function', `ps-print-translation-table',
+`ps-print-upside-down', `ps-print-version', `ps-print-width', `ps-printer-name',
+`ps-printer-name-option', `ps-printing-region', `ps-print-begin-column-hook',
+`ps-print-begin-page-hook', `ps-print-begin-sheet-hook'.\n▶▶▶"
+  (mon-default-start-error/sane 
+   'mon-set-printer-postscript-init warn-only
+   (custom-set-variables 
+    '(ps-print-color-p nil)             ; :DEFAULT T
+    '(ps-print-header        t)         ; :DEFAULT t
+    '(ps-print-header-frame  nil)       ; :DEFAULT t
+    '(ps-print-foooter-frame nil)       ; :DEFAULT t
+    '(ps-show-n-of-n t)                 ; :DEFAULT T
+    '(ps-header-line-pad 0.05)          ; :DEFAULT 0.15
+    '(ps-footer-line-pad 0.05)          ; :DEFAULT 0.15
+    '(ps-top-margin     21.25984251968504)  ; :DEFAULT 42.51968503937008 PostScript points = 0.590551181 inches
+    '(ps-bottom-margin  21.25984251968504)  ; :DEFAULT 42.51968503937008
+    '(ps-left-margin    28.346456692913385) ; :DEFAULT 56.69291338582677 PostScript points = 0.787401575 inches
+    '(ps-right-margin   28.346456692913385) ; :DEFAULT 42.51968503937008
+    '(ps-right-header (list "/pagenumberstring load" 'ps-time-stamp-iso8601 'ps-time-stamp-hh:mm:ss))
+    '(ps-right-footer (list "/pagenumberstring load" 'ps-time-stamp-iso8601 'ps-time-stamp-hh:mm:ss))
+    '(ps-footer-lines        1)         ; :DEFAULT 2
+    '(ps-header-lines        1)         ; :DEFAULT 2
+    ;;
+    ;; '(ps-print-background-image nil) ; :DEFAULT nil
+    ;; '(ps-print-background-text nil) ; :DEFAULT nil
+    ;; '(ps-header-frame-alist   )     ; :DEFAULT '((fore-color . 0.0) (back-color . 0.9) (border-width . 0.4) (border-color . 0.0)  (shadow-color . 0.0))
+    ;; '(ps-footer-frame-alist   )     ; :DEFAULT is as value of `ps-header-frame-alist'
+    ;; '(ps-left-header '(ps-get-buffer-name ps-header-dirpart))
+    ;; '(ps-left-footer '(ps-get-buffer-name ps-header-dirpart))
+    ;;
+    ;; '(ps-switch-header 'duplex)
+    ;;  '(ps-spool-duplex )  ;; 
+    ;;  (ps-spool-tumble  ) ;; 
+    ) ;; :CLOSE `custom-set-variables'
+   ))
+;;
+;; (mon-set-printer-postscript-init t)
 
 ;;; ==============================
 ;; :executables
@@ -998,7 +1143,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;; (mon-set-doc-view-programs-init t)
 (mon-set-doc-view-programs-init)
 
-
+;;  (eq system-type 'darwin) "IS-DARWIN-P" "IS-MON-P-DARWIN"
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2010-04-02T20:00:29-04:00Z}#{10136} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-10-21T20:01:43-04:00Z}#{09434} - by MON>
@@ -1053,12 +1198,18 @@ of the ImageMagick executables convert.exe and imconvert.exe\n
                '(image-file-name-extensions
                  '("png" "jpeg" "jpg" "gif" "tiff" "tif" 
                    "xbm" "xpm" "pbm" "pgm" "ppm"
-                   "pnm" "nef" "bmp" "png" "svg"))))))
+                   "pnm" "nef" "bmp" "png" "svg"))))
+         ;; on Darwin we should rebuild from brew with this flag activated:--with-imagemagick
+         ;; (and (intern-soft "IS-MON-P-DARWIN")
+         ;;      (bound-and-true-p IS-MON-P-GNU))
+         ;; [...DO STUFF...]
+         ))
    ))
 ;;
 ;; (mon-set-thumbs-conversion-program-init t)
 (mon-set-thumbs-conversion-program-init)
 
+;;; IS-DARWIN-P IS-MON-P-DARWIN  ;; ?? screen capture ?? 
 ;;; ==============================
 ;;; :CHANGESET 2292
 ;;; :CREATED <Timestamp: #{2010-11-09T20:36:53-05:00Z}#{10452} - by MON KEY>
@@ -1253,8 +1404,35 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
     ;; :DEFAULT "mogrify"
     ;; '(image-dired-cmd-rotate-thumbnail-program )
    ;;
-   (custom-set-variables 
-    '(image-dired-thumbnail-storage 'per-directory))))
+   ;; 
+   ;; pngcrush takes preferrence by image-dired-cmd-create-standard-thumbnail-command
+   ;; (custom-set-variables '(image-dired-cmd-pngnq-program "/usr/bin/pngnq"))
+   ;; (custom-set-variables '(image-dired-cmd-pngcrush-program "/usr/bin/pngcrush")) 
+   ;;
+   ;; :NOTE `image-dired-cmd-rotate-thumbnail-program', `image-dired-cmd-rotate-original-program'
+   ;; `image-dired-cmd-rotate-original-options' should prob. use
+   ;; exiftran/jpegtran if availabe whenever thumbnail/original-image is a jpeg.
+   ;; exiftran is preferred because it won't alter existing exif data.
+   ;;
+   (if IS-MON-P-GNU
+       (custom-set-variables 
+        '(image-dired-thumbnail-storageimage-dired-thumbnail-storage 'standard)) ; in users ~/.cache directory 
+     (custom-set-variables 
+      '(image-dired-thumbnail-storage 'use-image-dired-dir))) ;default
+   (when IS-MON-P-GNU
+     (cond ((executable-find "mirage") 
+            (setq image-dired-external-viewer (executable-find "mirage") ))
+           ((executable-find "mirage") 
+            (setq image-dired-external-viewer (executable-find "viewnior") )))
+     (custom-note-var-changed 'image-dired-external-viewer))
+   ;; (when IS-MON-P-DARWIN
+   ;;   (cond ((executable-find "<EXECUTABLE>")  ;; <EXECUTABLE>
+   ;;          (setq image-dired-external-viewer (executable-find "<EXECUTABLE>") ))
+   ;;         ((executable-find "mirage") 
+   ;;          (setq image-dired-external-viewer (executable-find "<FALLBACK-EXECUTABLE>") )))
+   ;;   (custom-note-var-changed 'image-dired-external-viewer))
+   ))
+
 
 
 ;;; ==============================
@@ -1274,9 +1452,15 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    'mon-set-ispell-init warn-only
    (custom-set-variables
     '(ispell-program-name 
-      (cond ((and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
-                  (bound-and-true-p IS-MON-P-GNU))
+      (cond ((or (and (intern-soft "IS-MON-P-DARWIN" obarray) ;; *IS-MON-OBARRAY*
+                      (bound-and-true-p IS-MON-P-DARWIN))
+                 (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
+                      (bound-and-true-p IS-MON-P-GNU)))
              (executable-find "aspell"))
+            ;; ((and (intern-soft "IS-MON-P-DARWIN")
+            ;;      (bound-and-true-p IS-MON-P-GNU))
+            ;;  [...DOSTUFF...]
+            ;;  )
             ((and (intern-soft "IS-W32-P" obarray) ;; *IS-MON-OBARRAY*
                   (bound-and-true-p IS-W32-P))
              (or (convert-standard-filename (executable-find "aspell"))
@@ -1318,6 +1502,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    ;; (setq help-downcase-arguments t)
    (custom-set-variables 
     '(help-downcase-arguments t t)
+    ;; '(view-remove-frame-by-deleting  nil);; :default t)
     ;; :NOTE May slow apropos down by ~10-20%
     '(apropos-do-all t))
    ;;
@@ -1604,7 +1789,8 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
      ;; :SEE `edebug-form-spec' 
      ;; :SEE (info "(elisp Instrumenting Macro Calls")
      ;; (edebug-eval-macro-args t) 
-     )
+     (mon-set-printer-postscript-init)
+     ) ;; :CLOSE `IS-MON-P'
    ))
 ;;
 ;; (mon-set-customizations-before-custom-file-init t)
@@ -1676,20 +1862,25 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
   (mon-default-start-error/sane
    'mon-set-custom-file-init warn-only
    (let* ((*mon-user-emacsd* (file-name-as-directory *mon-user-emacsd*))
-          (mscf (cond ((and (intern-soft "IS-MON-P-W32" obarray) ;; *IS-MON-OBARRAY*
-                            (bound-and-true-p IS-MON-P-W32))
-                       (concat *mon-user-emacsd* (nth 2 (assoc 1 *mon-emacsd*))))
-                      ((and (intern-soft "IS-BUG-P" obarray)  ;; *IS-MON-OBARRAY*
+          (mscf (cond 
+                 ((and (intern-soft "IS-MON-P-DARWIN" obarray) ;; *IS-MON-OBARRAY*
+                       (bound-and-true-p IS-MON-P-DARWIN)
+                       (concat *mon-user-emacsd* (nth 2 (assoc 6 *mon-emacsd*)))))
+                 ((and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
+                        (bound-and-true-p IS-MON-P-GNU))
+                       (concat *mon-user-emacsd* (nth 2 (assoc 2 *mon-emacsd*))))
+                 ((and (intern-soft "IS-MON-P-W32" obarray) ;; *IS-MON-OBARRAY*
+                       (bound-and-true-p IS-MON-P-W32))
+                  (concat *mon-user-emacsd* (nth 2 (assoc 1 *mon-emacsd*))))
+                 ((and (intern-soft "IS-BUG-P" obarray)  ;; *IS-MON-OBARRAY*
                             (bound-and-true-p IS-BUG-P))
-                       (concat *mon-user-emacsd* (nth 2 (assoc 3 *mon-emacsd*))))
-                      ((and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
-                            (bound-and-true-p IS-MON-P-GNU))
-                       (concat *mon-user-emacsd* (nth 2 (assoc 2 *mon-emacsd*)))))))
-     (setq custom-file mscf))
+                  (concat *mon-user-emacsd* (nth 2 (assoc 3 *mon-emacsd*))))
+                 )))
+          (setq custom-file mscf))
    ;; :NOTE Eval'ing: (load custom-file t) the `t' flips the `no-error'.
-   (load custom-file)
-   (mon-set-custom-file-init-w32-configs)
-   ))
+   (load custom-file))
+  ;; (mon-set-custom-file-init-w32-configs)
+   )
 ;;
 ;; (mon-set-custom-file-init t)
 (mon-set-custom-file-init)
@@ -1800,7 +1991,8 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
      (dolist (msli-D-1 *mon-lisp-safe-local-variable-values* 
                        (custom-set-variables 
                         `(safe-local-variable-values ,safe-local-variable-values)))
-       (add-to-list 'safe-local-variable-values msli-D-1))
+       (add-to-list 'safe-local-variable-values msli-D-1)
+       (add-to-list 'safe-local-variable-values '(show-trailing-whitespace  . t)))
      (add-hook 'emacs-lisp-mode-hook
                (function (lambda () 
                  (set (make-local-variable 'mouse-avoidance-mode) 'banish))))
@@ -1881,6 +2073,91 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;;
 ;; (mon-set-auctex-init t)
 
+(defun mon-set-vc-init (&optional warn-only)
+  "Initialize vc related custom variables.\n
+:SEE-ALSO `mon-magit-set-init', `mon-set-dvc-init'.\n▶▶▶"
+  ;; " ... Removing an entry from the vc-handled-backends list prevents VC from
+  ;;  being activated when visiting a file managed by that backend ..."
+  ;; :SEE (URL `http://www.method-combination.net/blog/')
+  ;; :DEFAULT (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
+  (mon-default-start-error/sane
+   'mon-set-vc-init warn-only
+   ;; :NOTE order in which the diff switch variables are checked:
+   ;;  `vc-<BACKEND>-diff-switches', `vc-diff-switches', `diff-switches'
+   (custom-set-variables 
+    ;; vc-diff-knows-L
+    '(vc-handled-backends '(Git Bzr Hg))
+    '(vc-diff-switches     (quote "-u"))
+    '(vc-git-diff-switches (quote ("-u")))
+    )))
+
+(defun mon-set-magit-init (&optional warn-only)
+  "Initialize the magit version control sytem on MON systems at init time.\n
+:SEE info node `(magit)Top'\n
+:SEE (URL `git://github.com/magit/magit.git')\n
+:SEE (URL `http://magit.github.com/magit/magit.html')\n
+:SEE-ALSO `mon-set-vc-init', `mon-magit-set-init', `vc-handled-backends'.\n▶▶▶"
+  (mon-default-start-error/sane
+   'mon-set-magit-init warn-only
+   (cond ((and (intern-soft "IS-MON-P-DARWIN" obarray) ;; *IS-MON-OBARRAY*
+                  (bound-and-true-p IS-MON-P-DARWIN))
+          (let ((magit-root (mon-build-path-for-load-path *mon-site-lisp-root* "magit_2024"))
+                (magit-lisp "/magit/lisp")
+                (transient  "/transient/lisp")
+                (with-ed    "/with-editor/lisp")
+                (compat     "/compat")
+                (dash      "/dash-2.19.1"))
+            (loop 
+             for pathnames in (list magit-lisp transient with-ed compat dash)
+             for expanded = (concat magit-root pathnames)
+             do (add-to-list 'load-path expanded))))
+         ((and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
+                  (bound-and-true-p IS-MON-P-GNU))
+          (add-to-list 'load-path 
+                       (mon-build-path-for-load-path *mon-site-lisp-root* "magit-FORK") t)))
+   (require 'magit)
+   (setq magit-view-git-manual-method 'man)
+   ;; (setq magit-view-git-manual-method 'man) 
+   ;;
+   ;;
+   ;; (custom-set-variables 
+   ;; '(magit-gitk-executable "git") ;; :DEFAULT "git" -- <STRING>
+   ;; '(magit-gitk-executable (executable-find "gitk")) ;; :DEFAULT (executable-find "gitk") -- <STRING>
+   ;; '(magit-git-standard-options "--no-pager") :DEFAULT "--no-pager" -- <STRING>
+   ;; '(magit-repo-dirs nil) ;; :DEFAULT nil ( <STRING>* )
+   ;; '(magit-repo-dirs-depth 3) ;; :DEFAULT 3 -- <INTEGER>
+   ;; '(magit-save-some-buffers t) ;; :DEFAULT t { t | nil | dontask }
+   ;; '(magit-commit-all-when-nothing-staged 'ask) ;; :DEFAULT ask { nil | t | ask | ask-stage }
+   ;; '(magit-commit-signoff nil) ;; :DEFAULT nil -- BOOLEAN
+   ;; '(magit-log-cutoff-length 100) ;; :DEFAULT 100  -- <INTEGER>
+   ;; '(magit-log-infinite-length 99999) ;; :DEFAULT 99999 -- <INTEGER>
+   ;; '(magit-log-auto-more nil nil)  ;; :DEFAULT nil -- BOOLEAN
+   ;; '(magit-process-popup-time -1) ;; :DEFAULT -1 { -1 | 0 | <INTEGER> )
+   ;; '(magit-revert-item-confirm t) ;; :DEFAULT t -- BOOLEAN
+   ;; '(magit-log-edit-confirm-cancellation nil) ;; :DEFAULT nil -- BOOLEAN
+   ;; '(magit-remote-ref-format 'branch-then-remote) ;; :DEFAULT { branch-then-remote | remote-slash-branch }
+   ;; '(magit-process-connection-type t) ;; :DEFAULT t -- BOOLEAN
+   ;; '(magit-create-branch-behaviour 'at-head) :DEFAULT { at-head | at-point }
+   ;; '(magit-status-buffer-switch-function 'pop-to-buffer) ;; :DEFAULT 'pop-to-buffer { switch-to-buffer | pop-to-buffer | <FUNCTION> }
+   ;; '(magit-rewrite-inclusive t) ;; :DEFAULT t --  { t | nil | ask }
+   ;; '(magit-highlight-whitespace t) ;; :DEFAULT t -- { t | nil | status }
+   ;; '(magit-highlight-trailing-whitespace t) ;; DEFAULT t -- BOOLEAN
+   ;; '(magit-highlight-indentation nil) ;; ( <REGEXP> . {tabs | tab-width | nil} )
+   ;; '(magit-highlight-indentation nil) ;; :DEFAULT nil
+   ;;
+   ;; '(magit-save-some-buffers-predicate 'magit-save-buffers-predicate-tree-only) 
+   ;;  :DEFAULT magit-save-buffers-predicate-tree-only
+   ;;  { magit-save-buffers-predicate-tree-only | magit-save-buffers-predicate-all | <FUNCTION> )
+   ;;
+   ;; '(magit-default-tracking-name-function 'magit-default-tracking-name-remote-plus-branch) 
+   ;;  :DEFAULT magit-default-tracking-name-remote-plus-branch
+   ;;  { magit-default-tracking-name-remote-plus-branch | magit-default-tracking-name-branch-only | <FUNCTION> }
+   ;;
+   ;; '(magit-completing-read-function 'magit-builtin-completing-read) :DEFULT magit-builtin-completing-read  
+   ;;   { magit-iswitchb-completing-read | magit-ido-completing-read | magit-builtin-completing-read | <FUNCTION> } 
+   ;; )
+   ))
+
 ;;; ==============================
 ;;; :NOTE (dvc-current-active-dvc) 
 ;;; :NOTE :VARIABLE `bzr-executable' in :FILE bzr-core.el 
@@ -1893,7 +2170,8 @@ Signal an error when `IS-NOT-MON-SYSTEM'.\n
 When optional arg WARN-ONLY is non-nil message a warning instead of an error if
 function is already a member of variable `*mon-default-start-load-sanity*' as per 
 `mon-default-start-error/sane'.\n
-:SEE-ALSO `vc-handled-backends', `dvc-select-priority', `dvc-current-active-dvc'.\n▶▶▶"
+:SEE-ALSO `mon-set-vc-init', `mon-set-magit-init', `vc-handled-backends',
+`dvc-select-priority', `dvc-current-active-dvc'.\n▶▶▶"
   (mon-default-start-error/sane
    'mon-set-dvc-init warn-only
    (add-to-list 'load-path 
@@ -1925,19 +2203,20 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
          (setq xhg-executable   (concat (getenv "SP_HG") "\\hg.exe")))))
    ;; Turn off the ever so pervasive dvc-tips buffer.
    (custom-set-variables
-    ;; " ... Removing an entry from the vc-handled-backends list prevents VC from
-    ;;  being activated when visiting a file managed by that backend ..."
-    ;; :SEE (URL `http://www.method-combination.net/blog/')
-    ;; :DEFAULT (RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
-    '(vc-handled-backends '(Git Bzr Hg))
-    '(vc-diff-switches     (quote "-u"))
-    '(vc-git-diff-switches (quote ("-u")))
-    '(dvc-select-priority '(xgit git bzr xhg xdarcs xmtn tla baz) t)
+    ;; :NOTE set `dvc-registered-backends' to exclude xgit if we elect to use magit instead
+    ;; :SEE macro `dvc-register-dvc' in dvc-register.el 
+    ;; :SEE-ALSO `dvc-current-active-dvc-cache', `dvc-clear-dvc-cache'
+    ;; (dvc-registered-backends '(xmtn xhg xgit xdarcs tla bzr baz))
+    '(dvc-registered-backends '(xmtn xhg xdarcs tla bzr baz))
+    ;; '(dvc-select-priority '(xgit git bzr xhg xdarcs xmtn tla baz) t)
+    '(dvc-select-priority '(bzr xhg xdarcs xmtn tla baz) t)
     '(dvc-tips-enabled nil)
     '(dvc-log-edit-other-frame t)) ;; `bzr-add-log-entry', `dvc-add-log-entry'
    ))
 ;; (mon-set-dvc-init t)
 
+;; (erc-track-remove-from-mode-line)
+;; (setq erc-try-new-nick-p nil)
 ;;; ==============================
 ;;; :CHANGESET 2120
 ;;; :CREATED <Timestamp: #{2010-09-13T13:14:38-04:00Z}#{10371} - by MON KEY>
@@ -1959,18 +2238,37 @@ in variable `*mon-misc-path-alist*'.\n
               t)
      (apply 'custom-set-variables 
             (cadr (assq 'the-erc-configs *mon-misc-path-alist*)))
-     (custom-set-variables 
+     ;;
+     ;; (require 'erc-log)
+     ;;
+     (custom-set-variables
+      ;; '(erc-server-auto-reconnect nil)
+      '(erc-autojoin-mode nil)
+      ;; erc-server-NOTICE-functions
+      ;; erc-autojoin-channels-alist
+      '(erc-server-reconnect-timeout 30)
+      '(erc-server-reconnect-attempts 5)
       ;; /ignore joins+parts. The key to IRC.
       '(erc-hide-list '("JOIN" "PART" "QUIT"))
-      '(erc-autoaway-mode t))
+      '(erc-track-exclude-types '("JOIN" "KICK" "NICK" "PART" "QUIT" "MODE"))
+      
+      '(erc-autoaway-mode   t)  ;; note this doesn't do anything when erc-autoaway isn't loaded
+      '(erc-track-showcount t)) ;; :default nil
+
+     ;; (remove-hook 'erc-server-NOTICE-functions 'mon-erc-post-cloak-autojoin)
+     (add-hook 'erc-server-NOTICE-functions 'mon-erc-post-cloak-autojoin t)
+
       ;; erc-modules 
+      ;;
+      '(erc-try-new-nick-p  nil);; :DEFAULT t ;; :NOTE manually set another nickname with the /NICK command
       ;;
       ;; erc-autoaway-mode
       ;; erc-auto-set-away
       ;; erc-away
       ;;
       ;; erc-log-channels-directory ;; :DEFAULT "~/log"
-      ;; erc-log-insert-log-on-open
+      ;; erc-generate-log-file-name-function :DEFAULT 'erc-generate-log-file-name-long
+      ;; erc-log-insert-log-on-open t ;; :DEFAULT nil
       ;; erc-log-filter-function
       ;;;;;;;;;;;;;;;;;;;;;;;;;;;
       ;; `erc-modes'
@@ -1982,8 +2280,39 @@ in variable `*mon-misc-path-alist*'.\n
       ;; Disable logging in some buffer:
       ;; (set (make-local-variable 'erc-enable-logging) nil)
       ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      ;; erc-disconnected-hook
+      ;; erc-join-hook
+      ;; erc-server-JOIN-functions
+      ;; erc-part-hook
+      ;; erc-nick-changed-functions
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      ;; erc-channel-users ;; each entry in hash-table is a list of the form 
+      ;; (NICK (<ERC-SERVER-USER-STRUCT> . <ERC-CHANNEL-USER-STRUCT>))
+      ;; ("<NICK>" ([erc-server-user <NICKNAME> <HOST> <LOGIN> <FULL-NAME> <INFO>] .
+      ;;           [erc-channel-user <OP> <VOICE> <LAST-MESSAGE-TIME>))
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;;      
       )
    ))
+;; erc-log-insert-log-on-open
+;; erc-log-channels-directory
+;; "~/erc-logs"
+
+
+
+;; erc-save-buffer-on-part
+;;
+;; 
+(defun mon-erc-post-cloak-autojoin (proc parsed)
+ "Autojoin if and only if NickServ tells us to."
+ (with-current-buffer (process-buffer proc)
+   (when (and (string-equal "irc.libera.chat" ;; :WAS "irc.freenode.net"
+                            (erc-response.sender parsed))
+              ;; ".* unaffiliated/monkey/.* is now your"
+              ;; "You\\s-are\\s-now\\s-identified\\s-for\\s-"
+              (string-match ".*NickServ set your hostname to.*"
+                            (erc-response.contents parsed)))
+     (erc-autojoin-channels erc-session-server (erc-current-nick))
+     nil)))
 
 ;;; ==============================
 ;;; :CHANGESET 1990
@@ -2126,6 +2455,14 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
             (browse-url-firefox-new-window-is-tab t t)
             (browse-url-mozilla-new-window-is-tab 1 t)
             ,(cond ;; :NOTE These below were `custom-set-default'
+              ((and (intern-soft "IS-MON-P-DARWIN" obarray) ;; *IS-MON-OBARRAY*
+                    (bound-and-true-p IS-MON-P-DARWIN))
+               '(browse-url-browser-function 'browse-url-generic t)
+               '(browse-url-generic-program (nth 9 (mon-get-mon-emacsd-paths)) t))
+              ((and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
+                    (bound-and-true-p IS-MON-P-GNU))
+               '(browse-url-browser-function 'browse-url-generic t)
+               '(browse-url-generic-program (nth 9 (mon-get-mon-emacsd-paths)) t))
               ((and (intern-soft "IS-BUG-P" obarray) ;; *IS-MON-OBARRAY*
                     (bound-and-true-p IS-BUG-P))
                '(browse-url-browser-function 'browse-url-generic)
@@ -2138,13 +2475,12 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
                     (bound-and-true-p IS-MON-P-W32))
                '(browse-url-browser-function 'browse-url-generic)
                '(browse-url-generic-program (nth 9 (mon-get-mon-emacsd-paths))))
-              ((and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
-                    (bound-and-true-p IS-MON-P-GNU))
-               '(browse-url-browser-function 'browse-url-generic t)
-               '(browse-url-generic-program (nth 9 (mon-get-mon-emacsd-paths)) t)))))
+              )))
    ))
 ;;
 ;; (mon-set-browser-init t)
+;; (mon-get-mon-emacsd-paths t)
+
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-26T19:08:09-04:00Z}#{09396} - by MON>
@@ -2253,6 +2589,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;;; additional discussion.
 ;;: (add-to-list 'auto-mode-alist '("\\.dbc\\'" . longlines-mode))
 
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-04-02T20:15:55-04:00Z}#{10136} - by MON KEY>
 (defun mon-set-longlines-init (&optional warn-only)
@@ -2303,7 +2640,8 @@ Signal an error when `IS-NOT-MON-SYSTEM'.\n
 :SEE-ALSO `mon-rst-mode-facification'.\n▶▶▶"
   (mon-default-start-error/sane
    'mon-set-rst-mode-faces-init warn-only ;; nil
-   (eval-when (compile load eval) 
+   ;; (eval-when (compile load eval)
+   (cl-eval-when (compile load eval) 
      (require 'rst nil t))
    (add-hook 'rst-mode-hook 'mon-rst-mode-facification)
    ))
@@ -2355,7 +2693,8 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
               (bound-and-true-p IS-MON-P))
      (add-to-list 'load-path 
                   (mon-build-path-for-load-path 
-                   *mon-site-lisp-root* "traverselisp"))
+                   *mon-site-lisp-root* "traverselisp/hg-traverse"))
+     ;; *mon-site-lisp-root*
      (require 'traverselisp)
    (add-to-list 'traverse-ignore-files ".naf~"))
    ))
@@ -2440,14 +2779,16 @@ Evaluated at init time by `mon-set-system-specific-and-load-init'.\n
    ;; (remove-hook 'lisp-interaction-mode-hook 'mon-keybind-lisp-interaction-mode)
    (add-hook 'lisp-interaction-mode-hook 'mon-keybind-lisp-interaction-mode t)
    ;; (remove-hook 'slime-mode-hook 'mon-keybind-slime)
-   ;; (add-hook 'slime-mode-hook 'mon-keybind-slime t)
+   (add-hook 'slime-mode-hook 'mon-keybind-slime t)
    (when (featurep 'w3m)
      ;; (remove-hook 'w3m-mode-hook 'mon-keybind-w3m)
      (add-hook 'w3m-mode-hook 'mon-keybind-w3m))
    (add-hook 'change-log-mode-hook 'mon-multi-isearch-rmv-hook)
    (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
               (bound-and-true-p IS-MON-SYSTEM-P))
-     (eval-after-load "mon-keybindings" '(mon-keybind-globally)))
+     (eval-after-load "mon-keybindings" 
+       '(progn (mon-keybind-globally) 
+               (mon-keybind-slime-fuzzy-completions))))
    ))
 
 
@@ -2494,10 +2835,11 @@ Evaluate `mon-set-boxcutter-init'.\n
 :SEE-ALSO .\n▶▶▶"
   (mon-default-start-error/sane 
    'mon-set-mon-feature-customs-init warn-only  
-   (when (and (intern-soft "IS-MON-P" obarray) ;; *IS-MON-OBARRAY*
-              (bound-and-true-p IS-MON-P)
-              (intern-soft "*MON-NAME*" obarray) ;; *IS-MON-OBARRAY*
-              (bound-and-true-p *MON-NAME*))
+   (when  ;; where do we set IS-MON-P mon-default-loads.el
+       (and  (and (intern-soft "IS-MON-P" obarray) ;; *IS-MON-OBARRAY*
+                  (bound-and-true-p IS-MON-P))
+             (and (intern-soft "*MON-NAME*" obarray) ;; *IS-MON-OBARRAY*
+                  (bound-and-true-p *MON-NAME*)))
      ;;
      (custom-set-variables
       '(*mon-timestamp-cond*
@@ -2510,7 +2852,13 @@ Evaluate `mon-set-boxcutter-init'.\n
           (,(file-name-nondirectory 
              (file-name-sans-extension 
               (locate-library "mon-time-utils")))
-           ,(cadr (assoc 6 *MON-NAME*))))))
+           ,(cadr (assoc 6 *MON-NAME*)))
+          ("txt" ,(cadr (assoc 6 *MON-NAME*)))
+          ("pctd" ,(cadr (assoc 6 *MON-NAME*)))
+          ("dbc" ,(cadr (assoc 6 *MON-NAME*)))
+          ("el" ,(cadr (assoc 6 *MON-NAME*)))
+          ("lisp" ,(cadr (assoc 6 *MON-NAME*))))
+        ))
      ;; '(*mon-github-username-for-pathname* "mon-key")
      ;; '(*mon-github-repository-name-for-pathname* "mon-emacs")
      ;; '(*mon-github-repository-default-pathname* "emacs-load-files")
@@ -2562,11 +2910,18 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
               (and (intern-soft "IS-BUG-P" obarray) ;; *IS-MON-OBARRAY*
                    (bound-and-true-p IS-BUG-P))) 
           (require 'mon-w32-load))
-         ((and (intern-soft "IS-MON-P" obarray) ;; *IS-MON-OBARRAY*
+         ;; ia thia hppwninfn
+         ((and (intern-soft "IS-MON-P" obarray)
                (bound-and-true-p IS-MON-P))
           (require 'grep)
-          (when (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
-                     (bound-and-true-p IS-MON-P-GNU))
+          (when (or (and (intern-soft "IS-MON-P-DARWIN" obarray)
+                         (bound-and-true-p IS-MON-P-DARWIN))
+                    (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
+                         (bound-and-true-p IS-MON-P-GNU)))
+                    
+            (custom-set-variables 
+             ;; :NOTE this may cause us trouble for functions which rely on output of dired using "-al" switch
+             '(dired-listing-switches "-alh")) ;; default "-al" :SEE-ALSO `dired-actual-switches'
             ;;
             ;; DEPRECATED
             ;; (require 'mon-GNU-load-no-HG)      
@@ -2580,13 +2935,17 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
             ;; (autoload 'mixvm "mixvm" "mixvm/gud interaction" t)
             ;;
             ;; (load "slime-loads-GNU-clbuild.el")
-            (require 'slime-loads-GNU-clbuild)
+            (require 'slime-loads-GNU-clbuild)  ;; what to do with Darwin?
             (mon-slime-setup-init)
+            (mon-define-common-lisp-style)
             ;; :BEFORE mon-utils.el
             (mon-set-common-lisp-hspec-init))))
    ;;
    ;; :NOTE :FILE mon-utils.el contains require statements for mon-*.el packages.   
    (require 'mon-utils)
+   ;; :NOTE DARWIN longlines.el was obsoleted and then unbosoleted and then obsoleted again. It currently resides in the distributions path: emacs/lisp/obsolote/longlines.el 
+(unless (featurep 'longlines) 
+  (require 'longlines))
    ;; :NAF-MODE
    ;; (require 'naf-mode)
    ;; :NOTE Automode files with '.naf' file extensions. '.naf' -> NAME AUTHORITY
@@ -2603,7 +2962,9 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
    (mon-set-w3m-init)
    (mon-set-browser-init)
    (mon-set-lisp-init)
-   (mon-set-dvc-init)   
+   (mon-set-vc-init)
+   (mon-set-magit-init)
+   ;; (mon-set-dvc-init) ;; :NOTE we should stop using this for git in favor of magit.
    (mon-set-css-path-init)
    ;; (mon-set-auctex-init)
    (mon-set-proced-init)
@@ -2649,6 +3010,12 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
    (require 'etags)
    (when (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
               (bound-and-true-p IS-MON-P-GNU))
+     ;; DARWIJN switch
+     ;; (or(and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
+     ;;    (bound-and-true-p IS-MON-P-GNU))
+     ;;    (and (intern-soft "IS-MON-P-DARWIN")
+     ;;         (bound-and-true-p IS-MON-P-DARWINU)))
+     ;;
      ;; NOTE If we do M-A-L-S-P-T-T-T-L first we shouldn't have to notify with
      ;; `custom-note-var-changed'.
      (mon-add-lisp-system-paths-to-tags-table-list))

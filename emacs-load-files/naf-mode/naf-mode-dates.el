@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2008-2011 MON KEY. All rights reserved.
+;; Copyright © 2008-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: naf-mode-dates.el
@@ -121,7 +121,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2008-2011 MON KEY 
+;; Copyright © 2008-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:

@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010-2011 MON KEY. All rights reserved.
+;; Copyright © 2010-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-dir-utils-local.el
@@ -145,7 +145,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010-2011 MON KEY 
+;; Copyright © 2010-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -162,6 +162,8 @@
 (declare-function w32-shell-execute               "w32fns.c" t t)
 (declare-function mon-set-difference              "mon-seq-utils" (set1-lst set2-lst comparison-func))
 (declare-function mon-mapcar                      "mon-seq-utils" (mapcar-fun mapcar-lst &rest more-lsts))
+(declare-function mon-bind-nefs-photos-at-loadtime "mon-dir-utils-local")
+
 (declare-function mon--local-url-for-bug          "mon-dir-utils-local" (is-url file-string))
 (declare-function mon-file-path-for-bug           "mon-dir-utils-local" (file-name-path insrtp yankp intrp))
 (declare-function mon-get-local-url-for-bug       "mon-dir-utils-local" (file-string))
@@ -1119,7 +1121,7 @@ COMP-HSH \(a hash-table\) should contain a common substring COMMON-STRING.\n
 ;;; :TESTING-AS-OF
 ;;; :CREATED <Timestamp: Thursday May 21, 2009 @ 02:28.56 PM - by MON>
 (defun mon-dir-try-comp (str &optional pth comp-collection)
-  "Best completion of string STR in directory PTH using COMP-COLLECTION.\N
+  "Best completion of string STR in directory PTH using COMP-COLLECTION.\n
 When non-nil PTH is a path name default is `*mon-ebay-images-bmp-path*'.\n
 When non-nil COMP-COLLECTION is a list of direotories in PTH.\n
 Default is `*mon-img-hash*'.\n
@@ -1127,7 +1129,7 @@ List value built with `mon-dir-build-list' per completion specs.\n
 :SEE-ALSO `mon-dir-hashed-complete', `mon-dir-hash-images',
 `try-completion', `all-completions', `completing-read'.\n▶▶▶"
   (let* ((comp-str str)
-	 (path (if pth 
+	 (path (if pth                  ;
 		   (directory-file-name pth)
 		 (directory-file-name *mon-ebay-images-bmp-path*)))
 	 (combo (concat path "/" str))

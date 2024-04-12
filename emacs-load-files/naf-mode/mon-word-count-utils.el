@@ -1,17 +1,17 @@
-;;; mon-word-syntax-utils.el --- counting things with word syntax
+;;; mon-word-count-utils.el --- counting things with word syntax
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
 ;; Copyright © 2010 MON KEY. All rights reserved.
 ;;; ================================================================
 
-;; FILENAME: mon-word-syntax-utils.el
+;; FILENAME: mon-word-count-utils.el
 ;; AUTHOR: MON KEY
 ;; MAINTAINER: MON KEY
-;; CREATED: 2010-11-23T20:59:13-05:00Z
+;; CREATED: 2010-11-23T20:54:09-05:00Z
 ;; VERSION: 1.0.0
 ;; COMPATIBILITY: Emacs23.*
-;; KEYWORDS:  lisp, emacs, matching, extensions,
+;; KEYWORDS: lisp, extensions, emacs,
 
 ;;; ================================================================
 
@@ -19,16 +19,11 @@
 
 ;; =================================================================
 ;; DESCRIPTION:
-;; mon-word-syntax-utils provides procedures for counting things with word
-;; syntax.
+;; mon-word-count-utils provides procedures counting things with word syntax
 ;;
-;; FUNCTIONS:▶▶▶
-;; `mon-get-syntax-at', `mon-get-syntax-class-at', `mon-line-test-content',
-;; `mon-word-get-next', `mon-word-get-list-in-buffer',
-;; `mon-word-reverse-region', `mon-word-iterate-over', `mon-word-iterate-over',
-;; `mon-word-count-analysis', `mon-word-count-occurrences',
-;; `mon-word-count-region', `mon-word-count-chars-region',
-;; FUNCTIONS:◀◀◀
+;; FUNCTIONS:►►►
+;;
+;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
 ;;
@@ -46,34 +41,13 @@
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
 ;;
-;; <PREFIX>-<QUALIFIED>                 <PREFIX>-<CORE-SYMBOL>
-;; `mon-skip-whitespace'             -> `edebug-skip-whitespace'
-;;
-;;  <PREFIX>-<QUALIFIED>                 <PREFIX>-<NON-CORE-SYMBOL>
-;; `mon-buffer-get-word-count'       -> `mon-word-count-occurrences'
-;; `mon-region-reverse-words'        -> `mon-word-reverse-region'
-;; `mon-reverse-region-words'        -> `mon-word-reverse-region'
-;;
 ;; DEPRECATED:
 ;;
 ;; RENAMED:
 ;;
 ;; MOVED:
-;; `mon-get-syntax-at'                              <- mon-utils.el
-;; `mon-get-syntax-class-at'                        <- mon-utils.el
-;; `mon-line-test-content'                          <- mon-utils.el
-;; `mon-word-get-next'                              <- mon-utils.el
-;; `mon-word-get-list-in-buffer'                    <- mon-utils.el
-;; `mon-word-reverse-region'                        <- mon-utils.el
-;; `mon-word-iterate-over'                          <- mon-utils.el
-;; `mon-word-iterate-over'                          <- mon-utils.el
-;; `mon-word-count-analysis'                        <- mon-utils.el
-;; `mon-word-count-occurrences'                     <- mon-utils.el
-;; `mon-word-count-region'                          <- mon-utils.el
-;; `mon-word-count-chars-region'                    <- mon-utils.el
 ;;
 ;; TODO:
-;; :SEE `comint-word'
 ;;
 ;; NOTES:
 ;;
@@ -83,14 +57,13 @@
 ;;
 ;; THIRD-PARTY-CODE:
 ;;
-;; URL: https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-word-syntax-utils.el
-;; EMACSWIKI-URL: http://www.emacswiki.org/emacs/mon-word-syntax-utils.el
-;; FIRST-PUBLISHED: <Timestamp: #{2010-11-25T02:27:00-05:00Z}#{10476} - by MON>
+;; URL: http://www.emacswiki.org/emacs/mon-word-count-utils.el
+;; FIRST-PUBLISHED:
 ;;
-;; EMACSWIKI: { URL of an EmacsWiki describing mon-word-syntax-utils. }
+;; EMACSWIKI: { URL of an EmacsWiki describing mon-word-count-utils. }
 ;;
 ;; FILE-CREATED:
-;; <Timestamp: #{2010-11-23T20:59:13-05:00Z}#{10472} - by MON KEY>
+;; <Timestamp: #{2010-11-23T20:54:09-05:00Z}#{10472} - by MON KEY>
 ;;
 ;; =================================================================
 
@@ -138,6 +111,10 @@
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 ;;; ==============================
+;;; :SYNTAX-CLASS
+;;; ==============================
+
+;;; ==============================
 ;;; :PREFIX "mgsa-"
 ;;; :CHANGESET 2180
 ;;; :CREATED <Timestamp: #{2010-10-10T09:17:24-04:00Z}#{10407} - by MON KEY>
@@ -146,7 +123,7 @@
 When SYNTAX-AT-PSN an integer is non-nil examine that position from point.\n
 :EXAMPLE\n\n\(mon-get-syntax-at\)\n
 \(mon-get-syntax-at -8\)\n
-:SEE-ALSO `mon-get-syntax-class-at'.\n▶▶▶"
+:SEE-ALSO `mon-get-syntax-class-at'.\n►►►"
   (interactive)
   (let ((mgsa-at-pnt (if syntax-at-psn (+ (point) syntax-at-psn) (point))))
     (and (or (eobp)
@@ -172,7 +149,7 @@ This is just a combination of `syntax-after' and `syntax-class'.\n
  \(logand \(syntax-class \(char-syntax \(char-after \(point\)\)\)\)\n
 :EXAMPLE\n\n(mon-get-syntax-class-at (1+ (point))) (\n
 :SEE-ALSO `syntax-after', `syntax-class', `string-to-syntax', `char-syntax'
-`mon-help-syntax-class', `mon-help-syntax-functions'.\n▶▶▶"
+`mon-help-syntax-class', `mon-help-syntax-functions'.\n►►►"
   (let ((mgsca-aftr-syn 
          (progn 
            (unless (or (< at-syntax-psn  (mon-g2be -1 t))
@@ -214,7 +191,7 @@ When W-RETURN-LST is non-nil returns as list.\n
      \(mon-line-test-content 'whitespace t\)\)word more-word\n
 :NOTE Function relies on current buffers local syntax table.\n
 :SEE-ALSO `mon-get-syntax-class-at', `mon-get-text-properties-category', `mon-view-help-source',
-`mon-help-syntax-class', `mon-help-syntax-functions'.\n▶▶▶"
+`mon-help-syntax-class', `mon-help-syntax-functions'.\n►►►"
   (let* ((mltc-sytx-typ (cond ((eq w-syntax-sym 'word) 'word)
                               ((eq w-syntax-sym 'whitespace) 'whitespace)
                               ((eq w-syntax-sym 'punctuation) 'punctuation)))
@@ -334,7 +311,7 @@ Point is left following the word.\n
 When `eopb' return nil with point unchanged.\n
 :NOTE Words motion is per `inhibit-field-text-motion' where a word is defined by
 `forward-word' according to the syntax-table settings.\n
-:SEE-ALSO `mon-line-get-next', `mon-word-get-list-in-buffer'.\n▶▶▶"
+:SEE-ALSO `mon-line-get-next', `mon-word-get-list-in-buffer'.\n►►►"
   ;; :NOTE Should this let-bind a syntax-table per the `forward-word' motion?
   (let (mwgn-start mwgn-end)
     (if (eobp)
@@ -370,7 +347,7 @@ unique words in a buffer of document.\n
 :SEE-ALSO `mon-word-count-occurrences', `mon-line-strings-to-list',
 `mon-line-string-split', `mon-stringify-list', `mon-dropin-line-word',
 `mon-insert-string-ify', `mon-word-count-analysis', `mon-word-count-region',
-`mon-word-count-chars-region'.\n▶▶▶"
+`mon-word-count-chars-region'.\n►►►"
   ;; :WAS
   ;; (interactive)
   ;; (let (word)
@@ -423,7 +400,7 @@ Return value has the format:\n
 deleted maybe and reversed be will I\n
 :ALIASED-BY `mon-region-reverse-words'\n
 :ALIASED-BY `mon-reverse-region-words'\n
-:SEE-ALSO `mon-region-reverse'.\n▶▶▶"
+:SEE-ALSO `mon-region-reverse'.\n►►►"
   (interactive "r\ni\np")
   (let* ((mwrr-str   (mon-buffer-sub-no-prop beg end))
          (mwrr-rvrsd (save-match-data (split-string mwrr-str "\\b"))))
@@ -462,7 +439,7 @@ The first time next-word is called, return \"This\".
 The next time, retrun \" is\". Then, \" text.\". 
 Finally, return nil forever.\n
 :NOTE Uses lexical-let to close over over local vars mwio-bfr and mwio-psn.\n
-:SEE-ALSO `mon-word-get-list-in-buffer'.\n▶▶▶"
+:SEE-ALSO `mon-word-get-list-in-buffer'.\n►►►"
   (lexical-let ((mwio-bfr buffer)
                 (mwio-psn 1))
     (lambda ()
@@ -475,7 +452,8 @@ Finally, return nil forever.\n
           (let ((mwio-pnt (point)))
             (if (not (eq mwio-psn mwio-pnt))
                 (progn 
-                  (setq mwio-rslt (mon-buffer-sub-no-prop  mwio-psn mwio-pnt))
+                  (setq mwio-rslt ;; :WAS (buffer-substring-no-properties mwio-psn mwio-pnt))
+                        (mon-buffer-sub-no-prop  mwio-psn mwio-pnt))
                   (setq mwio-psn mwio-pnt))))
           (switch-to-buffer mwio-cur-bfr) mwio-rslt)))))
 
@@ -489,7 +467,7 @@ Count anything with word syntax when `with-syntax-table' uses`standard-syntax-ta
 \(mon-word-count-analysis \(buffer-end 0\) \(buffer-end 1\) t\)\n
 :SEE-ALSO `mon-line-count-region', `mon-word-count-chars-region',
 `mon-word-count-occurrences', `mon-word-count-region', 
-`mon-word-get-list-in-buffer'.\n▶▶▶"
+`mon-word-get-list-in-buffer'.\n►►►"
   (interactive "r\np")
   (let (mwca-wrds mwca-hshd mwca-oba)
     (setq mwca-oba (make-vector (/ (- end start) 2) 0))
@@ -530,7 +508,7 @@ Return results and display in buffer named \"*WORD-COUNT*\".\n
 \(mon-word-count-occurrences t\)\n
 :ALIASED-BY `mon-buffer-get-word-count'\n
 :SEE-ALSO `mon-line-count-region', `mon-word-count-region', `mon-word-count-analysis',
-`mon-word-count-chars-region', `mon-word-get-list-in-buffer'.\n▶▶▶"
+`mon-word-count-chars-region', `mon-word-get-list-in-buffer'.\n►►►"
   (interactive "p")
   (let ((mwco-cnt-buf (when intrp (get-buffer-create "*WORD-COUNT*")))
         (mwco-dpt-buf (when intrp (current-buffer)))
@@ -569,7 +547,8 @@ Return results and display in buffer named \"*WORD-COUNT*\".\n
                  mwco-nb)
         ;; Find the longest string
         (if (not intrp)
-            (progn (setq mwco-nb) (setq mwco-st))
+            (progn (setq mwco-nb nil) 
+                   (setq mwco-st nil))
           (progn
             (setq mwco-nb)
             (setq mwco-st '(0 . " "))
@@ -634,7 +613,7 @@ Return results and display in buffer named \"*WORD-COUNT*\".\n
   "Return the number of words in the region.\n
 :SEE-ALSO `mon-line-count-region', `mon-word-count-chars-region',
 `mon-word-count-analysis', `mon-word-count-occurrences',
-`mon-word-get-list-in-buffer'.\n▶▶▶"
+`mon-word-get-list-in-buffer'.\n►►►"
   (interactive "r")
   (save-excursion
     (save-restriction
@@ -653,7 +632,7 @@ Return results and display in buffer named \"*WORD-COUNT*\".\n
 \(mon-word-count-chars-region \(buffer-end 0\) \(buffer-end 1\) t\)\n
 :SEE-ALSO `mon-line-count-region', `mon-word-count-region',
 `mon-word-count-analysis', `mon-word-count-occurrences', 
-`mon-word-get-list-in-buffer', `mon-string-from-sequence'.\n▶▶▶"
+`mon-word-get-list-in-buffer', `mon-string-from-sequence'.\n►►►"
   (interactive "r\np")
   (let ((mwccr-wrd-cnt 0) 
         (mwccr-chr-cnt (- end beginning)))
@@ -694,18 +673,15 @@ Return results and display in buffer named \"*WORD-COUNT*\".\n
 ;;       (message "No doubled words found or removed."))))
 ;;; =======================
 
-
 ;;; ==============================
-(provide 'mon-word-syntax-utils)
+(provide 'mon-word-count-utils)
 ;;; ==============================
 
 
 ;; Local Variables:
 ;; mode: EMACS-LISP
-;; coding: utf-8
-;; generated-autoload-file: "./mon-loaddefs.el"
 ;; End:
 
 ;;; ====================================================================
-;;; mon-word-syntax-utils.el ends here
+;;; mon-word-count-utils.el ends here
 ;;; EOF

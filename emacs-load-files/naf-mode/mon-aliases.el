@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010-2011 MON KEY. All rights reserved.
+;; Copyright © 2010-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-aliases.el
@@ -50,7 +50,11 @@
 ;; `line-join-previous'   -> `delete-indentation'
 ;; `shell-command-async'        -> `async-shell-command'
 ;; `asynchronous-shell-command' ->`shell-command-async'
-;;
+;; `where-is' -> `who-binds'
+;; `where-is' -> `which-command-binds'
+;; `where-is' -> `describe-function-binding'
+;; 
+;; `key-binding'
 ;; DEPRECATED:
 ;;
 ;; RENAMED:
@@ -242,7 +246,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010-2011 MON KEY 
+;; Copyright © 2010-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -321,6 +325,56 @@
 (unless (and (intern-soft "font-at-point" obarray)
              (fboundp 'font-at-point))
   (defalias 'font-at-point 'mon-font-at-point))
+;;
+(unless (and (intern-soft "ffap-view-file" obarray)
+             (fboundp 'ffap-view-file))
+  (defalias 'ffap-view-file 'mon-ffap-view-file))
+;;
+(unless (and (intern-soft "ffap-view-file-other-window" obarray)
+             (fboundp 'ffap-view-file-other-window))
+  (defalias 'ffap-view-file-other-window 'mon-ffap-view-file-other-window))
+;;
+(unless (and (intern-soft "erc-query-user" obarray)
+             (fboundp 'ffap-view-file-other-window))
+  (defalias 'erc-query-user 'mon-erc-query-user))
+;;
+(unless (and (intern-soft "set-register-with-region")
+             (fboundp 'set-register-with-region))
+  (defalias 'set-register-with-region 'copy-to-register))
+
+(unless (and (intern-soft "Buffer-menu-copy-file-path")
+             (fboundp 'Buffer-menu-copy-file-path))
+  (defalias 'Buffer-menu-copy-file-path 'mon-copy-file-path))
+;;
+(unless (and (intern-soft "buffer-menu-copy-file-path")
+             (fboundp 'buffer-menu-copy-file-path))
+  (defalias 'buffer-menu-copy-file-path 'mon-copy-file-path))
+;;
+(unless (and (intern-soft "comment-string-start") 
+             (boundp 'comment-string-start))
+ (defvaralias 'comment-string-start 'comment-start))
+;;
+(unless (and (intern-soft "comment-default-string") 
+             (boundp 'comment-default-string))
+ (defvaralias 'comment-default-string 'comment-start))
+
+
+;; `where-is' -> `who-binds'
+;; `where-is' -> `which-command-binds'
+;; `where-is' -> `describe-function-binding'
+(unless (and (intern-soft "who-binds")
+             (fboundp 'who-binds))
+  (defalias 'who-binds  'where-is))
+;;
+(unless (and (intern-soft "which-command-binds")
+             (fboundp 'which-command-binds))
+  (defalias 'which-command-binds  'where-is))
+;;
+(unless (and (intern-soft "describe-function-binding")
+             (fboundp 'describe-function-binding))
+  (defalias 'describe-function-binding  'where-is))
+
+
 
 ;;
 ;;; ==============================

@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; coding: utf-8 -*-
 
 ;;; ================================================================
-;; Copyright © 2009-2011 MON KEY. All rights reserved.
+;; Copyright © 2009-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-time-utils.el
@@ -251,7 +251,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2009-2011 MON KEY 
+;; Copyright © 2009-2012 MON KEY 
 ;;; ==============================
 
 
@@ -327,7 +327,7 @@ If ALT-DIVIDE-CHAR \(a character or string\) is non-nil use it to instead.\n
 :SEE-ALSO `*mon-default-comment-divider*', `mon-comment-divider',
 `mon-comment-lisp-to-col', `mon-comment-divider-to-col',
 `mon-comment-divider-w-len'.\n▶▶▶"
-  (let ((d-char (typecase alt-divide-char
+  (let ((d-char (cl-typecase alt-divide-char
                   (string    (aref alt-divide-char 0))
                   (character alt-divide-char)
                   (t 61)))
@@ -358,7 +358,7 @@ If ALT-DIVIDE-CHAR \(a character or string\) is non-nil use it to instead.\n
 ;;; :RENAMED :FUNCTION `mon-today' -> `mon-date-stamp' 
 ;;; :ADDED keywords INSRTP and INTRP
 ;;; :CREATED <Timestamp: #{2009-10-23T20:57:47-04:00Z}#{09436} - by MON KEY>
-(defun* mon-date-stamp (&key as-string as-symbol as-list-str as-list-num
+(cl-defun mon-date-stamp (&key as-string as-symbol as-list-str as-list-num
                              as-vec-str as-vec-num insrtp intrp)
   "Return today's date as YYYY-MM-DD.\n
 When keyword AS-STRING is non-nil return date as a string.\n
@@ -658,7 +658,7 @@ returned it is dropped.\n
 ;;; :PREFIX "mt-"
 ;;; :CHANGESET 1712 <Timestamp: #{2010-05-06T16:23:37-04:00Z}#{10184} - by MON KEY>
 ;;; :CREATED <Timestamp: Saturday July 18, 2009 @ 05:35.09 PM - by MON KEY>
-(defun* mon-timestamp (&key insrtp accessed naf intrp)
+(cl-defun mon-timestamp (&key insrtp accessed naf intrp)
   "Core timestamping function generates conditional timestamps.\n
 Builds extended ISO-8601 timestamp using `mon-format-iso-8601-time'.\n
 When kewyord ACCESSED is non-nil generates and accessed style timestamp.\n
@@ -685,7 +685,10 @@ the NAME value associated with buffer-filename.\n
               (cond ((assoc (mon-get-buffer-parent-dir) *mon-timestamp-cond*)
                      (setq mt-CN (cadr (assoc (mon-get-buffer-parent-dir) *mon-timestamp-cond*))))
                     ((assoc (file-name-nondirectory (buffer-file-name)) *mon-timestamp-cond*)
-                     (setq mt-CN (cadr (assoc (file-name-nondirectory (buffer-file-name)) *mon-timestamp-cond*))))))
+                     (setq mt-CN (cadr (assoc (file-name-nondirectory (buffer-file-name)) *mon-timestamp-cond*))))
+                    ((assoc (file-name-extension (buffer-file-name)) *mon-timestamp-cond*)
+                     (setq mt-CN (cadr (assoc (file-name-extension (buffer-file-name)) *mon-timestamp-cond*))))
+                    ))
             (unless (mon-buffer-written-p)
               (cond  ((assoc (mon-get-buffer-parent-dir) *mon-timestamp-cond*)
                       (setq mt-CN (cadr (assoc (mon-get-buffer-parent-dir) *mon-timestamp-cond*))))
@@ -697,19 +700,26 @@ the NAME value associated with buffer-filename.\n
                     (cond (accessed (concat " - " mt-COND-NAME))
                           (naf      (concat " - by " mt-COND-NAME ">"))
                           (t        (concat " - by " mt-COND-NAME ">"))))
-                   ((or IS-MON-P-W32 (equal user-real-login-name  (cadr (assoc 5 *MON-NAME*))))
-                    (let ((mt-MN-W32 (upcase (cadr (assoc 7 *MON-NAME*)))))
-                      ;; :NOTE Do not replace the `accessed` or `naf` conditionals
-                      ;; There are `naf-mode' regexps which rely on them!
-                      (cond (accessed (concat " - " mt-MN-W32))
-                            (naf      (concat " - by " mt-MN-W32 ">"))
-                            (t        ""))))
+                   ((or IS-MON-P-DARWIN
+                        (and (eql system-type 'darwin)
+                             (equal user-full-name (cadr (assoc 10 *MON-NAME*)))))
+                    (let ((mt-MN (upcase (cadr (assoc 6 *MON-NAME*)))))
+                      (cond (accessed (concat " - " mt-MN)) 
+                            (naf      (concat " - by " mt-MN ">"))
+                            (t        (concat " - by " mt-MN ">")))))
                    ((or IS-MON-P-GNU  
                         (and (eql system-type 'gnu/linux)
                              (equal user-real-login-name (cadr (assoc 5 *MON-NAME*)))))
                     (let ((mt-MN (upcase (cadr (assoc 7 *MON-NAME*)))))
                       (cond (accessed (concat " - " mt-MN)) 
                             (naf      (concat " - by " mt-MN ">"))
+                            (t        ""))))
+                   ((or IS-MON-P-W32 (equal user-real-login-name  (cadr (assoc 5 *MON-NAME*))))
+                    (let ((mt-MN-W32 (upcase (cadr (assoc 7 *MON-NAME*)))))
+                      ;; :NOTE Do not replace the `accessed` or `naf` conditionals
+                      ;; There are `naf-mode' regexps which rely on them!
+                      (cond (accessed (concat " - " mt-MN-W32))
+                            (naf      (concat " - by " mt-MN-W32 ">"))
                             (t        ""))))
                    ((or IS-BUG-P IS-BUG-P-REMOTE
                         (equal user-real-login-name  (cadr (assoc 6 *BUG-NAME*))))
@@ -799,7 +809,7 @@ Invoked from a `naf-mode' buffer acessed-stamp fontlocked by
 ;;; :PREFIX "msic-"
 ;;; :CHANGESET 2155 <Timestamp: #{2010-09-27T13:07:03-04:00Z}#{10391} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-09-26T09:40:49-04:00Z}#{10387} - by MON>
-(defun* mon-stamp-in-context (&optional insrtp intrp 
+(cl-defun mon-stamp-in-context (&optional insrtp intrp 
                                         &key 
                                         w-changed
                                         w-comment-start 
@@ -1366,7 +1376,7 @@ But, `decode-time' and `parse-time-string' both return:\n
 :SEE-ALSO `mon-convert-ebay-time', `parse-time-string', `encode-time',
 `mon-help-time-functions', `mon-help-mon-time-functions', `mon-help-iso-8601',
 `mon-help-CL-time', `mon-help-CL-local-time'\n▶▶▶"
-  (multiple-value-bind 
+  (cl-multiple-value-bind 
       (sec min hr day mon yr dow dst tz) 
       (parse-time-string time-string)
     ;; (format-time-string
@@ -1459,7 +1469,7 @@ Replaces existing time-string in region with converted form.\n
       (mapc #'(lambda (eb-mon)
                 (let ((fnd-mon (car eb-mon))
                       (rep-mon (cadr eb-mon))
-                      (sub-cent (concat " " (edmacro-subseq (mon-get-current-year) 0 2)))
+                      (sub-cent (concat " " (cl-subseq (mon-get-current-year) 0 2)))
                       rep-str-hndl)
                   (when (string-match fnd-mon rep-str)
                     (setq found-match (match-string 0 rep-str))
@@ -1600,7 +1610,9 @@ done.\n
          (w-buffer "*Warning-Doomsday-Pending*")
          (tm-left  (format-seconds "%y" (1- most-positive-fixnum)))
          (w-type '(Husserlian-Temporal-Disconnect . alarm))
-         (warning-minimum-level (cdr (assq (cdr w-type) warning-level-aliases)))
+         ;; This variable is obsolete since 28.1; use ‘warning-levels’ instead.
+         ;; :WAS (warning-minimum-level (cdr (assq (cdr w-type) warning-level-aliases)))
+         (warning-minimum-level (car (assq :emergency warning-levels)))
          (warning-prefix-function 
           #'(lambda (lvl lvl-inf)
               (list lvl "DOOMSDAY-ALERT!%s:" 

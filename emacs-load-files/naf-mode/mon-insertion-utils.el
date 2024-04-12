@@ -2,7 +2,7 @@
  ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2009-2011 MON KEY. All rights reserved.
+;; Copyright © 2009-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-insertion-utils.el
@@ -183,7 +183,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ================================================================
-;; Copyright © 2009-2011 MON KEY 
+;; Copyright © 2009-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -1666,12 +1666,12 @@ variable or constant.
 The remaining <DOC-TYPE> specifiers are as per the spec.
 :SEE info-node `(ansicl)documentation; (setf documentation)'\n
 :ALIASED-BY `mon-insert-doc-xref-eg'\n
-:SEE-ALSO `mon-insert-lisp-CL-jump-doc', `mon-insert-lisp-doc-eg-xref',
-`mon-insert-lisp-CL-mode-line-template', `mon-insert-lisp-CL-file-template',
-`mon-insert-lisp-CL-package-template', `mon-lisp-CL-package-complete',
-`mon-insert-lisp-CL-debug', `mon-insert-lisp-CL-eval-when'
-`mon-insert-lisp-stamp', `mon-insert-lisp-testme',
-`mon-insert-lisp-evald'.\n▶▶▶"
+:SEE-ALSO `mon-insert-lisp-fundoc-eg-xref', `mon-insert-lisp-CL-jump-doc',
+`mon-insert-lisp-doc-eg-xref',`mon-insert-lisp-CL-mode-line-template',
+`mon-insert-lisp-CL-file-template', `mon-insert-lisp-CL-package-template',
+`mon-lisp-CL-package-complete', `mon-insert-lisp-CL-debug',
+`mon-insert-lisp-CL-eval-when' `mon-insert-lisp-stamp',
+`mon-insert-lisp-testme', `mon-insert-lisp-evald'.\n▶▶▶"
   (interactive "i\np\nP")
   ;; :NOTE Consider refactoring to use following instead: 
   ;; `mon-buffer-check-local-value', `mon-buffer-check-major-mode', 
@@ -1701,6 +1701,45 @@ The remaining <DOC-TYPE> specifiers are as per the spec.
 ;;; :TEST-ME (mon-insert-lisp-doc-eg-xref nil nil t)
 ;;; :TEST-ME (mon-insert-lisp-doc-eg-xref t)
 ;;; :TEST-ME (mon-insert-lisp-doc-eg-xref nil t)
+
+
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-03-22T16:36:39-04:00Z}#{24125} - by MON KEY>
+(defun mon-insert-lisp-fundoc-eg-xref (&optional insrtp intrp as-kill)
+"Return or insert CL function documentation template for insertion to dostrings.\n
+Inserted template has the format:\n
+\"<DOCSTR> ~%~@
+:EXAMPLE~%~@
+ { ... <EXAMPLE> ... } ~%~@
+:SEE-ALSO `<XREF>'.~%▶▶▶\"\n
+:SEE-ALSO `mon-insert-lisp-CL-jump-doc', `mon-insert-lisp-doc-eg-xref',
+`mon-insert-lisp-CL-mode-line-template', `mon-insert-lisp-CL-file-template',
+`mon-insert-lisp-CL-package-template', `mon-lisp-CL-package-complete',
+`mon-insert-lisp-CL-debug', `mon-insert-lisp-CL-eval-when'
+`mon-insert-lisp-stamp', `mon-insert-lisp-testme',
+`mon-insert-lisp-evald'.\n▶▶▶"
+  (interactive "i\np\nP")
+  (let* ((not-elisp (case (buffer-local-value 'major-mode (current-buffer))
+                      (lisp-interaction-mode t)
+                      (lisp-mode t)
+                      (t (and (buffer-local-value 'slime-mode (current-buffer))
+                              (slime-current-connection)))))
+         (mildeg-xref (if not-elisp
+                          (concat "(fundoc '<SYM>\n"
+                                  "\" <DOCSTR> ~%~@\n"
+                                  ":EXAMPLE~%~@\n"
+                                  " { ... <EXAMPLE> ... } ~%~@\n"
+                                  ":SEE-ALSO `<XREF>'.~%▶▶▶\")")
+                        (concat "\"\n:EXAMPLE\\n\\n"  "\n" ":SEE-ALSO .\\n▶▶▶\""))))
+    (cond (intrp (save-excursion 
+                   (newline)
+                   (princ mildeg-xref (current-buffer)))
+                 (when as-kill (kill-new mildeg-xref)))
+          (insrtp (prin1 mildeg-xref (current-buffer))
+                  (when as-kill (kill-new mildeg-xref)))
+          (t (when as-kill (kill-new mildeg-xref))
+             mildeg-xref))))
 
 
 ;;; ==============================

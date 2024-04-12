@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2009-2011 MON KEY. All rights reserved.
+;; Copyright © 2009-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: slime-loads-GNU-clbuild.el
@@ -53,6 +53,9 @@
 ;; `slime-insert-integer-at-point',
 ;; `mon-add-lisp-system-paths-to-tags-table-list',
 ;; `slime-macroexpand-again-fix',
+;; `mon-slime-ensure-fasl-temp-directory-exists',
+;; `slime-fuzzy-sroll-completions-up-from-target-buffer'
+;; `slime-fuzzy-sroll-completions-down-from-target-buffer'
 ;; FUNCTIONS:◀◀◀
 ;; 
 ;; MACROS:
@@ -203,16 +206,15 @@
 ;; ~/.sbcl/systems
 ;; /etc/bash_completion.d/sbcl
 ;; /usr/local/lib/sbcl
-;; /usr/local/bin/sbcl
 ;;
-;; (unless (getenv "SBCL_HOME")
-;;   (setenv "SBCL_HOME" "/usr/local/lib/sbcl"))
+;;
 ;;
 ;; (setq slime-lisp-implementations
-;;       '((sbcl ("sbcl" "--core" "<PATH-TO>/sbcl-core-for-slime"))))
+;;       '((sbcl ("sbcl" "--core" (substitute-in-file-name ))))
+;; 
 ;;
 ;;
-;; (custom-set-variables 'slime-sbcl-manual-root 
+;; (custom-set-variables 'slime-sbcl-manual-root
 ;;                       "file://usr/local/share/doc/sbcl/html/sbcl/")
 ;;
 ;; :CLISP-CLOCC
@@ -281,7 +283,7 @@
 ;; MON KEY."
 
 ;;; ==============================
-;; Copyright © 2009-2011 MON KEY 
+;; Copyright © 2009-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -296,6 +298,22 @@
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
+
+;; DARWIN 
+;; /opt/homebrew/bin/sbcl
+;; (executable-find "sbcl") => /opt/homebrew/bin/spcl
+;;
+;; :NOTE on Darwin with sbcl from homebrew the executable (executable-find "sbcl") exports the following variable: "SBCL_SOURCE_ROOT" and "SBCL_HOME". We here as well so they are synchronized. 
+
+(when (equal (mon-system-type-conditionals) "IS-DARWIN-P")
+  (unless (getenv "SBCL_HOME")
+    (setenv "SBCL_HOME" "opt/homebrew/lib/sbcl"))
+  (unless (getenv "SBCL_SOURCE_ROOT")
+    (setenv "SBCL_SOURCE_ROOT" "/opt/homebrew/Cellar/sbcl/2.4.1/share/sbcl/src"))
+  (setq inferior-lisp-program (concat (executable-find "sbcl") " --noinform")) ;;--no-linedit"))
+  (custom-note-var-changed 'inferior-lisp-program)
+)
+
 
 ;;; ==============================
 ;;; :CHANGESET 2389
@@ -354,7 +372,7 @@
     slime-inspect-asdf-system
     slime-inspect-asdf-defined-systems
     slime-inspect-quicklisp-system
-    slime-inspect-quicklisp-systems
+     slime-inspect-quicklisp-systems
     slime-make-quicklisp-completion-table
     slime-get-quicklisp-system-completions
     slime-quicklisp-get-process-start-time
@@ -368,6 +386,9 @@
     slime-insert-integer-at-point
     mon-add-lisp-system-paths-to-tags-table-list
     slime-macroexpand-again-fix
+    mon-slime-ensure-fasl-temp-directory-exists
+    slime-fuzzy-sroll-completions-up-from-target-buffer
+    slime-fuzzy-sroll-completions-down-from-target-buffer
     ;; :VARIABLES
     *slime-echo-arglist-STFU*
     *quicklisp-path* *quicklisp-systems*
@@ -428,11 +449,12 @@ The symbols contained of this list are defined in :FILE slime-loads-GNU-clbuild.
   :group 'mon-slime
   :group 'mon-doc-help-utils)
 
+
 ;;; ==============================
 ;;; :PASTED (URL `http://paste.lisp.org/+2EGF')
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-06-30T16:13:46-04:00Z}#{10263} - by MON KEY>
-(defcustom *quicklisp-path* (concat (getenv "HOME") "/quicklisp/")
+(defcustom *quicklisp-path* (substitute-in-file-name "${DEVHOME}/quicklisp/")
   "Names a directory for use with Zach Beane's Quicklisp for Common Lisp.\n
 Defaults to the value of:\n
  \(merge-pathnames \"quicklisp/\" \(user-homedir-pathname\)\)\n
@@ -450,6 +472,13 @@ Defaults to the value of:\n
 ;;   ;; (setq *quicklisp-path* (substitute-in-file-name "$HOME/quicklisp")
 ;;   ;; (setq *quicklisp-path* (expand-file-name "quicklisp/" (getenv "HOME")))
 ;;   (setq *quicklisp-path* (concat (getenv "HOME") "/quicklisp/")))
+
+
+;; (let ((fnd-slm-rgxp "\\(slime-\\(%s\\)-cvs\\)"))
+;; (directory-files *quicklisp-path* nil (format "\\(slime-\\(%s\\)\\)" "[0-9]+"))
+
+;; (directory-files (concat (or ql-path *quicklisp-path*) "dists/quicklisp/software/") nil (format "\\(slime-v\\(%s\\)\\)" "[0-9]+"))
+        
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-06-30T16:13:52-04:00Z}#{10263} - by MON KEY>
@@ -470,9 +499,9 @@ in the software subdir of `*quicklisp-path*'.\n
 `quicklisp-write-dot-swank-loader', `*quicklisp-path*'.\n▶▶▶"
   (let* ((ql-softs (concat (or ql-path *quicklisp-path*) 
                            "dists/quicklisp/software/")) 
-         (fnd-slm-rgxp "\\(slime-\\(%s\\)-cvs\\)") ;; %s -> "[0-9]+" & most-recent
-         (ql-slimes 
-          (directory-files ql-softs nil (format fnd-slm-rgxp "[0-9]+")))
+         ;; (fnd-slm-rgxp "\\(slime-\\(%s\\)-cvs\\)") ;; %s -> "[0-9]+" & most-recent
+         (fnd-slm-rgxp "\\(slime-v\\(%s\\)\\)")
+         (ql-slimes  (directory-files ql-softs nil (format fnd-slm-rgxp "[0-9]+")))
          (ql-esignal (format (concat ":FUNCTION `quicklisp-find-slime' "
                                      "-- no slime/swank directory in `*quicklisp-path*': %s")
                              ql-softs))
@@ -805,7 +834,8 @@ Optional args INSRTP and INTRP are as per `quicklisp-system-complete'.\n
                                  get-cur-slm)))))
               (file-truename
                (concat (file-name-sans-extension get-cur-slm) 
-                       (case prpr-ext-lst ;; its either l or c 
+                       ;; (case prpr-ext-lst ;; its either l or c
+                       (cl-case prpr-ext-lst ;; its either l or c 
                          (108 prpr-ext) 
                          (99  ".el")
                          (t (or (and (featurep 'mon-error-utils)
@@ -827,7 +857,19 @@ Optional args INSRTP and INTRP are as per `quicklisp-system-complete'.\n
     (when (and ql-cur-slm-if cur-slm-as-el (string-equal ql-cur-slm-if cur-slm-as-el))
       (ignore-errors (quicklisp-hash-system-completions)))))
 ;;
-(eval-after-load "slime" '(quicklisp-hash-system-completions-slime-loadtime))
+;; :FIXME this needs t0 be run on a siome mode hook
+;; slime-lisp-mode-hook or slime-setup-first-change-hook
+(add-hook 'slime-load-hook 'quicklisp-hash-system-completions-slime-loadtime)
+;; (eval-after-load "slime" '(quicklisp-hash-system-completions-slime-loadtime))
+
+;; (quicklisp-hash-system-completions-slime-loadtime)
+
+;; (slime-eval-async `(swank::format-values-for-echo-area ',integer) '%slime-insert-integer-at-point)
+;; `(%%swank-compile-load-ql-inspect-file 
+;;   "slime-quicklisp-inspect"
+;;   `(%%swank-compile-load-ql-inspect-file 
+;;     (slime-eval-async `(cl:make-pathname :directory '(:absolute "Users" "monkpearman""Documents" "HG-Repos" "CL-MON-CODE" "mon-slime-extend")))
+
 
 ;;; ==============================
 ;; :QUICKLISP-SLIME-PATH 
@@ -919,6 +961,10 @@ been added.\n
         (custom-note-var-changed 'tags-table-list)))))
 
 
+;; (add-hook 'slime-mode-hook
+;;           (function (lambda () 
+;;                       (set (make-local-variable 'indent-tabs-mode) nil))) t)
+
 ;;; ==============================
 ;;; :CHANGESET 2180
 ;;; :CREATED <Timestamp: #{2010-10-16T11:19:11-04:00Z}#{10416} - by MON KEY>
@@ -945,29 +991,86 @@ Run on the `lisp-mode-hook'.\n
   (and (bound-and-true-p *mon-CL-indent-specs*)
        (dolist (mlsih-D *mon-CL-indent-specs*)
          (mon-lisp-set-indent (car mlsih-D) (cdr mlsih-D)))))
-;; 
-;; :TODO Need to set whitespace-style on the lisp-interaction-mode-hook and/or
-;;       add it to file-local-variables
-;;
-;; (add-hook 'slime-mode-hook
-;;          (function (lambda () 
-;;                       (set (make-local-variable 'indent-tabs-mode) nil))))
-;;
-;; (add-hook 'slime-repl-mode-hook
-;;           (function (lambda () 
-;;                       (set (make-local-variable 'indent-tabs-mode) nil))))
-;;
-;; (add-hook 'lisp-interaction-mode-hook
-;;           (function (lambda () 
-;;                       (set (make-local-variable 'indent-tabs-mode) nil))))
-;;
-;; (add-hook 'lisp-mode-hook
-;;           (function (lambda () 
-;;                       (set (make-local-variable 'indent-tabs-mode) nil))))
 
-;;*mon-CL-indent-specs*
-;; ((dosequence . 1) (dosublists . 1) (make-space-instance . 2))
 
+;;; ==============================
+;;; :CREATED <Timestamp: #{2011-07-04T13:01:36-04:00Z}#{11271} - by MON KEY>
+(defun mon-slime-setup-add-hooks ()
+  ;; :TODO Need to set whitespace-style on the lisp-interaction-mode-hook and/or
+  ;;       add it to file-local-variables
+  ;;
+  (add-hook 'slime-repl-mode-hook
+            (function (lambda () (set (make-local-variable 'indent-tabs-mode) nil))))
+                        
+  ;;
+  ;; (add-hook 'slime-mode-hook
+  ;;           (function (lambda () 
+  ;;                       (set (make-local-variable 'indent-tabs-mode) nil))))
+  ;;
+  ;; (add-hook 'lisp-interaction-mode-hook 
+  ;; (function (lambda () 
+  ;;                       (set (make-local-variable 'indent-tabs-mode) nil))))
+  ;;
+  ;; (add-hook 'lisp-mode-hook
+  ;;           (function (lambda () 
+  ;;                       (set (make-local-variable 'indent-tabs-mode) nil))))
+  (add-hook 'lisp-interaction-mode-hook  'slime-mode)
+  (add-hook 'lisp-mode-hook              'slime-mode)
+
+  ;; DARWIN TESTME
+  ;; (add-hook 'lisp-mode-hook              'mon-slime-ensure-file-local-variables)
+  ;; (add-hook 'lisp-interaction-mode-hook  'mon-slime-ensure-file-local-variables)
+  ;; (add-hook 'slime-mode-hook             'mon-slime-ensure-file-local-variables)
+  ;;
+  ;; :NOTE This is `slime-lisp-mode-hook' `slime-lisp-mode' is run on the
+  ;; `lisp-mode-hook' if slime-setup was evald
+  (add-hook 'slime-mode-hook ;; (remove-hook 'slime-mode-hook
+            (function (lambda () (set (make-local-variable 'lisp-indent-function) 'common-lisp-indent-function))))  
+  (add-hook 'slime-inspector-mode-hook 'mon-keybind-slime-inspector t t)
+  (add-hook 'slime-mode-hook           'mon-keybind-slime t)
+  ;; DARWIN TEST-ME
+  ;; (add-hook 'slime-connected-hook 
+  ;;           (function (lambda () (slime-make-quicklisp-completion-table))) t)
+  )
+
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2011-07-04T13:02:41-04:00Z}#{11271} - by MON KEY>
+(defun mon-slime-ensure-file-local-variables ()
+  "For whatever reason when moving into a lispy mode, certain
+`buffer-local-variables' aren't set even if they are present as
+file-local-variables; specifically `show-trailing-whitespace' isn't being
+recognized -- this function fixes that.\n
+:EXAMPLE\n\n
+:SEE-ALSO .\n▶▶▶"
+  (let ( ;;(mseflv-blv  (buffer-local-variables (current-buffer))))
+        (mseflv-flva file-local-variables-alist))
+    (dolist (mseflv-D-0 '(indent-tabs-mode show-trailing-whitespace))
+      (let ((mseflv-localp (assq mseflv-D-0 mseflv-flva)))
+        (when mseflv-localp 
+          (set (make-local-variable (car mseflv-localp)) (cdr mseflv-localp)))))))
+
+;; (setq slime-compile-file-options '(:fasl-directory "/tmp/slime-fasls/"))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2011-10-14T14:24:10-04:00Z}#{11415} - by MON KEY>
+(defun mon-slime-ensure-fasl-temp-directory-exists ()
+  "Create a fasl directory beneate /tmp for `slime-compile-file-options' :fasl-directory option.\n
+Per stassats Slime Tip \"Keeping FASLs away\".\n
+C-c C-k by default puts FASLs in the same directory as the .lisp file, which may
+not always be what is wanted.\n
+To automatically put slime compiled files into \"/tmp/slime-fasls/\":\n
+ \(setq slime-compile-file-options '\(:fasl-directory \"/tmp/slime-temp-fasls/\"\)\)
+To make sure the directory exists:\n
+  \(make-directory \"/tmp/slime-temp-fasls/\" t\)\n
+:NOTE The /tmp dire gets cleaned on each reboot.\n
+:SEE (URL `http://slime-tips.tumblr.com/post/11398866534/keeping-fasls-away')
+:EXAMPLE\n\n
+:SEE-ALSO `slime-compile-file-options'.\n▶▶▶"
+  (let ((mseftde-dir "/tmp/slime-temp-fasls/"))
+    (make-directory mseftde-dir t)
+    (when (file-directory-p mseftde-dir)
+      (setq slime-compile-file-options (list :fasl-directory mseftde-dir)))))
 
 ;;; ==============================
 ;;; :CHANGESET 1917
@@ -983,8 +1086,9 @@ Attempts to disable `slime-use-autodoc-mode' in various ways \(mostly w/out succ
 Requires slime package.\n
 Evaluates `slime-setup', `slime-require'.\n
 :SEE-ALSO `mon-set-lisp-init', `mon-slime-start-sbcl', `mon-keybind-slime',
-`mon-help-CL-slime-keys', `slime-cheat-sheet', `mon-slime-setup-init',
-`mon-keybind-lisp-interaction-mode', `mon-keybind-emacs-lisp-mode',
+`mon-slime-ensure-fasl-temp-directory-exists', `mon-help-CL-slime-keys',
+`slime-cheat-sheet', `mon-slime-setup-mon',
+`init-keybind-lisp-interaction-mode', `mon-keybind-emacs-lisp-mode',
 `slime-setup-contribs', `slime-load-contribs', `slime-required-modules'.\n▶▶▶"
   ;; :NOTE sb-ext:*runtime-pathname* returns the current SBCL runtime
   (set-language-environment "UTF-8")
@@ -994,6 +1098,9 @@ Evaluates `slime-setup', `slime-require'.\n
     (add-to-list 'load-path  (cadr this-swank))
     (add-to-list 'load-path  (cadr this-swank))
     ) ;;(load (locate-library "slime")))
+  
+  ;; (add-to-list 'auto-mode-alist '("\\(?:\\.pctd\\)" . lisp-mode))
+
   (custom-set-variables
    '(inferior-lisp-program (concat (executable-find "sbcl") " --noinform --no-linedit"))
    ;; '(slime-net-coding-system 'iso-latin-1-unix))
@@ -1011,10 +1118,17 @@ Evaluates `slime-setup', `slime-require'.\n
    ;; '(slime-repl-history-file "~/.slime/.slime-history.eld") :DEFAULT "~/.slime-history.eld"
    ;; `comint-replace-by-expanded-filename', `comint-dynamic-complete-as-filename'
    '(slime-when-complete-filename-expand t)
+   '(lisp-align-keywords-in-calls t)
+   '(lisp-lambda-list-keyword-alignment t)
+   '(lisp-lambda-list-keyword-parameter-alignment t)
+   '(lisp-lambda-list-keyword-parameter-indentation 0)
+   '(common-lisp-style-default "mon") ;; (common-lisp-style-names)
    ;;
    ;; '(slime-asdf-collect-notes t)
    )
+  ;; DARWIN is needed? 
   (setq slime-lisp-modes '(lisp-mode lisp-interaction-mode))
+  (mon-slime-ensure-fasl-temp-directory-exists)
   ;;
   ;; (setq slime-selector-other-window t) ;; :DEFAULT nil
   (progn 
@@ -1026,17 +1140,23 @@ Evaluates `slime-setup', `slime-require'.\n
   ;; (setq slime-protocol-version (slime-changelog-date))
   ;;
   ;; (require 'slime-autoloads)
-  (slime-setup '(slime-fancy slime-sbcl-exts slime-asdf slime-tramp
+  (slime-setup '(slime-fancy 
+                 slime-sbcl-exts
+                 slime-asdf
+                 slime-tramp
                  slime-presentation-streams 
 		 slime-repl 
                  slime-scratch 
                  slime-references
                  slime-snapshot 
                  slime-sprof  ;; (featurep 'slime-sprof)
+                 slime-indentation
+                 ;; slime-cl-indent
                  ;; slime-cover
                  ;; slime-highlight-edits
                  )) 
   (slime-require :swank-sbcl-exts)
+  
   (slime-require :swank-listener-hooks)
   ;; :NOTE `slime-setup-contribs' is a function and a variable
   ;; `slime-setup' <- `slime-setup-contribs' 
@@ -1069,6 +1189,7 @@ Evaluates `slime-setup', `slime-require'.\n
   ;;; ==============================
   ;; (slime)
   ;;
+
   (add-hook 'slime-mode-hook ;; (remove-hook 'slime-mode-hook  
             (function (lambda ()
                         (set (make-local-variable 'slime-use-autodoc-mode) nil))) t)
@@ -1081,31 +1202,41 @@ Evaluates `slime-setup', `slime-require'.\n
   ;;             (slime-highlight-edits-mode -1)))
   ;;
   ;; :SLIME-LISP-MODES
+
   (add-hook 'lisp-interaction-mode-hook 'slime-mode)
-  (add-hook 'lisp-mode-hook 'slime-mode)
+  
+  (add-hook 'lisp-mode-hook             'slime-mode)
   ;;
   ;; :NOTE This is `slime-lisp-mode-hook' `slime-lisp-mode' is run on the
   ;; `lisp-mode-hook' if slime-setup was evald
-  (add-hook 'slime-mode-hook   ;; (remove-hook 'slime-mode-hook
-            (function (lambda () 
-                        (set (make-local-variable 'lisp-indent-function)  
-                             'common-lisp-indent-function))))
+  ;; (add-hook 'slime-mode-hook   ;; (remove-hook 'slime-mode-hook
+  ;;           (function (lambda () 
+  ;;                       (set (make-local-variable 'lisp-indent-function)  
+  ;;                            'common-lisp-indent-function))))
   (add-hook 'slime-mode-hook
             (function (lambda () 
                         (set (make-local-variable 'indent-tabs-mode) nil))) t)
   ;;
-  (add-hook 'slime-inspector-mode-hook 'mon-keybind-slime-inspector t t)
-  (add-hook 'slime-mode-hook 'mon-keybind-slime t)
+  ;; M-X slime-toggle-debug-on-swank-error
+  ;; swank::*inspector-verbose-printer-bindings* 
+  ;; swank::*inspector-printer-bindings*
+
+  ;; DARWIN
+  ;; (add-hook 'slime-inspector-mode-hook 'mon-keybind-slime-inspector t t)
+
+  ;; DARWIN
+  ;; (add-hook 'slime-mode-hook 'mon-keybind-slime t)
   (add-hook 'slime-connected-hook 
             (function (lambda () (slime-make-quicklisp-completion-table))) t)
   ;;
-  (add-to-list 'auto-mode-alist  '("\\.kif\\'" . lisp-interaction-mode))
+
+  ;; We're not using this anymore.
+  ;; (add-to-list 'auto-mode-alist  '("\\.kif\\'" . lisp-interaction-mode))
   ;; 
   ;; :NOTE If this block fails, move it into `mon-slime-setup-init'.
   (eval-after-load "slime-repl"
-  (progn
-    
-    (defslime-repl-shortcut nil ("asdf-systems" "asdf-all")
+    (progn
+      (defslime-repl-shortcut nil ("asdf-systems" "asdf-all")
       (:handler 'slime-inspect-asdf-defined-systems)
       (:one-liner "inspect all defined systems"))
 
@@ -1118,6 +1249,7 @@ Evaluates `slime-setup', `slime-require'.\n
                                              current-prefix-arg)))
       (:one-liner "inspect asdf system"))
 
+    ;; DAWIN TESTME
     (defslime-repl-shortcut nil ("ql-systems-all" "ql-all-sys")
       (:handler 'slime-inspect-quicklisp-systems)
       (:one-liner "inspect all quicklisp systems"))
@@ -1137,7 +1269,45 @@ Evaluates `slime-setup', `slime-require'.\n
     ))
   )
 
+(defun slime-fuzzy-sroll-completions-up-from-target-buffer ()
+  "For use with `mon-keybind-slime-fuzzy-completions'."
+  (interactive)
+  (scroll-other-window))
+
+(defun slime-fuzzy-sroll-completions-down-from-target-buffer ()
+  "For use with `mon-keybind-slime-fuzzy-completions'."
+  (interactive)
+  (scroll-other-window '-))
+
 ;; (mon-slime-setup-init)
+;; 
+
+;; (mon-define-common-lisp-style)
+(defun mon-define-common-lisp-style ()
+  (define-common-lisp-style "mon" ;; "sbcl"
+    "Adapted from the \"sbcl\" style in contribs/slime-cl-indent.el 
+   Style used in SBCL sources. A good if somewhat intrusive general purpose
+   style based on the \"modern\" style. Adds indentation for a few SBCL
+   specific constructs, sets indentation to use spaces instead of tabs,
+   fill-column to 80, and activates whitespace-mode to show tabs and trailing
+   whitespace."
+    (:inherit "modern")
+    (:eval (whitespace-mode 1))
+    ;; (:eval (whitespace-mode 0))     
+    (:variables
+     ;; (whitespace-style (tabs trailing))
+     (whitespace-style (tabs))
+     (indent-tabs-mode nil)
+     (comment-fill-column nil)
+     (fill-column 80))
+    ;; Indentation forms look like this:
+    ;; explicit:
+    ;; (cl-case (4 &rest (&whole 2 &rest 3)))  
+    ;; inheritted:
+    ;; (FOOconstant       (as defconstant))
+    ;;  (FOOdefun (as defun))
+    ;; (:indentation <FORMS>)
+    ))
 
 ;; :TODO automaticallly `untabify' the .lisp files in MON projects 
 ;; in the same manner as `require-final-newline'
@@ -1148,8 +1318,8 @@ Evaluates `slime-setup', `slime-require'.\n
 
 ;;; ==============================
 ;;; Fix to prevent slime-macroexpans-again from clobbering contents of current buffer.
-;;; Can be removed if the buggy `slime-macroexpans-again' in slime.el is ever fixed...
-;; An alternative approach would be to make `slime-macroexpans-again' non-interactive and 
+;;; Can be removed if the buggy `slime-macroexpand-again' in slime.el is ever fixed...
+;; An alternative approach would be to make `slime-macroexpand-again' non-interactive and 
 ;; (define-key slime-macroexpansion-minor-mode-map "g" #'(lambda () (interactive) (slime-macroexpand-again)))
 ;;; :SEE (URL `https://bugs.launchpad.net/slime/+bug/777405')
 ;;; :CHANGESET 2439
@@ -1161,9 +1331,11 @@ Evaluates `slime-setup', `slime-require'.\n
     (slime-rcurry #'slime-initialize-macroexpansion-buffer 
                   ;; :WAS (current-buffer)
                   (slime-buffer-name :macroexpansion))))
+
 ;;
-(eval-after-load "slime" 
-  (fset 'slime-macroexpand-again (symbol-function 'slime-macroexpand-again-fix)))
+;; FIXME DARWUIN REENABLE after slime startup fixed
+;; (eval-after-load "slime" 
+;;   (fset 'slime-macroexpand-again (symbol-function 'slime-macroexpand-again-fix)))
 
 
 ;;; ==============================
@@ -1505,26 +1677,31 @@ Return value is:
     (with-current-buffer (get-buffer bufname)
       (mon-slime-setup-show-description-buffer-locals))))
 ;;
-(eval-after-load "slime"
-  (fset 'slime-show-description (symbol-function 'mon-slime-show-description)))
+;; FIXME DARWIN reenable once we've debugged the slime startup
+;;
+;; (eval-after-load "slime"
+;;   (fset 'slime-show-description (symbol-function 'mon-slime-show-description)))
 ;;
 ;; This can't be in mon-keybindings or `mon-slime-setup-init' because the
 ;; redefinition of `slime-show-description' hasn't occured yet.
-(add-hook '*slime-show-description-hook*
-          (function (lambda () 
-                      (local-set-key "\C-c\C-f"  'mon-slime-description-view-source-file)))
-          t)
+;;
+;; FIXME DARWIN reenable once we've debugged the slime startup
+;; (add-hook '*slime-show-description-hook*
+;;           (function (lambda () (local-set-key "\C-c\C-f"  'mon-slime-description-view-source-file))))
+                      
+
 
 ;;; ==============================
 ;;; :CHANGESET 2407
 ;;; :CREATED <Timestamp: #{2011-01-22T13:45:15-05:00Z}#{11036} - by MON KEY>
-(defun mon-slime-copy-presentation-at-point-to-kill-ring-no-props (point)
+(defun mon-slime-copy-presentation-at-point-to-kill-ring-no-propso (point)
 "Like `slime-copy-presentation-at-point-to-kill-ring' but discards text-properties.\n
 :EXAMPLE\n\n
 :ALIASED-BY `slime-copy-presentation-at-point-to-kill-ring-no-props'\n
 :SEE-ALSO `mon-slime-copy-presentation-to-kill-ring-no-props'.\n▶▶▶"
   (interactive "d")
-  (multiple-value-bind (presentation start end) 
+  ;; (multiple-value-bind (presentation start end)
+  (cl-multiple-value-bind (presentation start end) 
       (slime-presentation-around-or-before-point-or-error point)
     (mon-slime-copy-presentation-to-kill-ring-no-props presentation start end (current-buffer))))
 
@@ -1596,6 +1773,9 @@ CL-USER> \(find-symbol \"*RUNTIME-PATHNAME*\"\)
                                                      :got-val  sbcl-dir)))
          (sbcl-core (or (and core-file (file-truename core-file))
                         (file-truename (expand-file-name  "lib/sbcl/sbcl.core" sbcl-dir))))
+         ;; (executable-find "sbcl")
+
+
          (sbcl-core (or (mon-file-truename-p sbcl-core)
                         (mon-file-non-existent-ERROR :w-error  t
                                                      :fun-name "mon-slime-start-sbcl"
@@ -1624,6 +1804,40 @@ CL-USER> \(find-symbol \"*RUNTIME-PATHNAME*\"\)
                    ;; :env (list (concat "SBCL_HOME=" sbcl-dir))))
                    ))))
 
+;;; ==============================
+;; ,----
+;; | :PASTE-NUMBER 123730
+;; | :PASTE-TITLE "my swank setting"
+;; | :PASTE-BY 	pjb
+;; | :PASTE-DATE 2011-08-02
+;; | :PASTE-URL (URL `http://paste.lisp.org/+2NGY')
+;; | :PASTE-CHANNEL	#lisp
+;; | 
+;; |  (let ((bindings '((*PRINT-PRETTY* . nil)
+;; |                    (*PRINT-LEVEL* . nil)
+;; |                    (*PRINT-LENGTH* . nil)
+;; |                    (*PRINT-CIRCLE* . T)
+;; |                    (*PRINT-READABLY*)
+;; |                    (*PRINT-GENSYM* . T)
+;; |                    (*PRINT-BASE* . 10.)
+;; |                    (*PRINT-RADIX* . nil)
+;; |                    (*PRINT-ARRAY* . T)
+;; |                    (*PRINT-LINES* . nil)
+;; |                    (*PRINT-ESCAPE* . T)
+;; |                    (*PRINT-RIGHT-MARGIN* . 1000)
+;; |                    (*SLDB-BITVECTOR-LENGTH* . nil)
+;; |                    (*SLDB-STRING-LENGTH* . nil)))
+;; |        (variables '(SWANK:*MACROEXPAND-PRINTER-BINDINGS*
+;; |                     SWANK::*INSPECTOR-VERBOSE-PRINTER-BINDINGS*
+;; |                     SWANK::*INSPECTOR-PRINTER-BINDINGS*
+;; |                     SWANK:*BACKTRACE-PRINTER-BINDINGS*
+;; |                     SWANK:*SLDB-PRINTER-BINDINGS*)))
+;; |    (dolist (var variables)
+;; |      (set var bindings)))
+;; `----
+;;; ==============================
+
+
 ;; (defun slime-process-attributes ()
 ;;   (let ((sip (slime-inferior-process)))
 ;;     (and sip 
@@ -1631,79 +1845,8 @@ CL-USER> \(find-symbol \"*RUNTIME-PATHNAME*\"\)
 ;;          (setq sip (process-attributes sip))
 ;;          )))
 
-;;; ==============================
-;;; :PASTED (URL `http://paste.lisp.org/display/121086')
-;;; :CHANGESET 2424
-;;; :CREATED <Timestamp: #{2011-04-01T13:49:17-04:00Z}#{11135} - by MON KEY>
-(defun slime-inspect-asdf-defined-systems ()
-  "Inspect the hash-table of ASDF::*DEFINED-SYSTEMS*.\n
-:EXAMPLE\n\n
- \(slime-inspect-asdf-defined-systems\)\n
-:SEE-ALSO `slime-inspect-asdf-system', `slime-inspect-quicklisp-systems',
-`slime-inspect', `slime-inspect-presentation', `slime-inspect-definition'.\n▶▶▶"
-  (interactive)
-  (slime-eval-async '(swank:init-inspector "ASDF::*DEFINED-SYSTEMS*") 'slime-open-inspector))
-
-;;; ==============================
-;;; :PASTED (URL `http://paste.lisp.org/display/121086')
-;;; :CHANGESET 2424
-;;; :CREATED <Timestamp: #{2011-04-01T16:33:49-04:00Z}#{11135} - by MON KEY>
-(defun slime-inspect-asdf-system (system-name &optional preserve-case)
-  "Inspect an ASDF system with SYSTEM-NAME in *slime-inspector* buffer.\n
-If SYSTEM-NAME is not found display inspector for ASDF::*DEFINED-SYSTEMS*.\n
-SYSTEM-NAME is a string or symbol naming a system in the hash-table of
-ASDF::*DEFINED-SYSTEMS*.\n
-When optional arg PRESERVE-CASE is non-nil do not downcase SYSTEM-NAME.\n
-If SYSTEM-NAME is T/NIL, or neither `stringp' nor `symbolp' signal an error.\n
-:EXAMPLE\n\n \(slime-inspect-asdf-system \"cl-ppcre\"\)\n
- \(slime-inspect-asdf-system \"CL-PPCRE\" t\)\n
- \(slime-inspect-asdf-system \"not-a-system\"\)\n
-:NOTE ASDF's COERCE-NAME function will CL:STRING-DOWNCASE defsystem component
-entries which are keys on the ASDF::*DEFINED-SYSTEMS* hash-table. However, if
-the argument to ASDF:COERCE-NAME is CL:STRINGP the string's case is preserved.\n
-:SEE-ALSO `slime-inspect-asdf-defined-systems',
-`slime-inspect-quicklisp-systems', `slime-inspect',
-`slime-inspect-presentation', `slime-inspect-definition'.\n▶▶▶"
-  (interactive "s:FUNCTION `slime-inspect-asdf-system' -- name of system to inspect: \np" )
-  (setq system-name
-        (or (and (stringp system-name) 
-                 (or (and preserve-case system-name)
-                     (downcase system-name)))
-            (and (symbolp system-name) 
-                 (not (eq system-name t))
-                 (not (null system-name))
-                 (or (and preserve-case (symbol-name system-name))
-                     (downcase (symbol-name system-name))))
-            (error "arg SYMBOL-NAME neither `stringp' nor `symbolp', got: %S" system-name)))
-  (setq system-name 
-        (format "%S"
-                `(let ((asrp-if (asdf:system-registered-p ,system-name)))
-                   (or (and asrp-if (cdr asrp-if)) ASDF::*DEFINED-SYSTEMS*))))
-  (slime-eval-async `(swank:init-inspector ,system-name) 'slime-open-inspector))
 
 
-;;; ==============================
-;; `slime-inspect-quicklisp-dists-all', `slime-inspect-enabled-dists-enabled'
-;; 
-;; (defun slime-inspect-quicklisp-dists-all ()
-;;   "Inspect all QuickLisp DISTS.\n
-;; :Example:\n\n
-;;  \(slime-inspect-all-dists\)\n
-;; :SEE-ALSO `slime-inspect-asdf-system', `slime-inspect-quicklisp-dists-all',
-;; `slime-inspect-enabled-dists-enabled', `slime-inspect-quicklisp-systems',
-;; `slime-inspect', `slime-inspect-presentation', `slime-inspect-definition'.\n▶▶▶"
-;;   (interactive)
-;;   (slime-eval-async '(swank:init-inspector "(ql::all-dists)") 'slime-open-inspector))
-;;
-;; (defun slime-inspect-quicklisp-dists-enabled ()
-;;   "Inspect all enabled QuickLisp DISTS.\n
-;; :EXAMPLE\n\n
-;;  \(slime-inspect-all-dists\)\n
-;; :SEE-ALSO `slime-inspect-asdf-system', `slime-inspect',
-;; `slime-inspect-presentation', `slime-inspect-definition'.\n▶▶▶"
-;;   (interactive)
-;;   (slime-eval-async '(swank:init-inspector "(ql-dist:enabled-dists)") 'slime-open-inspector))
-;;; ==============================
 
 ;;; ==============================
 ;; :NOTE Various forms for getting at QL dist/system info:
@@ -1718,18 +1861,11 @@ the argument to ASDF:COERCE-NAME is CL:STRINGP the string's case is preserved.\n
 ;;
 ;;; ==============================
 
-(defun slime-inspect-quicklisp-systems ()
-  "Inspect all QuickLisp SYSTEMS.\n
-:EXAMPLE\n\n\(slime-inspect-quicklisp-systems\)\n
-:SEE-ALSO `slime-inspect-asdf-system', `slime-inspect-quicklisp-dists-all',
-`slime-inspect-enabled-dists-enabled', `slime-inspect-quicklisp-systems',
-`slime-inspect', `slime-inspect-presentation', `slime-inspect-definition'.\n▶▶▶"
-  (interactive)
-  (slime-eval-async '(swank:init-inspector "(ql:system-list)") 'slime-open-inspector))
+
 
 ;;; ==============================
 ;;; :SWANK-SIDE
-;;; :FILE slime-quicklisp-inspect.lisp
+;;; :FILE (substitute-env-vars "$CL_MON_CODE/mon-slime-extend/slime-quicklisp-inspect.lisp")
 ;;; ==============================
 ;;
 ;; (in-package #:swank)
@@ -1750,14 +1886,17 @@ the argument to ASDF:COERCE-NAME is CL:STRINGP the string's case is preserved.\n
 
 ;;; ==============================
 
+
+
+
 ;;; ==============================
-;; :PASTE-NUMBER 121190
-;; :PASTE-TITLE slime-inspect-quicklisp-system now functional
-;; :PASTED-BY 	mon_key
-;; :PASTE-CHANNEL	#lisp
-;; :PASTE-TIME 2011-04-05
-;; :PASTE-URL (URL `http://paste.lisp.org/display/121190')
-;;; ==============================
+;;; :NOTE this was brought in from :FILE slime-quicklisp-inspect.el
+;;; :CREATED <Timestamp: #{2024-03-11T14:54:55-04:00Z}#{24111} - by MON KEY>
+(defgroup slime-quicklisp-inspect nil
+  "Shortcuts for Quicklisp inspection."
+  ;; :prefix "slime-quicklisp-"
+  :group 'slime)
+
 
 ;;; ==============================
 ;;; :CHANGESET 2425
@@ -1825,9 +1964,10 @@ When optional arg FORCE-REHASH is non-nil clear the existing hash-table in
     (slime-quicklisp-completion-table-put-hash-meta))
   (or (and (slime-connected-p)
            (when (slime-quicklisp-completion-table-compare-hashed-last)
-             (case (slime-quicklisp-completion-table-compare-hash-counts)
+             ;; (case (slime-quicklisp-completion-table-compare-hash-counts)
+             (cl-case (slime-quicklisp-completion-table-compare-hash-counts)
                (eq     (message "`*slime-quicklisp-systems*' hash-table counts match."))
-               (rehash (setq *slime-quicklisp-systems* (read (slime-eval `(swank:hash-ql-systems)))))))
+               (rehash (setq *slime-quicklisp-systems* (read (slime-eval `(swank::hash-ql-systems)))))))
            (slime-quicklisp-completion-table-put-hash-meta)
            *slime-quicklisp-systems*)
       (message (concat ":FUNCTION `slime-make-quicklisp-completion-table' -- "
@@ -1859,7 +1999,8 @@ When optional arg FORCE-REHASH is non-nil clear the existing hash-table in
          (setq sip (assq 'start sip))
          (and sip (setq sip (cdr sip))))
     (setq sip (list sip 
-                    (multiple-value-bind (s min h d mon y dow  dst zn)
+                    ;; (multiple-value-bind (s min h d mon y dow  dst zn)
+                    (cl-multiple-value-bind (s min h d mon y dow  dst zn)
                         (decode-time sip)
                       (list y mon d h min s))))))
 
@@ -2018,6 +2159,8 @@ indicates we should rehash, else do nothing.\n
 ;;; ==============================
 ;;; :CHANGESET 2425
 ;;; :CREATED <Timestamp: #{2011-04-06T19:08:06-04:00Z}#{11143} - by MON KEY>
+;; :NOTE this requires the function swank::hash-ql-systems-count which we define in CL-MON-CODE/mon-slime-extend/swank-quicklisp-inspect.lisp 
+;; :NOTE we should reference the double dotted notatiojn for swank::hash-ql-systems-count as we don't export it 
 (defun slime-quicklisp-completion-table-get-ql-hash-count ()
   "Get the Quicklisp hash-table-count for current QL-DIST::SYSTEM-INDEX.\n
 :EXAMPLE\n\n\(slime-quicklisp-completion-table-get-ql-hash-count\)\n=> 1182\n
@@ -2033,7 +2176,7 @@ indicates we should rehash, else do nothing.\n
 `slime-quicklisp-completion-table-get-ql-hash-count',
 `slime-quicklisp-completion-table-compare-hash-counts',
 `*slime-quicklisp-systems*'.\n▶▶▶"
-  (slime-eval '(swank:hash-ql-systems-count)))
+  (slime-eval '(swank::hash-ql-systems-count)))
 
 ;;; ==============================
 ;;; :CHANGESET 2425
@@ -2111,6 +2254,14 @@ with quicklisp system.\n
 
 
 ;;; ==============================
+;; :PASTE-NUMBER 121190
+;; :PASTE-TITLE slime-inspect-quicklisp-system now functional
+;; :PASTED-BY 	mon_key
+;; :PASTE-CHANNEL	#lisp
+;; :PASTE-TIME 2011-04-05
+;; :PASTE-URL (URL `http://paste.lisp.org/display/121190')
+;;; ==============================
+;;; ==============================
 ;;; :NOTE Directly inpsecting the hash-table value returned from doesn't work
 ;;; e.g. with: (slime-get-quicklisp-system-completions t)
 ;;; This sucks b/c we do have ahold of the unreadable object that the system
@@ -2143,17 +2294,29 @@ with quicklisp system.\n
 `slime-quicklisp-completion-table-compare-hash-counts',
 `*slime-quicklisp-systems*'.\n▶▶▶"
   (interactive)
-  (if  (slime-connected-p)      
+  (if  (slime-connected-p)
       (let ((inspect-if (slime-get-quicklisp-system-completions)))
         (and inspect-if 
              ;; (prog1 inspect-if
              ;; (setq inspect-if (format "%S" `(ql-dist:find-system ,inspect-if)))
              ;; => "(ql-dist:find-system \"yason\")"
              ;; (slime-eval-async `(swank:init-inspector ,inspect-if) 'slime-open-inspector))))
-             (slime-eval-async `(swank:find-ql-system ,inspect-if)    'slime-quicklisp-open-inspector-if)))
+             (slime-eval-async `(swank::find-ql-system ,inspect-if)    'slime-quicklisp-open-inspector-if)))
     (message (concat ":FUNCTION `slime-inspect-quicklisp-system' -- "
                      "not currently `slime-connected-p'"))))
-;; 
+
+
+(defun slime-inspect-quicklisp-systems ()
+  "Inspect all QuickLisp SYSTEMS.\n
+:EXAMPLE\n\n\(slime-inspect-quicklisp-systems\)\n
+:SEE-ALSO `slime-inspect-asdf-system', `slime-inspect-quicklisp-dists-all',
+`slime-inspect-enabled-dists-enabled', `slime-inspect-quicklisp-systems',
+`slime-inspect', `slime-inspect-presentation', `slime-inspect-definition'.\n▶▶▶"
+  (interactive)
+  (slime-eval-async '(swank::init-inspector "(ql:system-list)") 'slime-open-inspector))
+
+
+;; :NOTE How to look up * (last value in repl) in slime inspector -> C-c I * CR
 ;; (interactive "n")
 (defun slime-quicklisp-open-inspector-if (inspected-parts)
   "Default callback for returning inspectable Quicklisp objects.\n
@@ -2174,7 +2337,7 @@ If INSPECTED-PARTS is null minibuffer-message that ther is nothing to inspect.\n
         (and inspect-if 
              ;; (prog1 
              ;;     inspect-if
-             (slime-eval-async `(swank:find-ql-release ,inspect-if)    'slime-quicklisp-open-inspector-if)))
+             (slime-eval-async `(swank::find-ql-release ,inspect-if)    'slime-quicklisp-open-inspector-if)))
     (message (concat ":FUNCTION `slime-inspect-quicklisp-release' -- "
                      "not currently `slime-connected-p'"))))
 
@@ -2184,9 +2347,61 @@ If INSPECTED-PARTS is null minibuffer-message that ther is nothing to inspect.\n
 :SEE-ALSO .\n▶▶▶"
   (interactive "sQuicklisp apropos term: ")
   (if (slime-connected-p)      
-      (slime-eval-async `(swank:apropos-ql-system ,term)    'slime-quicklisp-open-inspector-if)
+      (slime-eval-async `(swank::apropos-ql-system ,term)    'slime-quicklisp-open-inspector-if)
     (message (concat ":FUNCTION `slime-inspect-quicklisp-release' -- "
                      "not currently `slime-connected-p'"))))
+
+
+;;; ==============================
+;;; :PASTED (URL `http://paste.lisp.org/display/121086')
+;;; :CHANGESET 2424
+;;; :CREATED <Timestamp: #{2011-04-01T13:49:17-04:00Z}#{11135} - by MON KEY>
+(defun slime-inspect-asdf-defined-systems ()
+  "Inspect the hash-table of ASDF::*DEFINED-SYSTEMS*.\n
+:EXAMPLE\n\n
+ \(slime-inspect-asdf-defined-systems\)\n
+:SEE-ALSO `slime-inspect-asdf-system', `slime-inspect-quicklisp-systems',
+`slime-inspect', `slime-inspect-presentation', `slime-inspect-definition'.\n▶▶▶"
+  (interactive)
+  (slime-eval-async '(swank::init-inspector "ASDF::*DEFINED-SYSTEMS*") 'slime-open-inspector))
+
+;;; ==============================
+;;; :PASTED (URL `http://paste.lisp.org/display/121086')
+;;; :CHANGESET 2424
+;;; :CREATED <Timestamp: #{2011-04-01T16:33:49-04:00Z}#{11135} - by MON KEY>
+(defun slime-inspect-asdf-system (system-name &optional preserve-case)
+  "Inspect an ASDF system with SYSTEM-NAME in *slime-inspector* buffer.\n
+If SYSTEM-NAME is not found display inspector for ASDF::*DEFINED-SYSTEMS*.\n
+SYSTEM-NAME is a string or symbol naming a system in the hash-table of
+ASDF::*DEFINED-SYSTEMS*.\n
+When optional arg PRESERVE-CASE is non-nil do not downcase SYSTEM-NAME.\n
+If SYSTEM-NAME is T/NIL, or neither `stringp' nor `symbolp' signal an error.\n
+:EXAMPLE\n\n \(slime-inspect-asdf-system \"cl-ppcre\"\)\n
+ \(slime-inspect-asdf-system \"CL-PPCRE\" t\)\n
+ \(slime-inspect-asdf-system \"not-a-system\"\)\n
+:NOTE ASDF's COERCE-NAME function will CL:STRING-DOWNCASE defsystem component
+entries which are keys on the ASDF::*DEFINED-SYSTEMS* hash-table. However, if
+the argument to ASDF:COERCE-NAME is CL:STRINGP the string's case is preserved.\n
+:SEE-ALSO `slime-inspect-asdf-defined-systems',
+`slime-inspect-quicklisp-systems', `slime-inspect',
+`slime-inspect-presentation', `slime-inspect-definition'.\n▶▶▶"
+  (interactive "s:FUNCTION `slime-inspect-asdf-system' -- name of system to inspect: \np" )
+  (setq system-name
+        (or (and (stringp system-name) 
+                 (or (and preserve-case system-name)
+                     (downcase system-name)))
+            (and (symbolp system-name) 
+                 (not (eq system-name t))
+                 (not (null system-name))
+                 (or (and preserve-case (symbol-name system-name))
+                     (downcase (symbol-name system-name))))
+            (error "arg SYMBOL-NAME neither `stringp' nor `symbolp', got: %S" system-name)))
+  (setq system-name 
+        (format "%S"
+                `(let ((asrp-if (asdf:system-registered-p ,system-name)))
+                   (or (and asrp-if (cdr asrp-if)) ASDF::*DEFINED-SYSTEMS*))))
+  (slime-eval-async `(swank::init-inspector ,system-name) 'slime-open-inspector))
+
 
 
 ;; (slime-eval-async `(swank:find-ql-system ,release)   'slime-quicklisp-open-inspector-if)
@@ -2388,6 +2603,83 @@ Evaluate `slime-show-arglist' explicitly if an arglist is needed.\n
 ;; (load-library "geiser.el")
 ;;
 ;; (require 'quack) ;; NO, Don't do it!
+
+;;; ==============================
+;; :PASTE-TITLE "debug keys"
+;; :PASTED-BY pjb
+;; :PASTE-DATE 2012-02-13
+;; :PASTE-NUMBER 127751 	
+;; :PASTE-URL (URL `http://paste.lisp.org/display/127751')
+;;
+;; (defun make-lisp-command-sender (string)
+;;   (byte-compile `(lambda ()
+;;                    (interactive)
+;;                    (cond
+;;                      ((and (boundp 'slime-inferior-process:connlocal)
+;;                            slime-inferior-process:connlocal)
+;;                       (slime-repl-send-string ,(format "%s\n" string)))
+;;                      ((and inferior-lisp-buffer
+;;                            (inferior-lisp-proc))
+;;                       (comint-send-string (inferior-lisp-proc)
+;;                                           ,(format "%s\n" string)))
+;;                      ((get-buffer-process (current-buffer))
+;;                       (comint-send-string (get-buffer-process (current-buffer))
+;;                                           ,(format "%s\n" string)))
+;;                      (t (error "No process to send debugging command to."))))))
+;;
+;; (defun clisp-debug-keys ()
+;;   "Binds locally some keys to send clisp debugger commands to the inferior-lisp
+;; <f5> step into
+;; <f6> next
+;; <f7> step over
+;; <f8> continue\n"
+;;
+;;   (interactive)
+;;   (local-set-key (kbd "<f5>") (make-lisp-command-sender ":s"))
+;;   (local-set-key (kbd "<f6>") (make-lisp-command-sender ":n"))
+;;   (local-set-key (kbd "<f7>") (make-lisp-command-sender ":o"))
+;;   (local-set-key (kbd "<f8>") (make-lisp-command-sender ":c"))
+;;   (message "<f5> step into  <f6> next       <f7> step over  <f8> continue"))
+;;
+;; (defun ecl-debug-keys ()
+;;   "Binds locally some keys to send clisp debugger commands to the inferior-lisp
+;; <f5> step into
+;; <f6> next
+;; <f7> step over
+;; <f8> continue\n"
+;;   (interactive)
+;;   (local-set-key (kbd "<f5>") (make-lisp-command-sender ""))
+;;   (local-set-key (kbd "<f6>") (make-lisp-command-sender ""))
+;;   (local-set-key (kbd "<f7>") (make-lisp-command-sender ":skip"))
+;;   (local-set-key (kbd "<f8>") (make-lisp-command-sender ":exit"))
+;;   (message "<f5> step into  <f6> next       <f7> step over  <f8> continue"))
+;;
+;; (defun sbcl-debug-keys ()
+;;   "Binds locally some keys to send clisp debugger commands to the inferior-lisp
+;; <f5> step into
+;; <f6> next
+;; <f7> step over
+;; <f8> continue\n"
+;;   (interactive)
+;;   (local-set-key (kbd "<f5>") (make-lisp-command-sender "step"))
+;;   (local-set-key (kbd "<f6>") (make-lisp-command-sender "next"))
+;;   (local-set-key (kbd "<f7>") (make-lisp-command-sender "over"))
+;;   (local-set-key (kbd "<f8>") (make-lisp-command-sender "out"))
+;;   (message "<f5> step into  <f6> next       <f7> step over  <f8> continue"))
+;;
+;; (defun allegro-debug-keys ()
+;;   "Binds locally some keys to send allegro debugger commands to the inferior-lisp
+;; <f5> step into
+;; <f7> step over
+;; <f8> continue\n"
+;;   (interactive)
+;;   (local-set-key (kbd "<f5>") (make-lisp-command-sender ":scont 1"))
+;;   ;; (local-set-key (kbd "<f6>") (make-lisp-command-sender ))
+;;   (local-set-key (kbd "<f7>") (make-lisp-command-sender ":sover"))
+;;   (local-set-key (kbd "<f8>") (make-lisp-command-sender ":continue"))
+;;   (message "<f5> step into                  <f7> step over  <f8> continue"))
+;;
+;;; ==============================
 
 ;;; ==============================
 (provide 'slime-loads-GNU-clbuild)

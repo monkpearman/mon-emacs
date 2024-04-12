@@ -1,7 +1,7 @@
 ;;; mon-utils.el --- common utilities and BIG require for other of MON packages
 ;; -*- mode: EMACS-LISP; -*-
 ;;; ================================================================
-;; Copyright © 2008-2011 MON KEY. All rights reserved.
+;; Copyright © 2008-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-utils.el
@@ -450,7 +450,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ===================================
-;; Copyright © 2008-2011 MON KEY 
+;; Copyright © 2008-2012 MON KEY 
 ;;; ===================================
 
 ;;; CODE:
@@ -651,16 +651,16 @@ Such that evaluation of the following two forms returns non-nil:\n
 \(= \(mon-list-last \(append *mon-default-comment-start* nil\)\) 32\)\n
 \(let* \(\(*mon-default-comment-start* \";;[ \"\)
        \(sub-cmnt-start \(nreverse \(cdr \(reverse \(append *mon-default-comment-start* nil\)\)\)\)\)\)
-  \(catch 'prefix-not-same   
+  \(catch \='prefix-not-same   
     \(equal *mon-default-comment-start*
            \(concat 
             \(mapc #'\(lambda \(x\)
                       \(unless \(= x \(car sub-cmnt-start\)\)
-                        \(throw 'prefix-not-same 
+                        \(throw \='prefix-not-same 
                                \(format \"prefix chars not identical, failed-at: %c\" x\)\)\)\)
                   sub-cmnt-start\)
             \" \"\)\)\)\)\n
-:EXAMPLE\n\n(symbol-value '*mon-default-comment-start*)\n
+:EXAMPLE\n\n(symbol-value \='*mon-default-comment-start*)\n
 \(let \(\(*mon-default-comment-start* \"%% \"\)\)
   *mon-default-comment-start*\)\n
  \(mon-comment-divider-w-len 36\)\n
@@ -778,7 +778,7 @@ The arg FEATURE-AS-SYMBOL is a quoted symbol.\n
 When optional arg REQ-W-FILNAME is non-nil second arg to `require' will given as
 the filename of feature FEATURE-AS-SYMBOL when it is in loadpath.\n
 :EXAMPLE\n\n\(pp-macroexpand-expression 
-          '\(mon-check-feature-for-loadtime 'mon-test-feature-fl\)\)\n
+          '\(mon-check-feature-for-loadtime \='mon-test-feature-fl\)\)\n
 :SEE-ALSO `mon-run-post-load-hooks', `mon-purge-cl-symbol-buffers-on-load',
 `mon-after-mon-utils-loadtime', `mon-unbind-command', `mon-unbind-symbol',
 `mon-unbind-function', `mon-unbind-variable', `mon-unbind-defun',
@@ -845,8 +845,10 @@ varaible `*mon-utils-post-load-requires*'\n
   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
              (bound-and-true-p IS-MON-SYSTEM-P))
     ;; Load here instead of from :FILE naf-mode.el
+    (require 'mon-rename-whitespace-files)
     (require 'naf-mode-sql-skeletons nil t)
-    (require 'mon-dbc-xml-utils)))
+    (require 'mon-dbc-xml-utils)
+    ))
 
 ;;; ==============================
 ;;; :TODO Build additional fncn/macro to populate docstrings at loadtime.
@@ -893,17 +895,16 @@ Peforms loadtime evaluation of functions defined in mon-utils.el:\n
     (mon-alphabet-as-doc-loadtime 
       (mon-alphabet-as-map-bc *mon-alphabet-as-type-generate*))
     ;; :NOTE `mon-get-mon-emacsd-paths' is an interpreted function in:
-    ;; :FILE mon-default-start-loads.el
+    ;; :FILE mon-default-loads.el
     (when (and (intern-soft "mon-get-mon-emacsd-paths" obarray)
                (fboundp (intern-soft "mon-get-mon-emacsd-paths" obarray)))
-      (fset 'mon-get-emacsd-paths 
-            (byte-compile
-             (indirect-function 'mon-get-mon-emacsd-paths)))
+      (fset 'mon-get-emacsd-paths (byte-compile (indirect-function 'mon-get-mon-emacsd-paths)))
       (message (concat ":FUNCTION `mon-after-mon-utils-loadtime'"
                        "`byte-compile'd `mon-get-mon-emacsd-paths' at loadtime")))
     (eval-after-load "naf-mode-faces"     '(mon-bind-naf-face-vars-loadtime t))
     ;; (eval-after-load "mon-dir-utils"      '(mon-bind-nefs-photos-at-loadtime))
-    (eval-after-load "mon-dir-utils-local" '(mon-bind-nefs-photos-at-loadtime))
+    ;; FIXME DARWIN this isn't a bound function for some reason.
+    ;; (eval-after-load "mon-dir-utils-local" '(mon-bind-nefs-photos-at-loadtime))
     (eval-after-load "mon-replacement-utils" '(mon-make-iso-latin-1-approximation-loadtime))
     (eval-after-load "mon-doc-help-utils" '(mon-help-utils-loadtime t))
     ;; :NOTE Moved (mon-help-utils-CL-loadtime t) -> `mon-run-post-load-hooks'
@@ -995,8 +996,13 @@ nil if there is no match in the buffer.\n
   mb4-aftr\)\n\nOMG theres a bubba back there!\n
 :SEE-ALSO `looking-at-p', `inhibit-changing-match-data'.\n▶▶▶"
   (let ((mlbp-beg (point))
-	(mlbp-psn
-	 (let ((inhibit-changing-match-data t))
+        ;; inhibit-changing-match-data obsolote save-match-data
+	;; (mlbp-psn (let ((inhibit-changing-match-data t))
+        ;;             (save-excursion
+        ;;               (and (re-search-backward (concat "\\(?:" regexp "\\)\\=") limit t)
+        ;;                    (point))))))
+        (mlbp-psn ;; (let ((inhibit-changing-match-data t))
+         (save-match-data 
            (save-excursion
              (and (re-search-backward (concat "\\(?:" regexp "\\)\\=") limit t)
                   (point))))))
@@ -1099,9 +1105,9 @@ values to buffer named \"*OBARRY-W-PROP-SYM-MATCHES*\".\n
 If DISPLAY-IN-BUFFER is a string or buffer object that satisfies `buffer-live-p'
 return results in that buffer creating one if it doesn't exist.\n
 :EXAMPLE\n\n\(mon-map-obarray-symbol-plist-props 'permanent-local\)\n
-\(mon-map-obarray-symbol-plist-props 'permanent-local t\)\n
-\(mon-map-obarray-symbol-plist-props 'side-effect-free \(get-buffer-create \"*SIDE-EFFECT-FREE*\"\)\)\n
-\(mon-map-obarray-symbol-plist-props 'side-effect-free \"*SIDE-EFFECT-FREE*\"\)\n
+\(mon-map-obarray-symbol-plist-props \='permanent-local t\)\n
+\(mon-map-obarray-symbol-plist-props \='side-effect-free \(get-buffer-create \"*SIDE-EFFECT-FREE*\"\)\)\n
+\(mon-map-obarray-symbol-plist-props \='side-effect-free \"*SIDE-EFFECT-FREE*\"\)\n
 :SEE-ALSO `mon-plist-remove!', `mon-map-obarray-symbol-plist-props',
 `mon-plist-remove-if', `mon-plist-remove-consing', `remf', `remprop',
 `mon-plist-keys', `mon-help-plist-functions', `mon-help-plist-properties'.\n▶▶▶"
@@ -1162,8 +1168,8 @@ return results in that buffer creating one if it doesn't exist.\n
 ;;; :MODIFICATIONS <Timestamp: Saturday May 30, 2009 @ 06:26.12 PM - by MON KEY>
 (defun mon-escape-lisp-string-region (start end)
   "Escape special characters in the region as if a lisp string.
-Insert backslashes in front of special characters (namely  `\' backslash,
-`\"' double quote, `(' `)' parens in the region, according to the docstring escape 
+Insert backslashes in front of special characters (namely  \`\\' backslash,
+\`\"' double quote, `\(' \`)' parens in the region, according to the docstring escape 
 requirements.\n
 Region should only contain the characters actually comprising the string
 supplied without the surrounding quotes.\n
@@ -1216,10 +1222,10 @@ without the surrounding quotes.\n
 ;;; :CREATED <Timestamp: #{2010-07-27T15:29:09-04:00Z}#{10302} - by MON KEY>
 (defun mon-quote-sexp (sexp)
   "Quote SEXP as if by `quote' if it is not self quoting.\n
-:EXAMPLE\n\n(mon-quote-sexp '(a list))\n
+:EXAMPLE\n\n(mon-quote-sexp \\='(a list))\n
 \(mon-quote-sexp #'\(lambda \(x\)\(x\)\)\)\n
-\(mon-quote-sexp '\(lambda \(x\)\(x\)\)\)\n
-\(mon-quote-sexp '\(a . b\)\)\n
+\(mon-quote-sexp #'\(lambda \(x\)\(x\)\)\)\n
+\(mon-quote-sexp \\='\(a . b\)\)\n
 \(mon-quote-sexp :test)\n
 \(mon-quote-sexp #:is-not\)\n
 :SEE-ALSO `mon-escape-lisp-string-region', `mon-unescape-lisp-string-region'.\n▶▶▶"
@@ -1317,7 +1323,9 @@ When `eval-expression-print-length' and NEW-DEPTH are non-nil set length.\n
           (mon-wrap-with (concat fw "\n") (concat "\n" bw) t)
           (search-forward-regexp (concat "\n" bw))
           (set-marker mk2 (point))
-          (eval (preceding-sexp))
+          ;; deprecated `preceding-sexp'
+          ;; (eval (preceding-sexp))
+          (eval (elisp--preceding-sexp))
           (search-backward-regexp (concat "\n" bw) nil t)
           (set-marker mk1 (point))
           (delete-region mk1 mk2)
@@ -1531,10 +1539,12 @@ position is as per `font-at'
         (progn
           (skip-syntax-forward "^\"")
           (goto-char (1+ (point)))
-          (decf arg))
+          ;; deprecated (decf arg))
+          (cl-decf  arg))
       (skip-syntax-backward "^\"")
       (goto-char (1- (point)))
-      (incf arg)))
+      ;; deprecated (incf arg)))
+      (cl-incf arg)))
   (up-list arg))
 
 ;;; ==============================
@@ -1586,8 +1596,9 @@ With ARG, begin column display at current column, not at left margin.\n
 `mon-after-mon-utils-loadtime'.\n▶▶▶"
   (interactive)
   (save-excursion
-    (setf (point) (point-min))
-    (loop for form = (condition-case nil
+    ;; point deprecated: (setf (point) (point-min))
+    (setf (goto-char (point)) (point-min))
+    (cl-loop for form = (condition-case nil
                          (read (current-buffer))
                        (error nil))
           while form
@@ -1665,7 +1676,7 @@ Includes unbinding function binding, variable binding, and property list.\n
 `mon-nuke-and-eval', `mon-after-mon-utils-loadtime'.\n▶▶▶"
   (interactive (list 
                 (completing-read "Variable: "
-                                 (loop for s being the symbols
+                                 (cl-loop for s being the symbols
                                     when (boundp s) collect (list (symbol-name s))))))
   (makunbound (if (stringp var-symbol) (intern var-symbol) var-symbol)))
 ;;; 
@@ -1719,7 +1730,8 @@ The function `byte-compile-file' was only easily accesible from the menu.\n
 `mon-load-or-alert', `mon-byte-compile-and-load', `mon-dump-object-to-file',
 `mon-nuke-and-eval', `mon-after-mon-utils-loadtime'.\n▶▶▶"
   (interactive)
-  (byte-compile-file buffer-file-name t))
+  ;; (byte-compile-file buffer-file-name t))
+  (byte-compile-file buffer-file-name))
 
 
 ;;; ==============================
@@ -1779,6 +1791,10 @@ failure.\n
         (fit-window-to-buffer (get-buffer-window mloa-bfr))
         (set-buffer-modified-p nil))
       nil))
+
+(defun mon-erc-query-user ()
+  (interactive)
+  (call-interactively 'erc-cmd-QUERY))
 
 ;;; ==============================
 (provide 'mon-utils)

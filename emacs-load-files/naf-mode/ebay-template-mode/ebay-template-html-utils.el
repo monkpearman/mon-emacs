@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2009, 2010 MON KEY. All rights reserved.
+;; Copyright © 2009-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: ebay-template-html-utils.el
@@ -111,7 +111,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2009, 2010 MON KEY 
+;; Copyright © 2009-2012 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -215,7 +215,8 @@ Produces this (though wrapped):\n
       ((numberp form) (number-to-string form))
       ((stringp form) form)
       ((listp form)
-       (destructuring-bind (xml attrs) (xmlgen-extract-plist form)
+       ;; (destructuring-bind (xml attrs) (xmlgen-extract-plist form)
+       (cl-destructuring-bind (xml attrs) (xmlgen-extract-plist form)
          (let ((el (car xml)))
            (unless (symbolp el)
              (error ":FUNCTION `xmlgen' -- element must be a symbol (got '%S')." el))
@@ -237,7 +238,7 @@ Produces this (though wrapped):\n
 `xmlgen-attr-to-string',`xmlgen-extract-plist', `xmlgen-string-escape'.\n▶▶▶"
   (when (stringp string)
     (mapc
-     '(lambda (e)
+     #'(lambda (e)
        (setq string
         (replace-regexp-in-string (car e) (cdr e) string)))
      xmlgen-escapees))
@@ -272,7 +273,7 @@ Produces this (though wrapped):\n
         (plist '())
         (last-keyword nil))
     (mapc
-     '(lambda (item)
+     #'(lambda (item)
        (let ((item (pop list)))
          (cond
            (last-keyword
@@ -439,7 +440,7 @@ element a emtpy one."
   (declare (indent defun))
   `(progn
      ,@(mapcar 
-	(lambda (element)
+	#'(lambda (element)
 	  (if (listp element)
 	      (list 'defun (html-lite-make-name (car element)) 
 		    '(&rest args)
@@ -499,7 +500,7 @@ TITLE must be a string and is used as content in the title-tag."
 ;;; ==============================     
 (defun html-lite-escape-string (string)
   "Escape dangerous character in html strings."
-  (mapc (lambda (elt) (setq string (replace-regexp-in-string (car elt) (cdr elt)
+  (mapc #'(lambda (elt) (setq string (replace-regexp-in-string (car elt) (cdr elt)
 	  string))) '(("&" .  "&amp;") ("<" . "&lt;") (">" . "&gt;") ("\""
 	  . "&quot;"))) string)
 
@@ -523,7 +524,7 @@ xhtml-1.0-frameset and xhtml-1.1."
 Indent tag to column INDENT."
   (let ((indent (or indent 0)))
     (mapc
-     (lambda (element)
+     #'(lambda (element)
        (cond ((listp element)
 	      (html-lite-write-tree element (+ indent 2)))
 	     (t

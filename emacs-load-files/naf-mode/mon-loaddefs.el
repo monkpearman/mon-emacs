@@ -9048,7 +9048,7 @@ evaling, interrogation, deconstructing, etc.
 `internal-interpreter-environment'           ;<LEXBIND-VARIABLE>
 `gensym'
 `gentemp'                                    ; :NOTE Misnomer, interns a symbol
-`*gensym-counter*'                           ;<VARIABLE>
+`gensym-counter'                             ;<VARIABLE>
 `make-symbol'
 
 ;; :SYMBOL-CONSTRUCTORS-LOCAL

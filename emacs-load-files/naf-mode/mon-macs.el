@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010-2011 MON KEY. All rights reserved.
+;; Copyright © 2010-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-macs.el
@@ -137,7 +137,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010-2011 MON KEY 
+;; Copyright © 2010-2012 MON KEY 
 ;;; ==============================
 
 
@@ -322,7 +322,8 @@ NO-ERROR-CLAUSE ::= (:no-error LAMBDA-LIST {declaration}* {form}*)
 :EXAMPLE\n\n
 :SEE-ALSO `mon-error-protect', `stack-trace-on-error'.\n▶▶▶"
   ;;  (declare (indent 2) (debug t))
-  (let* ((var (edebug-gensym "--mon-")) ;; :WAS `gensym'
+  ;;  (let* ((var (edebug-gensym "--mon-")) ;; :WAS `gensym'
+  (let* ((var ( cl-gensym"--mon-"))
          ;; :WAS (neclause (assoc :NO-ERROR clauses))         
          ;; Use `assoc-string' b/c we can catch either :no-error or :NO-ERROR         
          (neclause (assoc-string :no-error clauses t))         
@@ -594,10 +595,17 @@ On a Common Lisp return is as if by values.\n
   ;;              (t (push sft-itm ,sft-last))))
   ;;      (values ,@mls-gthr-sftd ,sft-last))))
   ;; (declare (indent 1) (debug t))
+  ;; (cl-gensym "--mon-sift-cllct--")
+  ;;
+
   (let ((mls-gthr-sftd (mon-mapcar #'(lambda (mls-L-1) 
-                                       (edebug-gensym "--mon-sift-cllct--")) 
+                                       ;; :NOTE `edebug-gensym' no longer present in edebug.el
+                                       ;; :WAS (edebug-gensym "--mon-sift-cllct--"))
+                                       (cl-gensym "--mon-sift-cllct--")) 
                                    sift-tests))
-        (mls-sft-last (edebug-gensym "--mon-sift-last--")))
+        ;; :NOTE `edebug-gensym' no longer present in edebug.el
+        ;; :WAS (mls-sft-last (edebug-gensym "--mon-sift-last--")))
+        (mls-sft-last (cl-gensym "--mon-sift-last--")))
     `(let (,@mls-gthr-sftd ,mls-sft-last)
        (dolist (mls-sft-itm ,sift-list)
          (cond ,@(mon-mapcar #'(lambda (mls-L-2 mls-l-3)
@@ -702,10 +710,10 @@ On a Common Lisp return is as if by values.\n
 (defmacro mon-gensym (&optional prefix counter)
   "Generate a new uninterned symbol.\n
 When optional arg PREFIX (a string) return a symbol-name by appending the value
-of `*gensym-counter*' to PREFIX. The default prefix is \"M\".\n
+of `gensym-counter' to PREFIX. The default prefix is \"M\".\n
 When optional arg COUNTER satisfies the predicate `integerp' and PREFIX
 satisfies the predicate `stringp' it is appended to PREFIX instead of
-`*gensym-counter*'s value.\n
+`gensym-counter's value.\n
 Like the `gensym' function in CL package but defined as a macro instead.\n
 :EXAMPLE\n\n\(pp-macroexpand-expression '\(mon-gensym\)\)\n
 \(pp-macroexpand-expression '\(mon-gensym \"EG\" 666\)\)\n
@@ -837,7 +845,7 @@ byte-compiler warning.\n
   `(defconst ,symbol ,initvalue ,docstring))
 ;;
 ;; Now, tack on some docs.
-(eval-when (compile) ;; (compile load)
+(cl-eval-when (compile) ;; (compile load)
   (let ((defcon-d (replace-regexp-in-string "^(fn.*)$" "" (documentation 'defconst))))
     (setq defcon-d
           (concat defcon-d
@@ -909,7 +917,10 @@ More precisely, PROPS are added to the region between the point's positions
 before and after executing BODY.\n
 :SEE-ALSO `mon-insert-w-text-properties'.\n▶▶▶"
   ;; (declare (indent 1) (debug t))
-  (let ((start (edebug-gensym)))
+  (declare (indent 1) (debug (sexp &rest form)))
+  ;; :NOTE `edebug-gensym' no longer defeined in edebug.el use `cl-gensym' instead..
+  ;; :WAS (let ((start (edebug-gensym)))
+  (let ((start (cl-gensym)))
     `(let ((,start (point)))
        (prog1 (progn ,@body)
          (add-text-properties ,start (point) ,props)))))
@@ -1025,7 +1036,8 @@ without inversion.\n
     `(let ((,mbep-bffr-p ,buffer-to-check))
        (when (and ,mbep-bffr-p (buffer-live-p (get-buffer ,mbep-bffr-p)))
          (if ,no-invert ,mbep-bffr-p
-           (case (type-of ,mbep-bffr-p)
+           ;; (case (type-of ,mbep-bffr-p)
+           (cl-case (type-of ,mbep-bffr-p)
              (string (get-buffer  ,mbep-bffr-p))
              (buffer (buffer-name ,mbep-bffr-p))))))))
 ;;
@@ -1243,7 +1255,8 @@ exectute BODY there. Default is `current-buffer'.
 ;;; :COURTESY Pascal .J Bourguignon :WAS `dolines'
 ;;; :CHANGESET 1773 <Timestamp: #{2010-05-26T16:14:14-04:00Z}#{10213} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-12-28T15:57:08-05:00Z}#{09531} - by MON KEY>
-(defmacro* mon-line-dolines (start-end &body body)
+;;(cl-defmacro* mon-line-dolines (start-end &body body)
+(cl-defmacro mon-line-dolines (start-end &body body)              
   "Executes the body with START-END `destructoring-bind'ed to the start and
 end of each line of the current-buffer in turn.\n
 :EXAMPLE\n\(mon-line-dolines-TEST\)\n
@@ -1253,7 +1266,7 @@ end of each line of the current-buffer in turn.\n
   (let ((mld-vline  (make-symbol "mld-vline"))
         (mld-sm     (make-symbol "mld-sm"))
         (mld-em     (make-symbol "mld-em")))
-    (destructuring-bind (start-var end-var) start-end
+    (cl-destructuring-bind (start-var end-var) start-end
       `(let ((,mld-sm (make-marker))
              (,mld-em (make-marker)))
          (unwind-protect

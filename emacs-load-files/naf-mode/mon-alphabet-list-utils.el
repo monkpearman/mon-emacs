@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010-2011 MON KEY. All rights reserved.
+;; Copyright © 2010-2012 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-alphabet-list-utils.el
@@ -149,7 +149,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010-2011 MON KEY 
+;; Copyright © 2010-2012 MON KEY 
 ;;; ==============================
 
 
@@ -271,7 +271,7 @@ of being entirely self contained, and therefor does not rely on external calls.\
                    (mon-alphabet-as-type maat-L-0)))
         (maat-ns26 (number-sequence 1 26))
         (maat-abet))
-    (case type 
+    (cl-case type 
       (plistU->stringU 
        (while maat-alph 
          (funcall #'(lambda (maat-L-1)
@@ -340,25 +340,25 @@ of being entirely self contained, and therefor does not rely on external calls.\
        (setq maat-abet (nreverse maat-abet)))
       (cons-symU->num 
        (let (maat-cc-0)
-         (do ((maat-i-0 (funcall maat-tycon 'list-symbolU) (setq maat-i-0 (cdr maat-i-0)))
+         (cl-do ((maat-i-0 (funcall maat-tycon 'list-symbolU) (setq maat-i-0 (cdr maat-i-0)))
               (maat-j-0 maat-ns26 (setq maat-j-0 (cdr maat-j-0))))
              ((null maat-i-0) (setq maat-cc-0 (nreverse maat-cc-0)))
            (push `(,(car maat-i-0) . ,(car maat-j-0)) maat-cc-0))))
       (cons-symD->num 
        (let (maat-cc-1)      
-         (do ((maat-i-1 (funcall maat-tycon 'list-symbolD) (setq maat-i-1 (cdr maat-i-1)))
+         (cl-do ((maat-i-1 (funcall maat-tycon 'list-symbolD) (setq maat-i-1 (cdr maat-i-1)))
               (maat-j-1 maat-ns26 (setq maat-j-1 (cdr maat-j-1))))
              ((null maat-i-1) (setq maat-cc-1 (nreverse maat-cc-1)))
            (push `(,(car maat-i-1) . ,(car maat-j-1)) maat-cc-1))))
       (cons-stringU->num
        (let (maat-cc-2)
-         (do ((maat-i-2 (funcall maat-tycon 'list-stringU) (setq maat-i-2 (cdr maat-i-2)))
+         (cl-do ((maat-i-2 (funcall maat-tycon 'list-stringU) (setq maat-i-2 (cdr maat-i-2)))
               (maat-j-2 maat-ns26 (setq maat-j-2 (cdr maat-j-2))))
              ((null maat-i-2) (setq maat-cc-2 (nreverse maat-cc-2)))
            (push `(,(car maat-i-2) . ,(car maat-j-2)) maat-cc-2))))
       (cons-stringD->num
        (let (maat-cc-3)
-         (do ((maat-i-3 (funcall maat-tycon 'list-stringD) (setq maat-i-3 (cdr maat-i-3)))
+         (cl-do ((maat-i-3 (funcall maat-tycon 'list-stringD) (setq maat-i-3 (cdr maat-i-3)))
               (maat-j-3 maat-ns26 (setq maat-j-3 (cdr maat-j-3))))
              ((null maat-i-3) (setq maat-cc-3 (nreverse maat-cc-3)))
            (push `(,(car maat-i-3) . ,(car maat-j-3)) maat-cc-3))))

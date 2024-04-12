@@ -263,7 +263,7 @@
   (or size (setq size 10))
   (if (and (consp x) (not (memq (car x) '(quote function function*)))) ;; `function*' <CL-MACRO>
       (and (symbolp (car x))
-	   (or (memq (car x) cl-simple-funcs) ;; `cl-simple-funcs' <CL-VARIABLE>
+	   (or (memq (car x) cl--simple-funcs) ;; `cl-simple-funcs' <CL-VARIABLE>
 	       (get (car x) 'side-effect-free))
 	   (progn
 	     (setq size (1- size))
@@ -285,9 +285,9 @@
 (defun cl::cl-safe-expr-p (x)
   (or (not (and (consp x) (not (memq (car x) '(quote function function*))))) ;; <CL-MACRO>
       (and (symbolp (car x))
-	   (or (memq (car x) cl-simple-funcs) ;; <CL-VARIABLE>
-	       (memq (car x) cl-safe-funcs)   ;; <CL-VARIABLE>
-	       (get (car x) 'side-effect-free))
+	   (or (memq (car x) cl--simple-funcs) ;; <CL-VARIABLE>
+	       (memq (car x) cl--safe-funcs)   ;; <CL-VARIABLE>
+	       (get (car x) 'side-effect-free)) ;; byte-compile-side-effect-free-ops
 	   (progn
 	     (while (and (setq x (cdr x)) (cl::cl-safe-expr-p (car x))))
 	     (null x)))))
@@ -353,7 +353,7 @@
 
 
 ;;; ==============================
-;;; :NOTE Doubt we need to duplicate *gensym-counter*.
+;;; :NOTE Doubt we need to duplicate gensym-counter.
 ;; `gensym' -> cl-macs.el
 ;;;###autoload
 (defun cl::gensym (&optional prefix)
@@ -361,8 +361,8 @@
 The name is made by appending a number to PREFIX, default \"G\"."
   (let ((pfix (if (stringp prefix) prefix "G"))
 	(num (if (integerp prefix) prefix
-	       (prog1 *gensym-counter* ;; <CL-VARIABLE>
-		 (setq *gensym-counter* (1+ *gensym-counter*)))))) 
+	       (prog1 gensym-counter ;; <CL-VARIABLE>
+		 (setq gensym-counter (1+ gensym-counter)))))) 
     (make-symbol (format "%s%d" pfix num))))
 
 ;;; ==============================
@@ -373,8 +373,8 @@ The name is made by appending a number to PREFIX, default \"G\"."
 The name is made by appending a number to PREFIX, default \"G\"."
   (let ((pfix (if (stringp prefix) prefix "G"))
 	name)
-    (while (intern-soft (setq name (format "%s%d" pfix *gensym-counter*))) ;; <CL-VARIABLE>
-      (setq *gensym-counter* (1+ *gensym-counter*))) 
+    (while (intern-soft (setq name (format "%s%d" pfix gensym-counter))) ;; <CL-VARIABLE>
+      (setq gensym-counter (1+ gensym-counter))) 
     (intern name)))
 
 ;;; ==============================
@@ -388,7 +388,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
 ;;; ==============================
 ;; `cl-do-proclaim' cl-macs.el
 (defun cl::cl-do-proclaim (spec hist)
-  (and hist (listp cl-proclaim-history) (push spec cl-proclaim-history))
+  (and hist (listp cl--proclaim-history) (push spec cl--proclaim-history))
   (cond ((eq (car-safe spec) 'special)
 	 (if (boundp 'byte-compile-bound-variables)
 	     (setq byte-compile-bound-variables
@@ -410,9 +410,9 @@ The name is made by appending a number to PREFIX, default \"G\"."
 			    '((0 nil) (1 t) (2 t) (3 t))))
 	       (safety (assq (nth 1 (assq 'safety (cdr spec)))
 			     '((0 t) (1 t) (2 t) (3 nil)))))
-	   (if speed (setq cl-optimize-speed (car speed)
+	   (if speed (setq cl--optimize-speed (car speed)
 			   byte-optimize (nth 1 speed)))
-	   (if safety (setq cl-optimize-safety (car safety)
+	   (if safety (setq cl--optimize-safety (car safety)
 			    byte-compile-delete-errors (nth 1 safety)))))
 	((and (eq (car-safe spec) 'warn) (boundp 'byte-compile-warnings))
 	 (while (setq spec (cdr spec))
@@ -538,7 +538,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
 ;;; `cl-do-arglist' -> cl-macs.el
 (defun cl::cl-do-arglist (args expr &optional num)   ; uses bind-*
   (if (nlistp args)
-      (if (or (memq args lambda-list-keywords) (not (symbolp args)))
+      (if (or (memq args cl--lambda-list-keywords) (not (symbolp args)))
 	  (error "Invalid argument name: %s" args)
 	(push (list args expr) bind-lets))
     (setq args (cl::copy-list args))
@@ -547,7 +547,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
     (if (memq '&environment args) (error "&environment used incorrectly"))
     (let ((save-args args)
 	  (restarg (memq '&rest args))
-	  (safety (if (cl::cl-compiling-file) cl-optimize-safety 3)) ;; !!!
+	  (safety (if (cl::cl-compiling-file) cl--optimize-safety 3)) ;; !!!
 	  (keys nil)
 	  (laterarg nil) (exactarg nil) minarg)
       (or num (setq num 0))
@@ -675,7 +675,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
     (let ((res nil) (kind nil) arg)
       (while (consp args)
 	(setq arg (pop args))
-	(if (memq arg lambda-list-keywords) (setq kind arg)
+	(if (memq arg cl--lambda-list-keywords) (setq kind arg)
 	  (if (eq arg '&cl-defs) (pop args)
 	    (and (consp arg) kind (setq arg (car arg)))
 	    (and (consp arg) (cdr arg) (eq kind '&key) (setq arg (cadr arg)))
@@ -704,7 +704,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
   (if (fboundp 'byte-compile-form-do-effect)  ; Check for optimizing compiler
       (progn
 	(let* ((cl-entry (cons (nth 1 (nth 1 (nth 1 cl-form))) nil))
-	       (cl-active-block-names (cons cl-entry cl-active-block-names))
+	       (cl-active-block-names (cons cl-entry cl--active-block-names))
 	       (cl-body (byte-compile-top-level
 			 (cons 'progn (cddr (nth 1 cl-form))))))
 	  (if (cdr cl-entry)
@@ -716,7 +716,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
 ;;; `cl-byte-compile-throw' -> cl-macs.el
 (put 'cl-block-throw 'byte-compile 'cl::cl-byte-compile-throw)
 (defun cl::cl-byte-compile-throw (cl-form)
-  (let ((cl-found (assq (nth 1 (nth 1 cl-form)) cl-active-block-names)))
+  (let ((cl-found (assq (nth 1 (nth 1 cl-form)) cl--active-block-names)))
     (if cl-found (setcdr cl-found t)))
   (byte-compile-normal-call (cons 'throw (cdr cl-form))))
 
@@ -836,7 +836,7 @@ The name is made by appending a number to PREFIX, default \"G\"."
 SEQ1 is destructively modified, then returned.
 \nKeywords supported:  :start1 :end1 :start2 :end2
 \n(fn SEQ1 SEQ2 [KEYWORD VALUE]...)"
-  (cl-parsing-keywords ((:start1 0) :end1 (:start2 0) :end2) ()
+  (cl--parsing-keywords ((:start1 0) :end1 (:start2 0) :end2) ()
     (if (and (eq cl-seq1 cl-seq2) (<= cl-start2 cl-start1))
 	(or (= cl-start1 cl-start2)
 	    (let* ((cl-len (length cl-seq1))
@@ -1713,7 +1713,8 @@ in place of FORM.  When a non-macro-call results, it is returned.
 The second optional arg ENVIRONMENT specifies an environment of macro
 definitions to shadow the loaded ones for use in file byte-compilation.
 \n(fn FORM &optional ENVIRONMENT)"
-  (let ((cl-macro-environment cl-env))
+  (let ;; ((cl-macro-environment cl-env))
+      ((macroexpand-all-environmen cl-env))
     (while (progn (setq cl-macro (funcall cl-old-macroexpand cl-macro cl-env))
 		  (and (symbolp cl-macro)
 		       (cdr (assq (symbol-name cl-macro) cl-env))))
@@ -1734,7 +1735,7 @@ definitions to shadow the loaded ones for use in file byte-compilation.
 ;;; `proclaim' -> cl.el
 (defun cl::proclaim (spec)
   (if (fboundp 'cl::cl-do-proclaim) (cl::cl-do-proclaim spec t)
-      (push spec cl-proclaims-deferred)) ;<- `cl-proclaims-deferred' <VARIABLE>
+      (push spec cl--proclaims-deferred)) ;<- `cl-proclaims-deferred' <VARIABLE>
   nil)
 
 ;;; ==============================

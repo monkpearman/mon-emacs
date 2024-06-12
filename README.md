@@ -1,4 +1,4 @@
-# My Emacs configs and utilities I've authored over the years.
+# Emacs configs and utilities I've authored
 
 You can clone MON with:
 

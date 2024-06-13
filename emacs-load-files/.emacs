@@ -116,6 +116,7 @@
 
 ;; Comment this out we need it at moment
 ;; (unless (null menu-bar-mode) (menu-bar-mode -1)) 
+;; (menu-bar-mode t) 
 
 (setq-default cursor-type '(bar . 3))
 (setq-default indent-tabs-mode nil)
@@ -212,22 +213,25 @@
 
 ;; `window-system-default-frame-alist'
 (setq window-system-default-frame-alist
-      '((x   (menu-bar-lines . 0) (tool-bar-lines   . 0))
-        (nil (menu-bar-lines . 0) (tool-bar-lines   . 0))))
+      '((x   (menu-bar-lines   . 1)     ; (menu-bar-lines . 0)
+             (tool-bar-lines   . 0))
+        (nil (menu-bar-lines   . 1)     ;(menu-bar-lines . 0)
+             (tool-bar-lines   . 0))))
 (custom-note-var-changed 'window-system-default-frame-alist)
 
 ;; `default-frame-alist'
 (setq default-frame-alist
-      '((tool-bar-lines . 0)
+      '(
+        (menu-bar-lines    . 1) ; (menu-bar-lines    . 0)
+        (tool-bar-lines    . 0)
         ;; (vertical-scroll-bar . nil)
         (vertical-scroll-bars)
-        (background-color . "black")
-        (background-mode . dark)
-        (border-color . "black")
-        (cursor-color . "yellow")
-        (foreground-color . "white")
-        (mouse-color . "white")
-        (menu-bar-lines . 0)))
+        (background-color  . "black")
+        (background-mode   . dark)
+        (border-color      . "black")
+        (cursor-color      . "yellow")
+        (foreground-color  . "white")
+        (mouse-color       . "white")))
 (custom-note-var-changed 'default-frame-alist)
 
 ;; When they do become visible, put them on the right.

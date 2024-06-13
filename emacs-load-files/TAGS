@@ -2937,21 +2937,21 @@ mon-default-loads.el,1027
 (defconst *mon-local-emacs-temp-dir*779,38456
 
 mon-keybindings.el,649
-(defgroup mon-keybindings 206,7360
-(defcustom *mon-keybindings-xrefs* 226,8465
-(defun mon-keybind-globally 256,9983
-(defun mon-keybind-dired-mode 389,15619
-(defun mon-keybind-completions 439,18278
-(defun mon-keybind-info-mode 462,19487
-(defun mon-keybind-w3m 546,22737
-(defun mon-keybind-emacs-lisp-mode 671,28601
-(defun mon-keybind-lisp-interaction-mode 731,31481
-(defun mon-keybind-slime-selector-helper 767,33363
-(defun mon-keybind-slime 784,34030
-(defun mon-keybind-slime-inspector 986,44483
-(defun mon-keybind-slime-fuzzy-completions 1024,46361
-(defun mon-conf-stamp-in-context 1058,47889
-(defun mon-keybind-conf-mode 1071,48432
+(defgroup mon-keybindings 207,7332
+(defcustom *mon-keybindings-xrefs* 227,8437
+(defun mon-keybind-globally 257,9955
+(defun mon-keybind-dired-mode 390,15591
+(defun mon-keybind-completions 440,18250
+(defun mon-keybind-info-mode 463,19459
+(defun mon-keybind-w3m 547,22709
+(defun mon-keybind-emacs-lisp-mode 672,28573
+(defun mon-keybind-lisp-interaction-mode 732,31453
+(defun mon-keybind-slime-selector-helper 768,33335
+(defun mon-keybind-slime 785,34002
+(defun mon-keybind-slime-inspector 987,44455
+(defun mon-keybind-slime-fuzzy-completions 1025,46333
+(defun mon-conf-stamp-in-context 1059,47861
+(defun mon-keybind-conf-mode 1072,48404
 
 mon-site-local-defaults.el,540
 (defun mon-string-wonkify 109,4246

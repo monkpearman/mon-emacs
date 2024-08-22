@@ -1,9 +1,10 @@
+
 ;;; :FILE-CREATED <Timestamp: #{2024-02-16} - by MON KEY>
 ;;; :FILE ~/.emacs
 ;;; ==============================
 ;;
 ;; The Bare bones installation requirements to get a sane Emacs up and running.
-;; use this sequence for  loading the emacs files:
+;; use this sequence for loading the emacs files:
 ;;
 ;; 1. ~/.emacs is loaded
 ;; 2. ~/Documents/HG-Repos/site-local-private.el
@@ -15,11 +16,11 @@
 ;; -> (mon-slime-setup-init)
 ;; -> (mon-define-common-lisp-style)
 ;; -> (mon-set-common-lisp-hspec-init)
-;; -> (require 'mon-utils) ;; !!!!!! :NOTE This is where evyerthing else of the mon-*.el packages gets loaded. !!!!!!
-;; 
+;; -> (require 'mon-utils)      ; !!!!!! :NOTE This is where evyerthing else of the mon-*.el packages gets loaded. !!!!!!
+;;
 ;; ==============================
-;; ‘C-x C-c’   Kill Emacs. Note, behaves specially if you are using Emacs as a server.  If
-;; you type it from a client frame, it closes the client connection.  *Note
+;; ‘C-x C-c’ will kill the current Emacs. :NOTE Behaves specially if using Emacs as a server.
+;;  If you type it from a client frame, it closes the client connection.
 ;;
 ;; (server-running-p)
 ;; server-process
@@ -40,7 +41,7 @@
 ;; (emacs-pid)
 ;; system-type
 ;; system-name
-;; (system-name) 
+;; (system-name)
 ;; (user-login-name)
 ;; (user-original-login-name (user-real-uid))
 ;;
@@ -71,7 +72,7 @@
 ;;
 ;; ==============================
 ;; Keybinding Interrogation for Darwin:
-;; 
+;;
 ;; mac-function-modifier ;; none
 ;; mac-control-modifier ;; control
 ;; mac-command-modifier ;; super
@@ -81,9 +82,11 @@
 ;; mac-right-option-modifier
 ;; mac-right-option-modifier
 ;;
-;; 
+;;
 ;; initial-buffer-choice
 ;;
+;; (native-comp-available-p)
+;; emacs-version
 ;; ==============================
 
 
@@ -115,8 +118,8 @@
 (unless (null tool-bar-mode) (tool-bar-mode -1))
 
 ;; Comment this out we need it at moment
-;; (unless (null menu-bar-mode) (menu-bar-mode -1)) 
-;; (menu-bar-mode t) 
+;; (unless (null menu-bar-mode) (menu-bar-mode -1))
+;; (menu-bar-mode t)
 
 (setq-default cursor-type '(bar . 3))
 (setq-default indent-tabs-mode nil)
@@ -138,7 +141,7 @@
 ;; :SOURCE https://www.reddit.com/r/emacs/comments/n68q16/fullscreen_and_makeframe_on_osx/
 (setq ns-use-native-fullscreen nil)
 
-
+
 ;; Begin setting up the local Emacs environment:
 (let* ((uname  (apply 'concat (mapcar 'char-to-string  '(109 111 110 107 112 101 97 114 109 97 110))))
        (user  (concat "USER=" uname))
@@ -150,10 +153,10 @@
     (cd (getenv "HOME"))
     (unless (equal (getenv "DEVHOME") (substitute-in-file-name "${HOME}/Documents/HG-Repos"))
       (setenv "DEVHOME" (substitute-in-file-name "${HOME}/Documents/HG-Repos")))
-    ;; On i3_i3_i3 GNU This was i the file ~/emacs-environment because xdg didn't pick it up otherwise, do it here instead.
+    ;; On i3_i3_i3 GNU This was the file ~/emacs-environment because xdg didn't pick it up otherwise, do it here instead.
     (let ((environs '(("MON_HOME"    .  "$HOME")
                       ("MON_EMACS_LOAD" . "${DEVHOME}/SDP_EMACS/emacs-load-files")
-                      ;; ("DEVHOME"     . "$MON_HOME/Documents/HG-Repos") ;; already set above keep here for reference
+                      ;; ("DEVHOME"     . "$MON_HOME/Documents/HG-Repos")              ; already set above keep here for reference
                       ;; ("LOCAL_MON"   .  "$MON_HOME/LOCAL-MON")
 	              ;; ("BIN_MON"     . "$LOCAL_MON/BIN-MON")
 	              ;; ("MON_SCRIPTS" . "$BIN_MON/mon-scripts")
@@ -163,25 +166,26 @@
 	              ;; ("DOC_MON"     . "$SHARE_MON/DOC-MON")
                       ;; :NOTE "INFO_MON" is a directory where we store site local info files like the ansicl info spec
                       ;; Don't add the trailing "/" we add it later in mon-default-start-loads with `file-name-as-directory'
-	              ("INFO_MON"    .  "$DEVHOME/SDP_INFO") 
-	              ;; ("MAN_MON"     . "$SHARE_MON/MAN-MON")
-                      ("SBCL_HOME"  . "opt/homebrew/lib/sbcl")
-                      ("SBCL_SOURCE_ROOT" . "/opt/homebrew/Cellar/sbcl/2.4.1/share/sbcl/src")
-	              ("QUICKLISP_HOME" . "${DEVHOME}/quicklisp")
+	              ("INFO_MON"           .  "$DEVHOME/SDP_INFO")
+	              ;; ("MAN_MON"         . "$SHARE_MON/MAN-MON")
+                      ("SBCL_HOME"          . "opt/homebrew/lib/sbcl")
+                      ("SBCL_SOURCE_ROOT"   . "/opt/homebrew/Cellar/sbcl/2.4.1/share/sbcl/src")
+	              ("QUICKLISP_HOME"     . "${DEVHOME}/quicklisp")
+                      ("CL_MON_CODE"        . "$DEVHOME/CL-MON-CODE") ;; (getenv "CL_MON_CODE")
                       ;; :NOTE on i3-i3 there was a directory "CL-repo-HG" we aren't using that anymore.
-                      ;; ("CL_MON_CODE" . "$DEVHOME/CL-repo-HG/CL-MON-CODE") 
-                      ;; (let ((env '("CL_MON_CODE" . "$DEVHOME/CL-MON-CODE"))) 
+                      ;; ("CL_MON_CODE" . "$DEVHOME/CL-repo-HG/CL-MON-CODE")
+                      ;; (let ((env '("CL_MON_CODE" . "$DEVHOME/CL-MON-CODE")))
                       ;;   (setenv (car env) (substitute-env-vars (cdr env))))
-                      ("CL_MON_CODE" . "$DEVHOME/CL-MON-CODE") ;; (getenv "CL_MON_CODE")
                       )))
       (mapcar #'(lambda (x) (setenv (car x) (substitute-env-vars (cdr x)))) environs))
-    ;; Push emacs-load-files onto the `load-path'. :NOTE This should be moved out if granularity requires it.
+    ;; Push emacs-load-files onto the `load-path'.
+    ;; :NOTE This should be moved out if granularity requires it.
     (add-to-list 'load-path (substitute-env-vars "${MON_EMACS_LOAD}"))))
 
 
 ;;; ==============================
-;; On i3_i3_i3 GNU This was i the file ~/emacs-environment because xdg didn't pick it up otherwise
-;; keep it here for future reference in case it's neeeded
+;; On i3_i3_i3 GNU This was i the file ~/emacs-environment because xdg didn't
+;; pick it up otherwise keep it here for future reference in case it's neeeded
 ;; (let ((environs '(("EMACSCLIENT" . "emacsclient -c")
 ;; 	          ("EDITOR"      . "$EMACSCLIENT")
 ;; 	          ("VISUAL"      . "$EMACSCLIENT")
@@ -204,7 +208,7 @@
 
 ;; :NOTE Following defaults are loaded after whatever is specified by the X
 ;; resources for the initial frame. IOW these only become active _during_ Emacs'
-;; user specific initialization e.g. _after_ the creation of the initial frame. 
+;; user specific initialization e.g. _after_ the creation of the initial frame.
 ;; Inpsect documentation of `initial-frame-alist' for details.
 ;; :SEE struct `frame_parm_table' :FILE src/frame.c
 ;; :FILE src/xsettings.c src/xfns.c
@@ -213,16 +217,15 @@
 
 ;; `window-system-default-frame-alist'
 (setq window-system-default-frame-alist
-      '((x   (menu-bar-lines   . 1)     ; (menu-bar-lines . 0)
+      '((x   (menu-bar-lines   . 1)
              (tool-bar-lines   . 0))
-        (nil (menu-bar-lines   . 1)     ;(menu-bar-lines . 0)
+        (nil (menu-bar-lines   . 1)
              (tool-bar-lines   . 0))))
 (custom-note-var-changed 'window-system-default-frame-alist)
 
 ;; `default-frame-alist'
 (setq default-frame-alist
-      '(
-        (menu-bar-lines    . 1) ; (menu-bar-lines    . 0)
+      '((menu-bar-lines    . 1)
         (tool-bar-lines    . 0)
         ;; (vertical-scroll-bar . nil)
         (vertical-scroll-bars)
@@ -250,7 +253,7 @@
 ;; (global-set-key (kbd "≈") 'execute-extended-command) ; Replace ≈ with whatever your option-x produces
 
 ;;; ==============================
-;; :NOTE C-M-q locks the screen, this maps to Conntrol Command Q which the Darwin GUI eats first. 
+;; :NOTE C-M-q locks the screen, this maps to Conntrol Command Q which the Darwin GUI eats first.
 ;; How to inhibit or get around this???
 ;; (key-binding (kbd "C-M-q")) ;; -> `indent-pp-sexp'
 
@@ -259,7 +262,7 @@
 (global-set-key (kbd "<C-backspace>") 'backward-kill-word)
 (global-set-key (kbd "<S-backspace>") (kbd "DEL"))
 (global-set-key "\C-cflr"             'fill-region)
-(global-set-key "\C-cvm"              'view-mode)                        
+(global-set-key "\C-cvm"              'view-mode)
 (global-set-key "\C-c\M-/"            'hippie-expand)
 ;; (global-set-key "\M-n"             'mon-scroll-up-in-place)
 ;; (global-set-key "\M-p"             'mon-scroll-down-in-place)
@@ -268,20 +271,23 @@
 
 ;;; ==============================
 ;; Define this early so we can read the info files for the local Environment with sanity.
+;; :NOTE this may be causing variable `Info-directory-list' and `Info-default-directory-list'
+;; to behave funny later down the line. Verify.
 (defun mon-info-mode-hook ()
   "Function executed on the `ido-minibuffer-setup-hook' which adds bindings to
 `Info-mode-map' for `Info-mode'.
 :SEE-ALSO `mon-ido-completion-map-hook', `mon-post-load-hooks'"
-  ;; (define-key Info-mode-map "\M-n" 'mon-scroll-up-in-place) 
+  ;; (define-key Info-mode-map "\M-n" 'mon-scroll-up-in-place)
   ;; :NOTE follwing synch w/ MON binding for `help-go-forward' and `help-go-back'
   ;; Move back in history to the last node you were at.
     (define-key Info-mode-map "\C-c\C-b" 'Info-history-back)
   ;; Move forward in history to the node you returned from after using l.
     (define-key Info-mode-map "\C-c\C-f" 'Info-history-forward)
-    (define-key Info-mode-map "\C-cia" 'info-apropos))
-    
-(add-hook 'Info-mode-hook 'mon-info-mode-hook) 
+    (define-key Info-mode-map "\C-cia"   'info-apropos))
 
+(add-hook 'Info-mode-hook 'mon-info-mode-hook)
+
+
 ;;; ==============================
 (defun mon-ido-completion-map-hook ()
   "Function executed on the `ido-minibuffer-setup-hook' which adds bindings to
@@ -305,14 +311,14 @@
 
 ;;; ==============================
 ;; From mon-default-start-loads.el functions `mon-set-split-window-init'
-(custom-set-variables 
+(custom-set-variables
     '(split-width-threshold  180 t nil ":DEFAULT 160")
     '(split-height-threshold 50  t nil ":DEFAULT 80")
     '(even-window-heights    nil t nil ":DEFAULT t"))
 
 ;;; ==============================
 ;; From `mon-set-color-themes-init'
-(custom-set-variables 
+(custom-set-variables
       '(font-lock-verbose (1+ (* 8 1024)) t nil ":DEFAULT 0")
       '(global-font-lock-mode t)
       '(font-lock-maximum-decoration t))
@@ -329,6 +335,7 @@
 
 ;;; ==============================
 ;; (getenv "MON_EMACS_LOAD")
+;;
 ;; uncomment to load everything at inti.
 ;; (let* ((melf (getenv "MON_EMACS_LOAD"))
 ;;        ;; (if-exists (and (stringp melf)
@@ -358,22 +365,47 @@
 
 ;;; ==============================
 ;;; :NOTE The following three files are loaded in succession to bring up a sane Emacsen on Mon systems.
-;;; :FILE site-local-private.el defines the following global variables which are used to pull private and
-;;; site-specific configs that we don't necessarily want to share publically or
-;;; which are otherwise irrelevant to others:
-;;; `*IS-MON-OBARRAY*'  <- tells us if this is our system. we intern symbols here instead of into the global obarray
-;;; `*mon-emacsd*' <- Alist to encapusulate common site local and default system paths
+;;; :FILE site-local-private.el defines the following global variables which are
+;;; used to pull private and site-specific configs that we don't necessarily
+;;; want to share publically or which are otherwise irrelevant to others:
+;;; `*IS-MON-OBARRAY*'      <- says if this is our system. We intern symbols here instead of into the global obarray
+;;; `*mon-emacsd*'          <- alist to encapusulate common site local and default system paths
 ;;; `*mon-misc-path-alist*' <- alist of miscellaneous paths not available on all MON systems
-;;; `*MON-NAME*' <- List of MON nameform representations needed with various `mon-*' functions.
-;;; `*MON-ORG-NAME*' <- "List mapping key (integer) to values (strings) either an organization or URL.
-;;;  `*mon-lisp-safe-local-variable-values*' <- List of `safe-local-variable-values' appearing in Common Lisp files.
-;;; 
+;;; `*MON-NAME*'            <- list of MON nameform representations needed with various `mon-*' functions.
+;;; `*MON-ORG-NAME*'        <- list mapping key (integer) to values (strings) either an organization or URL.
+;;;  `*mon-lisp-safe-local-variable-values*' <- list of `safe-local-variable-values' appearing in Common Lisp files.
+;;;
 ;;; `mon-user-name-conditionals'   <- interrogates the current environment to determine if it is a MON system.
 ;;; `mon-system-type-conditionals' <- interrogates the current environment to determine which type of MON system we're on.
 ;;; `mon-gnu-system-conditionals'  <- helps setup the environment for a GNU based MON system.
 ;;;
+;;; For additional discussion of how these files configure the remainder of the MON system configs
 ;;; :SEE the DESCRIPTION section at header of :FILE mon-default-loads.el and :FILE mon-default-start-loads.el
-;;; for additional discussion of how these files configure the remainder of the MON system configs.
+
+
+
+;; :NOTE inspect value of `register-alist'. Consider just setting value for that
+;; variable here instead of using `set-register'.
+(set-register (string-to-char "e")
+              `(file . ,(substitute-env-vars "${DEVHOME}/SDP_EMACS/emacs-load-files/")))
+(set-register (string-to-char "n")
+              `(file . ,(substitute-env-vars "${DEVHOME}/SDP_EMACS/emacs-load-files/naf-mode/")))
+;; quicklisp dists
+(set-register (string-to-char "q")
+              `(file . ,(substitute-env-vars "${DEVHOME}/quicklisp/dists/quicklisp/software/")))
+
+;; QL Fasls
+(set-register (string-to-char "Q")
+              ;; :TODO set and pickup value of current SBCL version in the environment and build these paths from components instead of hardwiring this.
+              `(file . ,(substitute-env-vars "${HOME}/.cache/common-lisp/sbcl-2.4.6-macosx-arm64/Users/monkpearman/Documents/HG-Repos/quicklisp/dists/quicklisp/software/")))
+;; CL-MON-CODE
+(set-register (string-to-char "m")
+              `(file . ,(substitute-env-vars "${DEVHOME}/CL-MON-CODE/")))
+;; MON Fasls
+(set-register (string-to-char "M")
+              ;; :TODO set and pickup value of current SBCL version in the environment and build these paths from components instead of hardwiring this.
+              `(file . ,(substitute-env-vars "${HOME}/.cache/common-lisp/sbcl-2.4.6-macosx-arm64/Users/monkpearman/Documents/HG-Repos/CL-MON-CODE/")))
+
 
 (load "site-local-private.el")
 (load "mon-default-loads.el")

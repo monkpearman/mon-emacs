@@ -1,5 +1,5 @@
 ;;; mon-env-proc-utils.el --- procedures for interacting w/ process environment
-;; -*- mode: EMACS-LISP; -*-
+;; -*- mode: EMACS-LISP; -*->
 
 ;;; ================================================================
 ;; Copyright © 2010-2024 MON KEY. All rights reserved.
@@ -47,6 +47,10 @@
 ;; `mon-env-proc-utils',
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
+;; `mon-get-system-process'         -> `mon-get-process'
+;; `mon-get-system-process-list'    ->  `mon-get-sys-proc-list'
+;; `mon-insert-system-process-list' -> `mon-insert-sys-proc-list'
+;; `mon-get-system-process-w-name'  ->  `mon-get-proc-w-name'
 ;;
 ;; DEPRECATED:
 ;;
@@ -230,7 +234,7 @@ like `mon-get-env-vars-strings' but returns symbols instead of strings.\n
                 (intern (substring mgevsym-L-1 (match-beginning 0) (match-end 1)) mgevsym-obarray)))
           mgevsym-proc-env)
     ;; Reuse local var mgevsym-proc-env to store symbols accumulated to mgevsym-obarray
-    (setq mgevsym-proc-env)
+    (setq mgevsym-proc-env nil)
     (mapatoms #'(lambda (mgevsym-L-2)
                   (unless (null mgevsym-L-2)
                     (push mgevsym-L-2 mgevsym-proc-env)))
@@ -314,18 +318,34 @@ When called-interactively pretty-print return value in buffer named
                       ;; MON-LOCAL-VARS                          
                       (when (bound-and-true-p *mon-misc-path-alist*)
                         (cadr (assq 'the-emacs-vars *mon-misc-path-alist*)))
-                      (dl-do* ((i '( ;; :LENNART-EMACS-W32-VARS
-                                 EMACSCLIENT_STARTING_SERVER EMACS_SERVER_FILE
-                                 ;; :GNUS-MAIL
-                                 ;; MH NNTPSERVER REPLYTO SAVEDIR SMTPSERVER  MAIL
-                                 ;; ORGANIZATION VERSION_CONTROL HISTFILE EMAIL EMACS_UNIBYTE CDPATH
-                                 ;; :STANDARD-EMACS-VARS 
-                                 EMACS_DIR INFOPATH ESHELL INCPATH
-                                 EMACSLOADPATH EMACSDATA EMACSPATH EMACSDOC SHELL TERM)   i)
-                            (j (pop i) (pop i))
-                            (k))
+                      (cl-do* ((i '( ;; :LENNART-EMACS-W32-VARS
+                                    EMACSCLIENT_STARTING_SERVER
+                                    EMACS_SERVER_FILE
+                                    ;; :GNUS-MAIL
+                                    ;; MH NNTPSERVER REPLYTO SAVEDIR SMTPSERVER  MAIL
+                                    ;; ORGANIZATION VERSION_CONTROL HISTFILE EMAIL EMACS_UNIBYTE CDPATH
+                                    ;; :STANDARD-EMACS-VARS 
+                                    EMACS_DIR
+                                    INFOPATH
+                                    INCPATH
+                                    EMACSLOADPATH
+                                    EMACSDATA    
+                                    EMACSPATH
+                                    PATH                                    
+                                    EMACSDOC
+                                    ESHELL
+                                    SHELL
+                                    TERM
+                                    DBUS_SESSION_BUS_ADDRESS 
+                                    HOME
+                                    INFOPATH
+                                    LOGNAME
+                                    )   i)
+                               (j (pop i) (pop i))
+                               (k))
                           ((null j) (nreverse k))
-                        (when (getenv (format "%s" j))(push j k))))
+                        (when (getenv (format "%s" j))
+                          (push j k))))
                      nil t))
         gthr-env-vars)
     (dolist (mgeve-D-1 mgeve-vars (setq gthr-env-vars (nreverse gthr-env-vars)))
@@ -367,6 +387,7 @@ When called-interactively pretty-print return value in buffer named
   "Return a full lisp list of current system-proceses.\n
 When called-interactively return results in buffer \"*MON-GET-SYS-PROCESSES*\".\n
 :EXAMPLE:\n\n(mon-get-sys-proc-list)\n\n\(mon-get-sys-proc-list t\)\n
+:ALIASED-BY `mon-get-system-process-list'.\n
 :SEE-ALSO `mon-get-process',`mon-insert-sys-proc-list',
 `mon-help-process-functions', `mon-get-env-vars-strings',
 `mon-get-env-vars-symbols', `mon-get-env-vars-emacs', `mon-get-system-specs',
@@ -391,6 +412,7 @@ When called-interactively return results in buffer \"*MON-GET-SYS-PROCESSES*\".\
 (defun mon-insert-sys-proc-list ()
   "Insert a full lisp list of current system-proceses at point.
 Does not move point.\n
+:ALIASED-BY `mon-insert-system-process-list'.\n
 :SEE-ALSO `mon-get-process', `mon-get-sys-proc-list', 
 `mon-insert-sys-proc-list', `emacs-pid',
 `mon-get-env-vars-strings', `mon-get-env-vars-symbols'
@@ -415,6 +437,7 @@ When multiple commands of the same name exists return value is sorted youngest
 process first.\n
 :EXAMPLE\n\n\(mon-get-proc-w-name \"emacs\"\)\n
 :NOTE On w32 it is not required give the .exe suffix.\n
+:ALIASED-BY `mon-get-system-process-w-name'.\n
 :SEE-ALSO `mon-get-process', `mon-get-sys-proc-list', `mon-get-sys-proc-list',
 `mon-help-process-functions', `list-system-processes'.\n▶▶▶"
   (eval-when-compile (require 'time-date))
@@ -443,7 +466,7 @@ process first.\n
 ;;; :TEST-ME (mon-get-proc-w-name "svchost")
 ;;; :TEST-ME (mon-get-proc-w-name "bubba")
 ;;; :TEST-ME (mon-get-proc-w-name (invocation-name))
-                               
+
 ;;; ==============================
 ;;; :NOTE Built to test for "mysql" command before looking for a comint.
 ;;;       MON recently found the :FILE proced.el 
@@ -459,6 +482,8 @@ this function can match multiple processes with identical invocation commands.\n
 :EXAMPLE\n\n\(if IS-W32-P 
     \(mon-get-process \(concat \(invocation-name\) \".exe\"\)\)
     \(mon-get-process \(invocation-name\)\)\)\n
+\(mon-get-process \"Finder\"\) ; Darwin\n
+:ALIASED-BY `mon-get-system-process'.\n
 :SEE-ALSO `mon-insert-sys-proc-list', `mon-get-sys-proc-list',
 `mon-help-process-functions'.\n▶▶▶"
   (interactive)
@@ -466,7 +491,7 @@ this function can match multiple processes with identical invocation commands.\n
          (mpg-prc-lst (list-system-processes)) ;;(nreverse (list-system-processes)))
          (mgp-map-procs 
           #'(lambda (mgp-L-1) 
-              (flet ((cl--fi (cl-pred cl-list &rest cl-keys) ;; `find-if'
+              (cl-flet ((cl--fi (cl-pred cl-list &rest cl-keys) ;; `find-if'
                              (apply 'find nil cl-list :if cl-pred cl-keys)))
                 (let ((mgp-L1-lcl-mtch 
                        (cl--fi  #'(lambda (mgp-L1-flcl) 
@@ -474,7 +499,6 @@ this function can match multiple processes with identical invocation commands.\n
                                          (equal (cdr mgp-L1-flcl) 
                                                 (if proc-comm 
                                                     proc-comm 
-                                                  ;;(invocation-name)))))
                                                   invocation-name))))
                                 (process-attributes mgp-L-1))))
                   (when mgp-L1-lcl-mtch 

@@ -340,7 +340,15 @@
 (unless (and (intern-soft "set-register-with-region")
              (fboundp 'set-register-with-region))
   (defalias 'set-register-with-region 'copy-to-register))
-
+;;
+(unless (and (intern-soft "region-to-register")
+             (fboundp 'region-to-register))
+  (defalias 'region-to-register 'copy-to-register))
+;;
+(unless (and (intern-soft "register-set-region")
+             (fboundp 'register-set-region))
+  (defalias 'register-set-region 'copy-to-register))
+;;
 (unless (and (intern-soft "Buffer-menu-copy-file-path")
              (fboundp 'Buffer-menu-copy-file-path))
   (defalias 'Buffer-menu-copy-file-path 'mon-copy-file-path))
@@ -373,6 +381,28 @@
              (fboundp 'describe-function-binding))
   (defalias 'describe-function-binding  'where-is))
 
+;; mon-prefixed
+(unless (and (intern-soft "mon-set-register-with-region")
+             (fboundp 'mon-set-register-with-region))
+  (defalias 'mon-set-register-with-region 'copy-to-register))
+
+
+;;; ==============================
+;;; mon-empty-registers.el
+;;; ==============================
+
+(unless (and (intern-soft "mon-register-query-replace-register1<-reg2" obarray)
+             (fboundp 'mon-register-query-replace-register1<-reg2))
+(defalias 'mon-register-query-replace-register1<-reg2
+  'mon-query-replace-register1<-reg2))
+;;
+(unless (and (intern-soft "mon-register-reset" obarray)
+             (fboundp 'mon-register-reset))
+(defalias 'mon-register-reset 'mon-reset-registers))
+;;
+(unless (and (intern-soft "mon-clear-registers" obarray)
+             (fboundp 'mon-clear-registers))
+(defalias 'mon-clear-registers 'mon-reset-registers))
 
 
 ;;
@@ -421,7 +451,6 @@
 (defalias 'mon-replace-char-in-region 'subst-char-in-region))
 ;;
 ;;; ==============================
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T17:16:18-04:00Z}#{10381} - by MON KEY>
 (unless (and (intern-soft "mon-delq-alist" obarray)
              (fboundp 'mon-delq-alist))
@@ -459,7 +488,6 @@
 ;;; ==============================
 
 ;;; ==============================
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T16:21:29-04:00Z}#{10381} - by MON KEY>
 ;;; <PREFIX>-<QUALIFIED> <PREFIX>-<CORE-SYMBOL>
 (unless (and (intern-soft "mon-skip-whitespace" obarray)
@@ -480,9 +508,29 @@ Skips over following chars:\n
 :SEE-ALSO `following-char', `char-after', `mon-cln-BIG-whitespace',
 `mon-cln-trail-whitespace', `mon-cln-whitespace', `mon-insert-whitespace',
 `mon-kill-whitespace', `*mon-whitespace-chars*', `*regexp-whitespace-chars*'.\n▶▶▶"))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-21T19:34:17-04:00Z}#{24343} - by MON KEY>
+(defun mon-show-trailing-whitespace ()
+  "Toggle `buffer-local-value' for variable `show-trailing-whitespace' if it
+satisfies `local-variable-if-set-p', else do nothing successfully.\n
+See Info node `(emacs)Useless Whitespace'\n
+:SEE-ALSO `mon-cln-trail-whitespace', `mon-skip-whitespace', `mon-clean-whitespace'
+`delete-trailing-whitespace', `global-whitespace-toggle-options' .\n▶▶▶"
+  (interactive)
+  (if (local-variable-if-set-p 'show-trailing-whitespace (current-buffer))
+      (if (buffer-local-value 'show-trailing-whitespace (current-buffer))
+          (progn (setq show-trailing-whitespace nil)
+                 (message "Current buffer Local value `show-trailing-whitespace' now nil"))
+        (setq show-trailing-whitespace t)
+        (message "Current buffer Local value `show-trailing-whitespace' now t"))))
+;;
+(unless (and (intern-soft "show-trailing-whitespace" obarray)
+             (fboundp 'show-trailing-whitespace))
+  (defalias  'show-trailing-whitespace 'mon-show-trailing-whitespace))
+
 ;;
 ;;; ==============================
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T16:20:53-04:00Z}#{10381} - by MON KEY>
 (unless (and (intern-soft "mon-save-restricton" obarray)
              (fboundp (intern-soft "mon-save-restricton" obarray)))
@@ -509,7 +557,6 @@ This uses 'sort so the sorting is destructive.
 :SEE-ALSO .\n▶▶▶"))
 ;;
 ;;; ==============================
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-23T11:30:09-04:00Z}#{10384} - by MON KEY>
 (when (and (intern-soft "ido-chop" obarray) (fboundp 'ido-chop))
   (unless (and (intern-soft "mon-list-chop" obarray) 
@@ -1106,6 +1153,10 @@ If char is not a character, return nil.\n
 (unless (and (intern-soft "mon-region-append-to-register" obarray) 
              (fboundp 'mon-region-append-to-register))
 (defalias 'mon-region-append-to-register 'mon-append-to-register))
+
+(unless (and (intern-soft "mon-register-append-region" obarray) 
+             (fboundp 'mon-register-append-region))
+(defalias 'mon-register-append-region 'mon-append-to-register))
 ;;
 (unless (and (intern-soft "mon-append-next-kill" obarray)
              (fboundp 'mon-append-next-kill))
@@ -1118,10 +1169,22 @@ If char is not a character, return nil.\n
 (unless (and (intern-soft "mon-read-keys-last-event" obarray)
              (fboundp 'mon-read-keys-last-event))
 (defalias 'mon-read-keys-last-event 'mon-test-keypresses))
-;; 
+;;
+(unless (and (intern-soft "mon-key-catch-meta" obarray)
+             (fboundp 'mon-key-catch-meta))
+(defalias 'mon-key-catch-meta 'mon-catch-meta-key))
+;;
+(unless (and (intern-soft "mon-key-decode-meta" obarray)
+             (fboundp 'mon-key-decode-meta))
+(defalias 'mon-key-decode-meta 'mon-decode-meta-key-event))
+;;
 (unless (and (intern-soft "mon-string-from-keyboard-input" obarray)
              (fboundp 'mon-string-from-keyboard-input))
 (defalias 'mon-string-from-keyboard-input 'mon-read-keys-as-string))
+;;
+(unless (and (intern-soft "mon-key-read-as-string" obarray)
+             (fboundp 'mon-key-read-as-string))
+(defalias 'mon-key-read-as-string 'mon-read-keys-as-string))
 
 ;;; ==============================
 ;;; mon-event-utils.el◀◀◀
@@ -1279,6 +1342,21 @@ If char is not a character, return nil.\n
 ;;; ==============================
 ;;; mon-env-proc-utils.el▶▶▶
 ;;; ==============================
+(unless (and (intern-soft "mon-get-system-process" obarray) 
+             (fboundp 'mon-get-system-process))
+(defalias 'mon-get-system-process 'mon-get-process))
+
+(unless (and (intern-soft "mon-get-system-process-list" obarray) 
+             (fboundp 'mon-get-system-process-list))
+(defalias 'mon-get-system-process-list 'mon-get-sys-proc-list))
+
+(unless (and (intern-soft "mon-insert-system-process-list" obarray) 
+             (fboundp 'mon-insert-system-process-list))
+(defalias 'mon-insert-system-process-list 'mon-insert-sys-proc-list))
+
+(unless (and (intern-soft "mon-get-system-process-w-name" obarray) 
+             (fboundp 'mon-get-system-process-w-name))
+(defalias 'mon-get-system-process-w-name  'mon-get-proc-w-name))
 
 ;;; ==============================
 ;;; mon-env-proc-utils.el◀◀◀
@@ -1468,6 +1546,11 @@ If char is not a character, return nil.\n
              (fboundp 'mon-directory-get-size))
 (defalias 'mon-directory-get-size 'mon-get-dir-size))
 ;;
+(unless (and (intern-soft "mon-get-directory-size" obarray)
+             (fboundp 'mon-get-directory-size))
+(defalias 'mon-get-directory-size 'mon-get-dir-size))
+
+;;
 (unless (and (intern-soft "mon-buffer-get-new-w-stamp" obarray) 
              (fboundp 'mon-buffer-get-new-w-stamp)) 
 (defalias 'mon-buffer-get-new-w-stamp 'mon-get-new-buffer-w-stamp))
@@ -1476,9 +1559,17 @@ If char is not a character, return nil.\n
              (fboundp 'mon-dir-name-absolute))
 (defalias 'mon-dir-name-absolute 'mon-get-dir-name-absolute))
 ;;
+(unless (and (intern-soft "mon-directory-name-absolute" obarray)
+             (fboundp 'mon-directory-name-absolute))
+(defalias 'mon-directory-name-absolute 'mon-get-dir-name-absolute))
+;;
 (unless (and (intern-soft "mon-dir-name-relative-w-absolute" obarray) 
              (fboundp 'mon-dir-name-relative-w-absolute))
 (defalias 'mon-dir-name-relative-w-absolute 'mon-get-relative-w-absolute))
+;;
+(unless (and (intern-soft "mon-directory-name-relative-w-absolute" obarray) 
+             (fboundp 'mon-directory-name-relative-w-absolute))
+(defalias 'mon-directory-name-relative-w-absolute 'mon-get-relative-w-absolute))
 ;;
 (unless (and (intern-soft "mon-file-copy-in-sub-dirs" obarray) 
              (fboundp 'mon-file-copy-in-sub-dirs))
@@ -1945,7 +2036,87 @@ Conditional upon `IS-BUG-P' returning non-nil.\n
 ;;; ==============================
 ;;; mon-replacement-utils.el▶▶▶
 ;;; ==============================
+
+(unless (and (intern-soft "mon-translate-string-in-table" obarray)
+             (fboundp 'mon-translate-string-in-table))
+  (defalias 'mon-translate-string-in-table 'mon-transmogrify))
 ;;
+(unless (and (intern-soft "mon-translate-string-canonical" obarray)
+             (fboundp 'mon-translate-string-canonical))
+(defalias 'mon-translate-string-canonical 'mon-string-canonical))
+;;
+(unless (and (intern-soft "mon-canonical-string" obarray)
+             (fboundp 'mon-string-canonical))
+(defalias 'mon-canonical-string 'mon-string-canonical))
+;;
+(unless (and (intern-soft "mon-replace-string-pairs-region-no-props" obarray)
+             (fboundp 'mon-replace-string-pairs-region-no-props))
+(defalias 'mon-replace-string-pairs-region-no-props 'replace-string-pairs-region-no-props))
+;;
+(unless (and (intern-soft "mon-clean-csv-fields" obarray)
+             (fboundp 'mon-clean-csv-fields))
+(defalias 'mon-clean-csv-fields 'mon-cln-csv-fields))
+;;
+(unless (and (intern-soft "mon-clean-mail-headers" obarray)
+             (fboundp 'mon-clean-mail-headers))
+(defalias 'mon-clean-mail-headers 'mon-cln-mail-headers))
+
+(unless (and (intern-soft "mon-clean-file-name-string" obarray)
+             (fboundp 'mon-clean-file-name-string))
+(defalias 'mon-clean-file-name-string 'mon-cln-file-name-string))
+
+(unless (and (intern-soft "mon-clean-html-chars" obarray)
+             (fboundp 'mon-clean-html-chars))
+(defalias 'mon-clean-html-chars 'mon-cln-html-chars))
+;;
+(unless (and (intern-soft "mon-clean-html-tags" obarray)
+             (fboundp 'mon-clean-html-tags))
+(defalias 'mon-clean-html-tags 'mon-cln-html-tags))
+
+(unless (and (intern-soft "mon-clean-xml-escapes" obarray)
+             (fboundp 'mon-clean-xml-escapes))
+(defalias 'mon-clean-xml-escapes 'mon-cln-xml-escapes))
+;;
+(unless (and (intern-soft "mon-clean-whitespace" obarray)
+             (fboundp 'mon-clean-whitespace))
+(defalias 'mon-clean-whitespace 'mon-cln-whitespace))
+;;
+(unless (and (intern-soft "mon-clean-trail-whitespace" obarray)
+             (fboundp 'mon-clean-trail-whitespace))
+(defalias 'mon-clean-trail-whitespace 'mon-cln-trail-whitespace))
+;;
+(unless (and (intern-soft "mon-clean-blank-lines" obarray)
+             (fboundp 'mon-clean-blank-lines))
+(defalias 'mon-clean-blank-lines 'mon-cln-blank-lines))
+;;
+(unless (and (intern-soft "mon-clean-spc-tab-eol" obarray)
+             (fboundp 'mon-clean-spc-tab-eol))
+(defalias 'mon-clean-spc-tab-eol 'mon-cln-spc-tab-eol))
+;;
+(unless (and (intern-soft "mon-clean-spc-tab-at-eol-in-region" obarray)
+             (fboundp 'mon-clean-spc-tab-at-eol-in-region))
+(defalias 'mon-clean-spc-tab-at-eol-in-region 'mon-cln-spc-tab-at-eol-in-region))
+;;
+(unless (and (intern-soft "mon-clean-uniq-lines" obarray)
+             (fboundp 'mon-clean-uniq-lines))
+(defalias 'mon-clean-uniq-lines 'mon-cln-uniq-lines))
+;;
+(unless (and (intern-soft "mon-clean-piped-list" obarray)
+             (fboundp 'mon-clean-piped-list))
+(defalias 'mon-clean-piped-list 'mon-cln-piped-list))
+;;
+(unless (and (intern-soft "mon-clean-freenode-log" obarray)
+             (fboundp 'mon-clean-freenode-log))
+(defalias 'mon-clean-freenode-log 'mon-cln-freenode-log))
+;;
+(unless (and (intern-soft "mon-clean-irc-log-buffer" obarray)
+             (fboundp 'mon-clean-irc-log-buffer))
+(defalias 'mon-clean-irc-log-buffer 'mon-cln-irc-log-buffer))
+;;
+(unless (and (intern-soft "mon-replace-slash-backslash" obarray)
+             (fboundp 'mon-replace-slash-backslash))
+  (defalias 'mon-replace-slash-backslash 'mon-exchange-slash-and-backslash))
+
 ;;; ==============================
 ;;; :NOTE MON always forget to use these functions, lets get reminded!
 ;;; :CREATED <Timestamp: Wednesday May 13, 2009 @ 01:33.46 PM - by MON KEY>
@@ -1974,9 +2145,6 @@ Conditional upon `IS-BUG-P' returning non-nil.\n
 ;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
 ;;; ==============================
 
-(unless (and (intern-soft "mon-canonical-string" obarray)
-             (fboundp 'mon-string-canonical))
-(defalias 'mon-canonical-string 'mon-string-canonical))
 ;;
 (unless (and (intern-soft "mon-map-regexp-matches" obarray)
              (fboundp 'mon-map-regexp-matches))
@@ -2201,7 +2369,7 @@ Conditional upon `IS-BUG-P' returning non-nil.\n
 (unless (and (intern-soft "slime-copy-presentation-to-kill-ring-no-props" obarray)
               (fboundp 'slime-copy-presentation-to-kill-ring-no-props))
 (defalias 'slime-copy-presentation-to-kill-ring-no-props 'mon-slime-copy-presentation-to-kill-ring-no-props))
- ) ;;featurep
+ ) ;;featurep slime-presentations
 ) ;; when slime
 
 ;;; ==============================

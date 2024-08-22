@@ -405,7 +405,6 @@ at point. Does not move point.\n
 ;;; :TEST-ME (mon-line-previous-duplicate t t)                
 ;;; :TEST-ME (mon-line-previous-duplicate t t)                
 
-
 ;;; ==============================
 (defun mon-line-count-region (start end)
   "Return a mini-buffer message with regions' number of lines and characters.\n
@@ -413,7 +412,7 @@ at point. Does not move point.\n
 `mon-word-count-region', `mon-word-count-analysis',
 `mon-word-count-occurrences'.\n▶▶▶"
   (interactive "r")
-  (count-lines-region start end))
+  (count-lines start end))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-01T11:05:33-05:00Z}#{10091} - by MON KEY>
@@ -589,7 +588,7 @@ More stringification here\n◀\n
             (insert mlsr-lns-qtd)
             (mon-g2be -1)
             (while (search-forward-regexp "^\\(.*\\)$" nil t)
-              (replace-match "\"\\1\\\\n\"" t)) ;; Do not alter case.
+              0(replace-match "\"\\1\\\\n\"" t)) ;; Do not alter case.
             (mon-buffer-sub-no-prop)))
     ;; (unwind-protect
     (if (or insrtp intrp)
@@ -612,7 +611,6 @@ More stringification here\n◀\n
 ;; |More stringification here
 ;; |◀
 ;; `----
-
 
 ;;; ==============================
 ;;; :PREFIX "mlsqr-"
@@ -736,7 +734,6 @@ call-next-method' &rest replacement-args\n◀\n
     (if (or insrtp intrp)
         (save-excursion (delete-region start end) (insert mlsbqsb-rtn))
         mlsbqsb-rtn)))
-
 
 ;;; ==============================
 ;;; :PREFIX "mlspb-"
@@ -1051,9 +1048,6 @@ Useful for building piped lists in sections of `naf-mode' .naf files including:
   (when intrp (message 
                (concat ":FUNCTION `mon-line-pipe-lines' "
                        "-- finished piping that list"))))
-;;
-;;(defalias ' ' )
-
 
 ;;; ==============================
 ;;; :CHANGESET 2410
@@ -1300,11 +1294,12 @@ Does not move point.\n
 ;;; :CREATED <Timestamp: #{2009-09-23T20:12:26-04:00Z}#{09394} - by MON KEY>
 (defun mon-line-string-unrotate-namestrings (start end &optional as-strings insrtp intrp)
   "Unrotate namestrings in region.\n
-Namestrings are formatted name per line e.g. `Lastname (Firstname Middlenames)'
-Return `Firstname Middlename Lastname'
-When INSRTP is non-nil or Called-interactively insert rotated names at point.
-Does not move point. When AS-STRINGS is non-nil return rotated names as strings.\n
-:EXAMPLE\n\(mon-line-string-unrotate-namestrings 
+Namestrings are formatted name per line e.g. `Lastname (Firstname Middlenames)'\n
+Return `Firstname Middlename Lastname'\n
+When INSRTP is non-nil, or when called interactively, insert rotated names at point.
+Does not move point.\n
+When AS-STRINGS is non-nil return rotated names as strings.\n
+:EXAMPLE\n\n\(mon-line-string-unrotate-namestrings 
    (1+ \(search-forward-regexp \"▶\"\)) \(- \(search-forward-regexp \"◀\"\) 2\)\)\n
 ▶\nKennan (George Frost)\nAlbert (Lukács János)\nAchesonn (Dean Gooderham)
 Harriman (William Averell)\nMcCloy (John Jay)\nBohlen (Charles Eustis)
@@ -1460,7 +1455,7 @@ When called-interactively with prefix-arg prompt for a char to use.\n
         (setcdr mlsicu-ln-spec (1+ (cdr mlsicu-ln-spec))))
       (open-line 1)
       (forward-char 1)
-      (insert (make-string ;;(- (1- (cdr mlsicu-ln-spec)) (car mlsicu-ln-spec)) 
+      (insert (make-string
                (- (1- (cdr mlsicu-ln-spec)) (car mlsicu-ln-spec))
                (if w-char                              
                    (if (stringp w-char)

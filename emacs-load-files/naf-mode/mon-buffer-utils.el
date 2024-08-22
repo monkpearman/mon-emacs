@@ -262,7 +262,7 @@ When optional arg NO-GO is non-nil return a buffer position
 \(mon-g2be \(set-marker \(make-marker\) \(buffer-end 1\)\) t\)
 \(mon-g2be nil t\)\n
 \(mon-g2be t t\)\n
-;; Following move point:
+;; Following move point:\n
 \(mon-g2be\)\n
 \(mon-g2be :min)\n
 \(mon-g2be -1\)\n
@@ -383,18 +383,19 @@ Following will fail:\n
   "Helper function for `mon-buffer-sub-no-prop'.\n
 Checks that args BFR-BEG BFR-END are either integers or markers.\n
 When markers converts to integer.\n
-Returns a two element proper-list or signals an error.\n
-Signals errors when args do not satisfy `integer-or-marker-p', are negative
+BFR-CURRENT is a buffer as a lisp object, e.g. `current-buffer'.\n 
+Return a two element proper-list or signals an error.\n
+Signal errors when args do not satisfy `integer-or-marker-p', are negative
 integers, point to locations outside a narrowed range when narrowing is in
 effect, etc.\n
-:EXAMPLE\n\n\(mon-buffer-sub-no-prop-check 8 12\)\n
-\(mon-buffer-sub-no-prop-check \(set-marker \(make-marker\) 8\) 12\)\n
+:EXAMPLE\n\n\(mon-buffer-sub-no-prop-check 8 12 \(current-buffer\)\)\n
+\(mon-buffer-sub-no-prop-check \(set-marker \(make-marker\) 8\) 12 \(current-buffer\)\)\n
 \(mon-buffer-sub-no-prop-check  8 \(set-marker \(make-marker\) 12\)\)\n
 \(mon-buffer-sub-no-prop-check \(set-marker \(make-marker\) 8\) \(set-marker \(make-marker\) 12\)\)\n
-Following will fail:\n
-\(mon-buffer-sub-no-prop-check 1 -12\)
-\(mon-buffer-sub-no-prop-check -1 12\)
-\(mon-buffer-sub-no-prop-check 0 12\)
+Following will fail successfully:\n
+\(mon-buffer-sub-no-prop-check 1 -12\)\n
+\(mon-buffer-sub-no-prop-check -1 12\)\n
+\(mon-buffer-sub-no-prop-check 0 12\)\n
 \(mon-buffer-sub-no-prop-check nil nil\)\n
 \(mon-buffer-sub-no-prop-check  8 nil\)\n
 \(mon-buffer-sub-no-prop-check  8\)\n
@@ -737,8 +738,7 @@ buffers include:\n
  \" *tmp-reporter-buffer*\" \" *tramp temp*\"
  \" *w3m cache*\" \" widget-choose\"
  \" *xgit-process*\" \" *xgit-errors*\"
- \" *Unicode Data*\" \" *url-work\"
-
+ \" *Unicode Data*\" \" *url-work\"\n\n
 :EXAMPLE\n\n\(mon-get-buffer-hidden\)\n
 \(mapcar #'car \(mon-get-hidden-buffers\)\)\n
 \(mapcar #'cdr \(mon-get-hidden-buffers\)\)\n
@@ -935,7 +935,7 @@ Default is value of current-buffer.\n
 :EXAMPLE\n\n\(mon-buffer-check-major-mode 'help-mode\)\n
 \(mon-buffer-check-major-mode 'help-mode \(current-buffer\)\)\n
 \(mon-buffer-check-major-mode 'help-mode \"*Help*\"\)\n
-;; Following successfully signals an error:
+;; Following successfully and signals an error:\n
 \(mon-buffer-check-major-mode 'help-mode \"Probably-not-a-real-buffer\"\)\n
 :SEE-ALSO `mon-get-buffer-w-mode', `mon-buffer-name-is-file-name-p',
 `mon-buffer-check-local-value'.\n▶▶▶"

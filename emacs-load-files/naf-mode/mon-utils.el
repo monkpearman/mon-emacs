@@ -908,7 +908,7 @@ Peforms loadtime evaluation of functions defined in mon-utils.el:\n
                        "`byte-compile'd `mon-get-mon-emacsd-paths' at loadtime")))
     (eval-after-load "naf-mode-faces"     '(mon-bind-naf-face-vars-loadtime t))
     ;; (eval-after-load "mon-dir-utils"      '(mon-bind-nefs-photos-at-loadtime))
-    ;; FIXME DARWIN this isn't a bound function for some reason.
+    ;; :FIXME DARWIN this isn't a bound function for some reason.
     ;; (eval-after-load "mon-dir-utils-local" '(mon-bind-nefs-photos-at-loadtime))
     (eval-after-load "mon-replacement-utils" '(mon-make-iso-latin-1-approximation-loadtime))
     (eval-after-load "mon-doc-help-utils" '(mon-help-utils-loadtime t))
@@ -918,7 +918,10 @@ Peforms loadtime evaluation of functions defined in mon-utils.el:\n
     ;; mon-cifs-utils.el for alternative application with args 
     ;; NO-MISC-PATH NO-MAP-MOUNT-POINTS e.g.: 
     ;; (eval-after-load 'mon-cifs-utils '(mon-bind-cifs-vars-at-loadtime nil t)) 
-    (eval-after-load "mon-cifs-utils"           '(mon-bind-cifs-vars-at-loadtime))
+    ;;
+    ;; :NOTE we no longer evaluate following as teh drive doesn't
+    ;; exist. Uncomment if we ever establis another CIFS routine
+    ;; (eval-after-load "mon-cifs-utils"           '(mon-bind-cifs-vars-at-loadtime))
     (eval-after-load "mon-cl-compat-regexps"    '(mon-CL-cln-colon-swap t))    
     (eval-after-load "mon-empty-registers"      '(progn (mon-set-register-tags-loadtime t)
                                                         (mon-cntl-char-registers-loadtime)))

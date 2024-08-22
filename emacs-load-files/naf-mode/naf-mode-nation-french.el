@@ -79,7 +79,8 @@
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-09-23T16:58:18-04:00Z}#{09393} - by MON>
-(eval-when-compile
+(eval-when (compile load)
+;; (eval-when-compile
 (defvar *naf-mode-nation-french-xrefs* 
   '(*naf-nation-french*
     *naf-nation-english*
@@ -87,8 +88,9 @@
     *naf-mode-nationality-french-xrefs*
     *naf-mode-nation-french-xrefs* 
     mon-help-naf-mode-faces)
-  "List of symbol names of variables which xref each other in naf-mode-nation-french
-package. See FILE: \"./naf-mode-nation-french.el\"."))
+  "List of symbol names of variables which xref each other in naf-mode-nation-french package.\n
+:SEE :FILE \"./naf-mode-nation-french.el\"
+:SEE-ALSO .\n▶▶▶"))
 ;;
 ;;;test-me; *naf-mode-nation-french-xrefs*
 ;;
@@ -97,7 +99,8 @@ package. See FILE: \"./naf-mode-nation-french.el\"."))
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-09-23T16:58:13-04:00Z}#{09393} - by MON>
-(eval-when-compile
+(eval-when (compile load)
+;; (eval-when-compile
 (defvar *naf-nation-french*
   '("Afrique du Sud"               ;; "Saint Helena" ;; co-refs->English
     "Albanie"                      ;; "Barbuda"      ;; co-refs->English
@@ -263,14 +266,18 @@ package. See FILE: \"./naf-mode-nation-french.el\"."))
     "Îles Salomon"
     "Îles Sandwich"
     "Îles Åland")
-  "*Keyword list of Nation names - French Spelling - ISO and Benezit forms.
-Used for `naf-mode' font-locking."))
+  "*Keyword list of Nation names - French Spelling - ISO and Benezit forms.\n
+Used for `naf-mode' font-locking.\n
+:SEE-ALSO .\n▶▶▶"))
+
 ;;
-(eval-when-compile 
+(eval-when (compile load)
+;; (eval-when-compile 
 (defconst naf-mode-nation-french
   (concat "\\<" (regexp-opt *naf-nation-french* 'paren) "\\>"))) ;; Consider removing trailing "\\>"
 ;;
-(eval-when-compile 
+(eval-when (compile load)
+;; (eval-when-compile 
   (mon-help-swap-var-doc-const-val  *naf-nation-french* naf-mode-nation-french                                    
                                     *naf-mode-nation-french-xrefs* naf-mode-place-fface)) 
 ;;

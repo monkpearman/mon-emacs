@@ -77,7 +77,8 @@
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-09-23T17:15:26-04:00Z}#{09393} - by MON>
-(eval-when-compile
+(cl-eval-when (compile load)
+;;(eval-when-compile
 (defvar *naf-mode-nation-english-xrefs* 
   '(*naf-nation-english*
     *naf-nation-french*
@@ -85,8 +86,9 @@
     *naf-mode-nationality-french-xrefs*
     *naf-mode-nation-english-xrefs* 
     mon-help-naf-mode-faces)
-  "List of symbol names of variables which xref each other in naf-mode-nation-english
-package. See FILE: \"./naf-mode-nation-english.el\"."))
+  "List of symbol names of variables which xref each other in naf-mode-nation-english package.\n
+:SEE FILE: \"./naf-mode-nation-english.el\".\n
+:SEE-ALSO .\n▶▶▶"))
 ;;
 ;;;test-me; *naf-mode-nation-english-xrefs* 
 ;;
@@ -94,7 +96,9 @@ package. See FILE: \"./naf-mode-nation-english.el\"."))
 
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-09-23T17:40:56-04:00Z}#{09393} - by MON>
-(eval-when-compile
+
+(cl-eval-when (compile load)
+;; (eval-when-compile
 (defvar *naf-nation-english*
   '("Afghanistan"
     "Albania"
@@ -320,13 +324,16 @@ package. See FILE: \"./naf-mode-nation-english.el\"."))
     "Yugoslavia"
     "Zambia"
     "Zimbabwe")
-  "*Keyword list of nation names in English for `naf-mode' font-locking."))
+  "*Keyword list of nation names in English for `naf-mode' font-locking.\n
+:SEE-ALSO .\n▶▶▶"))
 ;;
-(eval-when-compile 
+(cl-eval-when (compile load)
+;;(eval-when-compile 
 (defconst naf-mode-nation-english
   (concat "\\<" (regexp-opt *naf-nation-english* 'paren) "\\>"))) ;; Consider removing trailing "\\>"
 ;;
-(eval-when-compile 
+(cl-eval-when (compile load)
+;;(eval-when-compile 
   (mon-help-swap-var-doc-const-val *naf-nation-english*  naf-mode-nation-english
                                    *naf-mode-nation-english-xrefs* naf-mode-place-fface))
 ;;

@@ -102,7 +102,7 @@
     *naf-mode-institution-xrefs*
     mon-help-naf-mode-faces)
   "List of symbol names of variables which xref each other in the
-naf-mode-institution package. 
+naf-mode-institution package.\n
 See FILE: \"./naf-mode-institution.el\".\n▶▶▶"))
 ;;
 ;;;test-me; *naf-mode-institution-xrefs*
@@ -120,7 +120,7 @@ FONT-LOCKING-FACE: `naf-mode-institution-fface'.\n
 EXAMPLE:
 Mus. d'Art Mod.\nMus. Nat.\nMus. d'Art Mod.
 Mus. des Beaux-Arts\nMus. d'Orsay\n
-See also; `naf-mode-institution-museum-names', `naf-mode-academy-names'
+:SEE-ALSO: `naf-mode-institution-museum-names', `naf-mode-academy-names'
 `naf-mode-school-names-intnl', `naf-mode-school-names-english'
 `naf-mode-institution-names-generic',`naf-mode-benezit-museum-short'
 `naf-mode-inst-names-anchored'.\n▶▶▶")
@@ -174,7 +174,8 @@ See also; `naf-mode-institution-museum-names', `naf-mode-academy-names'
     "Triennale di Milano"                       ;; Milan, Italy
     "Stedelijk Museum"                          ;; Amsterdam
     "Gesellschafts und Wirtschafts Museum")     ;; Vienna
-  "*Keyword list of institution for keyword font-locking in `naf-mode'."))
+  "*Keyword list of institution for keyword font-locking in `naf-mode'.\n
+:SEE-ALSO .\n▶▶▶"))
 ;;
 (eval-when-compile
 (defconst naf-mode-institution-museum-names 
@@ -297,7 +298,8 @@ See also; `naf-mode-institution-museum-names', `naf-mode-academy-names'
     "l'École des Beaux Arts"
     "l'École des Beaux-Arts de"
     "l'École des")
-  "*Keyword list of anchored institution names for font-locking in `naf-mode'."))
+  "*Keyword list of anchored institution names for font-locking in `naf-mode'.\n
+:SEE-ALSO .\n▶▶▶"))
 ;;
 (eval-when-compile
 (defconst naf-mode-inst-names-anchored 
@@ -344,8 +346,9 @@ See also; `naf-mode-institution-museum-names', `naf-mode-academy-names'
     "Type Directors Club"
     "Watercolor Club"
     "Watercolor Society")
-  "*Keyword list of generic institution names for use in `naf-mode'.
-Matches institution names associated with the _word_ 'Art'."))
+  "*Keyword list of generic institution names for use in `naf-mode'.\n
+Matches institution names associated with the _word_ 'Art'.\n
+:SEE-ALSO .\n▶▶▶"))
 ;;
 (eval-when-compile
 (defconst naf-mode-institution-names-generic 
@@ -387,9 +390,10 @@ Matches institution names associated with the _word_ 'Art'."))
     "Szkola Krakówa" 	"Szkoła Krakówa"
     ;;Московский Художественный Академический Театр
     "Moscow Art Theatre")
-  "*Keyword list of academy names for font-locking in `naf-mode'.
+  "*Keyword list of academy names for font-locking in `naf-mode'.\n
 Regexps built from this list match 19th-20th C Parisian and French academies of
-Art, Arts related training Institutions, and 'Art Schools'."))
+Art, Arts related training Institutions, and 'Art Schools'.\n
+:SEE-ALSO .\n▶▶▶"))
 ;;
 (eval-when-compile 
 (defconst naf-mode-academy-names 
@@ -448,8 +452,9 @@ Art, Arts related training Institutions, and 'Art Schools'."))
     "Munchner Vereinigte Werkstatten für Kunst in Handwerk")
   "*Keyword list of Schools, Academies, Training Institutions, Syndicates,
 Organizations, Councils, Associatieas, etc. These oare either common, generic,
-or lack specificity to be included elswhere in the naf-mode-institution package.
-Used for `naf-mode' font-locking."))
+or lack specificity to be included elswhere in the naf-mode-institution package.\n
+Used for `naf-mode' font-locking.\n
+:SEE-ALSO .\n▶▶▶"))
 ;;
 (eval-when-compile 
 (defconst naf-mode-school-names-intnl 
@@ -505,7 +510,8 @@ Used for `naf-mode' font-locking."))
     "World's Art Center")
   "*Keyword list art training Schools/Institutions for `naf-mode' font-locking.
 List is primarily English and American. 
-Anchored names in `naf-mode-inst-names-anchored' catch most of the difference."))
+Anchored names in `naf-mode-inst-names-anchored' catch most of the difference.\n
+:SEE-ALSO .\n▶▶▶"))
 ;;
 (eval-when-compile
 (defconst naf-mode-school-names-english 

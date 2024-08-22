@@ -2262,7 +2262,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    ))
 ;; (mon-set-dvc-init t)
 
-;; 
+;;; ==============================
 (defun mon-set-pdf-view-init (&optional warn-only)
   "Initialize pdf-view sytem on MON systems at init time.\n
 Signal an error when `IS-NOT-MON-SYSTEM'.\n
@@ -2299,6 +2299,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;;
 ;; (mon-set-pdf-view-init t)
 
+;;; ==============================
 (defun mon-set-epa-configs-init (&optional warn-only)
   "Set epa and epg related preferences on MON systems at init time.\n
 Specifically, on IS-MON-P-DARWIN set `epa-pinentry-mode' to 'loopback so the
@@ -2313,12 +2314,13 @@ gpg-agent will divert the pinentry to the current emacs-client.\n
               (bound-and-true-p IS-MON-SYSTEM-P)
               (and (intern-soft "IS-MON-P-DARWIN" obarray) ;; *IS-MON-OBARRAY*
                     (bound-and-true-p IS-MON-P-DARWIN)))
-     ;; on Darwin to divert pinentry to emacs make sure 
+     ;; On Darwin to divert pinentry to emacs make sure 
      ;; :FILE "~/gnupg/gpg-agent.conf" contains following two lines:
-     ;; pinentry-program /opt/homebrew/bin/pinentry-mac
-     ;; allow-emacs-pinentry 
+     ;;  pinentry-program /opt/homebrew/bin/pinentry-mac
+     ;;  allow-emacs-pinentry 
      (custom-set-variables 
-      ;; (epg-user-id "SDP (2024 defaulting) <monkpearman@icloud.com>")
+      ;; :NOTE value of `user-mail-address' and it's plist frobbed at top of site-local-private.el
+      ;; `(epg-user-id ,(plist-get (symbol-plist 'user-mail-address) 'epg-user-id))
       ;; '(epg-gpg-home-directory "~/.gnupg/")
       ;; '(epg-gpg-program "/usr/local/bin/gpg")
       ;; '(epg-debug t)
@@ -2326,7 +2328,6 @@ gpg-agent will divert the pinentry to the current emacs-client.\n
        '(epg-pinentry-mode nil)
       ;;; (epa-replace-original-text nil) ;; 'ask t
       ))))
-
 ;; 
 (mon-set-epa-configs-init t)
 

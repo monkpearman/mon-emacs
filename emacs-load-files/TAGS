@@ -3060,28 +3060,28 @@ mon-default-start-loads.el,2864
 (defun mon-set-vc-init 2123,103892
 (defun mon-set-magit-init 2141,104693
 (defun mon-set-dvc-init 2214,109077
-(defun mon-set-pdf-view-init 2266,111937
-(defun mon-set-epa-configs-init 2302,113376
-(defun mon-set-erc-configs-init 2338,115029
-(defun mon-erc-post-cloak-autojoin 2437,119209
-(defun mon-set-url-pkg-init 2451,119918
-(defun mon-set-google-maps-init 2536,123071
-(defun mon-set-w3m-init 2564,124368
-(defun mon-set-browser-init 2602,126209
-(defun mon-set-buffer-local-comment-start 2645,128607
-(defun mon-set-buffer-local-comment-start-init 2668,129912
-(defun mon-set-css-path-init 2710,132020
-(defun mon-set-longlines-init 2751,133979
-(defun mon-rst-mode-facification 2773,134888
-(defun mon-set-rst-mode-faces-init 2789,135772
-(defun mon-set-apache-mode-init 2809,136605
-(defun mon-set-traverselisp-init 2834,137907
-(defun mon-load-cedet 2861,139156
-(defun mon-keybind-w32-init 2880,139990
-(defun mon-keybind-put-hooks-init 2916,141747
-(defun mon-set-github-paths-init 2951,143502
-(defun mon-set-mon-feature-customs-init 2977,144800
-(defun mon-set-system-specific-and-load-init 3049,148001
+(defun mon-set-pdf-view-init 2266,111968
+(defun mon-set-epa-configs-init 2303,113442
+(defun mon-set-erc-configs-init 2339,115207
+(defun mon-erc-post-cloak-autojoin 2438,119387
+(defun mon-set-url-pkg-init 2452,120096
+(defun mon-set-google-maps-init 2537,123249
+(defun mon-set-w3m-init 2565,124546
+(defun mon-set-browser-init 2603,126387
+(defun mon-set-buffer-local-comment-start 2646,128785
+(defun mon-set-buffer-local-comment-start-init 2669,130090
+(defun mon-set-css-path-init 2711,132198
+(defun mon-set-longlines-init 2752,134157
+(defun mon-rst-mode-facification 2774,135066
+(defun mon-set-rst-mode-faces-init 2790,135950
+(defun mon-set-apache-mode-init 2810,136783
+(defun mon-set-traverselisp-init 2835,138085
+(defun mon-load-cedet 2862,139334
+(defun mon-keybind-w32-init 2881,140168
+(defun mon-keybind-put-hooks-init 2917,141925
+(defun mon-set-github-paths-init 2952,143680
+(defun mon-set-mon-feature-customs-init 2978,144978
+(defun mon-set-system-specific-and-load-init 3050,148179
 
 slime-loads-GNU.el,0
 

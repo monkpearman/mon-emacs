@@ -256,9 +256,9 @@
     (require 'dos-w32 nil t)))
 
 ;;; ==============================
-;;; :NOTE Trying `require' again instead of `load' :AS-OF
-;;; <Timestamp: #{2010-11-23T20:42:12-05:00Z}#{10472} - by MON>
-;; :WAS (load "mon-dir-locals-alist")
+;;; :NOTE Trying `require' again instead of `load' 
+;;; :AS-OF <Timestamp: #{2010-11-23T20:42:12-05:00Z}#{10472} - by MON>
+;;; :WAS (load "mon-dir-locals-alist")
 (require 'mon-dir-locals-alist) 
 ;;
 (require 'mon-replacement-utils)
@@ -267,7 +267,6 @@
 ;;; ==============================
 
 ;;; ==============================
-;;; :CHANGESET 2261
 ;;; :CREATED <Timestamp: #{2010-11-03T19:11:39-04:00Z}#{10443} - by MON KEY>
 (defgroup mon-dir-utils nil
   "Defaults for variables accessed by various `mon-*' functions.\n
@@ -290,7 +289,6 @@
   :group 'mon-base)
 
 ;;; ==============================
-;;; :CHANGESET 2394
 ;;; :CREATED <Timestamp: #{2011-01-15T18:07:44-05:00Z}#{11026} - by MON KEY>
 (defcustom *mon-dir-utils-xrefs* 
   '(%mon-dir-get-subdirs-filter-full %mon-dir-get-subdirs-filter-no-full
@@ -336,7 +334,6 @@ The symbols contained of this list are defined in :FILE mon-dir-utils.el\n
   :group 'mon-xrefs)
 
 ;;; ==============================
-;;; :CHANGESET 2261
 ;;; :CREATED <Timestamp: #{2010-11-03T19:08:24-04:00Z}#{10443} - by MON KEY>
 (defcustom *mon-add-subdirs-to-list-ignorables*
   '("." ".." "RCS" "CVS" "rcs" "cvs"  ".git" ".bzr" ".hg" ".svn" "_darcs"
@@ -359,7 +356,6 @@ Where the return value \".bzr\" is the name of a directory \".bzr\".\n
   :group 'mon-dir-utils)
 
 ;;; ==============================
-;;; :CHANGESET 2261
 ;;; :CREATED <Timestamp: #{2010-11-04T15:21:23-04:00Z}#{10444} - by MON KEY>
 (defcustom *regexp-add-subdirs-to-list-filter-ignorables* 
   (concat "^.*" (regexp-opt *mon-add-subdirs-to-list-ignorables*) "$")
@@ -389,7 +385,6 @@ Directory namestrings matched by this regexp are filted from return values of:\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2261
 ;;; :CREATED <Timestamp: #{2010-11-03T20:02:34-04:00Z}#{10443} - by MON KEY>
 (defun mon-file-truename-p (w-putative-file-truename &optional w-boolean-list-return)
   "Return non-nil if W-PUTATIVE-FILE-TRUENAME is an absolutely true filename.\n
@@ -589,7 +584,6 @@ Values returned by the time properties `:stat-*time' are in long-iso form e.g.:\
 ;;; extensions, regular with ".el" extension", or compressed with ".el.gz" and
 ;;; ".elc.gz"
 ;;;
-;;; :CHANGESET 2394 <Timestamp: #{2011-01-15T16:42:16-05:00Z}#{11026} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-07-10T12:36:32-04:00Z}#{10276} - by MON>
 (defun mon-file-ensure-extension-is-el (w-ensured-file-name)
   "Locate library W-ENSURED-FILE-NAME only if it has an \".el\" extension.\n
@@ -738,7 +732,6 @@ Signal an  error if FILENAME is not `file-readable-p'.\n
 
 ;;; ==============================
 ;;; :PREFIX "mfbvolf-"
-;;; :CHANGESET 2091
 ;;; :CREATED <Timestamp: #{2010-08-30T16:02:36-04:00Z}#{10351} - by MON KEY>
 (defun mon-find-buffer-visiting-other-live-frame (file-to-find)
   "Find buffer visiting FILE-TO-FIND on some other live frame and visit it now.\n
@@ -912,7 +905,6 @@ When current-buffer is not a dired-mode buffer kill is as if by `mon-copy-file-p
 
 
 ;;; ==============================
-;;; :CHANGESET 2359
 ;;; :CREATED <Timestamp: #{2010-12-09T13:08:08-05:00Z}#{10494} - by MON KEY>
 (defun mon-dired-buffers-complete (&optional other-window/frame)
   "Switch to a dired-buffer visiting one of the directories of `dired-buffers'.
@@ -1174,7 +1166,6 @@ null                                                             this-window\n
     (kill-buffer mdudtb-bfr)))
 
 ;;; ==============================
-;;; :CHANGESET 1742
 ;;; :CREATED <Timestamp: #{2010-05-21T18:04:31-04:00Z}#{10205} - by MON KEY>
 (defun mon-dired-uninsert-subdir ()
   "Don't show the inserted subdir in dired any longer.
@@ -1195,7 +1186,6 @@ Also, it doesn't DTRT when point is at a file inside subdir. I still want the in
     (dired-do-kill-lines t)))
 
 ;;; ==============================
-;;; :CHANGESET 1742
 ;;; :CREATED <Timestamp: #{2010-05-21T19:52:27-04:00Z}#{10205} - by MON KEY>
 (defun mon-dired-uninsert-subdir-all ()
   "Uninsert all inserted subdirs in current dired buffer.\n 
@@ -1299,7 +1289,7 @@ Invoke du as an asynchronous shell command.\n
   "Get the size of directory DIR as if by `du -h --max-depth=1'.\n
 When called-interactively or optional arg INSRTP non-nil insert DIR size in current-buffer.
 Does not move point.\n
-:ALIASED-BY `mon-directory-get-size'\n
+:ALIASED-BY `mon-directory-get-size' and `mon-get-directory-size'\n
 :EXAMPLE\n\n(mon-get-dir-size default-directory)\n
 :SEE-ALSO `mon-async-du-dir', `mon-file-dir-attributes->plist',
 `mon-dir-make-xargs-arg-file', `mon-help-du-incantation',
@@ -1309,7 +1299,7 @@ Does not move point.\n
       (mon-format :w-fun #'error
                   :w-spec '(":FUNCTION `mon-get-dir-size' "
                             "-- `du' executable not in path"))
-    (let* ((mgds-dir (directory-file-name (file-truename get-dir-size))) ;; (file-directory-p "~/bubba")
+    (let* ((mgds-dir (directory-file-name (file-truename get-dir-size)))
            (mgds-size 
             (if (file-directory-p mgds-dir)
                 (shell-command-to-string (format "du -h --max-depth=1 %s" mgds-dir))
@@ -1328,7 +1318,6 @@ Does not move point.\n
 ;;; :TEST-ME (mon-get-dir-size "~/mon-scripts" t)
 
 ;;; ==============================
-;;; :CHANGESET 2360
 ;;; :CREATED <Timestamp: #{2010-12-10T19:18:59-05:00Z}#{10495} - by MON KEY> 
 (defun mon-dir-make-xargs-arg-file (dir-list w-base-dir w-file)
   "Write dirctory names in DIR-LIST to file.\n
@@ -1427,7 +1416,7 @@ If NEW-BUFFER-W-NAME is an existing file in default-directory signal an error.\n
 (defun mon-get-dir-name-absolute (dir-name)
   "Return absolute directory file-name of DIR-NAME.\n
 :EXAMPLE\n(mon-get-dir-name-absolute \(getenv \"HOME\"\)\)\n
-:ALIASED-BY `mon-dir-name-absolute'\n
+:ALIASED-BY `mon-dir-name-absolute' and `mon-directory-name-absolute'\n
 :SEE-ALSO `mon-copy-file-multiple', `mon-copy-files-in-sub-dirs',
 `mon-get-relative-w-absolute' `mon-get-dir-name-absolute',
 `mon-file-reduce-name', `mon-build-path', `mon-string-split-buffer-name',
@@ -1461,7 +1450,7 @@ If NEW-BUFFER-W-NAME is an existing file in default-directory signal an error.\n
 Useful for comparing a path difference by diffing the elts of list1 with list2.\n
 :EXAMPLE\n
 \(mon-get-relative-w-absolute \(file-truename \(getenv \"HOME\"\)\) default-directory\)\n
-:ALIASED-BY `mon-dir-name-relative-w-absolute'\n
+:ALIASED-BY `mon-dir-name-relative-w-absolute' and `mon-directory-name-relative-w-absolute'\n
 :SEE-ALSO `mon-copy-file-multiple', `mon-copy-files-in-sub-dirs',
 `mon-get-relative-w-absolute' `mon-get-dir-name-absolute',
 `mon-file-reduce-name', `mon-build-path', `mon-string-split-buffer-name',
@@ -1604,7 +1593,7 @@ When '+' is not added to directory name input is finished and function returns.\
 ;;; :PREFIX "mfrn-"
 ;;; :COURTESY Thierry Volpiatto :HIS tv-utils.el :WAS `tv-reduce-file-name'
 ;;; :MODIFICATIONS <Timestamp: #{2009-09-01T20:39:35-04:00Z}#{09363} - by MON>
-;;; :CHANGESET 1889 <Timestamp: #{2010-06-17T12:00:24-04:00Z}#{10244} - by MON KEY>
+;;; :CREATED <Timestamp: #{2010-06-17T12:00:24-04:00Z}#{10244} - by MON KEY>
 (cl-defun mon-file-reduce-name (fname level &key unix-close expand)
   "Reduce file-name by LEVEL (an integer) depending on LEVEL's value.\n
 If LEVEL is positive reduce by end else by beginning.
@@ -1931,7 +1920,6 @@ It might not.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2442
 ;;; :CREATED <Timestamp: #{2011-05-14T14:33:05-04:00Z}#{11196} - by MON KEY>
 (defun mon-string-split-pathname (pathname &optional keep-relative-prefixes)
   "Split PATHNAME into a list of strings.\n
@@ -2046,7 +2034,7 @@ signal an error instead return nil.\n
 ;;;             (mon-string-split-dir-recurse *mon-ebay-images-bmp-path*))
 ;;; :TEST-ME (and (null (ignore-errors  (mon-string-split-dir-recurse "non-existent-path")))
 ;;;               (princ ":FUNCTION `mon-string-split-dir-recurse' errored"))
-;;;  :TEST-ME (mon-string-split-dir-recurse "non-existent-path" nil t)
+;;; :TEST-ME (mon-string-split-dir-recurse "non-existent-path" nil t)
 
 ;;; ==============================
 ;;; :PREFIX "mdcp-"
@@ -2083,9 +2071,7 @@ point, e.g. other than \"/\"!\n
 ;;
 ;;; :TEST-ME (mon-dir-common-paths *mon-ebay-images-bmp-path* *mon-ebay-images-path*)
 
-
 ;;; ==============================
-;;; :CHANGESET 2261
 ;;; :CREATED <Timestamp: #{2010-11-04T16:06:28-04:00Z}#{10444} - by MON KEY>
 (defun mon-dir-get-subdirs (w-dir &optional no-full no-check)
   "Return W-DIR and its immedate sub-directories as a list of directory names.\n
@@ -2126,7 +2112,6 @@ In most other situations this argument should normally be ommitted.\n
                           (not no-full))))))))
 
 ;;; ==============================
-;;; :CHANGESET 2261
 ;;; :CREATED <Timestamp: #{2010-11-04T19:14:49-04:00Z}#{10444} - by MON KEY>
 (defun %mon-dir-get-subdirs-filter-full (path-attribs)
   "Helper function for `mon-dir-get-subdirs' and `mon-add-subdirs-to-list'.\n
@@ -2143,7 +2128,6 @@ Return a fully qaulified directory namestring when either are true:\n
        (file-name-as-directory (car path-attribs))))
 
 ;;; ==============================
-;;; :CHANGESET 2261
 ;;; :CREATED <Timestamp: #{2010-11-04T19:11:18-04:00Z}#{10444} - by MON KEY>
 (defun %mon-dir-get-subdirs-filter-no-full (path-attribs)
   "Helper function for `mon-dir-get-subdirs' and `mon-add-subdirs-to-list'.\n
@@ -2165,8 +2149,7 @@ Return an unqaulified directory namestring component when following are true:\n
 ;;; FULL arg to `directory-files-and-attributes'. See comments below.
 ;;; :COURTESY :FILE lisp/startup.el :WAS `normal-top-level-add-subdirs-to-load-path'
 ;;; :NOTE Significantly modified.
-;;; :CHANGESET 2261 <Timestamp: #{2010-11-03T21:01:23-04:00Z}#{10443} - by MON KEY>
-;;; :CHANGESET 1779 <Timestamp: #{2010-05-27T15:32:43-04:00Z}#{10214} - by MON KEY>
+;;; :CREATED <Timestamp: #{2010-05-27T15:32:43-04:00Z}#{10214} - by MON KEY>
 (defun mon-add-subdirs-to-list (w-directory &optional w-add-to-list w-no-symlinks)
   "Add all immediate subdirectories of `w-directory' to `w-add-to-list'.\n
 Does a breadth-first tree walk on DIR's subtree, gathering the subdirectories
@@ -2250,7 +2233,6 @@ signal an error.\n
 
 ;;; ==============================
 ;;; :COURTESY lisp/erc/erc.el :WAS `erc-find-file'
-;;; :CHANGESET 2360
 ;;; :CREATED <Timestamp: #{2010-12-17T12:28:53-05:00Z}#{10505} - by MON KEY>
 (defun mon-find-file (file &optional path-lst)
   "Search for a FILE in the filesystem.\n

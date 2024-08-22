@@ -36,7 +36,7 @@
 ;;; function names (these have the face font-lock-function-name-face).
 ;;; Therefor, it should work for any source language, as long as it is
 ;;; fontified correctly.
-;;; See also; `*mon-call-tree-alist*', `mon-call-tree-add', `mon-call-tree-analyze'
+;;; :SEE-ALSO `*mon-call-tree-alist*', `mon-call-tree-add', `mon-call-tree-analyze'
 ;;; ==============================
 ;;; CODE:
 
@@ -45,11 +45,11 @@
 ;;; WAS: simple-call-tree-alist -> *mon-call-tree-alist*
 ;;; MODIFICATIONS: <Timestamp: #{2009-08-21T14:34:57-04:00Z}#{09345} - by MON>
 (defvar *mon-call-tree-alist* nil
-  "Alist of functions and the functions they call.
+  "Alist of functions and the functions they call.\n
 CALLED-BY: `mon-call-tree-analyze', `mon-call-tree-add'.\n
-See also; `mon-call-tree-update-header'.")
+:SEE-ALSO `mon-call-tree-update-header'.")
 
-;;;test-me; *mon-call-tree-alist*
+;;;:TEST-ME *mon-call-tree-alist*
 ;;;(progn (makunbound '*mon-call-tree-alist*) (unintern '*mon-call-tree-alist*))
 
 ;;; ==============================
@@ -61,7 +61,7 @@ See also; `mon-call-tree-update-header'.")
 Sets value of `*mon-call-tree-alist*' to an an alist of buffers' 
 functions. If optional function TEST is given, it must return non-nil when
 called with one parameter, the starting position of the function name.\n
-See also; `mon-call-tree-add', `mon-call-tree-update-header'."
+:SEE-ALSO `mon-call-tree-add', `mon-call-tree-update-header'."
   (interactive)
   (setq *mon-call-tree-alist* nil)
   (let ((pos (point-min))
@@ -101,23 +101,22 @@ See also; `mon-call-tree-add', `mon-call-tree-update-header'."
 		  pos end
 		  old-defun defun))
 	  (setq pos (next-single-property-change pos 'face))))))
-;;  (message "simple-call-tree done"))
-*mon-call-tree-alist*)
+  ;;  (message "simple-call-tree done"))
+  *mon-call-tree-alist*)
 
-
-;;;test-me;(mon-call-tree-analyze)
-;;;test-me; *mon-call-tree-alist*
-;;;(progn (makunbound 'mon-call-tree-analyze) (unintern 'mon-call-tree-analyze))
+;;; :TEST-ME (mon-call-tree-analyze)
+;;; :TEST-ME *mon-call-tree-alist*
+;;; (progn (makunbound 'mon-call-tree-analyze) (unintern 'mon-call-tree-analyze))
 
 ;;; ==============================
 ;;; COURTESY: Alex Schroeder <alex@gnu.org> HIS: simple-call-tree.el VERSION: 1.0.0
 ;;; WAS: simple-call-tree-add -> `mon-call-tree-add'
 ;;; MODIFICATIONS: <Timestamp: #{2009-08-21T14:34:57-04:00Z}#{09345} - by MON>
 (defun mon-call-tree-add (start end alist)
-  "Add tokens between START and END to ALIST.
+  "Add tokens between START and END to ALIST.\b
 ALIST is a list with a string identifying the function in its car,
 and the list of functions it calls in the cdr.\n
-See also; `*mon-call-tree-alist*', `mon-call-tree-analyze', 
+:SEE-ALSO `*mon-call-tree-alist*', `mon-call-tree-analyze', 
 `mon-call-tree-update-header'."
   (dolist (entry *mon-call-tree-alist*)
     (goto-char start)
@@ -138,13 +137,13 @@ See also; `*mon-call-tree-alist*', `mon-call-tree-analyze',
 ;;; NOTE: Extends procedures from Alex Schroeder's simple-call-tree. 
 ;;; CREATED: <Timestamp: #{2009-08-21T16:31:56-04:00Z}#{09345} - by MON KEY>
 (defun mon-call-tree-update-header ()
-  "Replace all elisp functions in buffe with existing functions in file header.
+  "Replace all elisp functions in buffer with existing functions in file header.
 This function relies on the presence of the ▶▶▶ and ◀◀◀ cookies immediately following
 \";;; FUNCTIONS:\" at BOL. e.g as follows:
 ;;; FUNCTIONS:▶▶▶
 ;;; `*mon-call-tree-alist*', `mon-call-tree-add', `mon-call-tree-analyze',
 ;;; FUNCTIONS:◀◀◀\n
-See also; `*mon-call-tree-alist*', `mon-call-tree-add', `mon-call-tree-analyze'."
+:SEE-ALSO `*mon-call-tree-alist*', `mon-call-tree-add', `mon-call-tree-analyze'."
   (interactive)
   (mon-call-tree-analyze)
   (let ((get-tree *mon-call-tree-alist*)

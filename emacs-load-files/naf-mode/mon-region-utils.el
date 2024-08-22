@@ -353,6 +353,15 @@ Insertion does not move point. Insertion is whitespace agnostic.\n
                     (prin1 m-reg-rev (current-buffer))))
           (t m-reg-rev))))
 
+(defun mon-wrap-md-code-block ()
+ "wrap region with markdown code-block syntax.\n
+:EXAMPLE\n
+ FOO -> ```FOO```\n
+Trivial wrapper around `mon-wrap-selection'.\n
+:SEE-ALSO `mon-wrap-text', `mon-wrap-with'."
+   (interactive)
+     (mon-wrap-selection "```" "```"))
+
 ;;; ==============================
 ;;; :COURTESY Stefan Reichor <stefan@xsteve.at> :HIS xsteve-functions.el
 (defun mon-wrap-selection (&optional front-arg rear-arg)

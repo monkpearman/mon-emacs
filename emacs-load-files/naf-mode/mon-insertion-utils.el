@@ -1667,7 +1667,7 @@ variable or constant.\n
 A <DOC-TYPE> argument specifying 'variable is applicable when <SYM> names a
 variable or constant.
 The remaining <DOC-TYPE> specifiers are as per the spec.
-:SEE info-node `(ansicl)documentation; (setf documentation)'\n
+:SEE Info node `(ansicl) documentation; setf documentation'\n
 :ALIASED-BY `mon-insert-doc-xref-eg'\n
 :SEE-ALSO `mon-insert-lisp-fundoc-eg-xref', `mon-insert-lisp-CL-jump-doc',
 `mon-insert-lisp-doc-eg-xref',`mon-insert-lisp-CL-mode-line-template',
@@ -1678,7 +1678,7 @@ The remaining <DOC-TYPE> specifiers are as per the spec.
   (interactive "i\np\nP")
   ;; :NOTE Consider refactoring to use following instead: 
   ;; `mon-buffer-check-local-value', `mon-buffer-check-major-mode', 
-  (let* ((not-elisp (case (buffer-local-value 'major-mode (current-buffer))
+  (let* ((not-elisp (cl-case (buffer-local-value 'major-mode (current-buffer))
                       (lisp-interaction-mode t)
                       (lisp-mode t)
                       (t (and (buffer-local-value 'slime-mode (current-buffer))
@@ -1723,7 +1723,7 @@ Inserted template has the format:\n
 `mon-insert-lisp-stamp', `mon-insert-lisp-testme',
 `mon-insert-lisp-evald'.\n▶▶▶"
   (interactive "i\np\nP")
-  (let* ((not-elisp (case (buffer-local-value 'major-mode (current-buffer))
+  (let* ((not-elisp (cl-case (buffer-local-value 'major-mode (current-buffer))
                       (lisp-interaction-mode t)
                       (lisp-mode t)
                       (t (and (buffer-local-value 'slime-mode (current-buffer))
@@ -2720,12 +2720,12 @@ License are mapped from the list of strings in:
                                 *mon-bsd-license-header-COPYRIGHT-HOLDER*
                                 lic-hdr)
                                (identity lic-hdr)))
-                       (case mbcsl-lic 
-                         ('gpl-emacs  *mon-gnu-license-header-emacs*)
-                         ('gpl        *mon-gnu-license-header*)
-                         ('gfdl       *mon-gnu-license-header-gfdl*)
-                         ('mit        *mon-mit-license-header*)
-                         ('bsd        *mon-bsd-license-header*))
+                       (cl-case mbcsl-lic 
+                         ((quote gpl-emacs)  *mon-gnu-license-header-emacs*)
+                         ((quote gpl)        *mon-gnu-license-header*)
+                         ((quote gfdl)       *mon-gnu-license-header-gfdl*)
+                         ((quote mit)        *mon-mit-license-header*)
+                         ((quote bsd)        *mon-bsd-license-header*))
                        "\n;; " ))))
 ;;
 ;;; :TEST-ME (mon-build-copyright-string-license)
@@ -2862,7 +2862,7 @@ Does not move point.\n
             "    :documentation \"\")") ""))
         (cnt-p (if slot-count slot-count 1))
         (gathered))
-    (do ((i cnt-p (1- i))
+    (cl-do ((i cnt-p (1- i))
          (j (1- cnt-p) (1- j))
          (k "" (concat (format mlt-slot s-nm j s-nm j) k))
          (m "" (setq gathered (concat 

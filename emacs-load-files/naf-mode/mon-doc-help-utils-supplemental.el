@@ -392,14 +392,14 @@ AFTER-STR is a simple string. No regexps, chars, numbers, lists, etc.\n
 (defun mon-string-justify-left (justify-string &optional justify-width 
                                                lft-margin no-rmv-trail-wspc)
   "Return a left-justified string built from JUSTIFY-STRING.\n
-When optional arg JUSTIFY-WIDTH is non-nil it is a width JUSTIFY-STRING to
+When optional arg JUSTIFY-WIDTH is non-nil, it is a width JUSTIFY-STRING to
 counting from column 0.  Default JUSTIFY-WIDTH is `current-column' or 72.\n
 When optional arg LFT-MARGIN it is a column to JUSTIFY-STRING beginning from.
 Default is `left-margin' or 0.\n
-The word separators are those of `split-string':
-      [ \\f\\t\\n\\r\\v]+
+The word separators are those of `split-string':\n
+      [ \\f\\t\\n\\r\\v]+\n
 This means that JUSTIFY-STRING is justified as one paragraph.\n
-When NO-RMV-TRAIL-WSPC is non-nil do not remove trailing whitespace.
+When NO-RMV-TRAIL-WSPC is non-nil do not remove trailing whitespace.\n
 Default is to remove any trailing whiespace at end of lines.\n
 :EXAMPLE\n
 \(let \(\(jnk-arg '\(\(68 4\) \(18 8 t\)\)\) ;;<- With and without arg NO-RMV-TRAIL-WSPC

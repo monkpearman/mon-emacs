@@ -52,6 +52,11 @@
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
 ;;
+;; `mon-clear-registers' -> `mon-reset-registers'
+;; `mon-register-reset'  -> `mon-reset-registers'
+;; `mon-register-query-replace-register1<-reg2' -> `mon-query-replace-register1<-reg2'
+;;
+;;
 ;; DEPRECATED:
 ;;
 ;; RENAMED:
@@ -616,6 +621,7 @@ When optional arg USE-REGEXP is non-nil or called-interactively with prefix-arg
 replace contents of buffer or region as if by `query-replace-regexp'.\n
 Default is to replace as if by `query-replace'.
 Does not move point.\n
+:ALIASED-BY `mon-register-query-replace-register1<-reg2'\n
 :SEE-ALSO `mon-coerce->char', `mon-set-all-registers-to-char',
 `mon-reset-registers'.\n▶▶▶"
   (interactive (list 
@@ -649,6 +655,7 @@ Does not move point.\n
 :LOWER    -> `*mon-lower-case-registers*';
 :ALL      ->  everything in `*mon-registr-of-registers*'
 When called interactively or INTRP is non-nil resets all registers.\n
+:NOTE defaliased by `mon-clear-registers' and `mon-register-reset'.\n
 :SEE-ALSO `mon-set-all-registers-to-char', `*mon-registr-of-registers*'.\n▶▶▶"
   (interactive (list :intrp t))
   (let ((mrr-rgstr-kys `(,cntrl ,digit ,digit-S ,symbol ,upper ,lower))

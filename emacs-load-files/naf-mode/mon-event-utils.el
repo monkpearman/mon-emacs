@@ -61,6 +61,7 @@
 ;; `scroll-up-in-place'              -> `mon-scroll-up-in-place'
 ;; `scroll-down-in-place'            -> `mon-scroll-down-in-place'
 ;; `mon-string-from-keybard-input'   -> `mon-read-keys-as-string'
+;; `mon-register-append-region'      -> `mon-append-to-register'
 ;;
 ;; DEPRECATED:
 ;;
@@ -366,7 +367,7 @@ otherwise duplicate anonymous forms with identical behavior.\n
 When W-KBD-QUIT is non-nil a when C-g is caught tail of list is non-nil.\n
 :EXAMPLE\n\n\(mon-read-keys-as-string\)\n
 \(mon-read-keys-as-string t\)\n
-:ALIASED-BY `mon-string-from-keyboard-input'\n
+:ALIASED-BY `mon-string-from-keyboard-input' and `mon-read-keys-as-string'\n
 :SEE-ALSO `mon-test-keypresses', `mon-help-key-functions', `read-key',
 `unread-command-events', `this-single-command-raw-keys'.\n▶▶▶"
   ;; (interactive "P")
@@ -515,6 +516,26 @@ Returned value is informed by variable `*mon-popup-pos-x-offset*'.\n
     `((,(+ *mon-popup-pos-x-offset* (car cpfxpm-x-y)) ,(cdr cpfxpm-x-y))
       ,cpfxpm-win)))
 
+
+;; (x-popup-menu 
+;;  (mon-postion-for-x-popup-menu)
+;;  '("Bubbas-Choice"                           ; title
+;;    ;; PANE
+;;    ("BUUBA 1"                                ; title 
+;;     ("one-bubba.A" . A)                      ;Item
+;;     ("one-bubba.B" . B) 
+;;     ("one-bubba.C" . C ))
+;;    ;; PANE
+;;    ("BUUBA 2"                                ; title
+;;     ("two-bubba.A" . A)                      ; Item
+;;     ("two-bubba.B" . B)
+;;     ("two-bubba.C" . C))
+;;    ("BUUBA 3"
+;;     ("three-bubba.A" . A)
+;;     ("three-bubba.B" . B)
+;;     ("three-bubba.C" . C))))
+
+
 ;;; ==============================
 ;;; :COURTESY Sandip Chitale <sandipchitale@attbi.com>
 (defun mon-choose-from-menu (menu-title menu-items &optional menu-posn)
@@ -527,7 +548,8 @@ Returned value is informed by variable `*mon-popup-pos-x-offset*'.\n
 :SEE-ALSO `choose-completion', `x-popup-menu',
 `mon-postion-for-x-popup-menu', `popup-menu', `mouse-pixel-position'
 `mouse-menu-bar-map'.\n▶▶▶"
-  (let (mcfm-item mcfm-item-list)
+  (let (mcfm-item 
+        mcfm-item-list)
     (while menu-items
       (setq mcfm-item (car menu-items))
       (if (consp mcfm-item)
@@ -536,7 +558,7 @@ Returned value is informed by variable `*mon-popup-pos-x-offset*'.\n
         (setq mcfm-item-list 
               (cons (cons mcfm-item mcfm-item) mcfm-item-list)))
       (setq menu-items (cdr menu-items)))
-    (x-popup-menu 
+    (x-popup-menu
      (or menu-posn t)
      (list menu-title (cons menu-title (nreverse mcfm-item-list))))))
 ;;
@@ -583,6 +605,7 @@ So, to decode M-3 i.e. '<meta>-3' do this:\n
 \(- \(+ ?3 \(expt 2 27\)\) \(expt 2 27\)\) ;=> 51 
 e.g. \(- 134217779  134217728\) ;=> 51\n
 :EXAMPLE\n\(mon-decode-meta-key-event 134217771\)\n
+:ALIASED-BY `mon-key-decode-meta'\n
 :SEE-ALSO `mon-catch-meta-key' `mon-coerce->char', `mon-string-to-symbol'.\n▶▶▶"
   (let ((M-key (expt 2 27)))
     ;; (event-key event))
@@ -602,6 +625,7 @@ When a meta-key event is not present return the first event modifer passed.
 Can be alled programatically within a wrapper functions.\n
 :EXAMPLE\n\(mon-catch-meta-key\)   ;<- M-3 C-x C-e ;=> (meta 51)
 \(mon-catch-meta-key t\) ;<- M-3 C-x C-e ;=>\"meta-3\"\n
+:ALIASED-BY `mon-key-catch-meta'\n
 :SEE-ALSO `mon-decode-meta-key-event', `mon-catch-meta-key' `mon-coerce->char',
 `mon-string-to-symbol'.\n▶▶▶"
   (let ((key-seq (listify-key-sequence (this-command-keys-vector)));event-vect))
@@ -779,7 +803,7 @@ When non-nil prefix arg W-REGION-DELETED will delete region as well.
 Called programaticaly, takes four args: REGISTER, START, END and W-REGION-DELETED.
 START and END are buffer positions indicating what to append.\n
 Redefines `append-to-register' with a \"\n\".\n
-:ALIASED-BY `mon-region-append-to-register'
+:ALIASED-BY `mon-region-append-to-register' and `mon-register-append-region'.\n
 :SEE-ALSO `mon-append-to-buffer', `mon-kill-appending', `mon-append-to-register'.\n▶▶▶"
   (interactive "cAppend to register: \nr\nP")
   (let ((matr-reg (get-register register))

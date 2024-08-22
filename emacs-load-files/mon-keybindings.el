@@ -414,7 +414,7 @@ Added to the `dired-mode-hook' at intit with `mon-keybind-put-hooks-init'.\n
                 ("C-c M-w d"       wdired-change-to-wdired-mode)
                 ("C-c M-u"         mon-dired-unmark-elc)
                 ("C-z b"           mon-dired-unmark-elc)
-                ("<f2>"              dired-efap))))
+                ("<f2>"            dired-efap))))
     (cl-loop 
      for keys in kmp
      do (define-key dired-mode-map (kbd (car keys)) (cdr keys))))
@@ -750,7 +750,7 @@ Added to the `lisp-interaction-mode-hook' at init with `mon-keybind-put-hooks-in
                 ("<S-tab>"     .     completion-at-point)
                 ("<S-tab>"     .     lisp-complete-symbol)
                 ("<backtab>"   .     lisp-complete-symbol)
-                ( "C-c s t"     .      mon-insert-lisp-stamp)
+                ( "C-c s t"    .      mon-insert-lisp-stamp)
                 )))
     (cl-loop 
      for keys in kmp
@@ -771,7 +771,8 @@ Added to the `lisp-interaction-mode-hook' at init with `mon-keybind-put-hooks-in
 :SEE-ALSO `mon-keybind-lisp-interaction-mode', `mon-keybind-slime'.\n▶▶▶"
 (interactive)
 (save-excursion
-  (funcall (cl-third (cl-find 63 slime-selector-methods :key #'car)))))
+  (funcall ;; (cl-third (cl-find 63 slime-selector-methods :key #'car))
+   (cl-third (assoc 63 slime-selector-methods)))))
 
 ;; (mon-keybind-slime-inspector-helper)
 
@@ -858,13 +859,22 @@ always easy.\n As a friendly reminder, here is how it is done:\n
       ;; the default binding for `slime-export-symbol-at-point' to "C-cx" really sucks!
       (when (or (featurep 'slime-package-fu) 
                 (eq (lookup-key slime-mode-map (kbd "C-c x")) 'slime-export-symbol-at-point))
-        (define-key slime-mode-map "C-c x" 'undefined)) ;;  :WAS `slime-export-symbol-at-point'
-
-      ;; (keymapp slime-mode-map) 
+        (define-key slime-mode-map "C-c x" 'undefined))
+      ;; Make damn sure we unset `slime-export-symbol-at-point''
+      (keymap-unset  slime-mode-map "C-c x")
        ;; (substitute-key-definition 'slime-export-symbol-at-point 'undefined slime-mode-map)
-      ;; (keymap-set slime-mode-map  "C-h f"   'slime-documentation)
+       ;; (define-key slime-mode-map "\C-c x" nil)      ;
+      (when (featurep 'slime-scratch)
+        (when (eq (lookup-key slime-scratch-mode-map (kbd "C-j"))
+                  'slime-eval-print-last-expression)
+          (keymap-unset slime-scratch-mode-map "C-j")))
+
+      ;; ("C-c M-j"    .      slime-eval-print-last-expression)
+      
+       ;; (keymapp slime-mode-map) 
+       ;; (keymap-set slime-mode-map  "C-h f"   'slime-documentation)
        ;; (keymap-set slime-mode-map  "C-h v"   'slime-documentation)
-       ;; (define-key slime-mode-map "\C-cx" nil)
+       
        ;; :TODO Add keybinding:
        ;; (define-key slime-mode-map           'mon-insert-lisp-CL-debug)
        ;; (define-key slime-mode-map           'mon-insert-lisp-CL-eval-when)
@@ -906,10 +916,10 @@ always easy.\n As a friendly reminder, here is how it is done:\n
       ;;   (define-key slime-repl-mode-map  (kbd "<S-tab>")  'slime-complete-symbol)
       ;;   ;; :NOTE I don't think this is getting used. Can it hurt?
       ;;   (define-key slime-mode-map (kbd "<S-iso-lefttab>") 'slime-complete-symbol))
-       (let ((kmp   '(( "M-c"        nil)
-                      ;; ("C-c C-u"    undefinedl) ;; :WAS `slime-undefine-function'
-                      ( "M-n"        nil) ;; :WAS `slime-next-note'
-                      ( "M-p"        nil) ;; :WAS `slime-previous-note'
+       (let ((kmp   '(("M-c"               nil)
+                      ("M-n"               nil) ;; :WAS `slime-next-note'
+                      ("M-p"               nil) ;; :WAS `slime-previous-note'
+                      ;; ("C-c C-u"           undefinedl) ;; :WAS `slime-undefine-function'
                       ("C-x M-c"    .      upcase-word)
                       ("C-c c"      .      comment-region)
                       ("C-c C-u c"  .      uncomment-region)
@@ -920,12 +930,13 @@ always easy.\n As a friendly reminder, here is how it is done:\n
                       ("C-c C-u d"  .      slime-undefine-function)
                       ("C-c C-d f"  .      slime-documentation)
                       ("C-c C-h"    .      slime-documentation)
+                      ("C-c M-h"    .      info-lookup-symbol)
                       ("C-c e x"    .      slime-export-symbol-at-point)
                       ("C-c C-o"    .      slime-compile-defun)
                       ("M-i"        .      slime-indent-and-complete-symbol) ;; :WAS `indent-according-to-mode'
                       ("C-c M-n"    .      slime-next-note)
                       ("C-c C-j"    .      slime-eval-last-expression-in-repl)
-                      ("C-c M-j"    .      slime-eval-print-last-expression )
+                      ("C-c M-j"    .      slime-eval-print-last-expression)
                       ("C-c M-p"    .      slime-previous-note)
                       ("M-n"        .      mon-scroll-up-in-place)
                       ("M-p"        .      mon-scroll-down-in-place)
@@ -935,9 +946,9 @@ always easy.\n As a friendly reminder, here is how it is done:\n
                       ("C-c C-d j"  .      mon-insert-lisp-CL-jump-doc)
                       ("C-c C-d 5"  .      mon-insert-lisp-CL-eol-tilde-no-at)
                       ("C-c C-d %"  .      mon-insert-lisp-CL-eol-tilde)
-                      ("C-c t m"      .    mon-insert-lisp-testme)
-                      ( "C-c s t"     .     mon-insert-lisp-stamp)
-                      ("C-c M-s l"  .       mon-keybind-slime-selector-helper) ;;'mon-slime-setup-init)
+                      ("C-c t m"    .      mon-insert-lisp-testme)
+                      ("C-c s t"    .      mon-insert-lisp-stamp)
+                      ("C-c M-s l"  .      mon-keybind-slime-selector-helper) ;;'mon-slime-setup-init)
                       ("<S-tab>"         .  completion-at-point)
                       ("<S-iso-lefttab>" .  completion-at-point)
                       ("<backtab>"       .  completion-at-point))))
@@ -946,6 +957,7 @@ always easy.\n As a friendly reminder, here is how it is done:\n
           do (define-key slime-mode-map (kbd (car keys)) (cdr keys))))
        (and mkb-slm-msg (message (car mkb-slm-msg) (cdr mkb-slm-msg))))))
 
+;; (define-key slime-mode-map (kbd C-c) (cdr keys))
   
   ;; "\C-c\C-c"
   ;; slime-sync-package-and-default-directory ;; slime-set-default-directory
@@ -1030,7 +1042,7 @@ Assumes following returns true:
  (featurep 'slime-fuzzy)
 Function `mon-keybind-put-hooks-init' arranges that this function is called
 after file mon-keybindings.el is loaded.
-:SEE-ALSO .\n▶▶▶"
+:SEE-ALSO `slime-get-fuzzy-buffer', `slime-fuzzy-choices-buffer'.\n▶▶▶"
   (when (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
              (bound-and-true-p IS-MON-P-GNU)
              (featurep 'slime-fuzzy))
@@ -1041,6 +1053,8 @@ after file mon-keybindings.el is loaded.
     (message ":FUNCTION `mon-keybind-slime-fuzzy-completions' evaluated")
     ))
 
+;;; `slime-get-fuzzy-buffer' "*Fuzzy Completions*"
+;; `slime-fuzzy-choices-buffer' `slime-fuzzy-target-buffer'
 ;; (mon-keybind-slime-fuzzy-completions)
 
 ;;; ==============================
@@ -1128,14 +1142,14 @@ Run on the `conf-mode-hook' when `IS-MON-P'.\n
 ;;; (add-hook 'dvc-diff-mode-hook (function (lambda () )
 ;;
 ;; (remove-hook 'dvc-status-mode-hook
-(add-hook 'dvc-status-mode-hook
-          (function 
-           (lambda () 
-             (local-unset-key dvc-status-mode-map "U") ;;; dvc-fileinfo-revert-files)
-             (define-key dvc-status-mode-map dvc-keyvec-revert nil)
-             ;; dvc-fileinfo-revert-files
-             )))
-
+;; (add-hook 'dvc-status-mode-hook
+;;           (function 
+;;            (lambda () 
+;;              (local-unset-key dvc-status-mode-map "U") ;;; dvc-fileinfo-revert-files)
+;;              (define-key dvc-status-mode-map dvc-keyvec-revert nil)
+;;              ;; dvc-fileinfo-revert-files
+;;              )))
+;;
 ;; (add-hook 'dvc-diff-mode-hook
 ;;           (function (lambda ()
 ;;                       (local-unset-key 

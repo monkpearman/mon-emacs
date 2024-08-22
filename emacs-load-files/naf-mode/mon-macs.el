@@ -210,26 +210,26 @@ ERR-ARG is the form returned from the error condition handler.\n
 :EXAMPLE\n\n\(let \(pre-error\) ;; Value we want to ensure executes inside BODY
   ;; If an error is signaled in body let us know, but delay
   \(prog1 \(when \(eq \(mon-error-protect 
-                    'error-but-body-executed
+                    \\='error-but-body-executed
                     \(progn 
                       \(setq pre-error \"pre-error got set\"\)
-                      \(error \"\"\)\)\) 'error-but-body-executed\)
-           'error-but-body-executed\)
+                      \(error \"\"\)\)\) \\='error-but-body-executed\)
+           \\='error-but-body-executed\)
     ;; First show what happened inside body:
     \(minibuffer-message pre-error\)\)\)\n
 \(mon-error-protect-PP-EXPAND-TEST 
- '\(mon-error-protect 'never-see-me\)\)\n
+ \\='\(mon-error-protect \\='never-see-me\)\)\n
 \(mon-error-protect-PP-EXPAND-TEST 
- '\(mon-error-protect 'will-see-me '\(/ 0 0\)\)\)\n
+ \\='\(mon-error-protect \\='will-see-me \\='\(/ 0 0\)\)\)\n
 \(mon-error-protect-PP-EXPAND-TEST
- '\(let \(pre-error\) ;; Value we want to ensure executes inside body
+ \\='\(let \(pre-error\) ;; Value we want to ensure executes inside body
   ;; If an error is signaled in body let us know, but delay
   \(prog1 \(when \(eq \(mon-error-protect 
-                    'error-but-body-executed
-                    '\(progn 
+                    \\='error-but-body-executed
+                    \\='\(progn 
                       \(setq pre-error \"pre-error got set\"\)
-                      \(error \"\"\)\)\) 'error-but-body-executed\)
-           'error-but-body-executed\)
+                      \(error \"\"\)\)\) \\='error-but-body-executed\)
+           \\='error-but-body-executed\)
     ;; First show what happened inside body:
     \(minibuffer-message pre-error\)\)\)\)\n
 :SEE-ALSO `stack-trace-on-error', `report-errors', `mon-error',
@@ -260,35 +260,35 @@ Valid keywords are:\n
  :w-fun :w-spec :w-args :w-delim\n
 :EXAMPLE\n
 \(pp-macroexpand-expression
-  '\(%mon-format-chk-keys '\(:w-fun 
-                         :w-spec \":bubba bobby %d\\n\"
-                         :w-args 8 
-                         :w-delim t\)\)\)\n
+  \\='\(%mon-format-chk-keys \\='\(:w-fun 
+                           :w-spec \":bubba bobby %d\\n\"
+                           :w-args 8 
+                           :w-delim t\)\)\)\n
 \(pp-macroexpand-expression
- '\(%mon-format-chk-keys '\(:w-spec \":bubba bobby %d\\n\"
-                         :w-args 8 
-                         :w-delim t 
-                         :w-fun 'format\)\)\n
+ \\='\(%mon-format-chk-keys \\='\(:w-spec \":bubba bobby %d\\n\"
+                          :w-args 8 
+                          :w-delim t 
+                          :w-fun #\\='format\)\)\)\n
 \(pp-macroexpand-expression
- '\(%mon-format-chk-keys '\(:w-spec :w-args :w-delim :w-fun #'format\)\)\)\n
-;; Following is with :w-delim without an value it is correctly ignored.
+ \\='\(%mon-format-chk-keys \\='\(:w-spec :w-args :w-delim :w-fun #\\='format\)\)\)\n
+;; Following is with :w-delim without an value it is correctly ignored.\n
 \(pp-macroexpand-expression
- '\(%mon-format-chk-keys
-   '\(:w-delim 
-     :w-spec '\(\":FUNCTION `mon-format' \" 
+ \\='\(%mon-format-chk-keys
+   \\='\(:w-delim 
+     :w-spec \\='\(\":FUNCTION `mon-format' \" 
                \"-- example message with arg `%S' and arg `%d'\"\)
-     :w-fun #'\(lambda \(&rest x\)
-                \(setq x \(concat \(apply #'format x\) \"\\n\" \)\)
+     :w-fun #\\='\(lambda \(&rest x\)
+                \(setq x \(concat \(apply #\\='format x\) \"\\n\" \)\)
                 \(princ x \(get-buffer-create \"*MON-FORMAT*\"\)\)
                 \(display-buffer \"*MON-FORMAT*\"\)\)
-     :w-args '\(bubba 666\)\)\)\)\n
-;; Following is with missing :w-fun key/value pair:
+     :w-args \\='\(bubba 666\)\)\)\)\n
+;; Following is with missing :w-fun key/value pair:\n
 \(pp-macroexpand-expression 
- '\(%mon-format-chk-keys '\(:w-spec '\(\":bubba\" \"bobby\"\) 
+ \\='\(%mon-format-chk-keys \\='\(:w-spec \\='\(\":bubba\" \"bobby\"\) 
                           :w-args 8 
                           :w-delim t\)\)\)\n
-;; Following is without key/value pairs:
-\(pp-macroexpand-expression '\(%mon-format-chk-keys nil\)\)\n
+;; Following is without key/value pairs:\n
+\(pp-macroexpand-expression \\='\(%mon-format-chk-keys nil\)\)\n
 :SEE-ALSO `destructuring-bind', `edebug-match-&key', `lambda-list-keywords'.\n▶▶▶"
   (declare (indent 0) (debug t))
   (let ((mfchk-keys (make-symbol "--mfchk-keys--"))
@@ -310,9 +310,9 @@ Valid keywords are:\n
 (defmacro handler-case (expression &rest clauses)
   "Attempt to be like Common Lisp's `handler-case'.\n
 The clause variable symbols are substituted by one single `condition-case'
-variable symbol.
-:NOTE This may cause problems if the same symbol is used as data or if it's a dynamic
-variable.
+variable symbol.\n
+:NOTE This may cause problems if the same symbol is used as data or if it's a
+dynamic variable.\n
 EXPRESSION a form.
 CLAUSES ::= <ERROR-CLAUSE> | <NO-ERROR-CLAUSE>
 ERROR-CLAUSE ::= (typespec ([var]) {declaration}* {form}*)
@@ -376,14 +376,14 @@ NO-ERROR-CLAUSE ::= (:no-error LAMBDA-LIST {declaration}* {form}*)
   "Macrofied version of `copy-list'/`copy-tree'.\n
 Return a copy of list, which may be a dotted list.\n
 Elements of list are not copied, just the list structure itself.\n
-:EXAMPLE\n\n\(mon-copy-list-mac '\(a nil . \(c . d\)\)\)\n
-\(mon-copy-list-mac '\(a b \(nil . \(c . d\)\)\)\)\n
-\(mon-copy-list-mac '\(a b \(c . d\)\)\)\n
+:EXAMPLE\n\n\(mon-copy-list-mac \\='\(a nil . \(c . d\)\)\)\n
+\(mon-copy-list-mac \\='\(a b \(nil . \(c . d\)\)\)\)\n
+\(mon-copy-list-mac \\='\(a b \(c . d\)\)\)\n
 \(mon-copy-list-mac [nil 3]\)\n
-\(mon-copy-list-mac '\(a b . \(c . d\)\)\)\n
-\(pp-macroexpand-expression '\(mon-copy-list-mac '\(a b \(c . d\)\)\)\)\n
-\(pp-macroexpand-expression '\(mon-copy-list-mac '\(a b . \(c d\)\)\)\)\n
-\(pp-macroexpand-expression '\(mon-copy-list-mac '\(a b . \(c . d\)\)\)\)\n
+\(mon-copy-list-mac \\='\(a b . \(c . d\)\)\)\n
+\(pp-macroexpand-expression \\='\(mon-copy-list-mac \\='\(a b \(c . d\)\)\)\)\n
+\(pp-macroexpand-expression \\='\(mon-copy-list-mac \\='\(a b . \(c d\)\)\)\)\n
+\(pp-macroexpand-expression \\='\(mon-copy-list-mac \\='\(a b . \(c . d\)\)\)\)\n
 :NOTE `copy-sequence' signals an error when we try to copy the dotted list.\n
 CL `copy-list' returns a copy of CPY-LST even when a dotted list as does
 `copy-tree', but the latter copies recursively along cdrs with additional checks
@@ -391,38 +391,38 @@ for vectors which we don't need/want.\n So, to avoid byte compiler warnings for
 the `mon-map1' fncns we will use this litle fella instead.\n
 Following checks help verify that list copies returned from `mon-copy-list-mac' and
 `copy-tree' are functionaly equivalent:\n
-\(let \(\(cp '\(a b . \(nil . \(c . d\)\)\)\) ;≣ \(a b nil c . d\)
+\(let \(\(cp \\='\(a b . \(nil . \(c . d\)\)\)\) ;≣ \(a b nil c . d\)
       cp-mac cp-tree cp-lst-CL\)
   \(setq cp-mac    \(mon-copy-list-mac cp\)\)
   \(setq cp-tree   \(copy-tree cp\)\)
   \(setq cp-lst-CL \(copy-list cp\)\)
-  `\(:macro-vrsn ,\(progn \(setcdr \(cdddr cp-mac\) \"bubba mac\"\) cp-mac\)
+  \\=`\(:macro-vrsn ,\(progn \(setcdr \(cdddr cp-mac\) \"bubba mac\"\) cp-mac\)
     :tree-vrsn  ,\(progn \(setcdr \(cdddr cp-tree\) \"bubba tree\"\) cp-tree\)
     :CL-vrsn    ,\(progn \(setcdr \(cdddr cp-lst-CL\) \"bubba CL\"\) cp-lst-CL\)
     :orig-dttd-l ,cp \)\)\n
 \(let \(chk-equal\)
   \(setq chk-equal
-        `\(,\(let \(\(mac-cmplx-strct '\([a nil] . \(nil . [c \(d . [q z]\)]\)\)\)
+        \\=`\(,\(let \(\(mac-cmplx-strct \\='\([a nil] . \(nil . [c \(d . [q z]\)]\)\)\)
                  mac-aset-cmplx\)  
              \(setq mac-aset-cmplx \(mon-copy-list-mac mac-cmplx-strct\)\)
-             \(aset \(cdr \(aref \(cddr mac-aset-cmplx\) 1\)\) 1 'bubba-aset\)
-             `\(:asetd-mac ,mac-aset-cmplx :orig ,mac-cmplx-strct\)\)
-          ,\(let \(\(tree-cmplx-strct '\([a nil] . \(nil . [c \(d . [q z]\)]\)\)\)
+             \(aset \(cdr \(aref \(cddr mac-aset-cmplx\) 1\)\) 1 \\='bubba-aset\)
+             \\=`\(:asetd-mac ,mac-aset-cmplx :orig ,mac-cmplx-strct\)\)
+          ,\(let \(\(tree-cmplx-strct \\='\([a nil] . \(nil . [c \(d . [q z]\)]\)\)\)
                  tree-aset-cmplx\)
              \(setq tree-aset-cmplx \(mon-copy-list-mac tree-cmplx-strct\)\)
-             \(aset \(cdr \(aref \(cddr tree-aset-cmplx\) 1\)\) 1 'bubba-aset\)
-             `\(:asetd-tre ,tree-aset-cmplx :orig ,tree-cmplx-strct\)\)
-          ,\(let \(\(mac-setf-cmplx '\([a nil] . \(nil . [c \(d . [q z]\)]\)\)\)
+             \(aset \(cdr \(aref \(cddr tree-aset-cmplx\) 1\)\) 1 \\='bubba-aset\)
+             \\=`\(:asetd-tre ,tree-aset-cmplx :orig ,tree-cmplx-strct\)\)
+          ,\(let \(\(mac-setf-cmplx \\='\([a nil] . \(nil . [c \(d . [q z]\)]\)\)\)
                  mac-setfd\)
              \(setq mac-setfd \(mon-copy-list-mac mac-setf-cmplx\)\)
-             \(setf  \(aref \(cdr \(aref \(cddr mac-setfd\) 1\)\) 1\) 'bubba-setfd\)
-             `\(:setfd-mac ,mac-setfd :orig ,mac-setf-cmplx\)\)
-          ,\(let \(\(tre-setf-cmplx '\([a nil] . \(nil . [c \(d . [q z]\)]\)\)\)
+             \(setf  \(aref \(cdr \(aref \(cddr mac-setfd\) 1\)\) 1\) \\='bubba-setfd\)
+             \\=`\(:setfd-mac ,mac-setfd :orig ,mac-setf-cmplx\)\)
+          ,\(let \(\(tre-setf-cmplx \\='\([a nil] . \(nil . [c \(d . [q z]\)]\)\)\)
                  tree-setfd\)
              \(setq tree-setfd \(mon-copy-list-mac tre-setf-cmplx\)\)
-             \(setf \(aref \(cdr \(aref \(cddr tree-setfd\) 1\)\) 1\) 'bubba-setfd\)
-             `\(:setfd-tre ,tree-setfd :orig ,tre-setf-cmplx\)\)\)\)
-  \(setq chk-equal  `\(:equal-tre-aset-orig 
+             \(setf \(aref \(cdr \(aref \(cddr tree-setfd\) 1\)\) 1\) \\='bubba-setfd\)
+             \\=`\(:setfd-tre ,tree-setfd :orig ,tre-setf-cmplx\)\)\)\)
+  \(setq chk-equal  \\=`\(:equal-tre-aset-orig 
                      ,\(equal \(cadr  \(assq :asetd-tre chk-equal\)\)
                              \(cadddr  \(assq :asetd-tre chk-equal\)\)\)
                      :equal-mac-aset-orig
@@ -476,17 +476,17 @@ Mapping terminates with the shortest sequence.\n
 With just one sequence, this is like `mapcar'.\n
 With several, it is like the Common Lisp `mapcar' function extended to arbitrary
 sequence types.\n
-:EXAMPLE\n\n\(mon-mapcar-mac 'list '\(a b c\) '\(1 2 3\) '\(d e f\) '\(4 5 6\)\)\n
-\(mon-mapcar-mac 'cons '\(a b c\) '\(1 2 3\)\)\n
-\(pp-macroexpand-expression '\(mon-mapcar-mac 'cons '\(a b c\) '\(1 2 3\)\)\)\n
-\(let* \(\(tmp-alst '\(\(KEY-D D0 D1 D2\)\)\)
-       \(tmp-keys '\(KEY-A KEY-B KEY-C\)\)
-       \(tmp-vals '\(\(A0 A1 A2\) \(B0 B1 B2\) \(C0 C1 C2\)\)\)
+:EXAMPLE\n\n\(mon-mapcar-mac \\='list \\='\(a b c\) \\='\(1 2 3\) \\='\(d e f\) \\='\(4 5 6\)\)\n
+\(mon-mapcar-mac \\='cons \\='\(a b c\) \\='\(1 2 3\)\)\n
+\(pp-macroexpand-expression \\='\(mon-mapcar-mac \\='cons \\='\(a b c\) \\='\(1 2 3\)\)\)\n
+\(let* \(\(tmp-alst \\='\(\(KEY-D D0 D1 D2\)\)\)
+       \(tmp-keys \\='\(KEY-A KEY-B KEY-C\)\)
+       \(tmp-vals \\='\(\(A0 A1 A2\) \(B0 B1 B2\) \(C0 C1 C2\)\)\)
        \(rtn-mon-mapcar tmp-alst\)
        rtn-pairlis\)
-  \(setq rtn-mon-mapcar \(nconc \(mon-mapcar #'cons tmp-keys tmp-vals\) tmp-alst\)\)
+  \(setq rtn-mon-mapcar \(nconc \(mon-mapcar #\\='cons tmp-keys tmp-vals\) tmp-alst\)\)
   \(setq rtn-pairlis \(pairlis tmp-keys tmp-vals tmp-alst\)\)
-  `\(:TREE-EQUAL-MMC-PAIRL ,\(tree-equal rtn-mon-mapcar rtn-pairlis\)
+  \\=`\(:TREE-EQUAL-MMC-PAIRL ,\(tree-equal rtn-mon-mapcar rtn-pairlis\)
     :MON-MAPCAR/PAIRLIS ,rtn-mon-mapcar :CL-PKG/PAIRLIS ,rtn-pairlis\)\)\n
 :NOTE Last example is basically Emacs lisp's version of Common Lisp's `parilis'.\n
 :SEE-ALSO `mon-mapcar', `mon-map1', `mon-mapcan', `mon-mapcon', `mon-mapl',
@@ -533,8 +533,7 @@ sequence types.\n
 (defmacro mon-nshuffle-vector (mixup-vector)
   "Destructive random permutation of MIXUP-VECTOR elts, return MIXUP-VECTOR.\n
 All permutations are equally likely.\n
-:EXAMPLE\n\n\\(pp-macroexpand-expression 
- '\(mon-nshuffle-vector [37 41 43 47 53 59]\)\)\n
+:EXAMPLE\n\n\(pp-macroexpand-expression \\='\(mon-nshuffle-vector [37 41 43 47 53 59]\)\)\n
 :ALIASED-BY `nshuffle-vector'\n
 :SEE-ALSO `mon-list-nshuffle', `mon-list-shuffle-safe',`shuffle-vector',
 `slime-shuffle-list'.\n▶▶▶"
@@ -572,11 +571,11 @@ All permutations are equally likely.\n
   "SIFT-LIST with SIFT-TESTS.\n
 On a Common Lisp return is as if by values.\n
 :EXAMPLE\n
-\(mon-list-sift '\( 1 2 3 4 5 6 7 8 9 10\) #'\(lambda \(x\) \(> x 4\)\)\)
+\(mon-list-sift \\='\( 1 2 3 4 5 6 7 8 9 10\) #\\='\(lambda \(x\) \(> x 4\)\)\)
 ;=> \(10 9 8 7 6 5\) \(4 3 2 1\)\n
-\(mon-list-sift '\(1 2 3 -1 -2 -3\) #'oddp #'plusp\)
+\(mon-list-sift \\='\(1 2 3 -1 -2 -3\) #\\='oddp #\\='plusp\)
 ;=> \(-3 -1 3 1\) \(2\) \(-2\)\n
-\(mon-list-sift '\(1 2 3 -1 -2 -3\) #'plusp #'oddp\)
+\(mon-list-sift \\='\(1 2 3 -1 -2 -3\) #\\='plusp #\\='oddp\)
 ;=> \(3 2 1\) \(-3 -1\) \(-2\)\n
 :SEE-ALSO `mon-list-filter', `mon-list-last', `mon-delete-first',
 `mon-equality-for-type', `mon-equality-or-predicate', `car-less-than-car'.\n▶▶▶"
@@ -620,10 +619,10 @@ On a Common Lisp return is as if by values.\n
 (defmacro mon-foreach (w-var on-list &rest body)
   "A foreach style macro idiom for looping W-VARS ON-LIST with BODY.\n
 :EXAMPLE\n\n\(mon-foreach for-var                 ; <- w-var
-             '\(1 2 3 4)              ; <- on-list
+             \\='\(1 2 3 4)              ; <- on-list
              \(+ for-var for-var\)\)    ; <- body\n
 \(pp-macroexpand-expression 
- '\(mon-foreach for-var '\(1 2 3 4\) \(+ for-var for-var\)\)\)\n
+ \\='\(mon-foreach for-var \\='\(1 2 3 4\) \(+ for-var for-var\)\)\)\n
 :SEE-ALSO `mon-for', `mon-loop', `mon-mapcar'.\n▶▶▶"
   ;; (declare (indent 1) (debug t))
   `(mapcar #'(lambda (,w-var) ,@body) ,on-list))
@@ -636,7 +635,7 @@ On a Common Lisp return is as if by values.\n
 (defmacro mon-for (var init final &rest body)
   "Execute a simple for loop .\n
 :EXAMPLE\n\n\(mon-for i  1  10  \(print i\)\)\n
-\(pp-macroexpand-expression '\(mon-for i 1 10  \(print i\)\)\)\n
+\(pp-macroexpand-expression \\='\(mon-for i 1 10  \(print i\)\)\)\n
 :SEE-ALSO `mon-foreach', `mon-loop', `mon-mapcar'.\n▶▶▶"
   ;; (declare (indent 1) (debug t))
   (let ((mf-tempvar (make-symbol "mf-tempvar")))
@@ -673,7 +672,7 @@ On a Common Lisp return is as if by values.\n
 (defmacro mon-equality-for-type (thing)
   "Return preferred equality predicate for thing.\n
 :EXAMPLE\n\n\(mon-equality-for-type 3.3\)
-\(pp-macroexpand-expression '\(mon-equality-for-type \"string\"\)\)
+\(pp-macroexpand-expression \\='\(mon-equality-for-type \"string\"\)\)
 :SEE-ALSO `mon-equality-or-predicate',
 `*mon-equality-or-predicate-function-types*'
 `mon-get-text-properties-parse-prop-val-type-chk', `deftype', `type-of',
@@ -713,8 +712,8 @@ When optional arg COUNTER satisfies the predicate `integerp' and PREFIX
 satisfies the predicate `stringp' it is appended to PREFIX instead of
 `gensym-counter's value.\n
 Like the `gensym' function in CL package but defined as a macro instead.\n
-:EXAMPLE\n\n\(pp-macroexpand-expression '\(mon-gensym\)\)\n
-\(pp-macroexpand-expression '\(mon-gensym \"EG\" 666\)\)\n
+:EXAMPLE\n\n\(pp-macroexpand-expression \\='\(mon-gensym\)\)\n
+\(pp-macroexpand-expression \\='\(mon-gensym \"EG\" 666\)\)\n
 :NOTE `edebug-gensym' is identical to the `gensym' but doesn't sigal a
 byte-compiler warning.\n
 :SEE-ALSO `mon-gensym-counter-randomizer', `mon-with-gensyms',
@@ -752,18 +751,18 @@ freshly allocated uninterned symbol as returned by `mon-gensym'.\n
       \(defmacro tt--mgs \(arg1 arg2 arg3\)
         \(mon-with-gensyms 
           \(somea someb somec get-some\)
-          `\(let \(\(,somea ,arg1\)
+          \\=`\(let \(\(,somea ,arg1\)
                  \(,someb ,arg2\)
                  \(,somec ,arg3\)
                  \(,get-some \(\)\)\)
              \(dolist \(q \(list ,somea ,someb ,somec\)
                         \(setq ,get-some 
-                              \(mapconcat 'identity \(nreverse ,get-some\) \"\\n\"\)\)\)
+                              \(mapconcat #\\='identity \(nreverse ,get-some\) \"\\n\"\)\)\)
                \(push \(concat \"a name: \" q \) ,get-some\)\)
-             \(and \(null \(fboundp 'tt--mgs\)\)
+             \(and \(null \(fboundp \\='tt--mgs\)\)
                   \(equal ,get-some \"a name: bubba\\na name: sally\\na name: suzy\"\)\)\)\)\)
-       \(pp-macroexpand-expression '\(tt--mgs \"bubba\" \"sally\" \"suzy\"\)\)\)
-  \(progn \(fmakunbound 'tt--mgs\) \(unintern 'tt--mgs\)\)\)\n
+       \(pp-macroexpand-expression \\='\(tt--mgs \"bubba\" \"sally\" \"suzy\"\)\)\)
+  \(progn \(fmakunbound \\='tt--mgs\) \(unintern \\='tt--mgs\)\)\)\n
 :NOTE `edebug-gensym' is identical to the `gensym' but doesn't sigal a CL
 byte-compiler warning.\n
 :ALIASED-BY `with-gensyms'\n
@@ -811,19 +810,19 @@ byte-compiler warning.\n
       \(mon-with-print-gensyms
         \(princ
          \(pp-to-string
-          `\(let \(was-sym\)
+          \\=`\(let \(was-sym\)
              \(prog2 
                  \(setq was-sym
                        \(symbol-name 
-                        \(car '\(,\(make-symbol 
+                        \(car \\='\(,\(make-symbol 
                                  \(format \"not-a-sym-%d\" \(random\)\)\)\)\)\)\)
                  \(and \(not \(intern-soft was-sym obarray\)\)
                       \(not \(unintern was-sym obarray\)\)\)\)\)\)
          \(current-buffer\)\)\)\)\)\n
 \(pp-macroexpand-expression 
- '\(mon-with-print-gensyms
+ \\='\(mon-with-print-gensyms
    \(let \(hld-buba\)
-     \(setq hld-buba `\(,\(make-symbol \(format \"not-a-sym-%d\" \(random\)\)\)\)\)
+     \(setq hld-buba \\=`\(,\(make-symbol \(format \"not-a-sym-%d\" \(random\)\)\)\)\)
      \(prin1 hld-buba \(current-buffer\)\)\)\)\)\n
 :ALIASED-BY `with-print-gensyms'\n
 :SEE-ALSO `mon-gensym', `print-circle', `read-circle', `mon-help-print-functions'.\n▶▶▶"
@@ -850,7 +849,7 @@ byte-compiler warning.\n
                   (mapconcat 
                    #'identity
                    '(":NOTE This is a CL compatibility feature, it macro-expands to elisp's `defconst'.\n"
-                     ":EXAMPLE\n\n(pp-macroexpand-expression '(defconstant bubba-consistently \"doin' the bubba\" \"undocd\"\)\)\n"
+                     ":EXAMPLE\n\n(pp-macroexpand-expression \\='(defconstant bubba-consistently \"doin' the bubba\" \"undocd\"\)\)\n"
                      ":SEE info node `(CL)Porting Common Lisp'.\n"
                      ":SEE-ALSO `defparameter', `defvar', `defcustom', `set-variable',"
                      "`make-local-variable', `make-variable-buffer-local', `make-symbol', `intern',"
@@ -874,7 +873,7 @@ variable named NAME undisturbed; if NAME was previously bound, its old value
 persists, and if it was previously unbound, it remains unbound.\n
 If DOCSTRING is supplied, it is attached to NAME as a documentation
 string of kind variable.\n
-:EXAMPLE\n\n\(pp-macroexpand-expression '\(defparameter \"tt-\"\)\)
+:EXAMPLE\n\n\(pp-macroexpand-expression \\='\(defparameter \"tt-\"\)\)
 :NOTE This is a CL compatibility feature and expands to elisp's defvar.\n
 :SEE info node `(elisp)Defining Variables'\n
 :SEE-ALSO `defconstant', `defconst', `defcustom', `set-variable', 
@@ -1006,11 +1005,11 @@ When optional arg NO-INVERT is non-nil the `type-of' BUFFER-TO-CHECK is returned
 without inversion.\n
 :EXAMPLE\n\n\(mon-buffer-exists-p \(current-buffer\)\)\n
 \(mon-buffer-exists-p \(buffer-name \(current-buffer\)\)\)\n
-\(mon-buffer-exists-p \(current-buffer\) 'no-invert\)\n
-\(mon-buffer-exists-p \(buffer-name \(current-buffer\)\) 'no-invert\)\n
+\(mon-buffer-exists-p \(current-buffer\) \\='no-invert\)\n
+\(mon-buffer-exists-p \(buffer-name \(current-buffer\)\) \\='no-invert\)\n
 \(with-temp-buffer \(mon-buffer-exists-p \(current-buffer\)\)\)\n
-\(with-temp-buffer \(mon-buffer-exists-p \(current-buffer\) 'no-invert\)\)\n
-\(pp-macroexpand-expression '\(mon-buffer-exists-p  \(current-buffer\)\)\)\n
+\(with-temp-buffer \(mon-buffer-exists-p \(current-buffer\) \\='no-invert\)\)\n
+\(pp-macroexpand-expression \\='\(mon-buffer-exists-p  \(current-buffer\)\)\)\n
 \(prog2 \(get-buffer-create \"*BAD-IF-NOT-KILLED*\"\)
     \(mon-buffer-exists-p \"*BAD-IF-NOT-KILLED*\"\)
   \(kill-buffer \(mon-buffer-exists-p \"*BAD-IF-NOT-KILLED*\"\)\)\)\n
@@ -1018,7 +1017,7 @@ without inversion.\n
  \(prog2 \(get-buffer-create \"*BAD-IF-NOT-KILLED*\"\)
      \(mon-buffer-exists-p \"*BAD-IF-NOT-KILLED*\"\)
    \(kill-buffer \(mon-buffer-exists-p \"*BAD-IF-NOT-KILLED*\"\)\)\)\)\n
-\(pp-macroexpand-expression '\(mon-buffer-exists-p \(buffer-name \(current-buffer\)\)\)\)\n
+\(pp-macroexpand-expression \\='\(mon-buffer-exists-p \(buffer-name \(current-buffer\)\)\)\)\n
 :ALIASED-BY `buffer-exists-p'\n
 :SEE-ALSO `mon-buffer-exists-so-kill', `mon-with-file-buffer',
 `mon-buffer-narrowed-p', `mon-buffer-sub-no-prop',
@@ -1056,7 +1055,7 @@ without inversion.\n
 Arg BODY occurs inside an `unwind-protect' finishing with `buffer-enable-undo'.\n
 :EXAMPLE\n
 \(pp-macroexpand-expression
- '\(progn
+ \\='\(progn
     \(mon-with-buffer-undo-disabled
      \(save-excursion
        \(insert \"bubba\"\)\)
@@ -1069,7 +1068,7 @@ Arg BODY occurs inside an `unwind-protect' finishing with `buffer-enable-undo'.\
     \(kill-line\)
     buffer-undo-list\)\)\n
 \(mon-with-buffer-undo-disabled-TEST\)\n
-\(mon-with-buffer-undo-disabled-TEST 'force-fail\)\n\n
+\(mon-with-buffer-undo-disabled-TEST \\='force-fail\)\n\n
 :NOTE Useful for forms which programatically `erase-buffer' contents and the undo list
 is not needed.\n
 :ALIASED-BY `mon-buffer-do-with-undo-disabled'\n
@@ -1099,7 +1098,7 @@ Only evaluated when buffer is visiting a file that exists, is writable, and
 buffer is not read-only.\n
 Otherwise, just return the printed value of form.\n
 :EXAMPLE\n\n\(pp-macroexpand-expression 
- '\(mon-print-in-buffer-if-p 'princ \(buffer-name\)\)\)\n
+ \\='\(mon-print-in-buffer-if-p \\='princ \(buffer-name\)\)\)\n
 :ALIASED-BY `mon-buffer-print-in-if'\n
 :SEE-ALSO `mon-buffer-exists-so-kill', `mon-buffer-written-p',
 `mon-buffer-exists-p', `mon-buffer-name->kill-ring', `mon-with-file-buffer',
@@ -1120,6 +1119,11 @@ Otherwise, just return the printed value of form.\n
 ;;
 ;;; :TEST-ME (mon-print-in-buffer-if-p 'princ (buffer-name))
 
+;; (defun tt--foo ()
+;; "\\=`(a ,(sin 0)) ==> (a 0.0)"
+;; ()
+;; )
+;; (tt--foo)
 ;;; ==============================
 ;;; :PREFIX "mwibro-"
 ;;; :CREATED <Timestamp: #{2010-03-26T14:56:18-04:00Z}#{10125} - by MON KEY>
@@ -1127,18 +1131,19 @@ Otherwise, just return the printed value of form.\n
   "Temporarily set value of `buffer-read-only' nil in `current-buffer'.\n
 Execute the UNINHIBITED-BODY inside an `unwind-protect' form which restores value
 of `buffer-read-only'.\n
-:EXAMPLE\n\n\(with-current-buffer \(progn 
-                       \(describe-function 'mon-with-inhibit-buffer-read-only\) 
-                       \(get-buffer \"*Help*\"\)\)
-  \(mon-with-inhibit-buffer-read-only 
-      \(sit-for 1\) \(forward-line 3\)
-      \(dotimes \(i 3\) 
-        \(progn \(kill-line\) \(insert \"A LINE JUST DIED HERE\\n\"\) \(sit-for 1\)\)\)\)
-  \(message \"buffer-read-only value in *Help* buffer rebound -> %s\"
-           \(buffer-local-value 'buffer-read-only \(get-buffer \"*Help*\"\)\)\)\)\n
-\(mon-with-inhibit-buffer-read-only-PP-TEST\)\n
-\(mon-with-inhibit-buffer-read-only-TEST\)\n
-\(mon-with-inhibit-buffer-read-only-TEST t\)\n
+:EXAMPLE\n\n\\=(with-current-buffer (progn 
+                       (describe-function \\='mon-with-inhibit-buffer-read-only) 
+                       (get-buffer \"*Help*\"))
+  (mon-with-inhibit-buffer-read-only 
+      (sit-for 1) (forward-line 3)
+      (dotimes (i 3) 
+        (progn (kill-line) (insert \"A LINE JUST DIED HERE\n\")
+               (sit-for 1))))
+  (message \"buffer-read-only value in *Help* buffer rebound -> %s\"
+           (buffer-local-value \\='buffer-read-only (get-buffer \"*Help*\"))))\n
+(mon-with-inhibit-buffer-read-only-PP-TEST)\n
+(mon-with-inhibit-buffer-read-only-TEST)\n
+(mon-with-inhibit-buffer-read-only-TEST t)\n
 :SEE-ALSO `mon-inhibit-read-only', `mon-with-inhibit-buffer-read-only-TEST',
 `mon-with-inhibit-buffer-read-only-PP-TEST', `mon-inhibit-modification-hooks',
 `mon-inhibit-point-motion-hooks', `mon-toggle-read-only-point-motion'.\n▶▶▶"
@@ -1177,10 +1182,10 @@ of `buffer-read-only'.\n
   "Wrapper macro to temporarily toggle `longlines-mode' in current-buffer.\n
 When optional arg TOGGLE-IN-BUFFER is non-nil check value in that buffer and
 exectute BODY there. Default is `current-buffer'.
-:EXAMPLE\n\n\(pp-macroexpand-expression '\(mon-naf-mode-toggle-restore-llm \"bubba\"\)\)\n
+:EXAMPLE\n\n\(pp-macroexpand-expression \\='\(mon-naf-mode-toggle-restore-llm \"bubba\"\)\)\n
 \(progn \(get-buffer-create \"*MON-TOGGLE-RESTORE-LLM-TEST*\"\)
        \(pp-macroexpand-expression 
-        '\(mon-toggle-restore-llm \"*MON-TOGGLE-RESTORE-LLM-TEST*\" 
+        \\='\(mon-toggle-restore-llm \"*MON-TOGGLE-RESTORE-LLM-TEST*\" 
           \(with-current-buffer \"*MON-TOGGLE-RESTORE-LLM-TEST*\" 
             \(longlines-mode\) 
            \(prog1 \(buffer-name\)\(kill-buffer \"*MON-TOGGLE-RESTORE-LLM-TEST*\"\)\)\)\)\)
@@ -1237,7 +1242,7 @@ exectute BODY there. Default is `current-buffer'.
   "Wrapper macro to temporarily toggle `longlines-mode' in `naf-mode' buffers.\n
 When optional arg TOGGLE-BUFFER is non-nil check value in that buffer and
 exectute BODY there. Default is `current-buffer'.
-:EXAMPLE\n\n\(pp-macroexpand-expression '\(mon-naf-mode-toggle-restore-llm nil \"bubba\"\)\)\n
+:EXAMPLE\n\n\(pp-macroexpand-expression \\='\(mon-naf-mode-toggle-restore-llm nil \"bubba\"\)\)\n
 :SEE-ALSO `mon-toggle-restore-llm', `mon-naf-mode-toggle-restore-llm',
 `mon-is-naf-mode-and-llm-p', `mon-is-naf-mode-p'.\n▶▶▶"
   (declare (indent 1) (debug t))

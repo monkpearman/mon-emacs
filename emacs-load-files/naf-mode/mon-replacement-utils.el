@@ -465,6 +465,7 @@ This is done only for ISO-5581-1 characters. Return the modified string.\n
 Pascal Bourguignon's functions have extensive examples:
 :SEE `invoice-strings' in :HIS
 :FILE ../site-lisp/pjb/emacs-files/pjb-invoices.el.restore\n
+:ALIASED-BY `mon-translate-string-in-table'.\n
 :SEE-ALSO `deftransmogrify'.\n▶▶▶"
   (let ((sym (intern-soft string table)))
     (if sym (let ((result (get sym language))) 
@@ -682,8 +683,8 @@ For example the follow are all valid forms:\n
 \(mon-string-canonical \"g\" '\(\(\"a\" . \"α\"\) \(\"g\" . \"γ\"\) \(\"b\" . \"β\"\)\)\)\n
 \(mon-string-canonical \"β\" '\([\"a\"   \"α\"] [\"γ\"   \"g\"] [\"β\"   \"b\"]\)\)\n
 \(mon-string-canonical \"α\" '\(\(\"γ\" . \"g\"\) \(\"b\"   \"β\"\) [\"α\"   \"a\"]\)\)\n
-:ALIASED-BY `mon-canonical-string'\n
-:SEE-ALSO `mon-regexp-filter', `filter-buffer-substring'.\n▶▶▶"
+:ALIASED-BY `mon-canonical-string' and `mon-translate-string-canonical'\n
+:SEE-ALSO `mon-regexp-filter', `filter-buffer-substring', `mon-transmogrify'.\n▶▶▶"
   (let ((mcs-tbl-type (type-of canon-table))
         (mcs-itm-cnt (length canon-table))
         (mcs-idx-cnt 0)
@@ -765,6 +766,7 @@ The cadr may also be a subexp to replace with.\n
 :EXAMPLE\n\n\(replace-string-pairs-region-no-props start end\n
  '((\"alpha\" \"A\") (\"beta\" \"B\")))\n
 :USED-IN `naf-mode'.\n
+:ALIASED-BY `mon-replace-string-pairs-region-no-props'\n
 :SEE-ALSO `replace-string-pairs-region',
 `mon-replace-string-pairs-region-no-insert', `mon-replace-region-regexp-lists',
 `mon-replace-region-regexp-lists-nonint'.\n▶▶▶"
@@ -2279,7 +2281,7 @@ For interactive whitespace region adjustment use `mon-cln-BIG-whitespace',
 
 ;;; ==============================
 (defun mon-kill-whitespace ()
-  "Kill trailing whitespace (tab and space) in *<BUFFER>* not region.\n
+  "Kill trailing whitespace \(tab and space\) in *<BUFFER>* not region.\n
 Unlike `mon-cln-trail-whitespace', doesn't convert tabs to spaces.\n
 For interactive whitespace region adjustment use `mon-cln-BIG-whitespace',
 `mon-cln-whitespace', or `mon-cln-blank-lines'.\n
@@ -2393,13 +2395,13 @@ mitigated those issues.\n
                   (goto-char next-line))))))
       (setq kill-ring mcul-ring))))
 
-
 ;;; ==============================
 ;;; :PREFIX "mesab-"
 ;;; :COURTESY Stefan Reichor :HIS xsteve-functions.el
 (defun mon-exchange-slash-and-backslash ()
   "Exchange / with \\ and in the current line.\n
 Exchange in region when region-active-p is non-nil.\n
+:ALIASED-BY 1mon-replace-slash-backslash'.\n
 :SEE-ALSO `mon-cln-file-name-string', `convert-standard-filename'.\n▶▶▶"
   (interactive)
   (save-match-data

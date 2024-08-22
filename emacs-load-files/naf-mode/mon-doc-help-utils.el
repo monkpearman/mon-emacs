@@ -2418,7 +2418,7 @@ Matches the following:
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-03T15:16:13-05:00Z}#{10053} - by MON>
 ;;; :CREATED <Timestamp: #{2009-12-20T17:50:49-05:00Z}#{09517} - by MON>
 (defun mon-help-temp-docstring-display (the-help-doc &optional some-other-buffer
-                                        kill-em-before-they-grow)
+                                                     kill-em-before-they-grow)
   "Display THE-HELP-DOC string formatted as per help-mode.\n
 Leave existing *Help* buffer untouched.\n
 Docstring is displayed in the buffer named by the the value of 
@@ -2458,7 +2458,8 @@ SOME-OTHER-BUFFER with name before displaying contents there.\n
     (with-help-window dhb 
       (with-current-buffer dhb
         (insert the-help-doc)
-        (help-window-setup-finish (selected-window) ))))) ;;t t)))))
+        ;; WAS (help-window-setup-finish (selected-window))        
+        (help-mode-finish)))))
 ;;
 ;;; :TEST-ME (mon-help-temp-docstring-display (documentation 'mon-help-temp-docstring-display))
 ;;; :TEST-ME (mon-help-temp-docstring-display 
@@ -2652,7 +2653,14 @@ When optional arg CALL-PROC is non-nil pass each generated shell-commands to
       (dolist (cp gthr)
         ;; :PROGRAM `shell-file-name' :INFILE  nil :DISPLAY nil :BUFFER discard 
         ;; :&REST-ARGS  `shell-command-switch' "etags {...} "
-        (call-process shell-file-name nil 0 nil shell-command-switch cp))
+        (call-process 
+         shell-file-name  ;; :PROGRAM
+         nil                    ;; :INFILE
+         0                     ;; :DESTINATION
+         nil                   ;; DISPLAY
+          shell-command-switch
+          cp
+         ))
       (mon-message :msg-spec '(":FUNCTION  `mon-update-tags-tables'" 
                                "-- executed etags shell-commands with args:\n %S")
                    :msg-args gthr))
@@ -2668,7 +2676,9 @@ with paths held by `*mon-tags-table-list*'.\n
 :SEE-ALSO `mon-update-tags-tables', `tags-table-list', `tags-file-name'.\n▶▶▶"
   (progn
     (mon-update-tags-tables 
-     (car *mon-tags-table-list*) (cdr *mon-tags-table-list*) t)
+     (car *mon-tags-table-list*)
+     (cdr *mon-tags-table-list*)
+     t)
     (mon-message :msg-spec '(":FUNCTION  `mon-update-tags-tables-loadtime'" 
                              "-- updated TAGS files with "
                              "`*mon-tags-table-list*' pathnames"))))
@@ -2727,7 +2737,7 @@ otherwise.\n
 ;;; (eval-and-compile
 ;;;  (<THE-DEFVAR>))
 ;;
-;;; (eval-when (compile eval)
+;;; (cl-eval-when (compile eval)
 ;;;  (mon-help-put-var-doc-val->func <THE-DEFVAR> <THE-FUNC>))
 ;;; :CHANGESET 1903 <Timestamp: #{2010-06-21T12:55:22-04:00Z}#{10251} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-10-01T18:57:13-04:00Z}#{09404} - by MON KEY>
@@ -13674,7 +13684,7 @@ Following are the types of objects that `indirect-function' may return.\n
 ;;; :TEST-ME (documentation 'mon-help-byte-code-vector-symbols)
 ;;; :TEST-ME (apply 'mon-help-byte-code-vector-symbols '(t))
 ;;
-(eval-when (compile load)
+(cl-eval-when (compile load)
   (put 'mon-help-byte-code-vector-symbols 'function-documentation 
        (let (mbcvs-doc)
          (with-temp-buffer
@@ -14403,7 +14413,7 @@ done
   :group 'mon-doc-help-utils)
 ;;
 ;;
-;;(eval-when (compile load)
+;;(cl-eval-when (compile load)
 (unless (and (intern-soft "*regexp-clean-du-flags*" obarray)
              (bound-and-true-p *regexp-clean-du-flags*))
   (setq *regexp-clean-du-flags*
@@ -15426,7 +15436,7 @@ Each element of List has the form:\n
 ;;; :TEST-ME (mon-help-w32-env )
 
 ;; Now we tack on a docstring using.
-(eval-when (compile) ; load)
+(cl-eval-when (compile) ; load)
   (let ((tt-doc *w32-env-variables-alist*))
     (setq tt-doc
           (concat 
@@ -15454,7 +15464,7 @@ Each element of List has the form:\n
 ) ;; :CLOSE eval-when
 
 ;;; :WAS
-;;; (eval-when (compile eval)
+;;; (cl-eval-when (compile eval)
 ;;; (mon-help-put-var-doc-val->func
 ;;;    '*w32-env-variables-alist*
 ;;;    'mon-help-w32-env

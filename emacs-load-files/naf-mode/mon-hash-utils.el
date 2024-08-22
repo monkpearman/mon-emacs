@@ -789,17 +789,17 @@ it is displayed along with the global value.\n
 `mon-hash-to-list', `mon-hash-get-items', `mon-hash-get-values',
 `mon-hash-has-key', `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
 `mon-hash-put-CL', `mon-hash-describe'.\n▶▶▶"
-  (maphash (lambda (key value)
-	     (pp key)
-	     (princ " => ")
-	     (if (hash-table-p value)
-		 (progn
-		   (princ " { ")
-		   (terpri)
-		   (mon-hash-describe-descend value)
-		   (princ " } "))
-	       (pp value))
-	     (terpri))
+  (maphash #'(lambda (key value)
+	       (pp key)
+	       (princ " => ")
+	       (if (hash-table-p value)
+		   (progn
+		     (princ " { ")
+		     (terpri)
+		     (mon-hash-describe-descend value)
+		     (princ " } "))
+	         (pp value))
+	       (terpri))
 	   hash))
 
 ;;; ==============================

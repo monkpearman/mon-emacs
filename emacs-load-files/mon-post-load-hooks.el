@@ -277,7 +277,7 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
         (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
                    ;; (bound-and-true-p IS-MON-P-GNU))
                    (bound-and-true-p IS-MON-SYSTEM-P))
-          ;; IS-DARWIN-P  ;; FIXME VERIFY DARWIN
+          ;; IS-DARWIN-P  ;; :FIXME VERIFY DARWIN
           (when (and (intern-soft "IS-DARWIN-P" obarray) ;; *IS-MON-OBARRAY*
                      (bound-and-true-p IS-DARWIN-P))
             (mon-help-utils-CL-loadtime t)

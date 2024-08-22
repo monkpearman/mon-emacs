@@ -1,4 +1,5 @@
-;;; slime-loads-GNU-clbuild.el --- conform slime/swank to current environment
+;;; :FILE /Users/monkpearman/Documents/HG-Repos/SDP_EMACS/emacs-load-files/slime-loads-GNU-clbuild.el;;; slime-loads-GNU-clbuild.el --- conform slime/swank to current environment
+;;; ==============================
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
@@ -932,8 +933,8 @@ been added.\n
   (let* ((paths-plist (bound-and-true-p *mon-lisp-system-paths*))
          (root-path (plist-get paths-plist :root-path))
          (base-system-path (and root-path
-                                (expand-file-name (plist-get paths-plist :base-system-path) root-path)))
-         (expand-paths (and base-system-path (plist-get paths-plist :system-paths)))
+                                (expand-file-name (plist-get paths-plist :base-system-path) root-path)))  
+         (expand-paths (and base-system-path (plist-get paths-plist :system-paths)))  
          (expansions '()))
     (and paths-plist root-path base-system-path expand-paths
          (dolist (malsptttl-D-0 expand-paths (setq expansions (nreverse expansions)))
@@ -947,7 +948,6 @@ been added.\n
       (dolist (malsptttl-D-1 expansions tags-table-list)
         (add-to-list 'tags-table-list malsptttl-D-1 t)
         (custom-note-var-changed 'tags-table-list)))))
-
 
 ;; (add-hook 'slime-mode-hook
 ;;           (function (lambda () 
@@ -1089,6 +1089,7 @@ Evaluates `slime-setup', `slime-require'.\n
   
   ;; (add-to-list 'auto-mode-alist '("\\(?:\\.pctd\\)" . lisp-mode))
 
+  ;; (pop slime-completion-at-point-functions)
   (custom-set-variables
    '(inferior-lisp-program (concat (executable-find "sbcl") " --noinform --no-linedit"))
    ;; '(slime-net-coding-system 'iso-latin-1-unix))
@@ -1097,7 +1098,13 @@ Evaluates `slime-setup', `slime-require'.\n
    '(slime-truncate-lines nil)
    ;; :NOTE Setting `slime-use-autodoc-mode' is about the only to stop the
    ;;       insanity once it starts.
-   '(slime-complete-symbol-function 'slime-fuzzy-complete-symbol)
+   ;; :OBSOLETE `slime-complete-symbol-function' :USE `slime-completion-at-point-functions'
+   ;; '(slime-complete-symbol-function 'slime-fuzzy-complete-symbol)
+   ;; '(slime-completion-at-point-functions  (add-to-list  'slime-completion-at-point-functions 'slime-fuzzy-complete-symbol) t)
+   '(slime-completion-at-point-functions
+     '(slime-fuzzy-complete-symbol
+       slime-filename-completion
+       slime-simple-completion-at-point))
    '(slime-use-autodoc-mode nil)
    '(slime-autodoc-delay 2)
    '(slime-autodoc-accuracy-depth 4) ;; The default: 10 is prob. way to much IMHO
@@ -1457,6 +1464,37 @@ Evaluates `slime-setup', `slime-require'.\n
 ;; (add-hook 'slime-inspector-mode-hook 'mon-keybind-slime-inspector)
 
 
+(defun mon-clouseau-inspect (string)
+  "Tell SLIME to use Clouseau for inspecting objects
+Clouseau is an graphical inspector for Common Lisp. SLIME’s built-in inspector
+is great, but Clouseau is better \(If you doubt it, try inspecting a complex number\).\n
+With this tweak, invoking the inspector will open a new window with the graphical inspector.\n
+If there is already a window with the graphical inspector, the existing window is reused.\n
+:NOTE For this code to work, you also need to have Clouseau loaded it your
+Common Lisp image. This can be achieved either by putting following into the
+startup file of your Common Lisp implementation, or by integrating Clouseau into
+a core file:\n
+ \(ql:quickload \"clouseau\"\)\n
+:SEE https://github.com/marcoheisig/common-lisp-tweaks \n
+:SEE-ALSO `slime-list-threads',`slime-inspect'..\n▶▶▶"
+  (interactive (list 
+                (slime-read-from-minibuffer "Inspect value (evaluated): " (slime-sexp-at-point))))                                            
+  (let ((inspector 'cl-user::*clouseau-inspector*))
+    (slime-eval-async
+        `(cl:progn
+          (cl:defvar ,inspector nil)
+          ;; (Re)start the inspector if necessary.
+          (cl:unless (cl:and (clim:application-frame-p ,inspector)
+                             (clim-internals::frame-process ,inspector))
+                     (cl:setf ,inspector (cl:nth-value 1 (clouseau:inspect nil :new-process t))))
+          ;; Tell the inspector to visualize the correct datum.
+          (cl:setf (clouseau:root-object ,inspector :run-hook-p t)
+                   (cl:eval (cl:read-from-string ,string)))
+          ;; Return nothing.
+          (cl:values)))))
+
+;; (define-key slime-prefix-map (kbd "C-c i") 'mon-clouseau-inspect)
+;;; 
 ;;; ==============================
 ;;; :CHANGESET 2409
 ;;; :CREATED <Timestamp: #{2011-02-10T13:17:55-05:00Z}#{11064} - by MON KEY>

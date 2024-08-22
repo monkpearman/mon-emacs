@@ -38,9 +38,9 @@
 ;; `mon-set-custom-file-init', `mon-set-customizations-before-custom-file-init',
 ;; `mon-set-doc-view-programs-init', `mon-set-dvc-init',
 ;; `mon-set-emacs-temp-file/dir-init', `mon-set-help-mode-init',
-;; `mon-set-ibuffer-init', `mon-set-ido-init', `mon-set-infopath-init',
-;; `mon-set-ispell-init', `mon-set-lisp-init', `mon-set-load-path-init',
-;; `mon-set-longlines-init', `mon-set-proced-init',
+;; `mon-set-ibuffer-init', `mon-set-ido-init', `mon-set-info-lookup-init',
+;; `mon-set-info-path-init' `mon-set-ispell-init', `mon-set-lisp-init',
+;; `mon-set-load-path-init', `mon-set-longlines-init', `mon-set-proced-init',
 ;; `mon-set-rst-mode-faces-init', `mon-set-system-specific-and-load-init',
 ;; `mon-set-thumbs-conversion-program-init', `mon-set-traverselisp-init',
 ;; `mon-set-unicodedata-init', `mon-set-w3m-init', `mon-set-woman-manpath-init',
@@ -49,8 +49,9 @@
 ;; `mon-set-boxcutter-init', `mon-set-mon-feature-customs-init',
 ;; `mon-set-image-dired-init', `mon-set-org-init',
 ;; `mon-set-custom-customizations-init', `mon-set-show-paren-init',
-;; `mon-set-github-paths-init', `mon-set-bbdb-init', `mon-set-printer-postscript-init',
-;; `mon-set-split-window-init', `mon-set-vc-init', `mon-set-magit-init',
+;; `mon-set-github-paths-init', `mon-set-bbdb-init',
+;; `mon-set-printer-postscript-init', `mon-set-split-window-init',
+;; `mon-set-vc-init', `mon-set-magit-init',
 ;; FUNCTIONS:◀◀◀
 ;; 
 ;; MACROS:
@@ -181,9 +182,7 @@
              (bound-and-true-p *IS-MON-OBARRAY*))
   (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
-
 ;;; ==============================
-;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T15:54:56-05:00Z}#{11022} - by MON KEY>
 (defgroup mon-default-start-loads nil
   "Customization group for variables and functions of :FILE mon-default-start-loads.el\n
@@ -271,6 +270,7 @@ The symbols contained of this list are defined in :FILE mon-default-start-loads.
           mon-set-doc-view-programs-init mon-set-dvc-init
           mon-set-emacs-temp-file/dir-init mon-set-help-mode-init
           mon-set-ibuffer-init mon-set-ido-init mon-set-infopath-init
+          mon-set-info-lookup-init
           mon-set-ispell-init mon-set-lisp-init mon-set-load-path-init
           mon-set-longlines-init mon-set-proced-init mon-set-rst-mode-faces-init
           mon-set-system-specific-and-load-init
@@ -289,6 +289,9 @@ The symbols contained of this list are defined in :FILE mon-default-start-loads.
           mon-set-printer-postscript-init
           mon-set-vc-init
           mon-set-magit-init
+          mon-set-pdf-view-init
+          mon-set-epa-configs-init
+          mon-set-erc-configs-init
           ;; :VARIABLES 
           *mon-default-start-load-sanity*
           *mon-default-start-load-sanity-WARN-ONLY*
@@ -417,6 +420,7 @@ non-nil to will also override all error signaling.\n
 ;; (mon-set-split-window-init t)
 (mon-set-split-window-init t)
 
+
 ;;; ==============================
 ;; :LOAD-PATH-SETUP
 
@@ -446,7 +450,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
      (dolist (m-silp mon-silp)
        (add-to-list 'load-path m-silp)
        ;; *mon-site-lisp-root*
-)
+       )
      ;; :NOTE This may cause problems when (not IS-BUG-P-REMOTE).
      ;; (setq user-emacs-directory (file-name-as-directory *mon-user-emacsd*))
      (unless (and (file-exists-p *mon-user-emacsd*)
@@ -520,8 +524,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
              (color-theme-ld-dark)) ;; (color-theme-euphoria))       
             ((and (intern-soft "IS-MON-P" obarray) ;; *IS-MON-OBARRAY*
                   (bound-and-true-p IS-MON-P))
-             (color-theme-ld-dark))))
-   ))
+             (color-theme-ld-dark))))))
 ;;
 ;; (mon-set-color-themes-init t)
 (mon-set-color-themes-init)
@@ -599,9 +602,6 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
               (mkdir (symbol-value ensure-dir) t))))
    (require 'doc-view)
    (custom-set-variables
-    ;; :NOTE BZR revno: 102144 2010-10-28 removed `temporary-file-directory' from lisp/files.el
-    ;; and added its customomization to lisp/cus-start.el
-    ;; If something breaks around here in emacs-24 start there.
     '(temporary-file-directory 
       (concat *mon-local-emacs-temp-dir* "/misc-emacs-temp") t)
     '(thumbs-thumbsdir 
@@ -623,12 +623,12 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
       ;;'( `slime-temp-directory'  {...} ) ;; This is hardwired to value of `temporary-file-directory'   
       '(tramp-persistency-file-name 
         (expand-file-name (format "tramp-persist-%d" (user-uid))
-                          (concat *mon-local-emacs-temp-dir* "/tramp")))))
-   ))
+                          (concat *mon-local-emacs-temp-dir* "/tramp")))))))
 ;;
 ;; (mon-set-emacs-temp-file/dir-init t)
 (mon-set-emacs-temp-file/dir-init)
 
+
 ;;; ==============================
 ;; :INFOPATH-SETUP
 ;; (substitute-env-vars "$MON_HOME/INFO-MON")
@@ -640,8 +640,6 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;; IS-MON-P-DARWIN
 ;; (getenv "INFO_MON")
 
-
-  
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-22T17:31:14-04:00Z}#{10121} - by MON KEY>
 (defun mon-set-infopath-init (&optional warn-only)
@@ -656,7 +654,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 :SEE-ALSO `w32-init-info', `mon-get-env-vars-emacs',
 `Info-default-directory-list', `Info-directory-list',
 `Info-additional-directory-list', `Info-dir-contents',
-`Info-default-dirs'.\n▶▶▶"
+`Info-default-dirs', `mon-set-info-lookup-init', `mon-info-mode-hook'.\n▶▶▶"
   (mon-default-start-error/sane 
    'mon-set-info-path-init warn-only
    (let* ((sys-type (mon-user-name-conditionals t))
@@ -669,8 +667,8 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
            (cond 
             ;; First we look for IS-MON-P-DARWIN
             ((eq sys-type 'IS-MON-P-DARWIN)
-             ;; ;; 
-             (let ((brew  "/opt/homebrew/share/info/")
+             ;; ;; ;; 
+             (let ((brew     "/opt/homebrew/share/info/")
                    (brewmacs "/opt/homebrew/Cellar/emacs-plus@29/29.2/share/info/emacs/"))
              ;; (file-name-as-directory (getenv "INFO_MON")) 
              (cond (geim-p ;; only possible if we have INFO_MON non nil
@@ -702,8 +700,31 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
                           (push geim-p Info-default-directory-list)
                           (push brew Info-default-directory-list)
                           (push brewmacs Info-directory-list)
+
+                          (push geim-p Info-default-directory-list)
+                          (push brew Info-default-directory-list)
                           (format ":FUNCTION `mon-set-info-path-init'
-                                          \n - Value of global variable `Info-default-directory-list' is now %S\n" Info-default-directory-list)))))))))
+                                          \n - Value of global variable `Info-default-directory-list' is now %S\n" Info-default-directory-list)))))))
+             (progn 
+             ;; Make sure we have everything on _at_least_ the `Info-additional-directory-list'. 
+             ;; :NOTE it seems that because we define `mon-info-mode-hook' in
+             ;; ~/.emacs info is already loaded to the system. Which means that
+             ;; all the work above is likely for naught because it does (require
+             ;; 'info) and is probably frobbing `info-default-directory-list'
+             ;; and `info-directory-list' interactions at that time. 
+             ;; Consider moving `mon-info-mode-hook' out of ~/.emacs
+               (unless 
+                   (member (file-name-as-directory (getenv "INFO_MON")) Info-additional-directory-list)
+                 (push  "/opt/homebrew/share/info/" Info-additional-directory-list)
+                 (custom-note-var-changed 'Info-additional-directory-list))
+               (unless
+                   (member (file-name-as-directory (getenv "INFO_MON")) Info-additional-directory-list)
+                 (push  (file-name-as-directory (getenv "INFO_MON")) Info-additional-directory-list)
+                 (custom-note-var-changed 'Info-additional-directory-list))
+               (when  Info-additional-directory-list
+                 (format ":FUNCTION `mon-set-info-path-init'
+                          \n - Value of global variable `Info-additional-directory-list' is now:
+                          \n   %S \n" Info-default-directory-list)))))
             ;; Next check IS-MON-P-GNU.
             ((eq sys-type 'IS-MON-P-GNU)
              ;; DO STUFF HERE
@@ -751,6 +772,40 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;;
 (mon-set-infopath-init)
 
+(cl-eval-when (compile load eval) 
+  (unless (featurep 'info-look) (require 'info-look)))
+
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-19T18:02:41-04:00Z}#{24341} - by MON KEY>
+(defun mon-set-info-lookup-init (&optional warn-only)
+  "Setup some mon-specific configs for use with `info-lookup-mode'.
+:SEE-ALSO `info-lookup', `info-lookup-symbol', `info-lookup-add-help',
+`info-lookup-alist', `mon-set-infopath-init', `mon-info-mode-hook',
+`mon-keybind-info-mode'.\n▶▶▶"
+  (mon-default-start-error/sane 
+   'mon-set-info-lookup-init
+   (info-lookup-add-help
+    ;; :doc-spec-function
+    ;; :other-modes
+    ;; :parse-rule
+    ;; :topic
+    :mode 'lisp-mode
+    :regexp "[^][()'\" \t\n]+"
+    :ignore-case t
+    ;; DOC-SPEC is a list of documentation specifications of the form
+    ;;           (INFO-NODE             TRANS-FUNC PREFIX SUFFIX)
+    :doc-spec '(("(ansicl)Symbol Index" nil        nil    nil)))
+   ;; (info-lookup-add-help
+   ;;  :mode 'slime-mode
+   ;;  :regexp "[^][()'\" \t\n]+"
+   ;;  :ignore-case t
+   ;;  :doc-spec '(("(ansicl)Symbol Index" nil        nil    nil))
+   ;;  )
+   ))
+;;
+(mon-set-info-lookup-init)
+
 ;;; ==============================
 ;;; :RENAMED `mon-switch-bookmark-file' -> `mon-set-bookmark-file-init'
 ;;; :COURTESY stefan@xsteve.at :VERSION 23.01.2001 :HIS xsteve-functions.el
@@ -776,7 +831,7 @@ A bookmark file typically has a .bmk extension, for additional discussion:
    'mon-set-bookmark-file-init warn-only
    ;; (setq bookmark-default-file new-bm) (setq bookmark-save-flag 1)
    (let ((new-bm (or new-bk-mrk-file 
-                     (concat (file-name-as-directory *mon-user-emacsd*) 
+                     (concat (file-name-as-directory *mon-user-emacsd*)
                              (if (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
                                       (bound-and-true-p IS-MON-P-GNU))
                                  (format ".emacs-%s.bmk" (cdr (mon-gnu-system-conditionals)))
@@ -964,10 +1019,7 @@ Sets the following variables:\n
 ;; (mon-set-unicodedata-init)
 ;; (mon-set-unicodedata-init)
 
-
-
 ;;; ==============================
-;;; :CHANGESET 2442
 ;;; :CREATED <Timestamp: #{2011-05-13T19:30:08-04:00Z}#{11195} - by MON KEY>
 ;; :SEE bbdb-com.el bbdb.el
 (defun mon-set-bbdb-init (&optional warn-only)
@@ -1098,7 +1150,7 @@ Set the following variables:\n
 When optional arg WARN-ONLY is non-nil message a warning instead of an error if
 function is already a member of variable `*mon-default-start-load-sanity*' as per 
 `mon-default-start-error/sane'.\n
-:SEE-ALSO `mon-get-pdfinfo', `mon-get-pdftotext', `mon-get-ps2ascii',
+:SEE-ALSO `mon-set-pdf-view-init', `mon-get-pdfinfo', `mon-get-pdftotext', `mon-get-ps2ascii',
 `*mon-pdftotext-exec-path*', `*mon-pdfinfo-exec-path*'.
 ▶▶▶"
   (mon-default-start-error/sane 
@@ -1208,7 +1260,6 @@ of the ImageMagick executables convert.exe and imconvert.exe\n
 
 ;;; IS-DARWIN-P IS-MON-P-DARWIN  ;; ?? screen capture ?? 
 ;;; ==============================
-;;; :CHANGESET 2292
 ;;; :CREATED <Timestamp: #{2010-11-09T20:36:53-05:00Z}#{10452} - by MON KEY>
 (defun mon-set-boxcutter-init (&optional warn-only)
   "Set the `*boxcutter-captures*' paths on MON systems at init time.\n
@@ -1245,7 +1296,6 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;;; ==============================
 ;;; :TODO Finish! Adjust imconvert/convert conditionals appropriately and build
 ;;; command according to system-type
-;;; :CHANGESET 2331
 ;;; :CREATED <Timestamp: #{2010-11-29T16:22:54-05:00Z}#{10481} - by MON KEY>
 (defun mon-set-image-dired-init (&optional warn-only)
   "Set the image-dired related customizations on MON systems at init time.\n
@@ -1558,7 +1608,6 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 (mon-set-ibuffer-init)
 
 ;;; ==============================
-;;; :CHANGESET 1747 <Timestamp: #{2010-05-19T17:55:18-04:00Z}#{10203} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-04-03T17:33:11-04:00Z}#{10136} - by MON KEY>
 (defun mon-set-ido-init (&optional warn-only)
   "Set `ido-mode' preferences on MON systems at init time.\n
@@ -1597,10 +1646,12 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
        ;; :DEBUGGING (get 'ido-save-directory-list-file 'customized-value)
        (custom-set-variables 
         ;; `(ido-save-directory-list-file ,mk-ido-d t)
-         '(ido-everywhere nil t)
-         '(ido-enable-prefix 1 t)
-         '(ido-enable-flex-matching 1 t)
-         '(ido-mode 'both t)
+         '(ido-everywhere nil)
+         '(ido-enable-prefix 1)
+         '(ido-enable-flex-matching t)
+         '(ido-mode 'both)
+         '(ido-ignore-buffers 
+                        (add-to-list 'ido-ignore-buffers "magit-process: ") t)
          ;; :NOTE Sometimes ido should ignore the *Completions* buffer.
          ;; (add-to-list 'ido-ignore-buffers "\\*Completions\\*")
          ;;
@@ -1627,8 +1678,10 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
             (custom-set-variables 
              '(ido-work-directory-list-ignore-regexps 
                '("c:/WINDOWS/.NtUninstall.*") t)))
-           ((and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
+           ((or (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
                  (bound-and-true-p IS-MON-P-GNU))
+                (and (intern-soft "IS-MON-P-DARWIN" obarray) ;; *IS-MON-OBARRAY*
+                 (bound-and-true-p IS-MON-P-DARWIN)))
             (custom-set-variables 
              '(ido-work-directory-list-ignore-regexps  
                (list ".*lost+found.*" 
@@ -1641,7 +1694,6 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 
 
 ;;; ==============================
-;;; :CHANGESET 2363
 ;;; :CREATED <Timestamp: #{2010-12-20T21:28:31-05:00Z}#{10511} - by MON KEY>
 (defun mon-set-org-init (&optional warn-only)
   (mon-default-start-error/sane
@@ -1665,7 +1717,6 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;; :CUSTOM-FILE
 
 ;;; ==============================
-;;; :CHANGESET 2389
 ;;; :CREATED <Timestamp: #{2011-01-12T14:25:03-05:00Z}#{11023} - by MON KEY>
 (defun mon-set-custom-customizations-init (&optional warn-only)
   "Set custom customizations on MON systems.\n
@@ -1794,7 +1845,6 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 (mon-set-customizations-before-custom-file-init)
 
 ;;; ==============================
-;;; :CHANGESET 2120
 ;;; :CREATED <Timestamp: #{2010-09-13T13:36:44-04:00Z}#{10371} - by MON KEY>
 (defun mon-set-custom-file-init-w32-configs (&optional warn-only)
   "Set w32 specific configs at init time.\n
@@ -2104,7 +2154,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
                 (with-ed    "/with-editor/lisp")
                 (compat     "/compat")
                 (dash      "/dash-2.19.1"))
-            (loop 
+            (cl-loop 
              for pathnames in (list magit-lisp transient with-ed compat dash)
              for expanded = (concat magit-root pathnames)
              do (add-to-list 'load-path expanded))))
@@ -2212,10 +2262,78 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    ))
 ;; (mon-set-dvc-init t)
 
+;; 
+(defun mon-set-pdf-view-init (&optional warn-only)
+  "Initialize pdf-view sytem on MON systems at init time.\n
+Signal an error when `IS-NOT-MON-SYSTEM'.\n
+When optional arg WARN-ONLY is non-nil message a warning instead of an error if
+function is already a member of variable `*mon-default-start-load-sanity*' as per 
+`mon-default-start-error/sane'.\n
+:SEE-ALSO `mon-set-doc-view-programs-init',`mon-set-magit-init'.\n▶▶▶"
+  (mon-default-start-error/sane
+   'mon-set-pdf-view-init warn-only
+   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+              (bound-and-true-p IS-MON-SYSTEM-P)
+              (and (intern-soft "IS-MON-P-DARWIN" obarray) ;; *IS-MON-OBARRAY*
+                    (bound-and-true-p IS-MON-P-DARWIN)))
+     
+     (add-to-list 'load-path 
+                  (mon-build-path-for-load-path *mon-site-lisp-root* "pdf-tools/lisp"))
+     (require 'pdf-view)
+     (require 'pdf-util)
+     (require 'pdf-info)
+     (require 'pdf-tools)
+     (require 'pdf-virtual)
+     (require 'pdf-sync)
+     (require 'pdf-outline)
+     (require 'pdf-annot)
+     (require 'pdf-history)
+     (require 'pdf-occur)
+     (require 'pdf-history)
+     (require 'pdf-cache)
+     (require 'pdf-links)
+     (require 'pdf-isearch)
+    (custom-set-variables 
+      `(pdf-info-epdfinfo-program 
+        ,(mon-build-path-for-load-path *mon-site-lisp-root* "pdf-tools/server/epdfinfo"))))))
+;;
+;; (mon-set-pdf-view-init t)
+
+(defun mon-set-epa-configs-init (&optional warn-only)
+  "Set epa and epg related preferences on MON systems at init time.\n
+Specifically, on IS-MON-P-DARWIN set `epa-pinentry-mode' to 'loopback so the
+gpg-agent will divert the pinentry to the current emacs-client.\n
+:SEE :FILE lisp/epg-config.el
+:SEE :info node `(epa)GnuPG Pinentry'\n
+:SEE-ALSO `mon-set-erc-configs-init',`epg-user-id-alist', `epg-user-id',
+`epa-list-secret-keys', `epa-decrypt-file', `epa-encrypt-file'.\n▶▶▶"
+  (mon-default-start-error/sane
+   'mon-set-epa-configs-init warn-only
+   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+              (bound-and-true-p IS-MON-SYSTEM-P)
+              (and (intern-soft "IS-MON-P-DARWIN" obarray) ;; *IS-MON-OBARRAY*
+                    (bound-and-true-p IS-MON-P-DARWIN)))
+     ;; on Darwin to divert pinentry to emacs make sure 
+     ;; :FILE "~/gnupg/gpg-agent.conf" contains following two lines:
+     ;; pinentry-program /opt/homebrew/bin/pinentry-mac
+     ;; allow-emacs-pinentry 
+     (custom-set-variables 
+      ;; (epg-user-id "SDP (2024 defaulting) <monkpearman@icloud.com>")
+      ;; '(epg-gpg-home-directory "~/.gnupg/")
+      ;; '(epg-gpg-program "/usr/local/bin/gpg")
+      ;; '(epg-debug t)
+      ;; '(epg-pinentry-mode 'loopback)
+       '(epg-pinentry-mode nil)
+      ;;; (epa-replace-original-text nil) ;; 'ask t
+      ))))
+
+;; 
+(mon-set-epa-configs-init t)
+
+;; (auth-source-netrc-parse :file "~/.authinfo.gpg")
 ;; (erc-track-remove-from-mode-line)
 ;; (setq erc-try-new-nick-p nil)
 ;;; ==============================
-;;; :CHANGESET 2120
 ;;; :CREATED <Timestamp: #{2010-09-13T13:14:38-04:00Z}#{10371} - by MON KEY>
 (defun mon-set-erc-configs-init (&optional warn-only)
   "Set erc related preferences on MON systems at init time.\n
@@ -2227,37 +2345,54 @@ in variable `*mon-misc-path-alist*'.\n
 :SEE-ALSO .\n▶▶▶"
   (mon-default-start-error/sane
    'mon-set-erc-configs-init warn-only
-   ;; (require 'erc)
+   
    (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
               (bound-and-true-p IS-MON-SYSTEM-P)
               (intern-soft "*mon-misc-path-alist*" obarray) ;; *IS-MON-OBARRAY*
               (bound-and-true-p *mon-misc-path-alist*)
               t)
+     (require 'erc)
      (apply 'custom-set-variables 
             (cadr (assq 'the-erc-configs *mon-misc-path-alist*)))
      ;;
      ;; (require 'erc-log)
-     ;;
+     (push 'services erc-modules)
+     (push 'notifications erc-modules) 
+     (custom-note-var-changed 'erc-modules)
+
+     (erc-update-modules)
      (custom-set-variables
+      ;; (password-cache t)
+      ;; (password-cache-expiry 16) 
+      ;; '(auth-source-debug t)
+      ;; (erc-default-server "irc.libera.chat")
+      ;; (erc-default-server "irc.libera.chat.net")
+      ;; (erc-nickserv-passwords
+      ;;   '((Libera.Chat (("nick-one" . "password")
+      ;;                   ("nick-two" . "password")))))
+      '(erc-prompt-for-password nil)
+      ;; (erc-prompt-for-nickserv-password nil) ;default t, setting  nil causes to read erc-nickserv-passwords
+      ;; '(erc-use-auth-source-for-nickserv-password t)
+      ;; (erc-nickserv-get-password "mon_key_phn")
+      '(erc-autojoin-mode t)
       ;; '(erc-server-auto-reconnect nil)
-      '(erc-autojoin-mode nil)
       ;; erc-server-NOTICE-functions
-      ;; erc-autojoin-channels-alist
+      ;; '(erc-autojoin-channels-alist '("irc.libera.chat.net" '("lisp" "commonlisp" "lispcafe" "emacs" "lispm" "sbcl")))
+      '(erc-autojoin-channels-alist '("[lL]ibera.chat" "#lisp" "#commonlisp" "#lispcafe" "#emacs" "#lispm" "#sbcl"))
+      '(erc-autojoin-timing 'ident)
+      '(erc-autojoin-delay 45)
       '(erc-server-reconnect-timeout 30)
       '(erc-server-reconnect-attempts 5)
       ;; /ignore joins+parts. The key to IRC.
-      '(erc-hide-list '("JOIN" "PART" "QUIT"))
-      '(erc-track-exclude-types '("JOIN" "KICK" "NICK" "PART" "QUIT" "MODE"))
-      
+      '(erc-hide-list '("PART" "QUIT")) ;'("JOIN" "PART" "QUIT"))
+      '(erc-track-exclude-types '("KICK" "NICK" "PART" "QUIT" "MODE")) ;"JOIN" 
       '(erc-autoaway-mode   t)  ;; note this doesn't do anything when erc-autoaway isn't loaded
       '(erc-track-showcount t)) ;; :default nil
-
      ;; (remove-hook 'erc-server-NOTICE-functions 'mon-erc-post-cloak-autojoin)
      (add-hook 'erc-server-NOTICE-functions 'mon-erc-post-cloak-autojoin t)
-
       ;; erc-modules 
       ;;
-      '(erc-try-new-nick-p  nil);; :DEFAULT t ;; :NOTE manually set another nickname with the /NICK command
+     '(erc-try-new-nick-p  nil);; :DEFAULT t ;; :NOTE manually set another nickname with the /NICK command
       ;;
       ;; erc-autoaway-mode
       ;; erc-auto-set-away
@@ -2312,7 +2447,6 @@ in variable `*mon-misc-path-alist*'.\n
      nil)))
 
 ;;; ==============================
-;;; :CHANGESET 1990
 ;;; :CREATED <Timestamp: #{2010-07-26T14:54:55-04:00Z}#{10301} - by MON KEY>
 (defun mon-set-url-pkg-init (&optional warn-only)
   "Load url/url-*.el packages and set related preferences on MON systems at init time.\n
@@ -2323,28 +2457,56 @@ Evaluate `url-setup', set `url-debug' t, and require :FILE url/url-http.el
 :SEE-ALSO `url-setup-done', `mon-set-browser-init', `mon-set-w3m-init'.\n▶▶▶"
   (mon-default-start-error/sane
    'mon-set-url-pkg-init warn-only
-   (require 'url)
-   (require 'url-http)
-   (url-do-setup)
-   (let ((uconfdir (file-truename 
-                    (expand-file-name ".emacs.d/url/" 
-                                      (file-truename (getenv "HOME"))))))
+
+   (cl-eval-when (compile load eval) 
+    (let ((uconfdir (file-truename 
+                     (expand-file-name ".emacs.d/url/"  (file-truename (getenv "HOME"))))))
      (unless  (file-directory-p uconfdir)
        (make-directory uconfdir))
-     (set-variable 'url-configuration-directory uconfdir)
-     (put 'url-configuration-directory 'customized-value 
-          (list (custom-quote (eval url-configuration-directory)))))
-   (custom-set-variables 
+     
+     ;; (set-variable 'url-configuration-directory uconfdir)
+     ;;  (put 'url-configuration-directory 'customized-value 
+     ;;       (list (custom-quote (eval url-configuration-directory))))
+     ;; (custom-note-var-changed 'url-configuration-directory)
+     
+     ;; try to set this early before the larger list below as url-cookie-save-interval fails.
+     ;; (custom-set-variables 
+     ;;  `(url-configuration-directory  uconfdir))
+
+     (setq url-configuration-directory uconfdir)
+     (custom-note-var-changed 'url-configuration-directory)
+     
+     (setq url-cookie-file (expand-file-name "cookies" url-configuration-directory))
+     (custom-note-var-changed 'url-cookie-file)
+     
+     (setq  url-history-file (expand-file-name "history" url-configuration-directory))
+     (custom-note-var-changed 'url-history-file)
+     )
+    )
+
+   (require 'url)
+   (require 'url-http)
+    ;; (url-do-setup)
+    ;; (url-do-setup)
+
+    (custom-set-variables 
     '(url-debug t)
+    ;; `(url-configuration-directory ,uconfdir))    
     ;;(url-configuration-directory  t)
-    '(url-cookie-file (expand-file-name "cookies" url-configuration-directory) t)
+
+    ;; testing
+    ;; '(url-cookie-file (expand-file-name "cookies" url-configuration-directory) t)
+
     '(url-cookie-save-interval (* 3600 15) t) ;; default ran a timer every 60 seconds
     ;; url-cache-directory
     ;; url-cookie-confirmation
     ;; url-cookie-multiple-line
     ;; url-cookie-trusted-urls
     ;; url-cookie-untrusted-urls
-    '(url-history-file (expand-file-name "history" url-configuration-directory) t)
+    
+    ;; testing
+    ;; '(url-history-file (expand-file-name "history" url-configuration-directory) t)
+    
     '(url-history-save-interval (* 3600 15) t)  ;; default ran a timer every 60 seconds
     '(url-history-track nil t)
     ;; url-proxy-services
@@ -2359,16 +2521,17 @@ Evaluate `url-setup', set `url-debug' t, and require :FILE url/url-http.el
     '(url-temporary-directory temporary-file-directory t)
     '(url-privacy-level 'paranoid t) ;'(email os lastloc agent cookie)
     '(url-automatic-caching nil t))
+
    (url-cookie-setup-save-timer)
    (url-history-setup-save-timer)
    (url-setup-privacy-info)
+
    ))
-;;
+
 ;; (mon-set-url-pkg-init t)
 
 
 ;;; ==============================
-;;; :CHANGESET 2073
 ;;; :CREATED <Timestamp: #{2010-08-19T16:31:50-04:00Z}#{10334} - by MON KEY>
 (defun mon-set-google-maps-init (&optional warn-only)
   "Signal an error when `IS-NOT-MON-SYSTEM'.\n
@@ -2397,7 +2560,6 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    ))
 
 ;;; ==============================
-;;; :CHANGESET 1786
 ;;; :CREATED <Timestamp: #{2010-05-29T12:03:37-04:00Z}#{10216} - by MON KEY>
 (defun mon-set-w3m-init (&optional warn-only)
   "Set and load w3m and related preferences on MON systems at init time.\n
@@ -2435,7 +2597,6 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 
 ;;; ==============================
 ;;; :TODO Entire conditional can be replaced with one call to `mon-get-mon-emacsd-paths'.
-;;; :CHANGESET 1786 <Timestamp: #{2010-05-29T12:42:37-04:00Z}#{10216} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: #{2010-04-02T21:29:00-04:00Z}#{10136} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-01-29T16:00:47-05:00Z}#{10045} - by MON KEY>
 (defun mon-set-browser-init (&optional warn-only)
@@ -2503,7 +2664,6 @@ When `IS-MON-SYSTEM-P' evaluated on the `after-change-major-mode-hook'.\n
 ;; (mon-set-buffer-local-comment-start)
 
 ;;; ==============================
-;;; :CHANGESET 1786
 ;;; :CREATED <Timestamp: #{2010-05-29T17:53:59-04:00Z}#{10216} - by MON KEY>
 (defun mon-set-buffer-local-comment-start-init (&optional warn-only)
   "Set default value of `comment-start' on MON systems at init time.\n
@@ -2546,7 +2706,6 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;; (mon-set-buffer-local-comment-start-init t)
 
 ;;; ==============================
-;;; :CHANGESET 1711
 ;;; :CREATED <Timestamp: #{2010-05-01T17:30:09-04:00Z}#{10176} - by MON KEY>
 (defun mon-set-css-path-init (&optional warn-only)
   "Set and load CSS related preferences/paths on MON systems at init time.\n
@@ -2610,7 +2769,6 @@ Signal an error when `IS-NOT-MON-SYSTEM'.\n
 ;; (mon-set-longlines-init t)
 
 ;;; ==============================
-;;; :CHANGESET 1740
 ;;; :CREATED <Timestamp: #{2010-05-17T09:49:59-04:00Z}#{10201} - by MON KEY>
 (defun mon-rst-mode-facification ()
   "Run on the `rst-mode-hook' to set rst-mode faces.\n
@@ -2647,7 +2805,6 @@ Signal an error when `IS-NOT-MON-SYSTEM'.\n
 ;; (mon-set-rst-mode-faces-init)
 
 ;;; ==============================
-;;; :CHANGESET 1786
 ;;; :CREATED <Timestamp: #{2010-05-29T21:52:05-04:00Z}#{10216} - by MON KEY>
 (defun mon-set-apache-mode-init (&optional warn-only)
   "Set `apache-mode' preferences on MON systems at init time.\n
@@ -2673,7 +2830,6 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;;; ==============================
 ;;; :NOTE Thiery's traverselisp is still a moving target.  Should
 ;;;        periodically check that we've pulled a current version.
-;;; :CHANGESET 1786
 ;;; :CREATED <Timestamp: #{2010-05-29T21:55:16-04:00Z}#{10216} - by MON KEY>
 (defun mon-set-traverselisp-init (&optional warn-only)
   "Set `traverselisp' preferences on MON systems at init time.\n
@@ -2756,7 +2912,6 @@ Binds the following variables:\n
 ;; (mon-keybind-w32-init)
 
 ;;; ==============================
-;;; :CHANGESET 1896 
 ;;; :CREATED <Timestamp: #{2010-06-17T14:41:40-04:00Z}#{10244} - by MON KEY>
 (defun mon-keybind-put-hooks-init (&optional warn-only)
   "Add keybindings to various mode-hooks at init.\n
@@ -2792,7 +2947,6 @@ Evaluated at init time by `mon-set-system-specific-and-load-init'.\n
 ;; (mon-build-github-default t)
 
 ;;; ==============================
-;;; :CHANGESET 2442
 ;;; :CREATED <Timestamp: #{2011-05-14T17:47:22-04:00Z}#{11196} - by MON KEY>
 (defun mon-set-github-paths-init (&optional warn-only)
   "Set customizations for github path related variables.\n
@@ -2819,7 +2973,6 @@ customization value of `*mon-github-pathname-url*' is bound correctly.\n
 
 ;; (mon-build-github-default)
 ;;; ==============================
-;;; :CHANGESET 2289
 ;;; :CREATED <Timestamp: #{2010-11-08T20:17:53-05:00Z}#{10451} - by MON KEY>
 (defun mon-set-mon-feature-customs-init (&optional warn-only)
   "Set mon-library specific customizations.\n
@@ -2892,7 +3045,6 @@ Evaluate `mon-set-boxcutter-init'.\n
    ))
   
 ;;; ==============================
-;;; :CHANGESET 1786
 ;;; :CREATED <Timestamp: #{2010-05-29T11:33:29-04:00Z}#{10216} - by MON KEY>
 (defun mon-set-system-specific-and-load-init (&optional warn-only)
   "Require and load additional system-type specific configs and procedures.\n
@@ -2932,17 +3084,23 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
             ;; (autoload 'mixvm "mixvm" "mixvm/gud interaction" t)
             ;;
             ;; (load "slime-loads-GNU-clbuild.el")
-            (require 'slime-loads-GNU-clbuild)  ;; what to do with Darwin?
+
+            ;; (require 'url)
+            (mon-set-url-pkg-init)
+            (require 'slime-loads-GNU-clbuild)
             (mon-slime-setup-init)
             (mon-define-common-lisp-style)
             ;; :BEFORE mon-utils.el
-            (mon-set-common-lisp-hspec-init))))
+            (mon-set-common-lisp-hspec-init)
+            )))
    ;;
    ;; :NOTE :FILE mon-utils.el contains require statements for mon-*.el packages.   
    (require 'mon-utils)
-   ;; :NOTE DARWIN longlines.el was obsoleted and then unbosoleted and then obsoleted again. It currently resides in the distributions path: emacs/lisp/obsolote/longlines.el 
-(unless (featurep 'longlines) 
-  (require 'longlines))
+   ;; :NOTE DARWIN longlines.el was obsoleted and then unbosoleted and then
+   ;; obsoleted again. It currently resides in the distributions path:
+   ;; emacs/lisp/obsolote/longlines.el
+   (unless (featurep 'longlines) 
+     (require 'longlines))
    ;; :NAF-MODE
    ;; (require 'naf-mode)
    ;; :NOTE Automode files with '.naf' file extensions. '.naf' -> NAME AUTHORITY
@@ -2954,7 +3112,7 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
    (mon-set-show-paren-init)
    (mon-set-buffer-local-comment-start-init)   
    (mon-set-unicodedata-init)   
-   (mon-set-url-pkg-init)
+   ;; (mon-set-url-pkg-init)
    (mon-set-google-maps-init)
    (mon-set-w3m-init)
    (mon-set-browser-init)
@@ -3005,8 +3163,12 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
    (require 'mon-color-occur)
    ;;; ==============================
    (require 'etags)
-   (when (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
+   (when 
+       (or
+        (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
               (bound-and-true-p IS-MON-P-GNU))
+        (and (intern-soft "IS-MON-P-DARWIN" obarray) ;; *IS-MON-OBARRAY*
+              (bound-and-true-p IS-MON-P-DARWIN)))
      ;; DARWIJN switch
      ;; (or(and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
      ;;    (bound-and-true-p IS-MON-P-GNU))
@@ -3015,8 +3177,9 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
      ;;
      ;; NOTE If we do M-A-L-S-P-T-T-T-L first we shouldn't have to notify with
      ;; `custom-note-var-changed'.
-     (mon-add-lisp-system-paths-to-tags-table-list))
-   (custom-set-variables `(tags-table-list ,(car *mon-tags-table-list*)))
+     (mon-add-lisp-system-paths-to-tags-table-list)
+     (custom-set-variables `(tags-table-list ,(car *mon-tags-table-list*)))
+   )
    ;; Now put some keybindings on the mode-hooks:
    (mon-keybind-put-hooks-init)
    ))

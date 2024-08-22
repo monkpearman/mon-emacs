@@ -182,16 +182,20 @@ Symbols  defined in :FILE mon-button-utils.el\n
   ;; :button-doc #'(lambda () (apropos-describe-plist (button-category-symbol 'naf-dir)))
   ;; )
 
+
+
+
 ;;; ==============================
 ;;; :CHANGESET 2128
 ;;; :CREATED <Timestamp: #{2010-09-14T12:09:11-04:00Z}#{10372} - by MON KEY>
 (defun mon-button-at-point-p (&optional putative-button-at)
-  "Return non-nil when ther is a `button` property on char at point.\n
-Arg PUTATIVE-BUTTON-AT is a buffer-position to check.
+  "Return non-nil when there is a `button` property on char at point.\n
+Arg PUTATIVE-BUTTON-AT when non-nil, is a buffer-position to check for button properties.\n
 :EXAMPLE\n\n\(progn
   \(goto-char \(buffer-end 0\)\)
-  \(while \(not \(get-char-property \(point\) 'button\)\) \(forward-char\)\)
-  \(point\)\)\n
+  \(list \(mon-button-at-point-p 
+         \(while \(not \(get-char-property \(point\) 'button\)\) \(forward-char\)\)\)
+       :BUTTON-AT-POINT \(point\)\)\)\n
 :SEE-ALSO `mon-button-get-plist', `mon-button-get-plist-props',
 `mon-button-at-point-p', `mon-button-at-point-describe-button-plist'
 `mon-get-overlays-map-props', `mon-get-overlays-region',

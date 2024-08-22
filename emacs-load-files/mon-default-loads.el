@@ -135,9 +135,7 @@
 (unless (featurep 'mon-site-local-defaults)
   (require 'mon-site-local-defaults nil t))
 
-
 ;;; ==============================
-;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T15:33:45-05:00Z}#{11022} - by MON KEY>
 (defgroup mon-default-loads nil
   "Customization group for variables and functions of :FILE mon-default-loads.el\n
@@ -155,7 +153,7 @@
   :group 'mon-base)
 
 ;;; ==============================
-;;; :CHANGESET 2291
+
 ;;; :CREATED <Timestamp: #{2010-11-09T16:53:31-05:00Z}#{10452} - by MON KEY>
 (defvar *IS-MON-OBARRAY* nil
   "Obarray for determining if a system is a MON system.\n
@@ -174,7 +172,6 @@ If *IS-MON-OBARRAY* is present in obarray following values will satisfy the form
   (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 ;;; ==============================
-;;; :CHANGESET 2291
 ;;; :CREATED <Timestamp: #{2010-11-09T18:48:47-05:00Z}#{10452} - by MON KEY>
 (defvar *IS-MON-OBARRAY-SYMS* nil
   "List of symbols interned in obarray `*IS-MON-OBARRAY*'.\n
@@ -446,11 +443,11 @@ Used in conditional system type tests in lieu of:\n
 
 
 ;;; ==============================
-(defconst IS-MON-P 
+(defconst IS-MON-P
   (or (and (intern-soft "IS-MON-P-DARWIN" obarray) (bound-and-true-p IS-MON-P-DARWIN))
       (and (intern-soft "IS-MON-P-GNU" obarray) (bound-and-true-p IS-MON-P-GNU))
       (and (intern-soft " IS-MON-P-W32" obarray) (bound-and-true-p  IS-MON-P-W32)))
-  "*Return non-nil if this is a MON system?\n
+  "*Return non-nil if this is a MON system.\n
 :EXAMPLE\n\nIS-MON-P\n
 :SEE-ALSO `mon-get-mon-emacsd-paths', `mon-system-type-conditionals',
 `mon-user-name-conditionals', `*mon-site-lisp-root*', `*mon-naf-mode-root*',
@@ -520,9 +517,8 @@ Return non-nil this when any of the following evaluate to true:\n
 ;;;(progn (makunbound 'IS-MON-SYSTEM-P) (unintern "IS-MON-SYSTEM-P" obarray) )
 
 ;;; ==============================
-;;; :NOTE Could also have been accomplished by frobbing return value of
-;;; `load-file-name'.  Too bad we didn't know about it at the time... 
-;;; Indeed, as of 2010-11-06 the variable remains undocumented in the manuals!
+;;; :NOTE Could also have been accomplished by frobbing return value of `load-file-name'.
+;;; Too bad we didn't know about it at the time... 
 (defvar set-emacs-root nil
   "*This variable is bound at loadtime by `cd'ing to a directory derived from a
 user conditionalized alist key lookup in variable `*mon-emacsd*'.\n
@@ -628,11 +624,9 @@ equivalent to \(nth 6 \(assoc  *mon-emacsd*\)\) e.g.:\n
                     (string-equal default-directory this-df))
           (cd this-df))))))
 
-
-;; does following need to be evaluated at loadtime? (cl-eval-when (compile load eval)
-;; on DARWIN we aren't correctly locating the value at (cd (nth 6 (assq 6 *mon-emacsd*)))
+
 ;;; ==============================
-(defconst *mon-emacs-root* 
+(defconst *mon-emacs-root*
   (when (and (and (intern-soft "IS-MON-SYSTEM-P" obarray)
                   (bound-and-true-p IS-MON-SYSTEM-P))
              (and (intern-soft "IS-NOT-A-MON-SYSTEM" obarray)
@@ -659,7 +653,7 @@ Path is for all MON relevant site local Emacs files.\n
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2009-08-11T18:54:22-04:00Z}#{09332} - by MON>
-(defconst *mon-site-lisp-root* 
+(defconst *mon-site-lisp-root*
   (when (and (and (intern-soft "IS-MON-SYSTEM-P" obarray)
                   (bound-and-true-p IS-MON-SYSTEM-P))
              (and (intern-soft "IS-NOT-A-MON-SYSTEM" obarray)
@@ -679,7 +673,7 @@ Path is for all MON relevant site local Emacs files.\n
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2009-08-11T18:54:22-04:00Z}#{09332} - by MON>
-(defconst *mon-naf-mode-root* 
+(defconst *mon-naf-mode-root*
   ;;(convert-standard-filename 
   (when (and (and (intern-soft "IS-MON-SYSTEM-P" obarray)
                   (bound-and-true-p IS-MON-SYSTEM-P))
@@ -701,7 +695,7 @@ Path used for to load all files for naf-mode.\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-26T18:18:12-04:00Z}#{09353} - by MON>
-(defconst *mon-naf-mode-notes* 
+(defconst *mon-naf-mode-notes*
   (when (and (and (intern-soft "IS-MON-SYSTEM-P" obarray)
                    (bound-and-true-p IS-MON-SYSTEM-P))
               (and (intern-soft "IS-NOT-A-MON-SYSTEM" obarray)
@@ -771,10 +765,6 @@ Path used for to load all files for `ebay-template-mode'.\n
 ;;;(progn (makunbound '*mon-user-emacsd*) (unintern "*mon-user-emacsd*" obarray) )
 
 ;;; ==============================
-;;; :NOTE BZR revno: 102144 2010-10-28 removed `temporary-file-directory' from lisp/files.el
-;;; and added its customomization to lisp/cus-start.el
-;;; If something breaks around here in emacs-24 start there.
-;;; :CHANGESET 1743 <Timestamp: #{2010-05-19T19:41:29-04:00Z}#{10203} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-04-02T22:15:10-04:00Z}#{10136} - by MON KEY>
 (defconst *mon-local-emacs-temp-dir*
   (cond ((and (intern-soft "IS-MON-P" obarray) (bound-and-true-p IS-MON-P))

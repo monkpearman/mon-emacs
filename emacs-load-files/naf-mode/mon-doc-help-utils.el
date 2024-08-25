@@ -508,7 +508,6 @@
   :group 'faces)
 
 ;;; ==============================
-;;; :CHANGESET 2394
 ;;; :CREATED <Timestamp: #{2011-01-15T13:53:58-05:00Z}#{11026} - by MON KEY>
 (defcustom *mon-doc-help-utils-xrefs*
     '(mon-map-subrs-and-hash mon-help-permanent-locals-find
@@ -603,7 +602,6 @@ The symbols contained of this list are defined in :FILE mon-doc-help-utils.el\n
   :group 'mon-doc-help-utils)
 
 ;;; ==============================
-;;; :CHANGESET 2174
 ;;; :CREATED <Timestamp: Friday July 03, 2009 @ 01:11.47 PM - by MON KEY>
 (defcustom *mon-doc-cookie* "▶▶▶"
   "Default 'documentation cookie' used in `mon-*' functions and vars.\n
@@ -1128,7 +1126,6 @@ two ``keyword'' regexps. Calling functions (or their expanders) should let-bind
 
 ;;; ==============================
 ;;; :NOTE The file lisp/emacs-lisp/unsafep.el
-;;; :CHANGESET 1904
 ;;; :CREATED <Timestamp: #{2010-06-21T16:45:13-04:00Z}#{10251} - by MON KEY>
 (defcustom *mon-help-side-effect-free* nil
   ;;
@@ -1218,7 +1215,6 @@ e.g. those enumerated in: `byte-compile-side-effect-free-ops'.\n
 ;; `----
 
 ;;; ==============================
-;;; :CHANGESET 1904
 ;;; :CREATED <Timestamp: #{2010-06-21T16:45:59-04:00Z}#{10251} - by MON KEY>
 (defcustom *mon-help-side-effect-and-error-free* nil
   ;;
@@ -1290,7 +1286,6 @@ e.g. those enumerated in: `byte-compile-side-effect-and-error-free-ops'.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 1908
 ;;; :CREATED <Timestamp: #{2010-06-22T11:59:47-04:00Z}#{10252} - by MON KEY>
 (defcustom *mon-help-pure-functions* nil
   ;;
@@ -1360,7 +1355,6 @@ byte-compiler to be side-effect-free.\n
 ;;; | `elint-initialize' has been evaluated:\n
 ;;; `----
 ;;;
-;;; :CHANGESET 2019
 ;;; :CREATED <Timestamp: #{2010-07-31T19:13:24-04:00Z}#{10306} - by MON KEY>
 (defvar *mon-help-subrs* (make-hash-table :size 1097 :test 'equal) ;; (mon-next-almost-prime 1095)
    "Hash table of all built-in Emacs functions (i.e. all subrs).\n
@@ -1379,7 +1373,6 @@ without the need to intern the putative symbol to standard `obarray'.\n
    )
 
 ;;; ==============================
-;;; :CHANGESET 2067
 ;;; :CREATED <Timestamp: #{2010-08-13T16:21:05-04:00Z}#{10325} - by MON KEY>
 (defvar *mon-help-subrs-false* (make-hash-table :test 'equal :size 149) ;; (mon-next-almost-prime 147)
   "Hash table of all symbols which `defalias' an Emacs built-in.\n
@@ -1401,7 +1394,6 @@ Each hash entry has the form:\n
   )
 
 ;;; ==============================
-;;; :CHANGESET 2261
 ;;; :CREATED <Timestamp: #{2010-11-02T19:42:40-04:00Z}#{10442} - by MON KEY>
 (defun mon-map-subrs-and-hash ()
   ""
@@ -1424,7 +1416,6 @@ Each hash entry has the form:\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2019
 ;;; :CREATED <Timestamp: #{2010-07-31T19:16:15-04:00Z}#{10306} - by MON KEY>
 ;; (defvar *mon-help-autoload-vars* nil
 ;;   "A list of all autoloaded variables in environment at init.\n
@@ -1438,7 +1429,6 @@ Each hash entry has the form:\n
 ;;
 
 ;;; ==============================
-;;; :CHANGESET 2067
 ;;; :CREATED <Timestamp: #{2010-08-13T13:41:11-04:00Z}#{10325} - by MON KEY>
 ;; *mon-help-subrs-false*
 ;; *mon-help-autoload-vars*
@@ -1477,7 +1467,6 @@ Each hash entry has the form:\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2063
 ;;; :CREATED <Timestamp: #{2010-08-10T21:11:50-04:00Z}#{10322} - by MON KEY>
 (defvar *mon-help-byte-optimizer-vals* nil
   ;;
@@ -1498,7 +1487,6 @@ To update the hash-table evaluate:\n
   )
 
 ;;; ==============================
-;;; :CHANGESET 2245
 ;;; :CREATED <Timestamp: #{2010-10-30T13:50:18-04:00Z}#{10436} - by MON KEY>
 (defcustom *mon-help-risky-local-variables*
   ;;
@@ -1525,7 +1513,6 @@ To update the hash-table evaluate:\n
   :group 'mon-doc-help-utils)
 
 ;;; ==============================
-;;; :CHANGESET 2031
 ;;; :CREATED <Timestamp: #{2010-08-07T15:07:50-04:00Z}#{10316} - by MON KEY>
 (defvar *mon-help-permanent-locals* nil ;; :DECLARED-SPECIAL
   ;;
@@ -1544,7 +1531,6 @@ To update the hash-table evaluate:\n
 `*mon-help-emacs-errors*'.\n▶▶▶")
 
 ;;; ==============================
-;;; :CHANGESET 2031
 ;;; :CREATED <Timestamp: #{2010-08-07T15:16:31-04:00Z}#{10316} - by MON KEY>
 (defun mon-help-permanent-locals-find (&optional regenerate w-msg-user)
   "Return list of symbols in `obarray' having a permanent local property.\n
@@ -1614,7 +1600,6 @@ regenerated.\n
 ;; `----
 
 ;;; ==============================
-;;; :CHANGESET 2063
 ;;; :CREATED <Timestamp: #{2010-08-10T20:22:22-04:00Z}#{10322} - by MON KEY>
 (defun mon-help-byte-optimizer-find ()
   "Hash symbols in `obarray' with a `byte-optimizer` property.\n
@@ -1875,7 +1860,6 @@ the current symbols in `obarray' having byte-optimizer props is rehashed.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2394
 ;;; :CREATED <Timestamp: #{2011-01-15T13:29:42-05:00Z}#{11026} - by MON KEY>
 (defcustom *mon-help-propertize-tags-triples*
   ;; :NOTE ( <REGEXP> <MATCH-GRP> <FACE>)  ;COLOR
@@ -2088,7 +2072,6 @@ but not in not `view-mode' or `help-mode' insert tag with `inhibit-read-only' bo
 ;;; :TEST-ME (apply 'mon-help-insert-tags nil '(t))
 
 ;;; ==============================
-;;; :CHANGESET 2115
 ;;; :CREATED <Timestamp: #{2010-09-07T13:22:20-04:00Z}#{10362} - by MON KEY>
 ;;;###autoload
 (defun mon-help-insert-tags-comment (&optional no-insrt intrp)
@@ -2568,7 +2551,6 @@ Signal an error when FILE-TO-VIEW does not exist or is unreadable.\n
 ;; :TAGS-TABLES
 
 ;;; ==============================
-;;; :CHANGESET 2117 <Timestamp: #{2010-09-17T17:37:33-04:00Z}#{10375} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-21T19:02:12-04:00Z}#{09345} - by MON>
 (defcustom *mon-tags-table-list* nil
   "Consed list of paths and paths for `tags-table-list'.
@@ -2603,7 +2585,6 @@ shell commands.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2117 <Timestamp: #{2010-09-17T17:30:21-04:00Z}#{10375} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-21T19:27:44-04:00Z}#{09345} - by MON>
 (defun mon-update-tags-tables (tags-tbl-list tags-specs &optional call-proc)
   "Return a list of etags shell commands.\n
@@ -2667,7 +2648,6 @@ When optional arg CALL-PROC is non-nil pass each generated shell-commands to
     gthr))
 
 ;;; ==============================
-;;; :CHANGESET 2117
 ;;; :CREATED <Timestamp: #{2010-09-17T17:30:44-04:00Z}#{10375} - by MON KEY>
 (defun mon-update-tags-tables-loadtime ()
   "Update the MON 'TAGS' files in paths held by.\n
@@ -2687,13 +2667,10 @@ with paths held by `*mon-tags-table-list*'.\n
 ;;; :CREATED <Timestamp: #{2009-08-21T19:00:14-04:00Z}#{09345} - by MON KEY>
 (defun mon-tags-naf-apropos ()
   "Search tags-tables in for occurences of regexp \"*naf-\" with `tags-apropos'.\n
-:SEE-ALSO `mon-tags-apropos', `*mon-tags-table-list*', `mon-update-tags-tables'.
-▶▶▶"
+:SEE-ALSO `mon-tags-apropos', `*mon-tags-table-list*', `mon-update-tags-tables'.\n▶▶▶"
   (interactive)
   ;; :WAS (tags-apropos "naf.*\\|\*naf\\|.*-naf"))
   (xref-find-apropos "naf.*\\|\*naf\\|.*-naf"))
-  
-  
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-21T18:57:08-04:00Z}#{09345} - by MON KEY>
@@ -2739,7 +2716,6 @@ otherwise.\n
 ;;
 ;;; (cl-eval-when (compile eval)
 ;;;  (mon-help-put-var-doc-val->func <THE-DEFVAR> <THE-FUNC>))
-;;; :CHANGESET 1903 <Timestamp: #{2010-06-21T12:55:22-04:00Z}#{10251} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-10-01T18:57:13-04:00Z}#{09404} - by MON KEY>
 (defmacro mon-help-put-var-doc-val->func (var-name func-name &optional 
                                           pre-v-str cut-v-str pst-v-str)
@@ -2810,9 +2786,6 @@ When non-nil PST-V-STR is a string to insert after value string of var-name.\n
 ;;;       `eval-when-compile' and make sure that: 
 ;;;       (eval-when-compile (require 'cl)) is at top of file. 
 ;;;       Otherwise, all of the args docstrings get doubled up at compile time.
-;;;
-;;; :MODIFICATIONS <Timestamp: #{2010-01-23T15:52:18-05:00Z}#{10036} - by MON KEY>
-;;; :MODIFICATIONS <Timestamp: #{2009-10-03T14:31:54-04:00Z}#{09406} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-09-14T14:16:34-04:00Z}#{09381} - by MON KEY>
 (defmacro mon-help-swap-var-doc-const-val (var-name const-name xrefs &optional face-name)
   "Swap the value of VAR-NAME's variable-documentation property onto
@@ -3243,7 +3216,6 @@ template in buffer at point. Do not move point.\n
 ;;; :TEST-ME (apply 'mon-insert-doc-help-tail '(t))
 
 ;;; ==============================
-;;; :CHANGESET 2356
 ;;; :CREATED <Timestamp: #{2010-12-08T17:58:55-05:00Z}#{10493} - by MON KEY>
 (defun mon-help-message-intrp (fun-name) ;;  &optional is-macro) <- dumb!
   "Message user to evaluate `mon-help-*' FUN-NAME interactively.\n
@@ -3353,7 +3325,6 @@ functions defined with the CL packages `defun*' macro.
 
 
 ;;; ==============================
-;;; :CHANGESET 1987
 ;;; :CREATED <Timestamp: #{2010-07-17T13:35:11-04:00Z}#{10286} - by MON KEY>
 (defcustom *mon-help-emacs-errors* nil
   "A list of plists of emacs error-symbols.\n
@@ -3943,7 +3914,6 @@ Default is `*mon-doc-cookie*'.\n
 
 ;;; ==============================
 ;; :TODO Finish!
-;;; :CHANGESET 2067
 ;;; :CREATED <Timestamp: #{2010-08-16T17:26:40-04:00Z}#{10331} - by MON KEY>
 ;;;###autoload
 (defun mon-help-help-functions (&optional insertp intrp)
@@ -4907,7 +4877,6 @@ Default is `*mon-doc-cookie*'.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 1821
 ;;; :CREATED <Timestamp: #{2010-06-01T19:06:13-04:00Z}#{10222} - by MON KEY>
 ;;;###autoload
 (defun mon-help-ebay-template-mode (&optional insertp intrp)
@@ -5191,7 +5160,6 @@ Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2327
 ;;; :CREATED <Timestamp: #{2010-11-24T13:22:55-05:00Z}#{10473} - by MON KEY>
 (defcustom *mon-emacs-external-programs-vars* 
   '((find-program                     . "lisp/progmodes/grep.el")
@@ -6496,7 +6464,6 @@ This is different from getting the char's syntax:
 
 
 ;;; ==============================
-;;; :CHANGESET 1706
 ;;; :CREATED <Timestamp: #{2010-04-12T13:19:25-04:00Z}#{10151} - by MON KEY>
 ;;;###autoload
 (defun mon-help-make-network-process (&optional insertp intrp)
@@ -6672,7 +6639,6 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2067
 ;;; :CREATED <Timestamp: #{2010-08-17T12:55:57-04:00Z}#{10332} - by MON KEY>
 ;;;###autoload
 (defun mon-help-inhibit-functions (&optional insertp intrp)
@@ -6981,7 +6947,6 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2090 <Timestamp: #{2010-08-30T14:18:38-04:00Z}#{10351} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-10-16T15:07:43-04:00Z}#{09425} - by MON>
 ;;;###autoload
 (defun mon-help-frame-functions (&optional insertp intrp)
@@ -8000,7 +7965,6 @@ Using type:\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2370
 ;;; :CREATED <Timestamp: #{2010-12-30T14:03:07-05:00Z}#{10524} - by MON KEY>
 ;;;###autoload
 (defun mon-help-number-functions (&optional insertp intrp)
@@ -8128,7 +8092,6 @@ Using type:\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2211
 ;;; :CREATED <Timestamp: #{2010-10-27T12:32:39-04:00Z}#{10433} - by MON KEY>
 ;;;###autoload
 (defun mon-help-predicate-functions (&optional insertp intrp)
@@ -9268,7 +9231,6 @@ of those predicates enumerated with `mon-help-type-predicates'.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2199
 ;;; :CREATED <Timestamp: #{2010-10-19T16:18:21-04:00Z}#{10422} - by MON KEY>
 ;;;###autoload
 (defun mon-help-marker-functions (&optional insertp intrp)
@@ -11363,7 +11325,6 @@ To link to an existing file of emacs lisp source code do:\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2090
 ;;; :CREATED <Timestamp: #{2010-08-30T11:13:08-04:00Z}#{10351} - by MON KEY>
 ;;;###autoload
 (defun mon-help-char-charset-functions (&optional insertp intrp)
@@ -11476,7 +11437,6 @@ unicode-bmp
 
 
 ;;; ==============================
-;;; :CHANGESET 1804
 ;;; :CREATED <Timestamp: #{2010-06-01T12:52:50-04:00Z}#{10222} - by MON KEY>
 ;;;###autoload
 (defun mon-help-char-coding-functions (&optional insertp intrp)
@@ -11566,7 +11526,6 @@ unicode-bmp
 
 
 ;;; ==============================
-;;; :CHANGESET 2090
 ;;; :CREATED <Timestamp: #{2010-08-30T11:21:38-04:00Z}#{10351} - by MON KEY>
 ;;;###autoload
 (defun mon-help-char-table-functions (&optional insertp intrp)
@@ -11645,7 +11604,6 @@ unicode-bmp
 
 
 ;;; ==============================
-;;; :CHANGESET 2099
 ;;; :CREATED <Timestamp: #{2010-08-31T10:48:01-04:00Z}#{10352} - by MON KEY>
 ;;;###autoload
 (defun mon-help-display-table-functions (&optional insertp intrp)
@@ -11713,7 +11671,6 @@ unicode-bmp
 
 
 ;;; ==============================
-;;; :CHANGESET 1986
 ;;; :CREATED <Timestamp: #{2010-07-16T16:30:11-04:00Z}#{10285} - by MON KEY>
 ;;;###autoload
 (defun mon-help-char-unidata-table (&optional insertp intrp)
@@ -11850,7 +11807,6 @@ lookups. These include:
 
 
 ;;; ==============================
-;;; :CHANGESET 1843
 ;;; :CREATED <Timestamp: #{2010-06-11T14:32:05-04:00Z}#{10235} - by MON KEY>
 ;;;###autoload
 (defun mon-help-char-composition (&optional insertp intrp)
@@ -12465,7 +12421,6 @@ XML Entity Definitions for Characters - W3C
 
 
 ;;; ==============================
-;;; :CHANGESET 2078
 ;;; :CREATED <Timestamp: #{2010-08-23T16:51:25-04:00Z}#{10341} - by MON KEY>
 ;;;###autoload
 (defun mon-help-char-logic (&optional insertp intrp)
@@ -12984,7 +12939,6 @@ The char 4194303 of return value is `max-char'.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2063
 ;;; :CREATED <Timestamp: #{2010-08-10T18:22:49-04:00Z}#{10322} - by MON KEY>
 ;;;###autoload
 (defun mon-help-symbol-functions (&optional insertp intrp)
@@ -13304,7 +13258,6 @@ as per `byte-compile-output-as-comment':\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2115
 ;;; :CREATED <Timestamp: #{2010-09-08T16:07:55-04:00Z}#{10363} - by MON KEY>
 ;;;###autoload
 (defun mon-help-byte-compile-functions (&optional insertp intrp)
@@ -14074,7 +14027,6 @@ elided from the presentation.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 1850
 ;;; :CREATED <Timestamp: #{2010-06-12T12:10:09-04:00Z}#{10236} - by MON KEY>
 ;;;###autoload
 (defun mon-help-mon-time-functions (&optional insertp intrp)
@@ -14173,7 +14125,6 @@ elided from the presentation.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2067
 ;;; :CREATED <Timestamp: #{2010-08-16T17:22:53-04:00Z}#{10331} - by MON KEY>
 ;;;###autoload
 (defun mon-help-bookmark-functions (&optional insertp intrp)
@@ -14333,7 +14284,7 @@ To jump to an info node with an elisp expression:
 
 
 ;;; ==============================
-;;; :CHANGESET 1737 <Timestamp: #{2010-05-17T07:48:29-04:00Z}#{10201} - by MON KEY>
+;;; :CREATED <Timestamp: #{2010-05-17T07:48:29-04:00Z}#{10201} - by MON KEY>
 ;;;###autoload
 (defun mon-help-tar-incantation (&optional insertp intrp)
   "To help me remember how to do a tar.gz on a directory.
@@ -16767,7 +16718,6 @@ M-x `zone' -- display text tricks
 
 
 ;;; ==============================
-;;; :CHANGESET 2112
 ;;; :CREATED <Timestamp: #{2010-09-06T13:24:05-04:00Z}#{10361} - by MON KEY>
 (defun mon-help-bind-help-keys-loadtime (&optional w-msg-user)
   "Loadtime function to build docs for `mon-help-keys' and `*mon-help-reference-keys*'.\n
@@ -17142,7 +17092,6 @@ without the surrounding quotes.\n
 
 ;;; ==============================
 ;;; :REQUIRES `mon-check-feature-for-loadtime' <- mon-utils.el
-;;; :CHANGESET 2020 <Timestamp: #{2010-07-31T19:46:37-04:00Z}#{10306} - by MON KEY>y
 ;;; :CREATED <Timestamp: #{2010-02-24T14:22:02-05:00Z}#{10083} - by MON KEY>
 (defun mon-help-utils-loadtime (&optional w-msg-user)
   "Loadtime function to pull in additional libraries after mon-doc-help-utils.\n

@@ -202,7 +202,6 @@
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 ;;; ==============================
-;;; :CHANGESET 2389
 ;;; :CREATED <Timestamp: #{2011-01-12T13:31:53-05:00Z}#{11023} - by MON KEY>
 (defgroup mon-keybindings nil
   "Customization group for variables and functions of :FILE mon-keybindings.el\n
@@ -222,7 +221,6 @@
   :group 'mon-base)
 
 ;;; ==============================
-;;; :CHANGESET 2389
 ;;; :CREATED <Timestamp: #{2011-01-12T13:32:43-05:00Z}#{11023} - by MON KEY>
 (defcustom *mon-keybindings-xrefs* 
   '(mon-keybind-globally mon-keybind-dired-mode mon-keybind-completions
@@ -252,7 +250,6 @@ The symbols contained of this list are defined in :FILE mon-keybindings.el\n
 ;;; binding so we can reset to default if/as needed.
 ;;; In the its current configuration thre is no clean way to undo the binding of
 ;;; these global definitions...
-;;; :CHANGESET 2389
 ;;; :CREATED <Timestamp: #{2011-01-12T13:30:46-05:00Z}#{11023} - by MON KEY>
 (defun mon-keybind-globally ()
   "Initializes mon preferred global keybindings.\n
@@ -262,7 +259,7 @@ establishes an `eval-after-load' form for :FILE mon-keybindings.el\n
 `mon-keybind-lisp-interaction-mode', `mon-keybind-emacs-lisp-mode',
 `mon-help-key-functions', `mon-help-keys'.\n▶▶▶"
   (interactive)
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
              (bound-and-true-p IS-MON-SYSTEM-P))
   ;; :NOT-BOUND-W-C-c
   (global-set-key (kbd "M-n") 'mon-scroll-up-in-place)
@@ -270,7 +267,7 @@ establishes an `eval-after-load' form for :FILE mon-keybindings.el\n
   (global-set-key (kbd "<C-backspace>") 'backward-kill-word)
   (global-set-key (kbd "<S-backspace>") (kbd "DEL"))
   ;;
-  (when (and (intern-soft "IS-W32-P" obarray) ;; *IS-MON-OBARRAY*
+  (when (and (intern-soft "IS-W32-P" obarray)
              (bound-and-true-p IS-W32-P))
     (global-set-key [(f3)] 'w32-maximize-frame)
     ;; "M-!" doesn't like it when IS-W32-P :(
@@ -306,7 +303,7 @@ establishes an `eval-after-load' form for :FILE mon-keybindings.el\n
   ;; ==============================
   ;; :TODO `just-one-space' needs a diffent binding M-SPC conflits with
   ;; `IS-MON-P-GNU' fluxbox settings.
-  (when (and (intern-soft "IS-MON-P-GNU"  obarray) ;; *IS-MON-OBARRAY*
+  (when (and (intern-soft "IS-MON-P-GNU"  obarray)
              (bound-and-true-p IS-MON-P-GNU))
     (global-unset-key (kbd "M-<SPC>"))
     (global-set-key   (kbd "S-<SPC>") 'just-one-space))
@@ -386,7 +383,6 @@ establishes an `eval-after-load' form for :FILE mon-keybindings.el\n
 
 ;;; ==============================
 ;;; :ADDED `mon-w3m-dired-file' 
-;;; :CHANGESET 1338 <Timestamp: #{2009-12-17T13:21:29-05:00Z}#{09514} - by MON>
 (defun mon-keybind-dired-mode ()
   "Adjust `dired-mode-map' keybindings to MON preferences.\n
 Added to the `dired-mode-hook' at intit with `mon-keybind-put-hooks-init'.\n
@@ -435,7 +431,6 @@ Added to the `dired-mode-hook' at intit with `mon-keybind-put-hooks-init'.\n
 ;;; :NOTE Make `n' and `p' move up and down in *Completions* buffer.
 ;;;       Make SPC scroll the page.
 ;;;
-;;; :CHANGESET 1895
 ;;; :CREATED <Timestamp: #{2009-12-18T21:48:03-05:00Z}#{09515} - by MON KEY>
 (defun mon-keybind-completions ()
   "Add keybindings to `completion-list-mode-map'.\n
@@ -486,7 +481,7 @@ This function is invoked by `info-mode-hook' on entry to `Info' mode.
            (lambda ()
              (define-key ido-completion-map (kbd "<backtab>") 'ido-complete)))))
 
-(cond ((and (intern-soft "IS-MON-P" obarray) ;; *IS-MON-OBARRAY*
+(cond ((and (intern-soft "IS-MON-P" obarray)
             (bound-and-true-p IS-MON-P))
        (when (bound-and-true-p Tex-mode-map)  
          (define-key TeX-mode-map (kbd "<S-iso-lefttab>") 'TeX-complete-symbol))))
@@ -539,10 +534,6 @@ This function is invoked by `info-mode-hook' on entry to `Info' mode.
 
 
 ;; ==============================
-;; :WAS (add-hook 'w3m-mode-hook
-;;       (function (lambda ()
-;;          (progn { ... } nil t)
-;;; :CHANGESET 1869
 ;;; :CREATED <Timestamp: #{2010-06-15T11:33:31-04:00Z}#{10242} - by MON KEY>
 (defun mon-keybind-w3m ()
   "Adjust `w3m-mode-map' keybindings to MON preferences.\n
@@ -648,7 +639,9 @@ Can be manually removed later with:
   (define-key w3m-mode-map (kbd "M-p")     'w3m-previous-buffer)
   (define-key w3m-mode-map (kbd "M-n")     'w3m-next-buffer)
   (define-key w3m-mode-map (kbd "C-c b")   'w3m-view-previous-page)
+  (define-key w3m-mode-map (kbd "C-c C-b")   'w3m-view-previous-page)
   (define-key w3m-mode-map (kbd "C-c f")   'w3m-view-next-page)
+  (define-key w3m-mode-map (kbd "C-c C-f")   'w3m-view-next-page)
   ;;(local-set-key          (kbd "<up>")   'mon-scroll-down-in-place)
   (define-key w3m-mode-map (kbd "<up>")    'mon-scroll-down-in-place)
   ;; (local-set-key    (kbd "<down>")      'mon-scroll-up-in-place)
@@ -656,7 +649,9 @@ Can be manually removed later with:
   (minibuffer-message mkw3-msg)))
 ;;
 ;; (remove-hook 'w3m-mode-hook 'mon-keybind-w3m)
-;; (add-hook 'w3m-mode-hook 'mon-keybind-w3m)
+(when (and (intern-soft "IS-MON-P" obarray)
+           (bound-and-true-p IS-MON-P))
+(add-hook 'w3m-mode-hook 'mon-keybind-w3m))
 
 ;;; ==============================
 ;; :EMACS-LISP-MODE-KEYMAP
@@ -666,8 +661,8 @@ Can be manually removed later with:
 ;; (add-hook 'emacs-lisp-mode-hook  'mon-keybind-emacs-lisp-mode)
 ;; (remove-hook 'emacs-lisp-mode-hook  'mon-keybind-emacs-lisp-mode)
 ;; (remove-hook 'dired-mode-hook 'mon-keybind-dired-mode)
+
 ;;; ==============================
-;;; :CHANGESET 1869
 ;;; :CREATED <Timestamp: #{2010-06-16T11:22:27-04:00Z}#{10243} - by MON KEY>
 (defun mon-keybind-emacs-lisp-mode ()
   "Bind keys on the `emacs-lisp-mode-map'.\n
@@ -706,19 +701,8 @@ Run on the `emacs-lisp-mode-hook'\n
     (cl-loop 
      for keys in kmp
      do (define-key emacs-lisp-mode-map (kbd (car keys)) (cdr keys)))))
-
-;; (define-key keymap key def &optional remove)
-
-;; (define-key 
 ;;
-;; (key-valid-p (kbd  "\C-c l b"))
-;; (char-to-string 22)
-
-;; scroll-up C-v
-;; scroll-down M-v
-
-;;
-;; (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+;; (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
 ;;            (bound-and-true-p IS-MON-SYSTEM-P))
 ;;   ;; (remove-hook 'emacs-lisp-mode-hook 'mon-keybind-emacs-lisp-mode)
 ;;   (add-hook 'emacs-lisp-mode-hook  'mon-keybind-emacs-lisp-mode))
@@ -758,7 +742,7 @@ Added to the `lisp-interaction-mode-hook' at init with `mon-keybind-put-hooks-in
     (and mklim-msg (message (car mkb-slm-msg) (cdr mkb-slm-msg)))))
 
 ;; 
-(when (and (intern-soft "IS-MON-P" obarray) ;; *IS-MON-OBARRAY*
+(when (and (intern-soft "IS-MON-P" obarray)
            (bound-and-true-p IS-MON-P))
   ;; (remove-hook 'lisp-interaction-mode-hook 'mon-keybind-lisp-interaction-mode)
   (add-hook 'lisp-interaction-mode-hook 'mon-keybind-lisp-interaction-mode t))
@@ -781,7 +765,6 @@ Added to the `lisp-interaction-mode-hook' at init with `mon-keybind-put-hooks-in
 ;; (remove-hook 'slime-mode-map 'mon-keybind-slime)
 ;;; ==============================
 ;;; :PREFIX "mkb-slm-"
-;;; :CHANGESET 1895
 ;;; :CREATED <Timestamp: #{2010-06-17T15:04:09-04:00Z}#{10244} - by MON KEY>
 (defun mon-keybind-slime (&optional w-msg)
   "Bind keys on the `slime-mode-map'.\n
@@ -852,7 +835,7 @@ always easy.\n As a friendly reminder, here is how it is done:\n
                            (concat ":FUNCTION `mon-keybind-slime' "
                                    "-- evaluated on `slime-mode-hook' on entry in to buffer %S")
                            (get-buffer (current-buffer))))))
-    (when (and (intern-soft "IS-MON-P" obarray) ;; *IS-MON-OBARRAY*
+    (when (and (intern-soft "IS-MON-P" obarray)
                (bound-and-true-p IS-MON-P))
       ;; ;; (key-binding "\C-cx")
       ;; FU slime-package-fu.el not only does it not work well but... 
@@ -931,6 +914,8 @@ always easy.\n As a friendly reminder, here is how it is done:\n
                       ("C-c C-d f"  .      slime-documentation)
                       ("C-c C-h"    .      slime-documentation)
                       ("C-c M-h"    .      info-lookup-symbol)
+                      ;; mon-help-CL-symbols slime-hyperspec-lookup
+                      ;; slime-documentation-lookup
                       ("C-c e x"    .      slime-export-symbol-at-point)
                       ("C-c C-o"    .      slime-compile-defun)
                       ("M-i"        .      slime-indent-and-complete-symbol) ;; :WAS `indent-according-to-mode'
@@ -988,7 +973,6 @@ always easy.\n As a friendly reminder, here is how it is done:\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2408
 ;;; :CREATED <Timestamp: #{2011-02-01T21:18:20-05:00Z}#{11052} - by MON KEY>
 ;;; slime-inspector-mode
 ;;; slime-show-source-location
@@ -1024,10 +1008,8 @@ always easy.\n As a friendly reminder, here is how it is done:\n
   (local-set-key "N" 'slime-inspector-next)
   (local-set-key [remap slime-interrupt] 'slime-inspector-pop)
   (local-set-key (kbd "\C-c\C-f") 'slime-inspector-next))
-
-
 ;; 
-;; (when (and (intern-soft "IS-MON-P" obarray) ;; *IS-MON-OBARRAY*
+;; (when (and (intern-soft "IS-MON-P" obarray)
 ;;            (bound-and-true-p IS-MON-P))
 ;;   ;; (remove-hook 'slime-inspector-mode-hook '(mon-keybind-slime-inspector))
 ;;   (add-hook 'slime-inspector-mode-hook '(mon-keybind-slime-inspector)))
@@ -1043,9 +1025,11 @@ Assumes following returns true:
 Function `mon-keybind-put-hooks-init' arranges that this function is called
 after file mon-keybindings.el is loaded.
 :SEE-ALSO `slime-get-fuzzy-buffer', `slime-fuzzy-choices-buffer'.\n▶▶▶"
-  (when (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
-             (bound-and-true-p IS-MON-P-GNU)
-             (featurep 'slime-fuzzy))
+  (when (and (or (and (intern-soft "IS-MON-P-GNU" obarray)
+                      (bound-and-true-p IS-MON-P-GNU))
+                 (and (intern-soft "IS-MON-P-DARWIN" obarray)
+                      (bound-and-true-p IS-MON-P-DARWIN)))
+           (featurep 'slime-fuzzy))
     (define-key slime-target-buffer-fuzzy-completions-map (kbd "C-v") 'slime-fuzzy-sroll-completions-up-from-target-buffer)
     (define-key slime-target-buffer-fuzzy-completions-map (kbd "M-v") 'slime-fuzzy-sroll-completions-down-from-target-buffer)
     (define-key slime-fuzzy-completions-map (kbd "C-v")  'scroll-up)
@@ -1081,7 +1065,6 @@ Wrapper for `mon-stamp-in-context'
                           :w-newline t))
 
 ;;; ==============================
-;;; :CHANGESET 2142 <Timestamp: #{2010-09-27T13:51:19-04:00Z}#{10391} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-09-26T12:59:09-04:00Z}#{10387} - by MON>
 (defun mon-keybind-conf-mode ()
   "Add local keybindings to `conf-mode-map'.\n
@@ -1093,9 +1076,9 @@ Run on the `conf-mode-hook' when `IS-MON-P'.\n
   (define-key conf-mode-map "\C-cc"     'comment-region)
   (define-key conf-mode-map "\C-cst" 'mon-conf-stamp-in-context))
 ;;
-(when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+(when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
            (bound-and-true-p IS-MON-SYSTEM-P)
-           (intern-soft "IS-MON-P" obarray)        ;; *IS-MON-OBARRAY*
+           (intern-soft "IS-MON-P" obarray)
            (bound-and-true-p IS-MON-P))
   ;;(remove-hook 'conf-mode-hook 'mon-keybind-conf-mode)
   (add-hook 'conf-mode-hook 'mon-keybind-conf-mode))
@@ -1103,8 +1086,10 @@ Run on the `conf-mode-hook' when `IS-MON-P'.\n
 ;;; ==============================
 ;; :EMACS-SERVER-KEYBINDINGS
 ;;; :CREATED <Timestamp: #{2010-01-27T22:48:03-05:00Z}#{10043} - by MON KEY>
-(when (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
-           (bound-and-true-p IS-MON-P-GNU))
+(when (or (and (intern-soft "IS-MON-P-GNU" obarray)
+              (bound-and-true-p IS-MON-P-GNU))
+          (and (intern-soft "IS-MON-P-DARWIN" obarray)
+               (bound-and-true-p IS-MON-P-DARWIN)))
   ;; (remove-hook 'server-switch-hook  
   (add-hook 'server-switch-hook  
             (function 

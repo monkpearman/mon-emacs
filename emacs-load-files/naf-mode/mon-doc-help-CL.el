@@ -876,7 +876,7 @@ loop returns the absent URL's:\n
                                    (format-time-string "%Y-%m-%d"))))
         (sys (cl-case system-type
                ((gnu/linux linux gnu/kfreebsd) 'gnu)
-               ;(darwin aix berkeley-unix hpux irix lynxos usg-unix-v 'nix-like)
+               (darwin aix berkeley-unix hpux irix lynxos usg-unix-v 'nix-like)
                (windows-nt 'wnz)))) ;; ms-dos cygwin
     (mapc #'(lambda (wb)
               (setq rmv-wb-pgs (delq wb rmv-wb-pgs)))
@@ -937,7 +937,7 @@ loop returns the absent URL's:\n
   (let ((fnm-tst-wgt (file-name-nondirectory wget-fname))
         (mjcwpfsc-sys (cl-case system-type
                ((gnu/linux linux gnu/kfreebsd) 'gnu)
-               ;;(darwin aix berkeley-unix hpux irix lynxos usg-unix-v 'nix-like)
+               (darwin aix berkeley-unix hpux irix lynxos usg-unix-v 'nix-like)
                ;; ms-dos cygwin
                (windows-nt 'wnz)
                (t (and (not (executable-find "wget")) 'no-exec)))) 

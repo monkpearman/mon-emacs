@@ -2129,6 +2129,8 @@ the function `mon-help-CL-symbols' and variable `*mon-help-CL-symbols*' in:
    'mon-set-common-lisp-hspec-init warn-only
    (when (or (and (intern-soft "IS-MON-P-GNU" obarray)
                   (bound-and-true-p IS-MON-P-GNU))
+             (and (intern-soft "IS-MON-P-DARWIN" obarray)
+                  (bound-and-true-p IS-MON-P-DARWIN))
              (and (intern-soft "IS-MON-P-W32" obarray)
                   (bound-and-true-p IS-MON-P-32)
                   (not (and (intern-soft "IS-BUG-P" obarray)
@@ -2136,8 +2138,7 @@ the function `mon-help-CL-symbols' and variable `*mon-help-CL-symbols*' in:
      (unless (and (bound-and-true-p common-lisp-hyperspec-root)
                   (bound-and-true-p common-lisp-hyperspec-issuex-table)
                   (bound-and-true-p common-lisp-hyperspec-symbol-table))
-
-       ;; :FIXME follwing paths are incorrect:
+       ;;
        (setq common-lisp-hyperspec-root (nth 8 (mon-get-mon-emacsd-paths)))
        (setq common-lisp-hyperspec-issuex-table
              (cond ((string-match-p "v3" common-lisp-hyperspec-root)
@@ -2149,7 +2150,7 @@ the function `mon-help-CL-symbols' and variable `*mon-help-CL-symbols*' in:
                    (t (concat common-lisp-hyperspec-root "Data/Map_Sym.txt")))))
      )))
 ;;
-;; (mon-set-common-lisp-hspec-init t)
+(mon-set-common-lisp-hspec-init t)
 
 ;;; ==============================
 ;; :NOTE show-paren runs timers...
@@ -2734,27 +2735,29 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 :SEE-ALSO `mon-set-browser-init', `mon-set-url-pkg-init'.\n▶▶▶"
   (mon-default-start-error/sane
    'mon-set-w3m-init warn-only
-   (when (and (intern-soft "IS-MON-P-GNU" obarray)
-              (bound-and-true-p IS-MON-P-GNU))
+   (when (or (and (intern-soft "IS-MON-P-GNU" obarray)
+                  (bound-and-true-p IS-MON-P-GNU))
+             (and (intern-soft "IS-MON-P-DARWIN" obarray)
+                  (bound-and-true-p IS-MON-P-DARWIN)))
      (add-to-list 'load-path
-                  (mon-build-path-for-load-path *mon-site-lisp-root* "emacs-w3m"))
+                  (mon-build-path-for-load-path *mon-site-lisp-root* "emacs-w3m_GIT"))
      (require 'w3m-load)
      (require 'w3m)
+     (require 'mime-w3m)
      (custom-set-variables
-      '(w3m-use-cookies t t)
+      ;; :NOTE Not sure if this is the best way/thing to do here.
       '(browse-url-browser-function 'w3m-browse-url t)
+      '(w3m-use-cookies t t)
       '(w3m-home-page "http://www.google.com" t)
       '(w3m-fill-column 80 t)
       '(w3m-add-user-agent nil t)
       ;; '(w3m-language (symbol-value 'current-language-environment)))
       ;; '(w3m-accept-languages )       ;;
-      ;; '(w3m-init-file )              ;; :DEFAULT "~/.emacs-w3m"
-      ;; '(w3m-default-save-directory ) ;; :DEFAULT ~/.w3m
-      ;; '(w3m-profile-directory      ) ;;
-      ;; '(w3m-home-page )              ;;
-      ;; '(w3m-image-viewer             ;; display | xfi | xv | xloadimage
-      ))
-   ))
+      '(w3m-init-file nil)              ;; :DEFAULT "~/.emacs-w3m"
+      '(w3m-profile-directory     "~/.emacs.d/emacs-w3m")  ;; (expand-file-name "~/.emacs.d/emacs-w3m")
+      '(w3m-default-save-directory "~/.emacs.d/emacs-w3m/w3m-deflault-saves") ;; :DEFAULT ~/.w3m
+      )
+     )))
 ;; (mon-set-w3m-init t)
 
 ;;; ==============================

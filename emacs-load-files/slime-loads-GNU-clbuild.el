@@ -879,7 +879,6 @@ Optional args INSRTP and INTRP are as per `quicklisp-system-complete'.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2428
 ;;; :CREATED <Timestamp: #{2011-04-20T14:08:57-04:00Z}#{11163} - by MON KEY>
 (defcustom *mon-lisp-system-paths* nil ;; (:root-path nil :base-system-path nil :system-paths (list nil))
   "A plist for constructing tags files pathnames in Common Lisp system directories.\n
@@ -916,7 +915,6 @@ To customize this variable the following are sufficient:
   :group 'mon-base)
 
 ;;; ==============================
-;;; :CHANGESET 2428
 ;;; :CREATED <Timestamp: #{2011-04-20T14:06:45-04:00Z}#{11163} - by MON KEY>
 (defun mon-add-lisp-system-paths-to-tags-table-list (&optional tags-paths-only)
   "Add TAGS file pathnames to `tags-table-list'.\n
@@ -933,8 +931,8 @@ been added.\n
   (let* ((paths-plist (bound-and-true-p *mon-lisp-system-paths*))
          (root-path (plist-get paths-plist :root-path))
          (base-system-path (and root-path
-                                (expand-file-name (plist-get paths-plist :base-system-path) root-path)))  
-         (expand-paths (and base-system-path (plist-get paths-plist :system-paths)))  
+                                (expand-file-name (plist-get paths-plist :base-system-path) root-path)))         
+         (expand-paths (and base-system-path (plist-get paths-plist :system-paths)))
          (expansions '()))
     (and paths-plist root-path base-system-path expand-paths
          (dolist (malsptttl-D-0 expand-paths (setq expansions (nreverse expansions)))

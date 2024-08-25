@@ -198,7 +198,6 @@
 
 
 ;;; ==============================
-;;; :CHANGESET 2069
 ;;; :CREATED <Timestamp: #{2010-08-16T14:30:02-04:00Z}#{10331} - by MON KEY>
 (defgroup mon-doc-help-CL nil
   "Extensions for help and documentation of Common Lisp related procedures.\n
@@ -216,7 +215,6 @@
   :group 'mon-doc-help-utils)
 
 ;;; ==============================
-;;; :CHANGESET 2069
 ;;; :CREATED <Timestamp: #{2010-08-16T14:30:45-04:00Z}#{10331} - by MON KEY>
 (defgroup mon-doc-help-CL-hspec-parse nil
   "Use emacs-w3m to parse Common Lisp hyperspec HTML data to lisp forms.\n
@@ -231,7 +229,6 @@
   :group 'mon-doc-help-CL)
 
 ;;; ==============================
-;;; :CHANGESET 2406
 ;;; :CREATED <Timestamp: #{2011-01-20T18:47:43-05:00Z}#{11034} - by MON KEY>
 (defcustom  *mon-doc-help-CL-xrefs* 
   '(mon--CL-no-pull-p mon-help-CL-pkgs mon-bind-mon-help-CL-pkgs-loadtime
@@ -310,7 +307,6 @@ Following elements in `*mon-help-CL-ext-pkg-map*' contain relative subpaths of t
 ;;; (progn (makunbound '*mon-help-CL-cmu-ai-repo* ) (unintern "*mon-help-CL-cmu-ai-repo*" obarray ) )
 
 ;;; ==============================
-;;; :CHANGESET 2069
 ;;; :CREATED <Timestamp: #{2010-08-18T16:41:46-04:00Z}#{10333} - by MON KEY>
 ;(defcustom *mon-help-CL-ext-pkg-map-loadtime* nil
 ;  ""
@@ -673,7 +669,6 @@ The current property valuecan be accessed with the form:\n
 ;;;(progn (makunbound '*mon-help-CL-ext-pkg-map*) (unintern "*mon-help-CL-ext-pkg-map*" obarray) )
 
 ;;; ==============================
-;;; :CHANGESET 2069
 ;;; :CREATED <Timestamp: #{2010-08-18T18:16:19-04:00Z}#{10333} - by MON KEY>
 (defun mon--CL-no-pull-p (sym-mem)
   "Predicate helper for `defcustom'izing `*mon-help-CL-ext-pkg-map-no-pull*'.\n
@@ -685,7 +680,6 @@ Return non-nil when SYM-MEM is a `memq'  `*mon-help-CL-ext-pkg-map*'
 ;;; TEST-ME \(mon--CL-no-pull-p 'cl-naggum\)
 
 ;;; ==============================
-;;; :CHANGESET 2069 <Timestamp: #{2010-08-16T14:39:18-04:00Z}#{10331} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-02-13T11:24:58-05:00Z}#{10066} - by MON KEY>
 ;;; (defvar *mon-help-CL-ext-pkg-map-no-pull* nil
 (defcustom *mon-help-CL-ext-pkg-map-no-pull* 
@@ -712,19 +706,12 @@ predicate `mon--CL-no-pull-p'.\n
 ;;;(progn (makunbound '*mon-help-CL-ext-pkg-map-no-pull*) 
 ;;;       (unintern "*mon-help-CL-ext-pkg-map-no-pull*" obarray) )
 
-
-;; (defcustom *mon-help-CL-do-hash* nil
-;; :type 
-;; "Hyperspec-v3"
-;; "Hyperspec-v7"
-  
 ;;; ==============================
 ;;; :REQUIRES
 ;;; :FUNCTION `mon-help-propertize-tags', `mon-help-temp-docstring-display'
 ;;; :VARIABLE `*regexp-mon-doc-help-comment-tags*' 
 ;;; :FACE `mon-help-INNER-KEY-tag', `mon-help-PNTR-tag', `mon-help-DYNATAB-tag'
 ;;; :SEE :FILE mon-doc-help-utils.el 
-;;; :CHANGESET 2026 <Timestamp: #{2010-08-03T12:37:04-04:00Z}#{10312} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-12-23T20:41:48-05:00Z}#{09524} - by MON KEY>
 (defun mon-help-CL-pkgs (&optional insrtp intrp w-msg-string)
   (interactive "i\np")
@@ -767,8 +754,6 @@ predicate `mon--CL-no-pull-p'.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2026 <Timestamp: #{2010-08-03T12:35:37-04:00Z}#{10312} - by MON KEY>
-;;; :CHANGESET 1946
 ;;; :CREATED <Timestamp: #{2010-07-07T13:56:57-04:00Z}#{10273} - by MON KEY>
 (defun mon-bind-mon-help-CL-pkgs-loadtime (&optional w-msg-user)
   "Build the propertized documentation for `mon-help-CL-pkgs' at loadtime.\n
@@ -1548,7 +1533,6 @@ Contents returned in buffer specified by `*mon-hspec-parse-buffer*'.\n
       (while (not (eobp)) (mon-hspec-stk-n-mv)))))
 
 ;;; ==============================
-;;; :CHANGESET 1975
 ;;; :CREATED <Timestamp: #{2010-07-13T16:23:12-04:00Z}#{10282} - by MON KEY>
 (defun mon-hspec-find-w3m ()
   "Return the first w3m buffer with a matching a CLHS page-title regexp.\n
@@ -1634,7 +1618,6 @@ Preference is weighted to `current-buffer' if it is a w3m buffer.\n
 ;;; paths wth "http://" in lieu of local paths with "file://"
 ;;; :SEE `mon-hspec-header-line-p's regexp for local variable `rplc-pth'
 ;;;
-;;; :CHANGESET 1975 <Timestamp: #{2010-07-13T13:44:47-04:00Z}#{10282} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-12-29T02:38:01-05:00Z}#{09532} - by MON>
 (defun mon-hspec-unparse-w3m (parse-w3m-buffer-or-file) ; return-parse-in-buffer
   "Round trip snarfed HTML lisp data output of `mon-hspec-parse-w3m' to plain text.\n
@@ -2197,7 +2180,6 @@ RETURN-PARSE-IN-BUFFER prior to insertion.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 1926
 ;;; :CREATED <Timestamp: #{2010-06-29T12:49:56-04:00Z}#{10262} - by MON KEY>
 ;;;###autoload
 (defun mon-help-CL-file-dir-functions (&optional insertp intrp)
@@ -2308,7 +2290,6 @@ RETURN-PARSE-IN-BUFFER prior to insertion.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2077
 ;;; :CREATED <Timestamp: #{2010-08-24T17:03:29-04:00Z}#{10342} - by MON KEY>
 ;;;###autoload
 (defun mon-help-CL-stream-keywords (&optional insertp intrp)
@@ -2387,7 +2368,6 @@ other      implementation-dependent
 
 
 ;;; ==============================
-;;; :CHANGESET 2027
 ;;; :CREATED <Timestamp: #{2010-08-03T13:18:06-04:00Z}#{10312} - by MON KEY>
 ;;;###autoload
 (defun mon-help-CL-error-condition-restart (&optional insertp intrp)
@@ -2601,7 +2581,6 @@ of a sequence, only about a particular one, if it exists.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2077
 ;;; :CREATED <Timestamp: #{2010-08-24T14:35:39-04:00Z}#{10342} - by MON KEY>
 ;;;###autoload
 (defun mon-help-CL-bit-byte-bool-logic (&optional insertp intrp)
@@ -2920,7 +2899,6 @@ d-type-spec ::= type-specifier | (d-type-spec . d-type-spec)
 ;;; :TEST-ME (describe-function 'mon-help-CL-loop)
 
 ;;; ==============================
-;;; :CHANGESET 2384
 ;;; :CREATED <Timestamp: #{2011-01-08T13:41:48-05:00Z}#{11016} - by MON KEY>
 ;;;###autoload
 (defun mon-help-CL-loop-usage (&optional insertp intrp)
@@ -4212,9 +4190,7 @@ FOR-AS-HASH ::=
 ;;; :TEST-ME (mon-help-CL-numbers t)   
 ;;; :TEST-ME (mon-help-CL-numbers '(t))
 
-
 ;;; ==============================
-;;; :CHANGESET 2424
 ;;; :CREATED <Timestamp: #{2011-04-01T21:30:31-04:00Z}#{11135} - by MON KEY>
 (defun mon-help-CL-lambda-list (&optional insertp intrp)
 "
@@ -4396,7 +4372,6 @@ Following table enumerates Common Lisp lambda lists and their syntax.\n
 ;;; :TEST-ME (mon-help-CL-object-CLOS '(t))
 
 ;;; ==============================
-;;; :CHANGESET 2446
 ;;; :CREATED <Timestamp: #{2011-05-24T12:18:47-04:00Z}#{11212} - by MON KEY>
 ;;;###autoload
 (defun mon-help-CL-method-combination (&optional insertp intrp)
@@ -4841,7 +4816,6 @@ Following table enumerates Common Lisp lambda lists and their syntax.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2357
 ;;; :CREATED <Timestamp: #{2010-12-08T16:50:24-05:00Z}#{10493} - by MON KEY>
 ;;;###autoload
 (defun mon-help-CL-types (&optional insertp intrp)
@@ -5075,7 +5049,6 @@ t
 
 
 ;;; ==============================
-;;; :CHANGESET 2364
 ;;; :CREATED <Timestamp: #{2010-12-18T15:11:01-05:00Z}#{10506} - by MON KEY>
 ;;;###autoload
 (defun mon-help-CL-type-declarations (&optional insertp intrp)
@@ -5170,7 +5143,6 @@ t
 
 
 ;;; ==============================
-;;; :CHANGESET 2364
 ;;; :CREATED <Timestamp: #{2010-12-14T13:14:44-05:00Z}#{10502} - by MON KEY>
 ;;;###autoload
 (defun mon-help-CL-format (&optional insertp intrp)
@@ -5489,7 +5461,6 @@ Is roughly equivalent to:
 
 
 ;;; ==============================
-;;; :CHANGESET 2409
 ;;; :CREATED <Timestamp: #{2011-02-10T14:41:58-05:00Z}#{11064} - by MON KEY>
 ;;;###autoload
 (defun mon-help-slime-functions (&optional insertp intrp)
@@ -6833,7 +6804,6 @@ C-x 4 .		`slime-edit-definition-other-window'\n
 
 
 ;;; ==============================
-;;; :CHANGESET 1928 <Timestamp: #{2010-06-29T13:20:07-04:00Z}#{10262} - by MON KEY>
 ;;;###autoload
 (defun mon-help-CL-local-time (&optional insertp intrp)
   "Common Lisp  package `LOCAL-TIME' functions, macros, generics, variables.\n
@@ -6980,7 +6950,6 @@ RFC 1123 timestring format.
 
 
 ;;; ==============================
-;;; :CHANGESET 1942
 ;;; :CREATED <Timestamp: #{2010-07-07T13:13:58-04:00Z}#{10273} - by MON KEY>
 ;;;###autoload
 (defun mon-help-CL-minion (&optional insertp intrp)
@@ -9207,9 +9176,11 @@ java-applet e.g.\n
                        "file://")
                      common-lisp-hyperspec-root "Body/" rd-cl-sym))
     (cond (ffox (browse-url-firefox rd-cl-sym))
-          ((or (and (intern-soft "IS-MON-P-GNU")
-                    (bound-and-true-p IS-MON-P-GNU))
-               (and (executable-find "w3m") 
+          ((or (or (and (intern-soft "IS-MON-P-GNU")
+                        (bound-and-true-p IS-MON-P-GNU))
+                   (and (intern-soft "IS-MON-P-DARWIN")
+                        (bound-and-true-p IS-MON-P-DARWIN)))
+               (and (executable-find "w3m")
                     (intern-soft "w3m-browse-url")
                     (fboundp 'w3m-browse-url)))
            (w3m-browse-url rd-cl-sym))
@@ -9342,7 +9313,6 @@ Prompt for the type of search type for lispdoc.com as either:
                               "basic+search")))))))
 
 ;;; ==============================
-;;; :CHANGESET 2406
 ;;; :CREATED <Timestamp: #{2011-01-20T18:35:46-05:00Z}#{11034} - by MON KEY>
 (defun mon-cln-ansi-info (start end)
   "Replace formatting chars from ansicl info node from START to END.\n
@@ -9393,7 +9363,6 @@ The \"extended\" ‘loop’ form:
 
 
 ;;; ==============================
-;;; :CHANGESET 2180
 ;;; :CREATED <Timestamp: #{2010-10-16T15:45:01-04:00Z}#{10416} - by MON KEY>
 (defcustom *mon-CL-indent-specs* 
   '((dosequence . 1)

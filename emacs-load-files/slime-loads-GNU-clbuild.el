@@ -298,24 +298,23 @@
              (bound-and-true-p *IS-MON-OBARRAY*))
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
-;; DARWIN 
+;;; ==============================
+;; :DARWIN 
 ;; /opt/homebrew/bin/sbcl
 ;; (executable-find "sbcl") => /opt/homebrew/bin/spcl
 ;;
-;; :NOTE on Darwin with sbcl from homebrew the executable (executable-find "sbcl") exports the following variable: "SBCL_SOURCE_ROOT" and "SBCL_HOME". We here as well so they are synchronized. 
-
+;; :NOTE on Darwin with sbcl from homebrew the executable (executable-find
+;; "sbcl") exports the following variable: "SBCL_SOURCE_ROOT" and
+;; "SBCL_HOME". We here as well so they are synchronized.
 (when (equal (mon-system-type-conditionals) "IS-DARWIN-P")
   (unless (getenv "SBCL_HOME")
     (setenv "SBCL_HOME" "opt/homebrew/lib/sbcl"))
   (unless (getenv "SBCL_SOURCE_ROOT")
     (setenv "SBCL_SOURCE_ROOT" "/opt/homebrew/Cellar/sbcl/2.4.1/share/sbcl/src"))
   (setq inferior-lisp-program (concat (executable-find "sbcl") " --noinform")) ;;--no-linedit"))
-  (custom-note-var-changed 'inferior-lisp-program)
-)
-
+  (custom-note-var-changed 'inferior-lisp-program))
 
 ;;; ==============================
-;;; :CHANGESET 2389
 ;;; :CREATED <Timestamp: #{2011-01-12T14:04:51-05:00Z}#{11023} - by MON KEY>
 (defgroup mon-slime nil
   "Customization group for variables and functions of :FILE slime-loads-GNU-clbuild.el\n
@@ -341,7 +340,6 @@
   :group 'mon-base)
 
 ;;; ==============================
-;;; :CHANGESET 2389
 ;;; :CREATED <Timestamp: #{2011-01-12T14:03:36-05:00Z}#{11023} - by MON KEY>
 (defcustom *mon-slime-xrefs*
   '(mon-insert-slime-arglist mon-lisp-set-indent mon-lisp-set-indent-hook
@@ -399,7 +397,6 @@ The symbols contained of this list are defined in :FILE slime-loads-GNU-clbuild.
     :group 'mon-xrefs)
 
 ;;; ==============================
-;;; :CHANGESET 2205
 ;;; :CREATED <Timestamp: #{2010-10-21T18:59:23-04:00Z}#{10424} - by MON KEY>
 (defgroup mon-qucklisp nil
   "Configuations for Zach Beane's Common Lisp Quicklisp related procedures.\n
@@ -524,7 +521,6 @@ in the software subdir of `*quicklisp-path*'.\n
 
  
 ;;; ==============================
-;;; :CHANGESET 1929
 ;;; :CREATED <Timestamp: #{2010-06-30T16:44:21-04:00Z}#{10263} - by MON KEY>
 (defun quicklisp-current-swank-loader (&optional ql-path)
   "Return a list suitable for writing/verifying the existence of
@@ -579,7 +575,6 @@ elt2 is the truename of the most current swank-loader.lisp\n
 ;;; :TEST-ME (quicklisp-current-swank-loader "~/quicklisp/")
 
 ;;; ==============================
-;;; :CHANGESET 1929
 ;;; :CREATED <Timestamp: #{2010-06-30T19:09:57-04:00Z}#{10263} - by MON KEY>
 (defun quicklisp-write-dot-swank-loader (&optional w-swank-loader-list
                                                    ql-path w-msg-user)
@@ -624,7 +619,6 @@ indicating that file has changed.\n
 ;;; :TEST-ME (quicklisp-write-dot-swank-loader "~/quicklisp/")
  
 ;;; ==============================
-;;; :CHANGESET 1929
 ;;; :CREATED <Timestamp: #{2010-06-30T19:29:49-04:00Z}#{10263} - by MON KEY>
 (defun quicklisp-write-dot-swank-loader-if (&optional w-swank-loader-list
                                                       ql-path w-msg-user)
@@ -650,7 +644,6 @@ indicating that file has changed as per `quicklisp-write-dot-swank-loader'.\n
 ;;; :TEST-ME (quicklisp-write-dot-swank-loader-if nil "~/quicklisp/" t)
 
 ;;; ==============================
-;;; :CHANGESET 1929
 ;;; :CREATED <Timestamp: #{2010-06-30T17:54:15-04:00Z}#{10263} - by MON KEY>
 (defun quicklisp-dot-swank-current-p (&optional w-swank-loader-list ql-path)
   "Test if the swank-loader.lisp is current.\n
@@ -780,7 +773,6 @@ in current-buffer moving point.\n
 ;;; :TEST-ME (quicklisp-system-complete nil t)
 
 ;;; ==============================
-;;; :CHANGESET 2389
 ;;; :CREATED <Timestamp: #{2011-01-14T17:20:31-05:00Z}#{11025} - by MON KEY>
 (defun quicklisp-system-complete-if (completion-regexp &optional insrtp intrp)
   "Like `quicklisp-system-complete' but filter by COMPLETION-REGEXP.\n
@@ -797,7 +789,6 @@ Optional args INSRTP and INTRP are as per `quicklisp-system-complete'.\n
     (quicklisp-system-complete insrtp intrp)))
 
 ;;; ==============================
-;;; :CHANGESET 1933
 ;;; :CREATED <Timestamp: #{2010-07-01T13:29:02-04:00Z}#{10264} - by MON KEY>
 (defun quicklisp-hash-system-completions-slime-loadtime ()
   "Initialize `quicklisp-hash-system-completions' when loading `slime'.\n
@@ -946,13 +937,12 @@ been added.\n
       (dolist (malsptttl-D-1 expansions tags-table-list)
         (add-to-list 'tags-table-list malsptttl-D-1 t)
         (custom-note-var-changed 'tags-table-list)))))
-
+;;
 ;; (add-hook 'slime-mode-hook
 ;;           (function (lambda () 
 ;;                       (set (make-local-variable 'indent-tabs-mode) nil))) t)
 
 ;;; ==============================
-;;; :CHANGESET 2180
 ;;; :CREATED <Timestamp: #{2010-10-16T11:19:11-04:00Z}#{10416} - by MON KEY>
 ;; :COURTESY gbbopen/gbbopen-indent.el :WAS `set-indent-hook'
 (defun mon-lisp-set-indent (symbol value)
@@ -967,7 +957,6 @@ Run on the `lisp-mode-hook' by `mon-lisp-set-indentation'.\n
 
 ;;; ==============================
 ;;; :COURTESY gbbopen/gbbopen-indent.el:WAS `gbbopen:add-indentation'
-;;; :CHANGESET 2180
 ;;; :CREATED <Timestamp: #{2010-10-16T15:45:46-04:00Z}#{10416} - by MON KEY>
 (defun mon-lisp-set-indent-hook ()
   "Put `lisp-indent-function` property for all `*mon-CL-indent-specs*' symbols.\n
@@ -1059,7 +1048,6 @@ To make sure the directory exists:\n
       (setq slime-compile-file-options (list :fasl-directory mseftde-dir)))))
 
 ;;; ==============================
-;;; :CHANGESET 1917
 ;;; :CREATED <Timestamp: #{2010-06-23T20:38:32-04:00Z}#{10253} - by MON KEY>
 (defun mon-slime-setup-init ()
   "Configure some Slime/Swank related setings at init.\n
@@ -1315,7 +1303,6 @@ Evaluates `slime-setup', `slime-require'.\n
 ;; An alternative approach would be to make `slime-macroexpand-again' non-interactive and 
 ;; (define-key slime-macroexpansion-minor-mode-map "g" #'(lambda () (interactive) (slime-macroexpand-again)))
 ;;; :SEE (URL `https://bugs.launchpad.net/slime/+bug/777405')
-;;; :CHANGESET 2439
 ;;; :CREATED <Timestamp: #{2011-05-07T21:41:20-04:00Z}#{11186} - by MON KEY>
 (defun slime-macroexpand-again-fix ()
   "Reperform the last macroexpansion."
@@ -1369,7 +1356,6 @@ Evaluates `slime-setup', `slime-require'.\n
 ;;; ==============================
 
 ;;; ==============================
-;;; :CHANGESET 2409
 ;;; :CREATED <Timestamp: #{2011-02-11T19:07:56-05:00Z}#{11065} - by MON KEY>
 ;;; ,----
 ;;; | When source buffer is not displaying on a visible window, `sldb-show-source' is
@@ -1494,7 +1480,6 @@ a core file:\n
 ;; (define-key slime-prefix-map (kbd "C-c i") 'mon-clouseau-inspect)
 ;;; 
 ;;; ==============================
-;;; :CHANGESET 2409
 ;;; :CREATED <Timestamp: #{2011-02-10T13:17:55-05:00Z}#{11064} - by MON KEY>
 (defun mon-slime-compile-defun-for-debug ()
   "Like `slime-compile-defun' but with (debug 3).\n
@@ -1514,7 +1499,6 @@ a core file:\n
 ;; | There is special code for discovering extra keywords of generic
 ;; | functions and for handling make-instance.
 ;; `----
-;;; :CHANGESET 2389
 ;;; :CREATED <Timestamp: #{2011-01-12T13:06:20-05:00Z}#{11023} - by MON KEY>
 (defun mon-insert-slime-arglist ()
   "Insert a commented operator signature at beginning of previous line.\n
@@ -1566,7 +1550,6 @@ Return value is:
 
 ;;; ==============================
 ;;; :TODO When `IS-MON-SYSTEM-P' bound by `mon-keybind-slime' on the `slime-mode-hook'.\n
-;;; :CHANGESET 2160
 ;;; :CREATED <Timestamp: #{2010-09-29T13:18:37-04:00Z}#{10393} - by MON KEY>
 (defun mon-next-xref-slime ()
   "Invoke `slime-goto-next-xref' and move forward to next slime-xref.\n
@@ -1581,7 +1564,6 @@ Return value is:
 
 ;;; ==============================
 ;;; :TODO When `IS-MON-SYSTEM-P' bound by `mon-keybind-slime' on the `slime-mode-hook'.\n
-;;; :CHANGESET 2160
 ;;; :CREATED <Timestamp: #{2010-09-29T13:18:35-04:00Z}#{10393} - by MON KEY>
 (defun mon-prev-xref-slime ()
   "Invoke `slime-goto-next-xref' and move backward to prev slime-xref.\n
@@ -1596,7 +1578,6 @@ Return value is:
   (slime-goto-next-xref t))
 
 ;;; ==============================
-;;; :CHANGESET 2173
 ;;; :CREATED <Timestamp: #{2010-10-01T21:07:38-04:00Z}#{10395} - by MON KEY>
 (defun mon-quit-slime-description-window ()
   "If buffer \"*slime-description*\" is active and displayed then quit-window.\n
@@ -1622,7 +1603,6 @@ Return value is:
 
 ;;; ==============================
 ;;: :SEE (URL `http://common-lisp.net/pipermail/slime-devel/2011-March/thread.html#17984')
-;;; :CHANGESET 2422
 ;;; :CREATED <Timestamp: #{2011-03-10T13:33:08-05:00Z}#{11104} - by MON KEY>
 (defun mon-slime-description-view-source-file ()
   "Find source file referenced in *slime-description* buffer.\n
@@ -1712,11 +1692,8 @@ Return value is:
 ;; FIXME DARWIN reenable once we've debugged the slime startup
 ;; (add-hook '*slime-show-description-hook*
 ;;           (function (lambda () (local-set-key "\C-c\C-f"  'mon-slime-description-view-source-file))))
-                      
-
 
 ;;; ==============================
-;;; :CHANGESET 2407
 ;;; :CREATED <Timestamp: #{2011-01-22T13:45:15-05:00Z}#{11036} - by MON KEY>
 (defun mon-slime-copy-presentation-at-point-to-kill-ring-no-propso (point)
 "Like `slime-copy-presentation-at-point-to-kill-ring' but discards text-properties.\n
@@ -1730,7 +1707,6 @@ Return value is:
     (mon-slime-copy-presentation-to-kill-ring-no-props presentation start end (current-buffer))))
 
 ;;; ==============================
-;;; :CHANGESET 2407
 ;;; :CREATED <Timestamp: #{2011-01-22T13:45:19-05:00Z}#{11036} - by MON KEY>
 (defun mon-slime-copy-presentation-to-kill-ring-no-props (presentation start end buffer)
   "Like `slime-copy-presentation-to-kill-ring' but discards text-properties.\n
@@ -1747,8 +1723,8 @@ Return value is:
 (declare-function mon-file-truename-p          "mon-dir-utils"   t t)
 (declare-function mon-file-non-existent-ERROR  "mon-error-utils" t t)
 (declare-function mon-message                  "mon-error-utils" t t)
+
 ;;; ==============================
-;;; :CHANGESET 2402
 ;;; :CREATED <Timestamp: #{2011-01-18T13:56:13-05:00Z}#{11032} - by MON KEY>
 (defun mon-slime-start-sbcl (&optional core-file)
   "Start a fresh SBCL as if by `slime-start'.\n
@@ -1909,11 +1885,6 @@ CL-USER> \(find-symbol \"*RUNTIME-PATHNAME*\"\)
 ;;; ==============================
 
 ;;; ==============================
-
-
-
-
-;;; ==============================
 ;;; :NOTE this was brought in from :FILE slime-quicklisp-inspect.el
 ;;; :CREATED <Timestamp: #{2024-03-11T14:54:55-04:00Z}#{24111} - by MON KEY>
 (defgroup slime-quicklisp-inspect nil
@@ -1928,9 +1899,7 @@ CL-USER> \(find-symbol \"*RUNTIME-PATHNAME*\"\)
   ;; :prefix "slime-quicklisp-"
   :group 'slime)
 
-
 ;;; ==============================
-;;; :CHANGESET 2425
 ;;; :CREATED <Timestamp: #{2011-04-05T15:20:21-04:00Z}#{11142} - by MON KEY>
 (defvar *slime-quicklisp-systems* nil
   "A hash-table of quiklisp system names and the unreadable objects they map to.\n
@@ -1957,7 +1926,6 @@ Contents of hash generated with `slime-make-quicklisp-completion-table'.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2425
 ;;; :CREATED <Timestamp: #{2011-04-05T15:19:57-04:00Z}#{11142} - by MON KEY>
 (defun slime-make-quicklisp-completion-table (&optional force-rehash)
   "Read a return value of `slime-eval' and set the Elisp friendly hash-table
@@ -2005,7 +1973,6 @@ When optional arg FORCE-REHASH is non-nil clear the existing hash-table in
                        "Quicklisp systems not \(re\)hashed, not currently `slime-connected-p'"))))
 
 ;;; ==============================
-;;; :CHANGESET 2425
 ;;; :CREATED <Timestamp: #{2011-04-06T19:10:03-04:00Z}#{11143} - by MON KEY>
 (defun slime-quicklisp-get-process-start-time ()
   "Return two elt list contained of the process start time and its `decode-time'.\n
@@ -2036,7 +2003,6 @@ When optional arg FORCE-REHASH is non-nil clear the existing hash-table in
                       (list y mon d h min s))))))
 
 ;;; ==============================
-;;; :CHANGESET 2425
 ;;; :CREATED <Timestamp: #{2011-04-06T19:09:38-04:00Z}#{11143} - by MON KEY>
 (defun slime-quicklisp-completion-table-put-hash-meta ()
   "Record metadata on the plist of `*slime-quicklisp-systems*'.\n
@@ -2076,7 +2042,6 @@ When optional arg FORCE-REHASH is non-nil clear the existing hash-table in
   (slime-quicklisp-completion-table-get-hash-meta))
 
 ;;; ==============================
-;;; :CHANGESET 2425
 ;;; :CREATED <Timestamp: #{2011-04-06T19:09:17-04:00Z}#{11143} - by MON KEY>
 (defun slime-quicklisp-completion-table-get-hash-meta ()
   "Get the metadata on the plist of `*slime-quicklisp-systems*'.\n
@@ -2102,7 +2067,6 @@ When optional arg FORCE-REHASH is non-nil clear the existing hash-table in
              slqctghm-gthr)))))
 
 ;;; ==============================
-;;; :CHANGESET 2425
 ;;; :CREATED <Timestamp: #{2011-04-06T19:09:07-04:00Z}#{11143} - by MON KEY>
 (defun slime-quicklisp-completion-table-get-hash-count ()
   "Get the :hash-table-count property on `*slime-quicklisp-systems*' plist.\n
@@ -2130,7 +2094,6 @@ potentially costly.\n
   (plist-get (slime-quicklisp-completion-table-get-hash-meta) :hash-table-count))
 
 ;;; ==============================
-;;; :CHANGESET 2425
 ;;; :CREATED <Timestamp: #{2011-04-06T19:08:45-04:00Z}#{11143} - by MON KEY>
 (defun slime-quicklisp-completion-table-get-hashed-last ()
   "Get the :hashed-last property on `*slime-quicklisp-systems*' plist.\n
@@ -2150,7 +2113,6 @@ potentially costly.\n
   (plist-get (slime-quicklisp-completion-table-get-hash-meta) :hashed-last))
 
 ;;; ==============================
-;;; :CHANGESET 2425
 ;;; :CREATED <Timestamp: #{2011-04-06T19:08:33-04:00Z}#{11143} - by MON KEY>
 (declare-function time-less-p "time-date" (t1 t2))
 ;; Or to be sure do: (eval-when-compile (require 'time-date))
@@ -2188,7 +2150,6 @@ indicates we should rehash, else do nothing.\n
              (time-less-p last-hash last-proc))))))
 
 ;;; ==============================
-;;; :CHANGESET 2425
 ;;; :CREATED <Timestamp: #{2011-04-06T19:08:06-04:00Z}#{11143} - by MON KEY>
 ;; :NOTE this requires the function swank::hash-ql-systems-count which we define in CL-MON-CODE/mon-slime-extend/swank-quicklisp-inspect.lisp 
 ;; :NOTE we should reference the double dotted notatiojn for swank::hash-ql-systems-count as we don't export it 
@@ -2210,7 +2171,6 @@ indicates we should rehash, else do nothing.\n
   (slime-eval '(swank::hash-ql-systems-count)))
 
 ;;; ==============================
-;;; :CHANGESET 2425
 ;;; :CREATED <Timestamp: #{2011-04-06T19:07:56-04:00Z}#{11143} - by MON KEY>
 (defun slime-quicklisp-completion-table-compare-hash-counts ()
 "If current slime-inferior-process started after the most recent hash are
@@ -2238,7 +2198,6 @@ their respective hash-table-counts eq?
              'rehash))))
 
 ;;; ==============================
-;;; :CHANGESET 2425
 ;;; :CREATED <Timestamp: #{2011-04-05T15:25:06-04:00Z}#{11142} - by MON KEY>
 (defun slime-get-quicklisp-system-completions (&optional hash-value)
   "A `completing-read' for currenlty provided quicklisp systems.\n
@@ -2307,7 +2266,6 @@ with quicklisp system.\n
 ;;;   `(swank:init-inspector \"#<QL-DIST:SYSTEM zs3 / zs3-1.1.4 / quicklisp 2011-03-20>\") 
 ;;;  'slime-open-inspector)
 ;;;
-;;; :CHANGESET 2425
 ;;; :CREATED <Timestamp: #{2011-04-05T15:24:40-04:00Z}#{11142} - by MON KEY>
 (defun slime-inspect-quicklisp-system ()
   "Inspect a specific Quicklisp system.\n
@@ -2385,7 +2343,6 @@ If INSPECTED-PARTS is null minibuffer-message that ther is nothing to inspect.\n
 
 ;;; ==============================
 ;;; :PASTED (URL `http://paste.lisp.org/display/121086')
-;;; :CHANGESET 2424
 ;;; :CREATED <Timestamp: #{2011-04-01T13:49:17-04:00Z}#{11135} - by MON KEY>
 (defun slime-inspect-asdf-defined-systems ()
   "Inspect the hash-table of ASDF::*DEFINED-SYSTEMS*.\n
@@ -2398,7 +2355,6 @@ If INSPECTED-PARTS is null minibuffer-message that ther is nothing to inspect.\n
 
 ;;; ==============================
 ;;; :PASTED (URL `http://paste.lisp.org/display/121086')
-;;; :CHANGESET 2424
 ;;; :CREATED <Timestamp: #{2011-04-01T16:33:49-04:00Z}#{11135} - by MON KEY>
 (defun slime-inspect-asdf-system (system-name &optional preserve-case)
   "Inspect an ASDF system with SYSTEM-NAME in *slime-inspector* buffer.\n
@@ -2464,7 +2420,7 @@ the argument to ASDF:COERCE-NAME is CL:STRINGP the string's case is preserved.\n
 ;;                        slime-references     ;; SBCL-ONLY `slime-sbcl-manual-root'
 ;;                        slime-package-fu
 ;;                        slime-fontifying-fu)
-
+;;
 ;;   (:on-load  (slime-repl-init)
 ;;              (slime-autodoc-init)
 ;;              (slime-c-p-c-init)
@@ -2476,7 +2432,6 @@ the argument to ASDF:COERCE-NAME is CL:STRINGP the string's case is preserved.\n
 ;;              (slime-references-init)
 ;;              (slime-package-fu-init)
 ;;              (slime-fontifying-fu-init)))
-
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-10-31T16:15:03-04:00Z}#{10437} - by MON>
@@ -2492,7 +2447,6 @@ Evaluate `slime-show-arglist' explicitly if an arglist is needed.\n
 (set-default '*slime-echo-arglist-STFU* nil)
 
 ;;; ==============================
-;;; :CHANGESET 2259
 ;;; :CREATED <Timestamp: #{2010-11-01T16:55:20-04:00Z}#{10441} - by MON KEY>
 (defun slime-echo-arglist-behave-or-back-to-your-cage ()
   "De-gimpify `slime-space's and allow `slime-echo-arglist' in current-buffer.\n
@@ -2503,7 +2457,6 @@ Evaluate `slime-echo-arglist-STFU' to tone down the minibuffer noise.\n
     (set (make-local-variable '*slime-echo-arglist-STFU*) nil)))
 
 ;;; ==============================
-;;; :CHANGESET 2259
 ;;; :CREATED <Timestamp: #{2010-11-01T16:55:16-04:00Z}#{10441} - by MON KEY>
 (defun slime-echo-arglist-STFU ()
   "Silence `slime-space's invocation of `slime-echo-arglist' in current-buffer.\n
@@ -2533,7 +2486,6 @@ Evaluate `slime-show-arglist' explicitly if an arglist is needed.\n
 ;;                   "`slime-echo-arglist-behave-or-back-to-your-cage', `slime-echo-arglist-function'."
 ;;                   "▶▶▶") "\n"))
 ;;; ==============================
-;;; :CHANGESET 1978
 ;;; :CREATED <Timestamp: #{2010-07-14T17:41:00-04:00Z}#{10283} - by MON KEY>
 ;; (defun slime-auto-doc-mode-STFU ()
 ;;   "Make `slime-autodoc-mode' STFU. Silence his little buddy `eldoc-mode' too.\n
@@ -2544,7 +2496,6 @@ Evaluate `slime-show-arglist' explicitly if an arglist is needed.\n
 ;;     ;(set (make-local-variable  'slime-autodoc-mode) nil)
 ;;     ;(set (make-local-variable 'eldoc-mode) nil)))
 ;;; ==============================
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-29T14:08:07-04:00Z}#{10393} - by MON KEY>
 ;; (defun slime-autodoc-mode-first-change-hook ()
 ;;   (when *slime-autodoc-mode-STFU*

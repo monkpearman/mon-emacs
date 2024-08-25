@@ -141,6 +141,44 @@
 ;; :SOURCE https://www.reddit.com/r/emacs/comments/n68q16/fullscreen_and_makeframe_on_osx/
 (setq ns-use-native-fullscreen nil)
 
+;;; ==============================
+;;; :NOTE Get `mon-set-print-length-and-level' into the environment early so we
+;;; can actually read the *Backtace* buffer contents.
+;;; :CREATED <Timestamp: #{2024-08-23T14:09:24-04:00Z}#{24345} - by MON KEY>
+(defun mon-set-print-length-and-level () ;; (&optional warn-only)
+  "Set value of printer related variables.\n
+Sets following variables:\n
+ `backtrace-line-length', `eval-expression-print-level',
+ `print-length', `print-level'\n
+:SEE-ALSO `backtrace-expand-ellipses', `backtrace-multi-line',
+`backtrace-print-function', `backtrace-goto-source-functions', 
+`backtrace-view', `edebug-print-length', `edebug-print-level'.\n▶▶▶"
+  ;; ::NOTE We roll the following out by hand rather than use
+  ;; `custom-set-variables' so we can manually reset them here if needed.
+  ;;
+  ;; (setq edebug-print-length  100) ; :DEFAULT 50
+  ;; (custom-note-var-changed 'edebug-print-length)
+  ;;
+  ;; (setq edebug-print-level  100) ; :DEFAULT 50
+  ;; (custom-note-var-changed 'edebug-print-level)
+  (setq print-length                 niL)
+  (custom-note-var-changed 'print-length)
+  ;;
+  (setq print-level                  nil)
+  (custom-note-var-changed 'print-level)     
+  ;;
+  (setq backtrace-line-length         nil) ; :DEFAULT 5000
+  (custom-note-var-changed 'backtrace-line-length)
+  
+  (setq eval-expression-print-level   nil) ; :DEFAULT 4 
+  (custom-note-var-changed 'eval-expression-print-level))
+;;
+(mon-set-print-length-and-level)
+
+;; :show-flags :show-locals :print-circle :print-gensym
+;; (setq backtrace-view nil)
+;; (custom-note-var-changed 'backtrace-view)
+
 
 ;; Begin setting up the local Emacs environment:
 (let* ((uname  (apply 'concat (mapcar 'char-to-string  '(109 111 110 107 112 101 97 114 109 97 110))))

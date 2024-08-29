@@ -26,7 +26,7 @@
 ;; `mon-keybind-slime', `mon-keybind-lisp-interaction-mode',
 ;; `mon-keybind-dired-mode', `mon-keybind-conf-mode', 
 ;; `mon-keybind-slime-inspector',
- ;; `mon-keybind-slime-fuzzy-completions',
+;; `mon-keybind-slime-fuzzy-completions',
 ;; FUNCTIONS:◀◀◀
 ;; 
 ;; VARIABLES:

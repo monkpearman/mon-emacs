@@ -246,9 +246,9 @@
       ((and (intern-soft "IS-MON-P-GNU"  obarray)
             (bound-and-true-p IS-MON-P-GNU))
        (custom-set-variables '(tramp-default-method "ssh")))
-      (and (intern-soft "IS-MON-P-DARWIN"  obarray)
+      ((and (intern-soft "IS-MON-P-DARWIN"  obarray)
            (bound-and-true-p IS-MON-P-DARWIN)
-           (custom-set-variables '(tramp-default-method "ssh")))) ; :WAS "scp")
+           (custom-set-variables '(tramp-default-method "ssh"))))) ; :WAS "scp")
 ;;
 ;;; :TODO Tweak `mode-line-remote' to adust for tramp remotely.
 ;;; :FUNCTION `file-remote-p' when invoked for w/ 

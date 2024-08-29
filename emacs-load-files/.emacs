@@ -161,7 +161,7 @@ Sets following variables:\n
   ;;
   ;; (setq edebug-print-level  100) ; :DEFAULT 50
   ;; (custom-note-var-changed 'edebug-print-level)
-  (setq print-length                 niL)
+  (setq print-length                 nil)
   (custom-note-var-changed 'print-length)
   ;;
   (setq print-level                  nil)
@@ -260,6 +260,19 @@ Sets following variables:\n
         (nil (menu-bar-lines   . 1)
              (tool-bar-lines   . 0))))
 (custom-note-var-changed 'window-system-default-frame-alist)
+
+(setq initial-frame-alist
+      '((menu-bar-lines    . 1)
+        (tool-bar-lines    . 0)
+        ;; (vertical-scroll-bar . nil)
+        (vertical-scroll-bars)
+        (background-color  . "black")
+        (background-mode   . dark)
+        (border-color      . "black")
+        (cursor-color      . "yellow")
+        (foreground-color  . "white")
+        (mouse-color       . "white")))
+(custom-note-var-changed 'initial-frame-alist)
 
 ;; `default-frame-alist'
 (setq default-frame-alist

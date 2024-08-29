@@ -266,43 +266,39 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
   (unwind-protect
       ;;
       (with-current-buffer
-          ;; (get-buffer-create *mon-post-load-hook-trigger-buffer*) ;DARWIN inhibit the the hooks
-        (get-buffer-create *mon-post-load-hook-trigger-buffer* t)
-        ;;
+          (get-buffer-create *mon-post-load-hook-trigger-buffer* t)
+        
         ;; :NOTE What instead setting a local variable with a function object as its value
         ;;       and then doing running that on the kill-buffer-hook:
         ;; (set (make-local-variable '<LOCAL-VAR>) #'(lambda () (... doing local stuff here ...))
         ;; (add-hook 'kill-buffer-hook (run-hooks '<LOCAL-VAR>) t t)
         ;; Or, (add-hook 'kill-buffer-hook #'(lambda (&rest x) (run-hook-with-args '<LOCAL-VAR> x)))
-        ;;
-        ;; IS-MON-SYSTEM-P        
-        (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+        ;; IS-MON-SYSTEM-P
+        (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
                    ;; (bound-and-true-p IS-MON-P-GNU))
                    (bound-and-true-p IS-MON-SYSTEM-P))
-          ;; IS-DARWIN-P  ;; :FIXME VERIFY DARWIN
-          (when (and (intern-soft "IS-DARWIN-P" obarray) ;; *IS-MON-OBARRAY*
-                     (bound-and-true-p IS-DARWIN-P))
+          ;; IS-DARWIN-P & IS-MON-P-GNU
+          (when (or (and (intern-soft "IS-DARWIN-P" obarray)
+                         (bound-and-true-p IS-DARWIN-P))
+                    (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
+                         (bound-and-true-p IS-MON-P-GNU)))
             (mon-help-utils-CL-loadtime t)
             (add-hook 'kill-buffer-hook 'mon-purge-cl-symbol-buffers-on-load nil t)
             ;; (remove-hook 'kill-buffer-hook 'mon-update-tags-tables-loadtime  t)
             (add-hook 'kill-buffer-hook 'mon-update-tags-tables-loadtime nil t))
           
-          ;; IS-MON-P-GNU
-          (when (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
-                     (bound-and-true-p IS-MON-P-GNU))
-            (mon-help-utils-CL-loadtime t)
-            (add-hook 'kill-buffer-hook 'mon-purge-cl-symbol-buffers-on-load nil t)
-            ;; (remove-hook 'kill-buffer-hook 'mon-update-tags-tables-loadtime  t)
-            (add-hook 'kill-buffer-hook 'mon-update-tags-tables-loadtime nil t))
-          
+          ;; IS-W32-P
           (when (and (intern-soft "IS-W32-P" obarray) ;; *IS-MON-OBARRAY*
                      (bound-and-true-p IS-W32-P)
                      (fboundp  'mon-maximize-frame-w32))
             (add-hook 'kill-buffer-hook 'mon-maximize-frame-w32 nil t))
 
+          ;; (featurep 'slime-
+
           ;; Instantiate the tags-table w/ visit-tags-table on 
           (add-hook 'kill-buffer-hook 'mon-run-post-load-hooks-helper 0 t)) 
-        ;; (add-hook 'kill-buffer-hook #'(lambda ()
+
+          ;; (add-hook 'kill-buffer-hook #'(lambda ()
           ;;               (let ((default-directory 
           ;;                       (or (caar *mon-tags-table-list*) default-directory)))
           ;;                 (when (and (visit-tags-table default-directory) 
@@ -315,6 +311,7 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
           ;;                                           "-- value of current `tags-file-name': #P%S")
           ;;                                :msg-args tags-file-name))))
           ;;           t t))
+        
         ;; :DEBUGGING
         ;; (buffer-local-value 'kill-buffer-hook (current-buffer))
         ;; (prin1 (buffer-local-variables (current-buffer)) (current-buffer))
@@ -322,11 +319,12 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
         (when (get-buffer *mon-post-load-hook-trigger-buffer*)
           (remove-hook 'mon-run-post-load-hooks-helper t)
           (setq-local kill-buffer-hook nil)
-          (mapc 
-           #'(lambda (buffer) 
-               (when (string-match *mon-post-load-hook-trigger-buffer* (buffer-name buffer))(kill-buffer buffer)))
-           (buffer-list)))
+          (mapc  #'(lambda (buffer) 
+                     (when (string-match *mon-post-load-hook-trigger-buffer* (buffer-name buffer))
+                       (kill-buffer buffer)))
+                 (buffer-list)))
         )  ;; wcb
+
     ;; PROTECTED-FORM
     (when (get-buffer *mon-post-load-hook-trigger-buffer*)
       (with-current-buffer (get-buffer *mon-post-load-hook-trigger-buffer*)
@@ -387,7 +385,6 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
 
 ;;; ==============================
 ;;; :PREFIX "mpsspf-"
-;;; :CHANGESET 1704
 ;;; :CREATED <Timestamp: #{2010-04-07T15:05:41-04:00Z}#{10143} - by MON KEY>
 (defun mon-purge-slime-swank-port-file ()
   "Delete any `slime-swank-port-file's in `slime-temp-directory'.\n
@@ -404,7 +401,6 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
       (delete-file mpsspf-fl))))
 
 ;;; ==============================
-;;; :CHANGESET 1721
 ;;; :CREATED <Timestamp: #{2010-05-07T15:05:49-04:00Z}#{10185} - by MON KEY>
 (defun mon-purge-tramp-persistency-file ()
   "Delete the file with `tramp-persistency-file-name'.\n
@@ -433,7 +429,7 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
 `mon-its-all-text-purge-on-quit', `*mon-purge-emacs-temp-file-dir-fncns*',
 `mon-run-post-load-hooks'.\n▶▶▶"
   ;;(when IS-MON-SYSTEM-P
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
              (bound-and-true-p IS-MON-SYSTEM-P))
     (let ((tfd (mon-remove-if 
                 #'(lambda (f-chk) 

@@ -382,7 +382,6 @@ establishes an `eval-after-load' form for :FILE mon-keybindings.el\n
 
 
 ;;; ==============================
-;;; :ADDED `mon-w3m-dired-file' 
 (defun mon-keybind-dired-mode ()
   "Adjust `dired-mode-map' keybindings to MON preferences.\n
 Added to the `dired-mode-hook' at intit with `mon-keybind-put-hooks-init'.\n
@@ -414,8 +413,6 @@ Added to the `dired-mode-hook' at intit with `mon-keybind-put-hooks-init'.\n
     (cl-loop 
      for keys in kmp
      do (define-key dired-mode-map (kbd (car keys)) (cdr keys))))
-  ;; :ADDED `dired-efap' keybinding.
-  ;; :MODIFICATIONS <Timestamp: #{2009-09-07T14:48:26-04:00Z}#{09371} - by MON>
   (and (featurep 'dired-efap)
        (and (intern-soft "IS-MON-P-W32" obarray)
             (bound-and-true-p IS-MON-P-W32))
@@ -485,32 +482,6 @@ This function is invoked by `info-mode-hook' on entry to `Info' mode.
             (bound-and-true-p IS-MON-P))
        (when (bound-and-true-p Tex-mode-map)  
          (define-key TeX-mode-map (kbd "<S-iso-lefttab>") 'TeX-complete-symbol))))
-;; 
-;; Buffer-menu-mode binds revert-buffer to "g" 
-;; ,---- docstring of `revert-buffer'
-;; | This command also implements an interface for special buffers
-;; | that contain text which doesn't come from a file, but reflects
-;; | some other data instead (e.g. Dired buffers, `buffer-list'
-;; | buffers).  This is done via the variable `revert-buffer-function'.
-;; | In these cases, it should reconstruct the buffer contents from the
-;; | appropriate data.
-;; `----
-;; `revert-buffer-function' -> `Buffer-menu-revert-function'
-;; (remove-hook 'Buffer-menu-mode-hook
-;;              (function 
-;;               (lambda ()
-;;                 ;; 
-;;                 (local-unset-key (kbd "g")))))
-;; (add-hook (function 
-;;             (lambda ()
-;;               ;; 
-;;              (local-unset-key (kbd "g")))))
-
-;; Buffer-menu-marked-buffers
-;; buffer-
-;; (defun mon-copy-file-path
-;; (delete 'nil (mapcar #'(lambda (x) (buffer-file-name x)) (Buffer-menu-marked-buffers)) )
-;; 
 
 ;;; ==============================
 ;; :W3M-MODE-MAP
@@ -642,7 +613,7 @@ Can be manually removed later with:
   (define-key w3m-mode-map (kbd "C-c C-b") 'w3m-view-previous-page)
   (define-key w3m-mode-map (kbd "C-c f")   'w3m-view-next-page)
   (define-key w3m-mode-map (kbd "C-c C-f") 'w3m-view-next-page)
-  ;;(local-set-key          (kbd "<up>")   'mon-scroll-down-in-place)
+  ;;(local-set-key         (kbd "<up>")    'mon-scroll-down-in-place)
   (define-key w3m-mode-map (kbd "<up>")    'mon-scroll-down-in-place)
   ;; (local-set-key    (kbd "<down>")      'mon-scroll-up-in-place)
   (define-key w3m-mode-map  (kbd "<down>") 'mon-scroll-up-in-place)
@@ -734,13 +705,11 @@ Added to the `lisp-interaction-mode-hook' at init with `mon-keybind-put-hooks-in
                 ("<S-tab>"     .     completion-at-point)
                 ("<S-tab>"     .     lisp-complete-symbol)
                 ("<backtab>"   .     lisp-complete-symbol)
-                ( "C-c s t"    .      mon-insert-lisp-stamp)
-                )))
+                ( "C-c s t"    .      mon-insert-lisp-stamp))))
     (cl-loop 
      for keys in kmp
      do (define-key lisp-interaction-mode-map (kbd (car keys)) (cdr keys)))
     (and mklim-msg (message (car mkb-slm-msg) (cdr mkb-slm-msg)))))
-
 ;; 
 (when (and (intern-soft "IS-MON-P" obarray)
            (bound-and-true-p IS-MON-P))
@@ -757,7 +726,7 @@ Added to the `lisp-interaction-mode-hook' at init with `mon-keybind-put-hooks-in
 (save-excursion
   (funcall ;; (cl-third (cl-find 63 slime-selector-methods :key #'car))
    (cl-third (assoc 63 slime-selector-methods)))))
-
+;;;
 ;; (mon-keybind-slime-inspector-helper)
 
 
@@ -942,44 +911,9 @@ always easy.\n As a friendly reminder, here is how it is done:\n
           do (define-key slime-mode-map (kbd (car keys)) (cdr keys))))
        (and mkb-slm-msg (message (car mkb-slm-msg) (cdr mkb-slm-msg))))))
 
-;; (define-key slime-mode-map (kbd C-c) (cdr keys))
-  
-  ;; "\C-c\C-c"
-  ;; slime-sync-package-and-default-directory ;; slime-set-default-directory
-
-
-
-      ;; (keymap-set slime-repl-mode-map (key-description (kbd "<S-tab>"))    'completion-at-point)
-      ;; (keymap-set slime-repl-mode-map  (key-description (kbd "<backtab>"))        'completion-at-point)
-      ;; (keymap-set slime-repl-mode-map  (key-description (kbd "<S-iso-lefttab>"))  'completion-at-point)
-
-      ;;; more completion in the minibuffer
-      ;; slime-simple-completions
-      ;; (keymap-set slime-minibuffer-map (kbd "<S-iso-lefttab>") 'completion-at-point)
-      ;; (keymap-set slime-minibuffer-map (kbd "<S-tab>")         'completion-at-point)
-      ;; (keymap-set slime-minibuffer-map (kbd "<backtab>")       'completion-at-point)
-
-      ;; C-c C-v C-w |C-c C-v w
-      ;; (define-key slime-repl-mode-map (kbd <SOME-KEYS>)
-      ;;   'slime-copy-presentation-at-point-to-kill-ring)
-      ;;
-      ;; (define-key slime-repl-mode-map (kbd <SOME-KEYS>) 
-      ;;   'mon-slime-copy-presentation-to-kill-ring-no-props)
-      ;;
-      ;; C-c C-z
-      ;; (define-key slime-mode-map (kbd <SOME-KEYS>) 
-      ;;   'slime-switch-to-output-buffer)
-      ;; mon-slime-copy-presentation-at-point-to-kill-ring-no-props
-
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2011-02-01T21:18:20-05:00Z}#{11052} - by MON KEY>
-;;; slime-inspector-mode
-;;; slime-show-source-location
-;;; slime-inspector-show-source ;; needs to enable `view-mode'
-;;; slime-edit-definition       ;; needs to enable `view-mode'
-;;; slime-edit-definition-hooks
-;;; slime-selector-other-window
 (defun mon-keybind-slime-inspector ()
   "Run on the `slime-inspector-mode-hook'.\n
 :EXAMPLE\n\n
@@ -1034,11 +968,8 @@ after file mon-keybindings.el is loaded.
     (define-key slime-target-buffer-fuzzy-completions-map (kbd "M-v") 'slime-fuzzy-sroll-completions-down-from-target-buffer)
     (define-key slime-fuzzy-completions-map (kbd "C-v")  'scroll-up)
     (define-key slime-fuzzy-completions-map  (kbd "M-v") 'scroll-down)
-    (message ":FUNCTION `mon-keybind-slime-fuzzy-completions' evaluated")
-    ))
-
-;;; `slime-get-fuzzy-buffer' "*Fuzzy Completions*"
-;; `slime-fuzzy-choices-buffer' `slime-fuzzy-target-buffer'
+    (message ":FUNCTION `mon-keybind-slime-fuzzy-completions' evaluated")))
+;;
 ;; (mon-keybind-slime-fuzzy-completions)
 
 ;;; ==============================
@@ -1094,8 +1025,8 @@ Run on the `conf-mode-hook' when `IS-MON-P'.\n
   (add-hook 'server-switch-hook  
             (function 
              (lambda () 
-               (local-set-key (kbd "C-x #") 'server-edit)))
-            ))
+               (local-set-key (kbd "C-x #") 'server-edit)))))
+
 
 ;;; ==============================
 ;;; Don't bind `ibuffer-do-revert' -- the key is too easy to confuse or touch

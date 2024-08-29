@@ -3245,8 +3245,8 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
                     (and (intern-soft "IS-MON-P-GNU" obarray)
                          (bound-and-true-p IS-MON-P-GNU)))
             ;;
-            ;; :NOTE Following may cause trouble for functions which rely on output of dired using "-al" switch
-            ;; :SEE-ALSO `dired-actual-switches'
+            ;; :NOTE Following may cause trouble for functions which rely on
+            ;; output of dired using "-al" switch. :SEE `dired-actual-switches'
             (custom-set-variables
              '(dired-listing-switches "-alh")) ;; :DEFAULT "-al"
             ;;
@@ -3262,9 +3262,8 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
             ;;
             ;; (autoload 'mixvm "mixvm" "mixvm/gud interaction" t)
             ;;
-            ;; (load "slime-loads-GNU-clbuild.el")
-            ;;
             ;; (require 'url)
+            ;;
             (mon-set-url-pkg-init)
             (require 'slime-loads-GNU-clbuild)
             ;; 

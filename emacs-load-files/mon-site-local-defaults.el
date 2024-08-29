@@ -148,7 +148,6 @@
 ;;; :TEST-ME (mon-string-wonkify "These are some wonky words" 10)
 ;;; :TEST-ME (mon-string-wonkify "These are some wonky words" 3)
 
-
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-10T17:17:59-05:00Z}#{10063} - by MON KEY>
 (defun mon-build-user-name-example (name-count &optional w-this-var bind-var force-bind)
@@ -233,7 +232,6 @@ Return value displayed in buffer \"*MON-BUILD-USER-NAME-EXAMPLE-TEST*\".\n
   (pp-display-expression mbunet-gthr "*MON-BUILD-USER-NAME-EXAMPLE-TEST*")))
 
 ;;; ==============================
-;;; :MODIFICATIONS <Timestamp: #{2010-03-24T16:52:12-04:00Z}#{10123} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-02-10T14:19:41-05:00Z}#{10063} - by MON KEY>
 (defun mon-build-misc-path-example (&optional bind-var force-bind)
   "Return a list preformatted with keys and values suitable for use with 
@@ -339,8 +337,6 @@ When `force-bind' is non-nil force the binding even if `*mon-emacsd*' bound.\n
 ;;; :TEST-ME (assoc (cadr (nth 3 (cadr (assoc 5 (mon-build-mon-emacsd-example)))))
 ;;;             (mon-build-mon-emacsd-example))
 
-
-
 ;;; ==============================
 ;;; :NOTE Following doesn't test for the system-type's:
 ;;;  `darwin', `ms-dos', `windows-nt', `cygwin'
@@ -353,7 +349,7 @@ When `force-bind' is non-nil force the binding even if `*mon-emacsd*' bound.\n
 ;;; you will most-likely experience difficulty if you try to add a new var such as
 ;;; `IS-MON-P-DARWIN'. I apologize if this causes problems. I'm simply unable to
 ;;; build/verify/test MON code on these other systems.
-
+;;;
 ;;; :EMACS-WIKI bind `IS-MON-P-W32' `IS-MON-P-GNU' when 
 ;;; :FILE mon-site-local-private.el isn't in your load-path. 
 (unless (featurep 'mon-default-loads)
@@ -373,7 +369,6 @@ When `force-bind' is non-nil force the binding even if `*mon-emacsd*' bound.\n
 ;;; :TEST-ME IS-MON-P-DARWIN
 
 ;;; ==============================
-;;; :MODIFICATIONS <Timestamp: #{2010-03-24T12:06:54-04:00Z}#{10123} - by MON>
 ;;; :CREATED <Timestamp: #{2009-08-11T19:47:14-04:00Z}#{09332} - by MON KEY>
 ;;; ==============================
 ;; don't define it if we've already done so in our site-local-private.el file
@@ -444,9 +439,7 @@ form below will return correct but non-intuitive results:
            (cond ((equal user-real-login-name "<LOCAL-DARWIN-SYSTEM-LOGIN-NAME>")
                   (if as-symbol 'IS-MON-P-DARWIN "IS-MON-P-DARWIN"))
                  ;; Catch any gnu stragglers
-                 (t (if as-symbol 'IS-DARWIN-P "IS-DARWIN-P"))))
-           )))))
-
+                 (t (if as-symbol 'IS-DARWIN-P "IS-DARWIN-P")))))))))
 ;;
 ;;; :TEST-ME (mon-user-name-conditionalso)
 ;;; :TEST-ME (mon-user-name-conditionals t)
@@ -460,9 +453,8 @@ form below will return correct but non-intuitive results:
 ;;; ==============================
 ;;; :NOTE we've already defined this ins sitel-local-prate.el
 ;;; :NOTE This can't be loaded from mon-default-start-loads!
-;;; :MODIFICATIONS <Timestamp: #{2010-03-24T12:21:37-04:00Z}#{10123} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-11T19:46:53-04:00Z}#{09332} - by MON KEY>
-;;; 
+;;;
 ;;; (progn (fmakunbound 'mon-system-type-conditionals) (makunbound 'mon-system-type-conditionals))
 (unless (and (intern-soft "mon-system-type-conditionals")
              (fboundp 'mon-system-type-conditionals)
@@ -502,12 +494,10 @@ When optional arg AS-SYMBOL is non-nil return one of the symbols:\n
             ('IS-BUG-P         'IS-W32-P)      ;'is-tracer-bug-local)  
             ('IS-BUG-P-REMOTE  'IS-W32-P)      ;'is-tracer-bug-remote)
             ('IS-MON-P-W32     'IS-W32-P)      ;'is-tracer-mon-w32) 
-            ('IS-W32-P         'IS-W32-P)
-            ))    ;'is-tracer-w32-generic)))
+            ('IS-W32-P         'IS-W32-P)))    ;'is-tracer-w32-generic)))
     (if as-symbol 
         rtn 
-      (setq rtn (format "%s" rtn)))))
-)
+      (setq rtn (format "%s" rtn))))))
 ;;
 ;;; :TEST-ME (mon-system-type-conditionals)
 ;;; :TEST-ME (mon-system-type-conditionals t)
@@ -567,7 +557,6 @@ For example:\n
 ;;; Also note, I have padding the length of the list to ensure that calling code
 ;;; doesn't ask for a value that isn't there. This list doesn't change that
 ;;; often and I can't guarantee to remember to increase the step value :\
-;;; :MODIFICATIONS <Timestamp: #{2010-02-10T17:06:55-05:00Z}#{10063} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-11T19:47:24-04:00Z}#{09332} - by MON KEY>
 (defconst *mon-emacsd* (mon-build-mon-emacsd-example t)
   "*An alist to encapusulate common site local and default paths.
@@ -654,18 +643,15 @@ that should be reflected across multiple systems.\n
 ;;; :NOTE The function `mon-build-user-name-example' builds temporary key value
 ;;; pairs.  If you find you actually use MON packages you will prob. want to
 ;;; uncomment above and populate with reasonable values.
-;;  '((1 "<NAMEFORM-1>")(2 "<NAMEFORM-2>")(3 "<NAMEFORM-3>"));; {...etc..})
-
-;; :NOTE Following `do' loop builds temporary key value pairs Suitable for 
-;;; use with
-;; If you find that you actually use MON pacages you will want to uncomment 
-;; above and populate with reasonable values.
+;;;  '((1 "<NAMEFORM-1>")(2 "<NAMEFORM-2>")(3 "<NAMEFORM-3>"));; {...etc..})
+;;;
+;;; If you find that you actually use MON pacages you will want to uncomment 
+;;; above and populate with reasonable values.
 ;;; (let (nmf)
 ;;;   (do ((i 1 (1+ i)))
 ;;;       ((> i 10)i)
 ;;;     (push `(,i ,(concat "<NAMEFORM-" (number-to-string i) ">")) nmf))
 ;;;   (nreverse nmf))
-
 ;;; CREATED: <Timestamp: #{2009-08-13T17:41:02-04:00Z}#{09334} - by MON KEY>
 (defconst *MON-NAME* (mon-build-user-name-example 5 '*MON-NAME* t t)
   "*An alist to encapsulate MON name across packages.\n
@@ -713,7 +699,8 @@ Numbered keys in alist \(1 indexed\) map to Nameforms - typically a string.
 ;;
 ;;;(progn (makunbound '*BUG-NAME*) (unintern '*BUG-NAME*))
 
-;; :REQUIRED-BY :FILE mon-insertion-utils.el
+;;; ==============================
+;;; :REQUIRED-BY :FILE mon-insertion-utils.el
 (defvar *MON-ORG-NAME*
   '((1 " - c/o YourSite.com") 
     (2 "YourSite.com")

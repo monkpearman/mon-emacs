@@ -35,6 +35,7 @@
 ;; `mon-next-xref-slime', `mon-quit-slime-description-window',
 ;; `mon-lisp-set-indent-hook', `mon-lisp-set-indent', `slime-echo-arglist-STFU',
 ;; `slime-echo-arglist-behave-or-back-to-your-cage', `mon-insert-slime-arglist',
+;; `mon-add-lisp-system-paths-to-mon-lisp-system-paths',
 ;; `mon-slime-start-sbcl',
 ;; `mon-slime-copy-presentation-at-point-to-kill-ring-no-props',
 ;; `mon-slime-copy-presentation-to-kill-ring-no-props',
@@ -352,6 +353,10 @@
     quicklisp-write-dot-swank-loader-if 
     slime-echo-arglist-behave-or-back-to-your-cage slime-echo-arglist-STFU
     slime-next-xref slime-prev-xref
+    mon-add-lisp-system-paths-to-mon-lisp-system-paths
+    mon-common-lisp-hyperspec-browse-url-w3m
+    mon-common-lisp-hyperspec-browse-url-eww
+    mon-common-lisp-hyperspec-browse-url-set-init
     mon-slime-copy-presentation-at-point-to-kill-ring-no-props
     mon-slime-copy-presentation-to-kill-ring-no-props
     mon-slime-compile-defun-for-debug
@@ -359,7 +364,7 @@
     slime-inspect-asdf-system
     slime-inspect-asdf-defined-systems
     slime-inspect-quicklisp-system
-     slime-inspect-quicklisp-systems
+    slime-inspect-quicklisp-systems
     slime-make-quicklisp-completion-table
     slime-get-quicklisp-system-completions
     slime-quicklisp-get-process-start-time
@@ -377,6 +382,7 @@
     slime-fuzzy-sroll-completions-up-from-target-buffer
     slime-fuzzy-sroll-completions-down-from-target-buffer
     ;; :VARIABLES
+    *mon-common-lisp-hyperspec-browser-function*
     *slime-echo-arglist-STFU*
     *quicklisp-path* *quicklisp-systems*
     *slime-quicklisp-systems* 
@@ -519,7 +525,6 @@ in the software subdir of `*quicklisp-path*'.\n
 ;;; :TEST-ME (quicklisp-find-slime)
 ;;; :TEST-ME (quicklisp-find-slime "~/quicklisp/")
 
- 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-06-30T16:44:21-04:00Z}#{10263} - by MON KEY>
 (defun quicklisp-current-swank-loader (&optional ql-path)
@@ -897,13 +902,48 @@ To customize this variable the following are sufficient:
      :base-system-path \"SOME/SUBDIR\" 
      :system-paths \(\"YOUR-SYSTEM-A\" \"YOUR-SYSTEM-B\" \"YOUR-SYSTEM-C\"\)\)\)
  \(custom-note-var-changed '*mon-lisp-system-paths*\)\n
-:EXAMPLE\n\n\(plist-get :root-path *mon-lisp-system-paths*\)\n
- \(plist-get :base-system-path *mon-lisp-system-paths*\)\n
- \(plist-get :system-paths *mon-lisp-system-paths*\)\n
-:SEE-ALSO .\n▶▶▶"
+:EXAMPLE\n\n
+ \(plist-get \(symbol-plist '*mon-lisp-system-paths*\) :root-path\)\n
+ \(plist-get \(symbol-plist '*mon-lisp-system-paths*\) :base-system-path\)\n
+ \(plist-get \(symbol-plist '*mon-lisp-system-paths*\)  :system-paths\)\n
+:SEE-ALSO `mon-add-lisp-system-paths-to-mon-lisp-system-paths'.\n▶▶▶"
   :type '(plist :options ((:root-path directory) (:base-system-path string) (:system-paths (repeat string))))
   :group 'mon-slime
   :group 'mon-base)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-26T19:30:26-04:00Z}#{24351} - by MON KEY>
+(defun mon-add-lisp-system-paths-to-mon-lisp-system-paths ()
+  "Make sure `symbol-plist' of `*mon-lisp-system-paths*' contains the key/val pairs.
+set value for :root-path, :base-system-path and :system-paths according to value of 
+`*mon-lisp-system-paths*'.\n
+Evaluated at loadtime from `mon-slime-setup-init'.\n 
+:SEE-ALSO `mon-add-lisp-system-paths-to-mon-lisp-system-paths', `mon-slime-setup-init'.\n▶▶▶"
+  (when (or (and (intern-soft "IS-MON-P-DARWIN" obarray)
+                         (bound-and-true-p IS-MON-P-DARWIN))
+          (and (intern-soft "IS-MON-P-GNU" obarray)
+                         (bound-and-true-p IS-MON-P-GNU)))
+  ;; We put these values on the symbol-plist of `*mon-lisp-system-paths*' because
+  ;; `mon-add-lisp-system-paths-to-tags-table-list' expects them there.
+  (cl-loop 
+   for prop  in '(:root-path :base-system-path :system-paths)
+   for got-prop  = (member prop *mon-lisp-system-paths*)
+   for prop = (car got-prop)
+   for prop-val  = (cadr got-prop)
+   do  (unless  (and (plist-get (symbol-plist '*mon-lisp-system-paths*) prop)
+                     (equal (plist-get (symbol-plist '*mon-lisp-system-paths*) prop)
+                            prop-val))
+         (plist-put (symbol-plist '*mon-lisp-system-paths*) prop prop-val))
+   finally
+   (return 
+    (setq *mon-lisp-system-paths*
+     (list 
+      :root-path        (plist-get (symbol-plist '*mon-lisp-system-paths*) :root-path)
+      :base-system-path (plist-get (symbol-plist '*mon-lisp-system-paths*) :base-system-path)
+      :system-paths     (plist-get (symbol-plist '*mon-lisp-system-paths*) :system-paths)))))))
+;;
+;; (progn (setq *mon-lisp-system-paths* nil)
+;;        (mon-add-lisp-system-paths-to-mon-lisp-system-paths))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2011-04-20T14:06:45-04:00Z}#{11163} - by MON KEY>
@@ -918,8 +958,9 @@ When optional arg TAGS-PATHS-ONLY is non-nil do not add generated TAGS file
 pathnames to `tags-table-list' instead only return a list of what would have
 been added.\n
 :EXAMPLE\n\n\(mon-add-lisp-system-paths-to-tags-table-list t\)\n
-:SEE-ALSO .\n▶▶▶"
-  (let* ((paths-plist (bound-and-true-p *mon-lisp-system-paths*))
+:SEE-ALSO `mon-add-lisp-system-paths-to-mon-lisp-system-paths'.\n▶▶▶"
+  (let* ((paths-plist (or (bound-and-true-p *mon-lisp-system-paths*)
+                          (mon-add-lisp-system-paths-to-mon-lisp-system-paths)))
          (root-path (plist-get paths-plist :root-path))
          (base-system-path (and root-path
                                 (expand-file-name (plist-get paths-plist :base-system-path) root-path)))         
@@ -937,14 +978,10 @@ been added.\n
       (dolist (malsptttl-D-1 expansions tags-table-list)
         (add-to-list 'tags-table-list malsptttl-D-1 t)
         (custom-note-var-changed 'tags-table-list)))))
-;;
-;; (add-hook 'slime-mode-hook
-;;           (function (lambda () 
-;;                       (set (make-local-variable 'indent-tabs-mode) nil))) t)
 
 ;;; ==============================
+;;; :COURTESY gbbopen/gbbopen-indent.el :WAS `set-indent-hook'
 ;;; :CREATED <Timestamp: #{2010-10-16T11:19:11-04:00Z}#{10416} - by MON KEY>
-;; :COURTESY gbbopen/gbbopen-indent.el :WAS `set-indent-hook'
 (defun mon-lisp-set-indent (symbol value)
   "Put VALUE on SYMBOL's `lisp-indent-function` property.\n
 Run on the `lisp-mode-hook' by `mon-lisp-set-indentation'.\n
@@ -967,7 +1004,6 @@ Run on the `lisp-mode-hook'.\n
        (dolist (mlsih-D *mon-CL-indent-specs*)
          (mon-lisp-set-indent (car mlsih-D) (cdr mlsih-D)))))
 
-
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2011-07-04T13:01:36-04:00Z}#{11271} - by MON KEY>
 (defun mon-slime-setup-add-hooks ()
@@ -976,7 +1012,6 @@ Run on the `lisp-mode-hook'.\n
   ;;
   (add-hook 'slime-repl-mode-hook
             (function (lambda () (set (make-local-variable 'indent-tabs-mode) nil))))
-                        
   ;;
   ;; (add-hook 'slime-mode-hook
   ;;           (function (lambda () 
@@ -989,7 +1024,9 @@ Run on the `lisp-mode-hook'.\n
   ;; (add-hook 'lisp-mode-hook
   ;;           (function (lambda () 
   ;;                       (set (make-local-variable 'indent-tabs-mode) nil))))
-  (add-hook 'lisp-interaction-mode-hook  'slime-mode)
+  ;;
+  ;; (add-hook 'lisp-interaction-mode-hook  'slime-mode)
+
   (add-hook 'lisp-mode-hook              'slime-mode)
 
   ;; DARWIN TESTME
@@ -1048,6 +1085,121 @@ To make sure the directory exists:\n
       (setq slime-compile-file-options (list :fasl-directory mseftde-dir)))))
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-26T18:32:53-04:00Z}#{24351} - by MON KEY>
+(defvar *mon-common-lisp-hyperspec-browser-function*
+  ;; 'mon-common-lisp-hyperspec-browse-url-eww
+  'mon-common-lisp-hyperspec-browse-url-w3m
+"Handler function for `browse-url' cdr of a cons cell as per `browse-url-handlers'.\n
+Used in conjunction with `mon-common-lisp-hyperspec-use-dedicated-browser-p'
+which if URL satisfies will cause allow this function to invoke a url-handler
+function with URL as it's argument.\n
+Current possible is one of the following:\n
+ `mon-common-lisp-hyperspec-browse-url-eww'
+ `mon-common-lisp-hyperspec-browse-url-w3m'\n
+:SEE-ALSO `common-lisp-hyperspec', `common-lisp-hyperspec-root',
+`browse-url-generic-program', `browse-url-browser-function'.\n▶▶▶")
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-26T18:32:56-04:00Z}#{24351} - by MON KEY>
+(defun mon-common-lisp-hyperspec-use-dedicated-browser-p (url)
+  "Predicate function for variable use with `browse-url-handlers'.
+URL is a url for use with `browse-url' \(or local equivalent indirected throught it\).\n
+Check if `common-lisp-hyperspec-root' is non-nil and URL matches it's value as
+if by `string-match-p'.\n
+If return value is non-nil the asociate HANDLER function is invoked. HANDLER
+function is a value as per `*mon-common-lisp-hyperspec-browser-function*'.\n
+:EXAMPLE 
+ \(mon-common-lisp-hyperspec-use-dedicated-browser-p
+   \(concat common-lisp-hyperspec-root \"Body/m_defpar.htm\"\)\)\\n
+ \(mon-common-lisp-hyperspec-use-dedicated-browser-p \"FOOBAR\"\)\\n
+:SEE-ALSO `mon-common-lisp-hyperspec-browse-url-eww',
+`mon-common-lisp-hyperspec-browse-url-w3m',
+`common-lisp-hyperspec', `common-lisp-hyperspec-root',
+`browse-url-generic-program', `browse-url-browser-function'.\n▶▶▶"
+  (and common-lisp-hyperspec-root  
+       (and (string-match-p common-lisp-hyperspec-root url)
+            t)))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-26T18:33:02-04:00Z}#{24351} - by MON KEY>
+(defun mon-common-lisp-hyperspec-browse-url-eww (url &rest args)
+"Handler function for `browse-url' cdr of a cons cell as per `browse-url-handlers'.\n
+Used in conjunction with `mon-common-lisp-hyperspec-use-dedicated-browser-p'
+which if URL satisfies will cause allow this function to invoke `eww-open-file'
+with URL as it's argument.\n
+Used as a value for `*mon-common-lisp-hyperspec-browser-function*'.\n
+:EXAMPLE\n
+ \(mon-common-lisp-hyperspec-browse-url-eww
+   \(concat common-lisp-hyperspec-root \"Body/m_defpar.htm\"\)\)\n
+:SEE-ALSO `mon-common-lisp-hyperspec-browse-url-w3m',
+`common-lisp-hyperspec', `common-lisp-hyperspec-root',
+`mon-set-browser-init', `browse-url-generic-program',
+`browse-url-browser-function'.\n▶▶▶"
+ (and (string-match-p common-lisp-hyperspec-root url)
+      (if (string-equal "file:/" (substring url 0 6))
+          (eww-open-file (substring url 6))
+        (eww-open-file url)
+        url)))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-26T18:33:04-04:00Z}#{24351} - by MON KEY>
+(defun mon-common-lisp-hyperspec-browse-url-w3m (url &rest args)
+"Handler function for `browse-url' cdr of a cons cell as per `browse-url-handlers'.\n
+Used in conjunction with `mon-common-lisp-hyperspec-use-dedicated-browser-p'
+which if URL satisfies will cause allow this function to invoke `w3m-browse-url'
+with URL as it's argument.\n
+Used as a value for `*mon-common-lisp-hyperspec-browser-function*'.\n
+:EXAMPLE\n
+ \(mon-common-lisp-hyperspec-browse-url-w3m
+   \(concat common-lisp-hyperspec-root \"Body/m_defpar.htm\"\)\)\n
+:SEE-ALSO `mon-common-lisp-hyperspec-browse-url-eww',
+`common-lisp-hyperspec', `common-lisp-hyperspec-root',
+`browse-url-generic-program', `browse-url-browser-function'.\n▶▶▶"
+ (w3m-browse-url url))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-26T20:30:26-04:00Z}#{24351} - by MON KEY>
+(defun mon-common-lisp-hyperspec-browse-url-set-init ()
+ "Set or update `browse-url-handlers' according to value of 
+`*mon-common-lisp-hyperspec-browser-function*'.\n
+Evaluated at loadtime by `mon-common-lisp-hyperspec-browse-url-set-init'.\n
+:SEE-ALSO `mon-common-lisp-hyperspec-browse-url-eww',
+`mon-common-lisp-hyperspec-browse-url-w3m',
+`common-lisp-hyperspec', `common-lisp-hyperspec-root',
+`browse-url-generic-program', `browse-url-browser-function'.\n▶▶▶"
+ (and *mon-common-lisp-hyperspec-browser-function*
+      (cond ((eql *mon-common-lisp-hyperspec-browser-function*
+                  'mon-common-lisp-hyperspec-browse-url-w3m)
+             (unless (featurep 'w3m) 
+               ;; w3m directory should already be in path per `mon-set-w3m-init', but just in case.
+               (require 'w3m 
+                        (and (or (and (intern-soft "IS-MON-P-DARWIN" obarray)
+                                      (bound-and-true-p IS-MON-P-DARWIN))
+                                 (and (intern-soft "IS-MON-P-GNU" obarray)
+                                      (bound-and-true-p IS-MON-P-GNU)))
+                             (locate-library "site-lisp/emacs-w3m_GIT/w3m")))))
+            ((eql *mon-common-lisp-hyperspec-browser-function*
+                  'mon-common-lisp-hyperspec-browse-url-eww)
+              (unless (featurep 'eww) (require 'eww))))
+      (progn
+        ;; first remove any existing handlers pairs we may already have set.
+        (unless (null browse-url-handlers)
+          (mapcar #'(lambda (x) 
+                 (eql (car x) 'mon-common-lisp-hyperspec-use-dedicated-browser-p)
+                 (when (eql (car x) 'mon-common-lisp-hyperspec-use-dedicated-browser-p)
+                   (setq browse-url-handlers (delete x browse-url-handlers))))
+                  browse-url-handlers))
+        (setq browse-url-handlers
+              (push (cons 'mon-common-lisp-hyperspec-use-dedicated-browser-p
+                          *mon-common-lisp-hyperspec-browser-function*)
+                    browse-url-handlers))
+        (custom-note-var-changed 'browse-url-handlers)
+        (mon-message :msg-spec '(":FUNCTION `mon-common-lisp-hyperspec-browse-url-set-init'"
+                            "updating value of `browse-url-handlers'. New value:\n   %S")
+                :msg-args browse-url-handlers)
+        browse-url-handlers)))
+
+;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-06-23T20:38:32-04:00Z}#{10253} - by MON KEY>
 (defun mon-slime-setup-init ()
   "Configure some Slime/Swank related setings at init.\n
@@ -1064,6 +1216,10 @@ Evaluates `slime-setup', `slime-require'.\n
 `slime-cheat-sheet', `mon-slime-setup-mon',
 `init-keybind-lisp-interaction-mode', `mon-keybind-emacs-lisp-mode',
 `slime-setup-contribs', `slime-load-contribs', `slime-required-modules'.\n▶▶▶"
+  ;; evaluate `mon-add-lisp-system-paths-to-mon-lisp-system-paths'
+  ;; to make sure value of `*mon-lisp-system-paths*' is non-null and it's
+  ;; symbol-plist is sane.
+  (mon-add-lisp-system-paths-to-mon-lisp-system-paths)
   ;; :NOTE sb-ext:*runtime-pathname* returns the current SBCL runtime
   (set-language-environment "UTF-8")
   ;; :QUICKLISP-SLIME-PATH
@@ -1108,7 +1264,7 @@ Evaluates `slime-setup', `slime-require'.\n
    ;; '(slime-asdf-collect-notes t)
    )
   ;; DARWIN is needed? 
-  (setq slime-lisp-modes '(lisp-mode lisp-interaction-mode))
+  ;; (setq slime-lisp-modes '(lisp-mode lisp-interaction-mode))
   (mon-slime-ensure-fasl-temp-directory-exists)
   ;;
   ;; (setq slime-selector-other-window t) ;; :DEFAULT nil
@@ -1135,7 +1291,8 @@ Evaluates `slime-setup', `slime-require'.\n
                  ;; slime-cl-indent
                  ;; slime-cover
                  ;; slime-highlight-edits
-                 )) 
+                 ))
+  ;; (locate-library "libe/hyperspec")
   (slime-require :swank-sbcl-exts)
   
   (slime-require :swank-listener-hooks)
@@ -1184,7 +1341,7 @@ Evaluates `slime-setup', `slime-require'.\n
   ;;
   ;; :SLIME-LISP-MODES
 
-  (add-hook 'lisp-interaction-mode-hook 'slime-mode)
+  ;; (add-hook 'lisp-interaction-mode-hook 'slime-mode)
   
   (add-hook 'lisp-mode-hook             'slime-mode)
   ;;
@@ -1202,10 +1359,10 @@ Evaluates `slime-setup', `slime-require'.\n
   ;; swank::*inspector-verbose-printer-bindings* 
   ;; swank::*inspector-printer-bindings*
 
-  ;; DARWIN
+  ;; :DARWIN
   ;; (add-hook 'slime-inspector-mode-hook 'mon-keybind-slime-inspector t t)
 
-  ;; DARWIN
+  ;; :DARWIN
   ;; (add-hook 'slime-mode-hook 'mon-keybind-slime t)
   (add-hook 'slime-connected-hook 
             (function (lambda () (slime-make-quicklisp-completion-table))) t)
@@ -1248,6 +1405,7 @@ Evaluates `slime-setup', `slime-require'.\n
     ;;   (:one-liner "inspect enabled quicklisp dists"))
 
     ))
+
   )
 
 (defun slime-fuzzy-sroll-completions-up-from-target-buffer ()

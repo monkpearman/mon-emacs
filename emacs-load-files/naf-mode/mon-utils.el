@@ -919,7 +919,7 @@ Peforms loadtime evaluation of functions defined in mon-utils.el:\n
     ;; NO-MISC-PATH NO-MAP-MOUNT-POINTS e.g.: 
     ;; (eval-after-load 'mon-cifs-utils '(mon-bind-cifs-vars-at-loadtime nil t)) 
     ;;
-    ;; :NOTE we no longer evaluate following as teh drive doesn't
+    ;; :NOTE we no longer evaluate following as the drive doesn't
     ;; exist. Uncomment if we ever establis another CIFS routine
     ;; (eval-after-load "mon-cifs-utils"           '(mon-bind-cifs-vars-at-loadtime))
     (eval-after-load "mon-cl-compat-regexps"    '(mon-CL-cln-colon-swap t))    
@@ -1604,8 +1604,10 @@ With ARG, begin column display at current column, not at left margin.\n
 `mon-after-mon-utils-loadtime'.\n▶▶▶"
   (interactive)
   (save-excursion
-    ;; point deprecated: (setf (point) (point-min))
-    (setf (goto-char (point)) (point-min))
+    ;; setf point deprecated: 
+    (setf (point) (point-min))
+    ;; following doesnt work in lieu of deprecation:
+    ;; (setf (goto-char (point)) (point-min))
     (cl-loop for form = (condition-case nil
                          (read (current-buffer))
                        (error nil))
@@ -1711,7 +1713,7 @@ hash-table.
 `mon-unbind-variable', `mon-unbind-defun', `mon-compile-when-needed',
 `mon-load-or-alert', `mon-byte-compile-and-load', `mon-dump-object-to-file',
 `mon-nuke-and-eval', `mon-after-mon-utils-loadtime'.\n▶▶▶"
-  ;; (require 'cl) ;; Be sure we use the CL version of `eval-when-compile'.
+  ;; (require 'cl-lib) ;; Be sure we use the CL version of `eval-when-compile'.
   (if (file-exists-p file)
       (mon-format :w-fun #'error 
                   :w-spec '(":FUNCTION `mon-dump-object-to-file' "

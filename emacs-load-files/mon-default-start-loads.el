@@ -3100,7 +3100,10 @@ Evaluated at init time by `mon-set-system-specific-and-load-init'.\n
 `mon-help-key-functions', `mon-help-keys'.\n▶▶▶"
   (mon-default-start-error/sane
    'mon-set-system-specific-and-load-init warn-only
-   (mon-keybind-w32-init)
+   
+   (when (and (intern-soft "IS-W32-P" obarray)
+              (bound-and-true-p IS-W32-P))
+   (mon-keybind-w32-init))
    ;; (remove-hook 'dired-mode-hook 'mon-keybind-dired-mode)
    (add-hook 'dired-mode-hook 'mon-keybind-dired-mode)
    ;; (remove-hook 'completion-list-mode-hook 'mon-keybind-completions)
@@ -3121,8 +3124,6 @@ Evaluated at init time by `mon-set-system-specific-and-load-init'.\n
        '(progn (mon-keybind-globally)
                (mon-keybind-slime-fuzzy-completions))))
    ))
-;;
-;; (mon-build-github-default t)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2011-05-14T17:47:22-04:00Z}#{11196} - by MON KEY>
@@ -3359,7 +3360,7 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
          (setq tags-table-list (append tags-table-list gthr)))
        (custom-note-var-changed 'tags-table-list)))
    ;; Now put some keybindings on the mode-hooks:
-   ;; (mon-keybind-put-hooks-init)
+   (mon-keybind-put-hooks-init t)
    ;;
    ;; :NOTE Following will make-sure mon-help-CL-<FOO> functions get url/info buttons assigned.
    (add-function

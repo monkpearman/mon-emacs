@@ -287,26 +287,27 @@
 ;;; ==============================
 
 ;;; CODE:
-;; (file-truename (file-relative-name "some-file-name.el" "../emacs-load-files"))
-;; (file-truename (file-relative-name "some-file-name.el" "../emacs-load-files") )
-;; (file-relative-name "some-file-name.el" "../emacs-load-files")  => "some-file-name.el"
-;; (file-name-directory  (file-relative-name "some-file-name.el" "../emacs-load-files")) => nil
+
+;;; ==============================
+;;; (file-truename (file-relative-name "some-file-name.el" "../emacs-load-files"))
+;;; (file-truename (file-relative-name "some-file-name.el" "../emacs-load-files") )
+;;; (file-relative-name "some-file-name.el" "../emacs-load-files")  => "some-file-name.el"
+;;; (file-name-directory  (file-relative-name "some-file-name.el" "../emacs-load-files")) => nil
 
 
 (eval-when-compile (require 'cl))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
-(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
+  (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 ;;; ==============================
-;; :DARWIN 
-;; /opt/homebrew/bin/sbcl
-;; (executable-find "sbcl") => /opt/homebrew/bin/spcl
-;;
-;; :NOTE on Darwin with sbcl from homebrew the executable (executable-find
-;; "sbcl") exports the following variable: "SBCL_SOURCE_ROOT" and
-;; "SBCL_HOME". We here as well so they are synchronized.
+;;; :DARWIN 
+;;; (executable-find "sbcl") => /opt/homebrew/bin/spcl
+;;;
+;;; :NOTE on Darwin with sbcl from homebrew the executable (executable-find "sbcl")
+;;;  exports the following variable: "SBCL_SOURCE_ROOT" and "SBCL_HOME".
+;;;  We here as well so they are synchronized.
 (when (equal (mon-system-type-conditionals) "IS-DARWIN-P")
   (unless (getenv "SBCL_HOME")
     (setenv "SBCL_HOME" "opt/homebrew/lib/sbcl"))
@@ -444,7 +445,6 @@ The symbols contained of this list are defined in :FILE slime-loads-GNU-clbuild.
 
 ;;; ==============================
 ;;; :PASTED (URL `http://paste.lisp.org/+2EGF')
-;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-06-30T16:13:46-04:00Z}#{10263} - by MON KEY>
 (defcustom *quicklisp-path* (substitute-in-file-name "${DEVHOME}/quicklisp/")
   "Names a directory for use with Zach Beane's Quicklisp for Common Lisp.\n
@@ -464,13 +464,6 @@ Defaults to the value of:\n
 ;;   ;; (setq *quicklisp-path* (substitute-in-file-name "$HOME/quicklisp")
 ;;   ;; (setq *quicklisp-path* (expand-file-name "quicklisp/" (getenv "HOME")))
 ;;   (setq *quicklisp-path* (concat (getenv "HOME") "/quicklisp/")))
-
-
-;; (let ((fnd-slm-rgxp "\\(slime-\\(%s\\)-cvs\\)"))
-;; (directory-files *quicklisp-path* nil (format "\\(slime-\\(%s\\)\\)" "[0-9]+"))
-
-;; (directory-files (concat (or ql-path *quicklisp-path*) "dists/quicklisp/software/") nil (format "\\(slime-v\\(%s\\)\\)" "[0-9]+"))
-        
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-06-30T16:13:52-04:00Z}#{10263} - by MON KEY>
@@ -684,10 +677,9 @@ quicklisp directory as per `quicklisp-find-slime'./n
 ;;; :TEST-ME (quicklisp-dot-swank-current-p
 ;;;            (quicklisp-current-swank-loader "~/quicklisp/")))
 
-
-;;; :PASTED (URL `http://paste.lisp.org/+2EGX')
-;;; quicklisp completing-read systems.txt -> hash-table
 ;;; ==============================
+;;; :NOTE quicklisp completing-read systems.txt -> hash-table
+;;; :PASTED (URL `http://paste.lisp.org/+2EGX')
 ;;; :CREATED <Timestamp: #{2010-06-30T23:12:26-04:00Z}#{10263} - by MON KEY>
 (defvar *quicklisp-systems* nil
   "Hash-table of Quicklisp systems.\n
@@ -842,13 +834,13 @@ Optional args INSRTP and INTRP are as per `quicklisp-system-complete'.\n
     (when (and ql-cur-slm-if cur-slm-as-el (string-equal ql-cur-slm-if cur-slm-as-el))
       (ignore-errors (quicklisp-hash-system-completions)))))
 ;;
-;; :FIXME this needs t0 be run on a siome mode hook
+;; :FIXME This needs t0 be run on a siome mode hook
 ;; slime-lisp-mode-hook or slime-setup-first-change-hook
 (add-hook 'slime-load-hook 'quicklisp-hash-system-completions-slime-loadtime)
 ;; (eval-after-load "slime" '(quicklisp-hash-system-completions-slime-loadtime))
-
+;;
 ;; (quicklisp-hash-system-completions-slime-loadtime)
-
+;;
 ;; (slime-eval-async `(swank::format-values-for-echo-area ',integer) '%slime-insert-integer-at-point)
 ;; `(%%swank-compile-load-ql-inspect-file 
 ;;   "slime-quicklisp-inspect"
@@ -872,7 +864,6 @@ Optional args INSRTP and INTRP are as per `quicklisp-system-complete'.\n
 ;; |   (add-to-list 'load-path  (cadr this-swank))
 ;; |   (load (locate-library "slime")))
 ;; `----
-
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2011-04-20T14:08:57-04:00Z}#{11163} - by MON KEY>
@@ -1007,6 +998,8 @@ Run on the `lisp-mode-hook'.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2011-07-04T13:01:36-04:00Z}#{11271} - by MON KEY>
 (defun mon-slime-setup-add-hooks ()
+  "
+:SEE-ALSO .\n▶▶▶"
   ;; :TODO Need to set whitespace-style on the lisp-interaction-mode-hook and/or
   ;;       add it to file-local-variables
   ;;
@@ -1033,17 +1026,18 @@ Run on the `lisp-mode-hook'.\n
   ;; (add-hook 'lisp-mode-hook              'mon-slime-ensure-file-local-variables)
   ;; (add-hook 'lisp-interaction-mode-hook  'mon-slime-ensure-file-local-variables)
   ;; (add-hook 'slime-mode-hook             'mon-slime-ensure-file-local-variables)
+  
+  ;; DARWIN TEST-ME
+  ;; (add-hook 'slime-connected-hook 
+  ;;           (function (lambda () (slime-make-quicklisp-completion-table))) t)
   ;;
+  
   ;; :NOTE This is `slime-lisp-mode-hook' `slime-lisp-mode' is run on the
   ;; `lisp-mode-hook' if slime-setup was evald
   (add-hook 'slime-mode-hook ;; (remove-hook 'slime-mode-hook
             (function (lambda () (set (make-local-variable 'lisp-indent-function) 'common-lisp-indent-function))))  
   (add-hook 'slime-inspector-mode-hook 'mon-keybind-slime-inspector t t)
-  (add-hook 'slime-mode-hook           'mon-keybind-slime t)
-  ;; DARWIN TEST-ME
-  ;; (add-hook 'slime-connected-hook 
-  ;;           (function (lambda () (slime-make-quicklisp-completion-table))) t)
-  )
+  (add-hook 'slime-mode-hook           'mon-keybind-slime t))
 
 
 ;;; ==============================
@@ -1061,7 +1055,7 @@ recognized -- this function fixes that.\n
       (let ((mseflv-localp (assq mseflv-D-0 mseflv-flva)))
         (when mseflv-localp 
           (set (make-local-variable (car mseflv-localp)) (cdr mseflv-localp)))))))
-
+;;
 ;; (setq slime-compile-file-options '(:fasl-directory "/tmp/slime-fasls/"))
 
 ;;; ==============================
@@ -1152,9 +1146,8 @@ Used as a value for `*mon-common-lisp-hyperspec-browser-function*'.\n
 :EXAMPLE\n
  \(mon-common-lisp-hyperspec-browse-url-w3m
    \(concat common-lisp-hyperspec-root \"Body/m_defpar.htm\"\)\)\n
-:SEE-ALSO `mon-common-lisp-hyperspec-browse-url-eww',
-`common-lisp-hyperspec', `common-lisp-hyperspec-root',
-`browse-url-generic-program', `browse-url-browser-function'.\n▶▶▶"
+:SEE-ALSO `mon-common-lisp-hyperspec-browse-url-eww',`common-lisp-hyperspec',
+`common-lisp-hyperspec-root',`browse-url-generic-program', `browse-url-browser-function'.\n▶▶▶"
  (w3m-browse-url url))
 
 ;;; ==============================
@@ -1163,8 +1156,7 @@ Used as a value for `*mon-common-lisp-hyperspec-browser-function*'.\n
  "Set or update `browse-url-handlers' according to value of 
 `*mon-common-lisp-hyperspec-browser-function*'.\n
 Evaluated at loadtime by `mon-common-lisp-hyperspec-browse-url-set-init'.\n
-:SEE-ALSO `mon-common-lisp-hyperspec-browse-url-eww',
-`mon-common-lisp-hyperspec-browse-url-w3m',
+:SEE-ALSO `mon-common-lisp-hyperspec-browse-url-eww', `mon-common-lisp-hyperspec-browse-url-w3m',
 `common-lisp-hyperspec', `common-lisp-hyperspec-root',
 `browse-url-generic-program', `browse-url-browser-function'.\n▶▶▶"
  (and *mon-common-lisp-hyperspec-browser-function*
@@ -1213,25 +1205,26 @@ Requires slime package.\n
 Evaluates `slime-setup', `slime-require'.\n
 :SEE-ALSO `mon-set-lisp-init', `mon-slime-start-sbcl', `mon-keybind-slime',
 `mon-slime-ensure-fasl-temp-directory-exists', `mon-help-CL-slime-keys',
-`slime-cheat-sheet', `mon-slime-setup-mon',
-`init-keybind-lisp-interaction-mode', `mon-keybind-emacs-lisp-mode',
-`slime-setup-contribs', `slime-load-contribs', `slime-required-modules'.\n▶▶▶"
-  ;; evaluate `mon-add-lisp-system-paths-to-mon-lisp-system-paths'
+`slime-cheat-sheet', `mon-slime-setup-mon', `init-keybind-lisp-interaction-mode',
+`mon-keybind-emacs-lisp-mode', `slime-setup-contribs', `slime-load-contribs',
+`slime-required-modules'.\n▶▶▶"
+
+  ;; Evaluate `mon-add-lisp-system-paths-to-mon-lisp-system-paths'
   ;; to make sure value of `*mon-lisp-system-paths*' is non-null and it's
   ;; symbol-plist is sane.
   (mon-add-lisp-system-paths-to-mon-lisp-system-paths)
+
   ;; :NOTE sb-ext:*runtime-pathname* returns the current SBCL runtime
   (set-language-environment "UTF-8")
+
   ;; :QUICKLISP-SLIME-PATH
   (let ((this-swank (quicklisp-current-swank-loader)))
     (add-to-list 'load-path  (concat (cadr this-swank) "/contrib"))
     (add-to-list 'load-path  (cadr this-swank))
-    (add-to-list 'load-path  (cadr this-swank))
-    ) ;;(load (locate-library "slime")))
+    (add-to-list 'load-path  (cadr this-swank))) 
   
-  ;; (add-to-list 'auto-mode-alist '("\\(?:\\.pctd\\)" . lisp-mode))
+   (add-to-list 'auto-mode-alist '("\\(?:\\.pctd\\)" . lisp-mode))
 
-  ;; (pop slime-completion-at-point-functions)
   (custom-set-variables
    '(inferior-lisp-program (concat (executable-find "sbcl") " --noinform --no-linedit"))
    ;; '(slime-net-coding-system 'iso-latin-1-unix))
@@ -1259,25 +1252,28 @@ Evaluates `slime-setup', `slime-require'.\n
    '(lisp-lambda-list-keyword-alignment t)
    '(lisp-lambda-list-keyword-parameter-alignment t)
    '(lisp-lambda-list-keyword-parameter-indentation 0)
-   '(common-lisp-style-default "mon") ;; (common-lisp-style-names)
-   ;;
    ;; '(slime-asdf-collect-notes t)
-   )
-  ;; DARWIN is needed? 
-  ;; (setq slime-lisp-modes '(lisp-mode lisp-interaction-mode))
+   ;; :NOTE :SEE (common-lisp-style-names)
+   '(common-lisp-style-default "mon"))
+  
   (mon-slime-ensure-fasl-temp-directory-exists)
-  ;;
+  
   ;; (setq slime-selector-other-window t) ;; :DEFAULT nil
+  
   (progn 
     (require 'slime)
     (when (or (slime-bytecode-stale-p)
               (not (file-exists-p (concat (file-name-sans-extension (locate-library "slime")) ".elc"))))
       (slime-recompile-bytecode)))
-  ;;
+  
   ;; (setq slime-protocol-version (slime-changelog-date))
-  ;;
+  
   ;; (require 'slime-autoloads)
+  
   (slime-setup '(slime-fancy 
+                 ;; slime-cl-indent
+                 ;; slime-cover
+                 ;; slime-highlight-edits                 
                  slime-sbcl-exts
                  slime-asdf
                  slime-tramp
@@ -1286,16 +1282,13 @@ Evaluates `slime-setup', `slime-require'.\n
                  slime-scratch 
                  slime-references
                  slime-snapshot 
-                 slime-sprof  ;; (featurep 'slime-sprof)
-                 slime-indentation
-                 ;; slime-cl-indent
-                 ;; slime-cover
-                 ;; slime-highlight-edits
-                 ))
-  ;; (locate-library "libe/hyperspec")
+                 slime-sprof
+                 slime-indentation))
+  
   (slime-require :swank-sbcl-exts)
   
   (slime-require :swank-listener-hooks)
+
   ;; :NOTE `slime-setup-contribs' is a function and a variable
   ;; `slime-setup' <- `slime-setup-contribs' 
   ;; The slime-fancy.el package is one `define-slime-contrib' macro form that
@@ -1325,36 +1318,31 @@ Evaluates `slime-setup', `slime-require'.\n
   ;; (require 'slime-asdf) (slime-asdf-init)
   ;; (require 'slime-mdot-fu) (slime-mdot-fu-init)
   ;;; ==============================
-  ;; (slime)
-  ;;
 
-  (add-hook 'slime-mode-hook ;; (remove-hook 'slime-mode-hook  
-            (function (lambda ()
-                        (set (make-local-variable 'slime-use-autodoc-mode) nil))) t)
-  ;;
-  ;; (add-hook 'slime-mode-hook    ;;(remove-hook 'slime-mode-hook 
+  (add-hook 'slime-mode-hook
+            (function (lambda () (set (make-local-variable 'slime-use-autodoc-mode) nil))) t)
+
+  ;; (add-hook 'slime-mode-hook
   ;;              (function (lambda () (slime-list-threads))))
-  ;;
-  ;; (add-hook 'slime-load-hook   ;; (remove-hook 'slime-load-hook 
+
+  ;; (add-hook 'slime-load-hook
   ;;           (when (buffer-local-value 'slime-highlight-edits-mode (current-buffer))
   ;;             (slime-highlight-edits-mode -1)))
-  ;;
-  ;; :SLIME-LISP-MODES
 
-  ;; (add-hook 'lisp-interaction-mode-hook 'slime-mode)
-  
+  ;; :FIXME Pretty sure Slime already does this.
   (add-hook 'lisp-mode-hook             'slime-mode)
-  ;;
+
   ;; :NOTE This is `slime-lisp-mode-hook' `slime-lisp-mode' is run on the
   ;; `lisp-mode-hook' if slime-setup was evald
-  ;; (add-hook 'slime-mode-hook   ;; (remove-hook 'slime-mode-hook
+  ;; (add-hook 'slime-mode-hook
   ;;           (function (lambda () 
   ;;                       (set (make-local-variable 'lisp-indent-function)  
   ;;                            'common-lisp-indent-function))))
-  (add-hook 'slime-mode-hook
-            (function (lambda () 
-                        (set (make-local-variable 'indent-tabs-mode) nil))) t)
-  ;;
+
+  (add-hook 'slime-mode-hook 
+            (function (lambda () (set (make-local-variable 'indent-tabs-mode) nil))) t)
+
+
   ;; M-X slime-toggle-debug-on-swank-error
   ;; swank::*inspector-verbose-printer-bindings* 
   ;; swank::*inspector-printer-bindings*
@@ -1364,13 +1352,13 @@ Evaluates `slime-setup', `slime-require'.\n
 
   ;; :DARWIN
   ;; (add-hook 'slime-mode-hook 'mon-keybind-slime t)
+
   (add-hook 'slime-connected-hook 
             (function (lambda () (slime-make-quicklisp-completion-table))) t)
-  ;;
 
-  ;; We're not using this anymore.
+  ;; :NOTE We're not using this anymore.
   ;; (add-to-list 'auto-mode-alist  '("\\.kif\\'" . lisp-interaction-mode))
-  ;; 
+
   ;; :NOTE If this block fails, move it into `mon-slime-setup-init'.
   (eval-after-load "slime-repl"
     (progn
@@ -1387,15 +1375,6 @@ Evaluates `slime-setup', `slime-require'.\n
                                              current-prefix-arg)))
       (:one-liner "inspect asdf system"))
 
-    ;; DAWIN TESTME
-    (defslime-repl-shortcut nil ("ql-systems-all" "ql-all-sys")
-      (:handler 'slime-inspect-quicklisp-systems)
-      (:one-liner "inspect all quicklisp systems"))
-    
-    (defslime-repl-shortcut nil ("ql-system" "ql-sys")
-      (:handler 'slime-inspect-quicklisp-system)
-      (:one-liner "inspect a quicklisp system"))
-
     ;; (defslime-repl-shortcut nil ("ql-all-dists" "all-dists")
     ;;   (:handler 'slime-inspect-quicklisp-dists-all)
     ;;   (:one-liner "inspect all quicklisp dists"))
@@ -1404,32 +1383,45 @@ Evaluates `slime-setup', `slime-require'.\n
     ;;   (:handler 'slime-inspect-quicklisp-dists-enabled)
     ;;   (:one-liner "inspect enabled quicklisp dists"))
 
-    ))
+    ;; :DARWIN :TESTME
+    (defslime-repl-shortcut nil ("ql-systems-all" "ql-all-sys")
+      (:handler 'slime-inspect-quicklisp-systems)
+      (:one-liner "inspect all quicklisp systems"))
+    
+    (defslime-repl-shortcut nil ("ql-system" "ql-sys")
+      (:handler 'slime-inspect-quicklisp-system)
+      (:one-liner "inspect a quicklisp system"))))
 
-  )
-
+  ;; :NOTE Following needs to occur REALLY late in the load process and can only
+  ;; happen _AFTER_ slime connnects!!!
+  (add-hook 'slime-connected-hook 'mon-slime-show-description-hook-function))
+;;
+;; (mon-slime-setup-init)
+            
+;;; ==============================
 (defun slime-fuzzy-sroll-completions-up-from-target-buffer ()
-  "For use with `mon-keybind-slime-fuzzy-completions'."
+  "For use with `mon-keybind-slime-fuzzy-completions'.\n
+:SEE-ALSO .\n▶▶▶"
   (interactive)
   (scroll-other-window))
 
+;;; ==============================
 (defun slime-fuzzy-sroll-completions-down-from-target-buffer ()
-  "For use with `mon-keybind-slime-fuzzy-completions'."
+  "For use with `mon-keybind-slime-fuzzy-completions'.\n
+:SEE-ALSO `scroll-other-window'.\n▶▶▶"
   (interactive)
   (scroll-other-window '-))
 
-;; (mon-slime-setup-init)
-;; 
-
-;; (mon-define-common-lisp-style)
+;;; ==============================
 (defun mon-define-common-lisp-style ()
   (define-common-lisp-style "mon" ;; "sbcl"
-    "Adapted from the \"sbcl\" style in contribs/slime-cl-indent.el 
-   Style used in SBCL sources. A good if somewhat intrusive general purpose
-   style based on the \"modern\" style. Adds indentation for a few SBCL
-   specific constructs, sets indentation to use spaces instead of tabs,
-   fill-column to 80, and activates whitespace-mode to show tabs and trailing
-   whitespace."
+    "Adapted from the \"sbcl\" style in contribs/slime-cl-indent.el\n
+Style used in SBCL sources. A good if somewhat intrusive general purpose
+style based on the \\\"modern\\\" style. Adds indentation for a few SBCL
+specific constructs, sets indentation to use spaces instead of tabs,
+fill-column to 80, and activates whitespace-mode to show tabs and trailing
+whitespace.\n
+:SEE-ALSO `common-lisp-indent-function'.\n▶▶▶"
     (:inherit "modern")
     (:eval (whitespace-mode 1))
     ;; (:eval (whitespace-mode 0))     
@@ -1447,6 +1439,8 @@ Evaluates `slime-setup', `slime-require'.\n
     ;;  (FOOdefun (as defun))
     ;; (:indentation <FORMS>)
     ))
+;;
+;; (mon-define-common-lisp-style)
 
 ;; :TODO automaticallly `untabify' the .lisp files in MON projects 
 ;; in the same manner as `require-final-newline'
@@ -1463,18 +1457,14 @@ Evaluates `slime-setup', `slime-require'.\n
 ;;; :SEE (URL `https://bugs.launchpad.net/slime/+bug/777405')
 ;;; :CREATED <Timestamp: #{2011-05-07T21:41:20-04:00Z}#{11186} - by MON KEY>
 (defun slime-macroexpand-again-fix ()
-  "Reperform the last macroexpansion."
+  "Reperform the last macroexpansion.\n
+:EXAMPLE\n\n
+:SEE-ALSO `slime-macroexpand-again'.\n▶▶▶"
   (interactive)
-  (slime-eval-async slime-eval-macroexpand-expression 
+  (slime-eval-async slime-eval-macroexpand-expression
     (slime-rcurry #'slime-initialize-macroexpansion-buffer 
                   ;; :WAS (current-buffer)
                   (slime-buffer-name :macroexpansion))))
-
-;;
-;; FIXME DARWUIN REENABLE after slime startup fixed
-;; (eval-after-load "slime" 
-;;   (fset 'slime-macroexpand-again (symbol-function 'slime-macroexpand-again-fix)))
-
 
 ;;; ==============================
 ;; :NOTES re a TAB completion style binding of `minibuffer-complete' on entry
@@ -1514,7 +1504,6 @@ Evaluates `slime-setup', `slime-require'.\n
 ;;; ==============================
 
 ;;; ==============================
-;;; :CREATED <Timestamp: #{2011-02-11T19:07:56-05:00Z}#{11065} - by MON KEY>
 ;;; ,----
 ;;; | When source buffer is not displaying on a visible window, `sldb-show-source' is
 ;;; | not able to `slime-highlight-sexp' because `slime-flash-region' does not delay
@@ -1527,8 +1516,10 @@ Evaluates `slime-setup', `slime-require'.\n
 ;;; :SEE (URL `https://bugs.launchpad.net/slime/+bug/717390')
 ;;
 ;; :NOTE This can be removed if/when the above is accounted for in SLIME.
+;;; :CREATED <Timestamp: #{2011-02-11T19:07:56-05:00Z}#{11065} - by MON KEY>
 (defun slime-highlight-sexp (&optional start end)
-  "Highlight the first sexp after point."
+  "Highlight the first sexp after point.\n
+:SEE-ALSO `slime-flash-region'.\n▶▶▶"
   (let ((start (or start (point)))
 	(end (or end (save-excursion (ignore-errors (forward-sexp)) (point))))
         (flash-delay (if (window-live-p (get-buffer-window (current-buffer))) 0.2 0.4)))
@@ -1605,7 +1596,8 @@ Evaluates `slime-setup', `slime-require'.\n
 ;;
 ;; (add-hook 'slime-inspector-mode-hook 'mon-keybind-slime-inspector)
 
-
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-29T13:32:19-04:00Z}#{24354} - by MON KEY>
 (defun mon-clouseau-inspect (string)
   "Tell SLIME to use Clouseau for inspecting objects
 Clouseau is an graphical inspector for Common Lisp. SLIME’s built-in inspector
@@ -1617,8 +1609,8 @@ Common Lisp image. This can be achieved either by putting following into the
 startup file of your Common Lisp implementation, or by integrating Clouseau into
 a core file:\n
  \(ql:quickload \"clouseau\"\)\n
-:SEE https://github.com/marcoheisig/common-lisp-tweaks \n
-:SEE-ALSO `slime-list-threads',`slime-inspect'..\n▶▶▶"
+:SEE (URL `https://github.com/marcoheisig/common-lisp-tweaks')\n
+:SEE-ALSO `slime-list-threads',`slime-inspect'.\n▶▶▶"
   (interactive (list 
                 (slime-read-from-minibuffer "Inspect value (evaluated): " (slime-sexp-at-point))))                                            
   (let ((inspector 'cl-user::*clouseau-inspector*))
@@ -1634,14 +1626,13 @@ a core file:\n
                    (cl:eval (cl:read-from-string ,string)))
           ;; Return nothing.
           (cl:values)))))
+;;
+;; :NOTE (define-key slime-prefix-map (kbd "C-c i") 'mon-clouseau-inspect)
 
-;; (define-key slime-prefix-map (kbd "C-c i") 'mon-clouseau-inspect)
-;;; 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2011-02-10T13:17:55-05:00Z}#{11064} - by MON KEY>
 (defun mon-slime-compile-defun-for-debug ()
   "Like `slime-compile-defun' but with (debug 3).\n
-:EXAMPLE\n\n
 :ALIASED-BY `slime-compile-defun-for-debug'.\n
 :SEE-ALSO `slime-compute-policy'.\n▶▶▶"
   (interactive)
@@ -1671,8 +1662,7 @@ When invoked with point positioned after a Common Lisp operator as follows:
 Return value is:
 ;; (subseq sequence start &optional end)
    (subseq
-   ^^^^^^^^! <- point
-
+   ^^^^^^^^! <- point\n
 :NOTE Assumes an active slime connection and \(featurep 'slime-autodoc\) non-nil.\n
 :ALIASED-BY `mon-slime-insert-arglist'\n
 :SEE-ALSO `slime-complete-form'.\n▶▶▶"
@@ -1685,10 +1675,20 @@ Return value is:
       (forward-line 0) 
     (insert ";; " got-sym "\n")))))
 
+;;; ==============================
 (defun %slime-insert-integer-at-point (return-str)
+  "Helper function for `slime-insert-integer-at-point'.\n
+Inserts RETURN-STR at point moving point to end of the insertion.\n
+:SEE-ALSO `insert'.\n▶▶▶"
   (save-excursion (insert ";; " return-str)))
 
+;;; ==============================
 (defun slime-insert-integer-at-point (integer)
+  "Insert INTEGER at point.\n
+:EXAMPLE\n
+ \(let \(\(buffer-read-only nil\)\)
+  \(slime-insert-integer-at-point 666\)\)\n
+:SEE-ALSO .\n▶▶▶"
   ;; (slime-insert-integer-at-point 88)
   ;; => 88 (7 bits, #x58, #o130, #b1011000)
   ;; 
@@ -1704,7 +1704,6 @@ Return value is:
     (minibuffer-message "arg INTEGER not `wholenump', got: %S type-of: %S"
                         integer 
                         (type-of integer))))
-
 
 ;;; ==============================
 ;;; :TODO When `IS-MON-SYSTEM-P' bound by `mon-keybind-slime' on the `slime-mode-hook'.\n
@@ -1758,14 +1757,13 @@ Return value is:
   ;;         )))))
   (slime-popup-buffer-quit t))
 
-
 ;;; ==============================
-;;: :SEE (URL `http://common-lisp.net/pipermail/slime-devel/2011-March/thread.html#17984')
 ;;; :CREATED <Timestamp: #{2011-03-10T13:33:08-05:00Z}#{11104} - by MON KEY>
 (defun mon-slime-description-view-source-file ()
-  "Find source file referenced in *slime-description* buffer.\n
+  "Find source file referenced in \"*slime-description*\" buffer.\n
 :EXAMPLE\n\n
 :ALIASED-BY `slime-description-view-source-file'
+:SEE (URL `http://common-lisp.net/pipermail/slime-devel/2011-March/thread.html#17984')
 :SEE-ALSO `mon-slime-description-view-source-file',
 `mon-slime-setup-show-description-buffer-locals', `mon-slime-show-description',
 `*slime-show-description-hook*'.\n▶▶▶"
@@ -1786,14 +1784,12 @@ Return value is:
            (view-file-other-window if-matched)))))
 
 ;;; ==============================
-;;
-;; Following call `slime-eval-describe' when generating/entering the 
+;; :NOTE Following call `slime-eval-describe' when generating/entering the
 ;; "*slime description*" buffer:
 ;;  `slime-describe-function' `slime-describe-symbol' 
 ;;  `slime-documentation' `slime-disassemble-symbol'
 ;;
 ;; The call chain has this general form:
-;;
 ;; `slime-eval-describe'
 ;;  `-> `slime-show-description'
 ;;       `-> `slime-with-popup-buffer'
@@ -1802,54 +1798,89 @@ Return value is:
 ;;  :NOTE `slime-make-popup-buffer' has a `kill-all-local-variables'
 ;;
 ;;; ==============================
-;;
 ;; We add a new hook variable `*slime-show-description-hook*'
 ;; Functions added to this hook will automatically be made buffer-local on
 ;; entry to *slime description*, IOW there is likely little efficacy in
 ;; passing a non-nil value for `add-hook's LOCAL arg e.g.:
 ;;  (add-hook '*slime-show-description-hook* '<MY-FOO> t t)
-;;
-(defvar *slime-show-description-hook* nil)
+(defvar *slime-show-description-hook* nil
+  "Variable naming a hook functoin to run on entry to \"*slime description*\" buffer.\n
+:SEE-ALSO `mon-slime-show-description', `mon-slime-show-description',
+`*slime-local-show-description-hook*', `*slime-show-description-hook*',
+`buffer-local-variables'.\n▶▶▶")
 
-(defvar *slime-local-show-description-hook* nil)
-;;
-;; We add a new function which sets some buffer local variables on entry to the
-;; *slime description* buffer
+;;; ==============================
+(defvar *slime-local-show-description-hook* nil
+  "Variable holding a hook function to run on entry to \"*slime description*\" buffer.\n
+:NOTE This is a buffer-local-value as if per `make-local-variable'.\n
+:SEE-ALSO `mon-slime-show-description', `mon-slime-show-description',
+`*slime-local-show-description-hook*', `*slime-show-description-hook*',
+`buffer-local-variables'.\n▶▶▶")
+
+;;; ==============================
 (defun mon-slime-setup-show-description-buffer-locals ()
+  "On entry to \"*slime description*\" buffer make `*slime-local-show-description-hook*' a bufferl-local-value.\n
+:SEE-ALSO `mon-slime-show-description', `mon-slime-show-description',
+`*slime-local-show-description-hook*', `*slime-show-description-hook*',
+`buffer-local-variables'.\n▶▶▶"
   (when (get-buffer (slime-buffer-name :description))
     (with-current-buffer (get-buffer (slime-buffer-name :description))
       (set (make-local-variable '*slime-local-show-description-hook*) '*slime-show-description-hook*)
       (run-hooks (buffer-local-value '*slime-local-show-description-hook* (current-buffer))))))
-;;
-;; We redefine `slime-show-description' by adding a call to
-;; `slime-setup-show-description-buffer-locals' after `slime-with-popup-buffer'
-;; Note, this must happen _after_ `slime-with-popup-buffer'.
-;; We local bind the `slime-description-view-source-file' command 
-;;  -  I prefer C-c C-f for its mnemomoic congruence with C-x C-f 
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-29T14:23:00-04:00Z}#{24354} - by MON KEY>
+(defun mon-slime-show-description-hook-function ()
+ "Hook function to get `mon-slime-show-description' into the environment _AFTER_
+slime first connects.\n
+Also `fset's `slime-macroexpand-again' -> `slime-macroexpand-again-fix'.\n
+:NOTE This function is required because we do so directly from mon-keybindings inits or
+`mon-slime-setup-init' because the redefinition of `slime-show-description'
+hasn't occured yet and we can't get it into the environment until slime is actually loaded.\n
+:SEE-ALSO `slime-connected-hook',`'mon-slime-description-view-source-file',
+`*slime-show-description-hook*'.\n▶▶▶"
+ (unless (equal (symbol-function 'oslime-show-description)
+                (symbol-function 'mon-slime-show-description))
+  (fset 'slime-show-description (symbol-function 'mon-slime-show-description)))
+ 
+ (unless (equal (symbol-function 'slime-macroexpand-again)
+                (symbol-function 'slime-macroexpand-again-fix))
+   (fset 'slime-macroexpand-again (symbol-function 'slime-macroexpand-again-fix)))
+
+ (unless 
+    (member `(lambda nil (local-set-key ,(kbd "\C-c\C-f") (quote mon-slime-description-view-source-file)))
+            *slime-show-description-hook*)
+   (add-hook '*slime-show-description-hook*
+            (function (lambda () 
+                        (local-set-key "\C-c\C-f"  'mon-slime-description-view-source-file))))))
+
+;;; ==============================
 (defun mon-slime-show-description (string package)
+  "Useful for comparing the output of DISASSEMBLE across implementations.\n
+Present a description in of STRING in PACKAGE in a `slime-popup-buffer' name
+\"*slime-description*\".\n
+:NOTE We have essentially redefined `slime-show-description' by adding a call to
+`slime-setup-show-description-buffer-locals' after `slime-with-popup-buffer'\n
+:NOTE This must happen _after_ `slime-with-popup-buffer'.\n
+We local bind the `slime-description-view-source-file' command 
+ -  I prefer C-c C-f for its mnemomoic congruence with C-x C-f \n
+This is a Mon specific redefinition of `slime-show-description' from :FILE \"slime.el\"\n
+It is added to the environment by the hook function `mon-slime-show-description-hook-function'.\n
+:SEE :FUNCTION `mon-slime-setup-init' for details.\n
+:SEE-ALSO `mon-slime-show-description', `mon-slime-show-description',
+`*slime-local-show-description-hook*', `*slime-show-description-hook*',
+`buffer-local-variables'.\n▶▶▶"
   (let ((bufname (slime-buffer-name :description)))
     (slime-with-popup-buffer (bufname :package package
                                       :connection t
                                       :select slime-description-autofocus)
       (princ string)
       (goto-char (point-min)))
-    ;; Additions begin here.
-    ;; Note, functions run on the hook will need to recognize `buffer-read-only'
+    ;; :NOTE Additions begin here.
+    ;; Functions run on the hook will need to recognize `buffer-read-only'
     ;; if they intend modfifying the *slime description* buffer contents...
     (with-current-buffer (get-buffer bufname)
       (mon-slime-setup-show-description-buffer-locals))))
-;;
-;; FIXME DARWIN reenable once we've debugged the slime startup
-;;
-;; (eval-after-load "slime"
-;;   (fset 'slime-show-description (symbol-function 'mon-slime-show-description)))
-;;
-;; This can't be in mon-keybindings or `mon-slime-setup-init' because the
-;; redefinition of `slime-show-description' hasn't occured yet.
-;;
-;; FIXME DARWIN reenable once we've debugged the slime startup
-;; (add-hook '*slime-show-description-hook*
-;;           (function (lambda () (local-set-key "\C-c\C-f"  'mon-slime-description-view-source-file))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2011-01-22T13:45:15-05:00Z}#{11036} - by MON KEY>
@@ -1876,7 +1907,6 @@ Return value is:
              (buffer-substring-no-properties start end))))
     (kill-new presentation-text)
     (message "Saved presentation \"%s\" to kill ring" presentation-text)))
-
 
 (declare-function mon-file-truename-p          "mon-dir-utils"   t t)
 (declare-function mon-file-non-existent-ERROR  "mon-error-utils" t t)

@@ -126,7 +126,6 @@
 
 (eval-when-compile (require 'cl))
 
-;; (require 'mon-cl-compat)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-10T16:39:52-05:00Z}#{09504} - by MON>
@@ -205,7 +204,6 @@ Use to extract fields from mysql command:\nmysql> SHOW COLUMNS FROM THE-DB.TABLE
 ;;; ==============================
 ;;; :NOTE This is CL packages `subst' but as we aren't using keyword here we
 ;;; just do what the `subst' function does; punt to `cl-do-subst'. 
-;;; :CHANGESET 1876
 ;;; :CREATED <Timestamp: #{2010-06-15T15:20:25-04:00Z}#{10242} - by MON KEY>
 ;; (defun --cl-subst-- (cl-new cl-old cl-tree)
 ;;   (if (and (numberp cl-old) (not (integerp cl-old))) ;; float check.
@@ -728,7 +726,6 @@ Alist keys correpsond to the following `mysql help' categories:\n
 ;;; (progn (makunbound '*regexp-clean-mysql*)(unintern '*regexp-clean-mysql*))
 
 ;;; ==============================
-;;; :CHANGESET 2104
 ;;; :CREATED <Timestamp: #{2010-09-03T12:02:46-04:00Z}#{10355} - by MON KEY>
 (defun mon-bind-mysql-help-table-loadtime (&optional w-msg-user)
   "Bind variable `*regexp-clean-mysql*' at loadtime.\n

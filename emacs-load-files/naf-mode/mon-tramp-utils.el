@@ -239,13 +239,16 @@
 
 ;;; ==============================
 ;;; :NOTE Make sure our initial tramp methods are sane.
-(cond ((and  (intern-soft "IS-MON-P-W32"  obarray) ;; *IS-MON-OBARRAY*
+(cond ((and  (intern-soft "IS-MON-P-W32"  obarray)
              (bound-and-true-p IS-MON-P-W32))
        (custom-set-variables '(tramp-default-method "plinkx")))
       ;; :NOTE It isn't clear whether this should be "ssh2".
-      ((and (intern-soft "IS-MON-P-GNU"  obarray) ;; *IS-MON-OBARRAY*
+      ((and (intern-soft "IS-MON-P-GNU"  obarray)
             (bound-and-true-p IS-MON-P-GNU))
-       (custom-set-variables '(tramp-default-method "ssh")))) ;; "ssh2")))) 
+       (custom-set-variables '(tramp-default-method "ssh")))
+      (and (intern-soft "IS-MON-P-DARWIN"  obarray)
+           (bound-and-true-p IS-MON-P-DARWIN)
+           (custom-set-variables '(tramp-default-method "ssh")))) ; :WAS "scp")
 ;;
 ;;; :TODO Tweak `mode-line-remote' to adust for tramp remotely.
 ;;; :FUNCTION `file-remote-p' when invoked for w/ 
@@ -270,7 +273,7 @@ Run on the `dired-mode-hook' when `IS-MON-SYSTEM-P'.\n
 :SEE-ALSO `mode-line-buffer-identification', `mode-line-remote', `file-remote-p'.\n▶▶▶")
 ;;
 (when (and (intern-soft "IS-MON-SYSTEM-P"  obarray) ;; *IS-MON-OBARRAY*
-         (bound-and-true-p IS-MON-SYSTEM-P))
+           (bound-and-true-p IS-MON-SYSTEM-P))
   (setq-default mode-line-buffer-identification *mon-tramp-mode-line-buffer-ident*)
 ;;
   (add-hook 'dired-mode-hook
@@ -371,7 +374,7 @@ Each list should contain three strings formatted as per tramps
            ;; (elt (assoc 'example-key3 *mon-tramp-paths-alist*) 2)
            "\\`<EXAMPLE-SESSION3>\\'") 
           ;; Second list for IS-MON-P-GNU - list of lists.
-          ( ;; (elt (assoc 'example-key1 *mon-tramp-paths-alist*) 1)              
+          ( ;; (elt (assoc 'example-key1 *mon-tramp-paths-alist*) 1)
            ("\\`74\\.125\\.45\\.100\\'" "\\`root\\'" "ssh2")
            ;; (elt (assoc 'example-key2 *mon-tramp-paths-alist*) 1)
            ("\\`74\\.125\\.45\\.100#2200\\'" "\\`gg\\'" "ssh") ;; Uses port 2200
@@ -433,7 +436,6 @@ When `IS-MON-P-GNU' add the the ssh-agent style methods.\n
                (cadr *mon-tramp-default-methods-l*)) t)))
 
 ;;; ==============================
-;;; :CHANGESET 1768
 ;;; :CREATED <Timestamp: #{2010-05-24T19:01:57-04:00Z}#{10211} - by MON KEY>
 (defun mon-tramp-utils-loadtime ()
   "Evalutate `mon-tramp-add-default-methods' at loadtime.\n
@@ -487,15 +489,17 @@ Signal error if symbol pageant is associated in `mon-tramp-putty-conf-status'.\n
     (if pag 
         (setq pag (replace-regexp-in-string "/" "\\\\" pag))
       (error ":FUNCTION `mon-tramp-add-pageant-keys' -- no pageant executable found"))
-    (cond ((and (intern-soft "IS-MON-P-W32" obarray) ;; *IS-MON-OBARRAY*
+    (cond ((and (intern-soft "IS-MON-P-W32" obarray)
                 (bound-and-true-p IS-MON-P-W32))
            (w32-shell-execute 
             "open" pag (mapconcat #'identity *mon-tramp-putty-private-keys* " ")))
-          ((and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
-                (bound-and-true-p IS-MON-P-GNU))
-           (message "??? :FIXME What to do here???")) 
+          ((or (and (intern-soft "IS-MON-P-GNU" obarray) 
+                    (bound-and-true-p IS-MON-P-GNU))
+               (and (intern-soft "IS-MON-P-DARWIN" obarray) 
+                    (bound-and-true-p IS-MON-P-DARWIN)))
+           (message ":FUNCTION `mon-tramp-add-pageant-keys' -- :FIXME What to do here???\n")))
           ;;; (call-process-shell-command 
-          )))
+    ))
 ;; 
 ;;; :TEST-ME (mon-tramp-add-pageant-keys)
 
@@ -516,13 +520,13 @@ On W32 message user about putty/pagent/plink.\n
 :EXAMPLE\n\n(mon-ssh-add-p)\n
 :SEE-ALSO `mon-tramp-add-pageant-keys'.\n▶▶▶"
   (interactive)
-  (if (and (intern-soft "IS-MON-P-GNU"  obarray) ;; *IS-MON-OBARRAY*
+  (if (and (intern-soft "IS-MON-P-GNU"  obarray)
            (bound-and-true-p IS-MON-P-GNU))
       (with-temp-buffer
         (call-process "/usr/bin/ssh-add" nil t nil "-l")
         (goto-char (point-min))
         (not (search-forward "The agent has no identities." nil t)))
-    (message "A ssh-agent is not available on w32; use command `mon-tramp-add-pageant-keys'")))
+    (message ":FUNCTION `mon-ssh-add-p' -- A ssh-agent is not available on w32; use command `mon-tramp-add-pageant-keys'")))
 ;;
 ;;; :TEST-ME (mon-ssh-add-p)
 
@@ -540,7 +544,7 @@ Return value is conditional on whether `IS-MON-P-W32' or `IS-MON-P-GNU'.\n
         (read-conn))
     (setq read-conn (read (completing-read "Choose a connection (tab completes): " conn-key nil t)))
     (setq read-conn (assoc read-conn *mon-tramp-paths-alist*))
-(cond ((and (intern-soft "IS-MON-P-W32"  obarray) ;; *IS-MON-OBARRAY*
+(cond ((and (intern-soft "IS-MON-P-W32"  obarray)
             (bound-and-true-p IS-MON-P-W32))
          
        (let ((tst-can-conn (elt read-conn 2)))
@@ -548,13 +552,13 @@ Return value is conditional on whether `IS-MON-P-W32' or `IS-MON-P-GNU'.\n
                   (not (eq "" tst-can-conn))) ; And has a value.
                   tst-can-conn
                   (error "Can't find a connection for this system"))))
-      ((and (intern-soft "IS-MON-P-GNU"  obarray) ;; *IS-MON-OBARRAY*
+      ((and (intern-soft "IS-MON-P-GNU"  obarray)
             (bound-and-true-p IS-MON-P-GNU))
        (let ((tst-can-conn (elt read-conn 1)))
          (if (and tst-can-conn ; Is not nil.
                   (not (eq "" tst-can-conn))) ; And has a value.
              tst-can-conn
-             (error "Can't find a connection for this system")))))))
+             (error ":FUNCTION `mon-tramp-read-conns' -- Can't find a connection for this system")))))))
 ;;
 ;;; :TEST-ME (mon-tramp-read-conns)
 

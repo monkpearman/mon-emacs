@@ -719,7 +719,7 @@ These should be formatted in upcase as either:
             ":FILE" ":FILE-CREATED"
             ":FIXES" ":FIXME" ":FIX-ME" ":FROM" ;; :NOTE also has 
             ":HIS" ":IF-NOT-FEATURE-P" ":INSTALL-TO" ":INSTALLED-TO"
-            ":LOAD-SPECIFIC-PROCEDURES" 
+            ":LOAD-SPECIFIC-PROCEDURES"
             ":MODIFICATIONS" 
             ":NOTE"
             ":PASTED"
@@ -758,11 +758,18 @@ These should be formatted in upcase as either:
             ":URL"
             ":USED-BY" ":USED-IN"))
           (meta-tags-keybindings ;; 
-           ("<BEGINNING>" "<BUFFER>" "<CLASS>" "<COMMAND>" "<CONSTANT>"
-            "<DEPRECATED>" "<DIRECTORY>" "<EXPRESSION>" "<FACE>" "<FILE>" "<FILES>"
-            "<FUNCTION>" "<INTEGER>" "<KEY>" "<LIBRARY>" "<MACRO>" "<MARKER>"
+           (
+            "<BEGINNING>" "<BUFFER>"
+             "<CLASS>"   
+            "<COMMAND>" "<CONSTANT>"
+            "<DEPRECATED>" "<DIRECTORY>" "<EXPRESSION>" 
+            "<FACE>" "<FILE>" "<FILES>"
+            "<FUNCTION>"
+            "<INTEGER>" "<KEY>" "<LIBRARY>" "<MACRO>" "<MARKER>"
             "<MATCH>" "<METHOD>" "<NAME>" "<NEW>" "<OLD>" "<PATH>" "<PATTERN>"
-            "<PRINTER>" "<PROPERTY>" "<REGEXP>" "<STRING>" "<SYMBOL>" "<TERM>"
+            "<PRINTER>" "<PROPERTY>" "<REGEXP>" "<STRING>" "<SYMBOL>" 
+            "<TYPE>"
+            "<TERM>"
             "<TERMS>" "<TITLE>" "<VARIABLE>"))
           ;; :NOTE Push/append onto the cdr of this keys list to add new values.
           ;; This lets us partition `meta-tags-keybindings' from `meta-tags'
@@ -770,12 +777,29 @@ These should be formatted in upcase as either:
           (meta-tags ;; :CALLED-BY `*regexp-mon-doc-help-meta-tags*'
            ("<BOOLEAN>" "<CHAR>" "<CONS>" "<DIRECTORY>" "<FACE>" "<FILENAME>"
             "<INTEGER>" "<LIST>" "<PREDICATE>" "<PROPERTY>" "<PVAL>" "<REGION>"
-            "<VECTOR>"))))
+            "<VECTOR>"))
+           (cl-tags
+            ("<ACCESSOR>"
+            "<CONSTANT>"
+            "<CLASS>"
+            "<CONDITION-TYPE>"
+            "<FUNCTION>"
+            "<MACRO>"
+            "<RESTART>"
+            "<STANDARD-GENERIC-FUNCTION>"
+            "<SYSTEM-CLASS>"
+            "<SPECIAL-OPERATOR>"
+            "<TYPE>"
+            "<TYPE-SPECIFIER>"
+            "<VARIABLE>"))))
   (setf (cdr (assoc 'meta-tags *mon-help-mon-tags-alist*))
-        `(,(sort (delete-dups
+        `(,(sort (cl-remove-duplicates ;; delete-dups
                   (append
                    (cadr (assoc 'meta-tags *mon-help-mon-tags-alist*))
-                   (cadr (assoc 'meta-tags-keybindings *mon-help-mon-tags-alist*))))
+                   (cadr (assoc 'meta-tags-keybindings *mon-help-mon-tags-alist*))
+                   (cl-copy-seq
+                    (cadr (assoc 'cl-tags *mon-help-mon-tags-alist*)))
+                   ))
                  'string-lessp)))
   (custom-note-var-changed '*mon-help-mon-tags-alist*)
   ) ;; :CLOSE unless
@@ -1076,6 +1100,26 @@ Regexp generated from `meta-tags' key:\n
 ;;
 ;;; (progn (makunbound '*regexp-mon-doc-help-meta-tags*)
 ;;;        (unintern "*regexp-mon-doc-help-meta-tags*" obarray) )
+(defcustom *regexp-mon-doc-help-cl-tags*
+  ;;
+  (regexp-opt (cadr (assq 'cl-tags *mon-help-mon-tags-alist*)) t)
+  ;;
+  "*Regexp for locating Common Lisp tags from the ansicl info file.\n
+For `help-mode' views of MON functions, in particular those from:
+:FILE mon-doc-doc-help-cl.el.\n
+:KEYWORD-LISTS-IN `*mon-help-mon-tags-alist*'
+Regexp generated from `cl-tags' key:\n
+ \(cadr \(assoc 'cl-tags  *mon-help-mon-tags-alist*\)\)\n
+ \(describe-face 'mon-help-CL-tag\)\n
+:FACE `mon-help-CL-tag'
+:SEE-ALSO `*regexp-mon-doc-help-docstring-tags-DYNAMIC*',
+`*regexp-mon-doc-help-docstring-tags-TABLES*',
+`*regexp-mon-doc-help-docstring-tags*', `*regexp-mon-doc-help-comment-tags*',
+`*regexp-mon-doc-help-pointer-tags*', `*mon-help-mon-tags-alist*',
+`*mon-help-propertize-tags-triples*', `mon-help-propertize-tags',
+`mon-help-insert-tags', `mon-help-mon-tags'.\n▶▶▶"
+  :type  'regexp
+  :group 'mon-doc-help-utils)
 
 ;;; ==============================
 ;;; :NOTE The constant `lisp-font-lock-keywords-2' in :FILE lisp/font-lock.el 
@@ -1664,7 +1708,7 @@ the current symbols in `obarray' having byte-optimizer props is rehashed.\n
 :KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-docstring-tags*'\n
 :SEE-ALSO `mon-help-META-tag', `mon-help-PNTR-tag', `mon-help-COMMENT-tag',
 `mon-help-URL-wrap-tag', `mon-help-INNER-KEY-tag' `mon-help-DYNATAB-tag',
-`mon-help-OLAY-RESULT', `mon-help-OLAY-RESULT-string-show',
+`mon-help-CL-tag', `mon-help-OLAY-RESULT', `mon-help-OLAY-RESULT-string-show',
 `mon-help-OLAY-RESULT-match-show'.\n▶▶▶"
   :group 'mon-doc-help-utils-faces)
 ;;
@@ -1681,7 +1725,7 @@ the current symbols in `obarray' having byte-optimizer props is rehashed.\n
 :KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-docstring-tags-DYNAMIC*'\n
 :SEE-ALSO `mon-help-META-tag', `mon-help-PNTR-tag', `mon-help-INNER-KEY-tag',
 `mon-help-COMMENT-tag', `mon-help-URL-wrap-tag', `mon-help-DYNATAB-tag',
-`mon-help-KEY-tag',  `mon-help-OLAY-RESULT',
+`mon-help-KEY-tag',  `mon-help-CL-tag', `mon-help-OLAY-RESULT',
 `mon-help-OLAY-RESULT-string-show', `mon-help-OLAY-RESULT-match-show'.\n▶▶▶"
   :group 'mon-doc-help-utils-faces)
 ;;
@@ -1697,7 +1741,7 @@ the current symbols in `obarray' having byte-optimizer props is rehashed.\n
 :KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-meta-tags*'\n
 :SEE-ALSO `mon-help-META-tag', `mon-help-PNTR-tag', `mon-help-DYNATAB-tag',
 `mon-help-KEY-tag', `mon-help-COMMENT-tag', `mon-help-URL-wrap-tag',
-`mon-help-INNER-KEY-tag',  `mon-help-OLAY-RESULT',
+`mon-help-INNER-KEY-tag', `mon-help-CL-tag',  `mon-help-OLAY-RESULT',
 `mon-help-OLAY-RESULT-string-show', `mon-help-OLAY-RESULT-match-show'.\n▶▶▶"
   :group 'mon-doc-help-utils-faces)
 ;;
@@ -1713,7 +1757,7 @@ the current symbols in `obarray' having byte-optimizer props is rehashed.\n
 :KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-pointer-tags*'\n
 :SEE-ALSO `mon-help-META-tag', `mon-help-PNTR-tag', `mon-help-INNER-KEY-tag',
 `mon-help-COMMENT-tag', `mon-help-URL-wrap-tag', `mon-help-DYNATAB-tag',
-`mon-help-KEY-tag',  `mon-help-OLAY-RESULT',
+`mon-help-KEY-tag', `mon-help-CL-tag',  `mon-help-OLAY-RESULT',
 `mon-help-OLAY-RESULT-string-show', `mon-help-OLAY-RESULT-match-show'.\n▶▶▶"
   :group 'mon-doc-help-utils-faces)
 ;;
@@ -1723,7 +1767,29 @@ the current symbols in `obarray' having byte-optimizer props is rehashed.\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-15T20:19:56-05:00Z}#{10072} - by MON KEY>
- (defface mon-help-COMMENT-tag
+ (defface mon-help-CL-tag
+    '((t 
+       :inherit mon-help-KEY-tag
+       :weight semi-bold  ;; :slant oblique bold normal semi-light normal
+       ;; (color-desaturate-name "AntiqueWhite3" 20)  "#c0d9bf69bda3"
+       ;; (color-darken-name "sky blue" 10)
+        :foreground "#67b0c1cde69c"
+       ))
+   "*A mon-help-symbol Common Lisp tag face.\n
+:KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-cl-tags*'\n
+:SEE-ALSO `mon-help-META-tag', `mon-help-PNTR-tag', `mon-help-DYNATAB-tag',
+`mon-help-KEY-tag', `mon-help-COMMENT-tag', `mon-help-URL-wrap-tag',
+`mon-help-INNER-KEY-tag', `mon-help-OLAY-RESULT',
+`mon-help-OLAY-RESULT-string-show', `mon-help-OLAY-RESULT-match-show'.\n▶▶▶"
+   :group 'mon-doc-help-utils-faces)
+;;
+;;; :TEST-ME (describe-face 'mon-help-CL-tag)
+;;
+;;; (progn (makunbound 'mon-help-CL-tag) (unintern "mon-help-CL-tag" obarray) )
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-29T02:08:19-04:00Z}#{24354} - by MON KEY>
+(defface mon-help-COMMENT-tag
     '((t 
        :inherit mon-help-KEY-tag 
        :weight normal  ;; :slant oblique bold normal semi-light normal
@@ -1736,14 +1802,9 @@ the current symbols in `obarray' having byte-optimizer props is rehashed.\n
 :KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-comment-tags*'\n
 :SEE-ALSO `mon-help-META-tag', `mon-help-PNTR-tag', `mon-help-DYNATAB-tag',
 `mon-help-KEY-tag', `mon-help-COMMENT-tag', `mon-help-URL-wrap-tag',
-`mon-help-INNER-KEY-tag', `mon-help-OLAY-RESULT',
+`mon-help-INNER-KEY-tag', `mon-help-CL-tag', `mon-help-OLAY-RESULT',
 `mon-help-OLAY-RESULT-string-show', `mon-help-OLAY-RESULT-match-show'.\n▶▶▶"
    :group 'mon-doc-help-utils-faces)
-;; :NOTE
-;;
-;;; :TEST-ME (describe-face 'mon-help-COMMENT-tag)
-;;
-;;; (progn (makunbound 'mon-help-COMMENT-tag) (unintern "mon-help-COMMENT-tag" obarray) )
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-15T18:03:30-05:00Z}#{10071} - by MON KEY>
@@ -1756,7 +1817,7 @@ the current symbols in `obarray' having byte-optimizer props is rehashed.\n
 :KEYWORD-REGEXPS-IN `'\n
 :SEE-ALSO `mon-help-META-tag', `mon-help-PNTR-tag', `mon-help-DYNATAB-tag',
 `mon-help-KEY-tag', `mon-help-COMMENT-tag', `mon-help-URL-wrap-tag',
-`mon-help-INNER-KEY-tag', `mon-help-OLAY-RESULT',
+`mon-help-INNER-KEY-tag', `mon-help-CL-tag', `mon-help-OLAY-RESULT',
 `mon-help-OLAY-RESULT-string-show', `mon-help-OLAY-RESULT-match-show'.\n▶▶▶"
   :group 'mon-doc-help-utils-faces)
 ;;
@@ -1776,7 +1837,7 @@ the current symbols in `obarray' having byte-optimizer props is rehashed.\n
 :KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-docstring-tags-URL*'\n
 :SEE-ALSO `mon-help-META-tag', `mon-help-PNTR-tag', `mon-help-DYNATAB-tag',
 `mon-help-KEY-tag', `mon-help-COMMENT-tag', `mon-help-URL-wrap-tag',
-`mon-help-INNER-KEY-tag', `mon-help-OLAY-RESULT',
+`mon-help-INNER-KEY-tag', `mon-help-CL-tag', `mon-help-OLAY-RESULT',
 `mon-help-OLAY-RESULT-string-show', `mon-help-OLAY-RESULT-match-show'.\n▶▶▶"
   :group 'mon-doc-help-utils-faces)
 ;;
@@ -1798,7 +1859,7 @@ the current symbols in `obarray' having byte-optimizer props is rehashed.\n
 :KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-builtin-static-tags*'\n
 :SEE-ALSO `mon-help-META-tag', `mon-help-PNTR-tag', `mon-help-DYNATAB-tag',
 `mon-help-KEY-tag', `mon-help-COMMENT-tag', `mon-help-URL-wrap-tag',
-`mon-help-INNER-KEY-tag', `mon-help-OLAY-RESULT',
+`mon-help-INNER-KEY-tag', `mon-help-CL-tag', `mon-help-OLAY-RESULT',
 `mon-help-OLAY-RESULT-string-show', `mon-help-OLAY-RESULT-match-show'.\n▶▶▶"
   :group 'mon-doc-help-utils-faces)
 ;;
@@ -1887,6 +1948,7 @@ the current symbols in `obarray' having byte-optimizer props is rehashed.\n
     (,*regexp-mon-doc-help-docstring-tags-TABLES*  2 mon-help-DYNATAB-tag) ; "cadet blue"        
     (,*regexp-mon-doc-help-docstring-tags-DYNAMIC* 0 mon-help-DYNATAB-tag) ; "cadet blue"
     ;;  &rest MORE-TRIPLES
+    ;; (,*regexp-mon-doc-help-cl-tags*                0 mon-help-CL-tag) 
     ;; (,*regexp-mon-doc-help-comment-tags*           0 mon-help-COMMENT-tag)   ;"DarkSlateGray3"
     ;; (,*regexp-mon-doc-help-comment-tags*           0 mon-help-INNER-KEY-tag) ;"PaleTurquoise2"
     ;; (,*regexp-mon-doc-help-docstring-tags-URL*     2 mon-help-URL-wrap-tag)  ;"LightSkyBlue"
@@ -1962,8 +2024,10 @@ at loadtime.\n
 `mon-help-insert-tags'.\n▶▶▶"
   (with-current-buffer (get-buffer (or buffer "*Help*")) ;; (help-buffer)
     (let ((buffer-read-only nil))
-      (mon-help-propertize-tags))))
-      
+      (mon-help-propertize-tags
+       '(*regexp-mon-doc-help-cl-tags* 0 mon-help-CL-tag)
+       ))))
+
 ;;; ==============================
 ;;; :PREFIX "mhpt-"
 ;;; :CREATED <Timestamp: #{2009-11-21T18:15:49-05:00Z}#{09476} - by MON>

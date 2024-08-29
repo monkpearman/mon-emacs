@@ -197,14 +197,16 @@ Names of buffers removed at loadtime when present:\n
 `mon-its-all-text-purge-on-quit', `*mon-purge-emacs-temp-file-dir-fncns*',
 `*mon-purge-emacs-temp-file-dir-fncns*',
 `*mon-post-load-hook-trigger-buffer*'.\n▶▶▶"
-  (when ;;(and 
-      (or (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
-               (bound-and-true-p IS-MON-P-GNU))
-          (and (intern-soft "IS-MON-P-W32" obarray) ;; *IS-MON-OBARRAY*
-               (bound-and-true-p IS-MON-P-32))
-          (or (bound-and-true-p common-lisp-hyperspec-root)
-              (bound-and-true-p common-lisp-hyperspec-issuex-table)
-              (bound-and-true-p common-lisp-hyperspec-symbol-table)))
+  (when (and 
+         (or (and (intern-soft "IS-MON-P-DARWIN" obarray)
+                  (bound-and-true-p IS-MON-P-DARWIN))
+             (and (intern-soft "IS-MON-P-GNU" obarray)
+                  (bound-and-true-p IS-MON-P-GNU))
+             (and (intern-soft "IS-MON-P-W32" obarray)
+                  (bound-and-true-p IS-MON-P-32)))
+         (or (bound-and-true-p common-lisp-hyperspec-root)
+             (bound-and-true-p common-lisp-hyperspec-issuex-table)
+             (bound-and-true-p common-lisp-hyperspec-symbol-table)))
     (dolist (gb `("*CL-EXT-PKG-MAP*"
                   ;; "*MON-HELP-CL-EXT-PKG-MAP*"
                   ,(get '*mon-help-CL-ext-pkg-map* 'mon-help-CL-pkgs-buffer-name)

@@ -210,7 +210,6 @@ CIFS configuration.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2317
 ;;; :CREATED <Timestamp: #{2010-11-17T19:48:57-05:00Z}#{10463} - by MON KEY>
 (defvar *mon-CIFS-workgroup* nil
   "The CIFS workgroup you wish to engage.\n
@@ -371,6 +370,7 @@ repeatedly evaluate this loop substituting the optional args where needed and
 ;;
 ;;; :TEST-ME (mon-map-cifs-domain->local-mount)
 
+(declare-function auth-source-user-or-password  "auth-source" (host &optional user))
 ;;; ==============================
 ;;; :COURTESY Thierry Volpiatto :HIS `anything-delicious.el' 
 ;;; :WAS `anything-delicious-authentify'

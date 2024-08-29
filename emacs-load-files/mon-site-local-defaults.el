@@ -575,13 +575,13 @@ alist contains numbered keys (a key per system).
 cdr of each associated key maps to an Nary elt list where each elt points to a
 site-local path, default value, string, etc.\n
 EXAMPLE:\n\(assoc 1 *mon-emacsd*\)
-:CALLED-BY `*mon-user-emacsd*'            ;<- nth 1
+:CALLED-BY `*mon-user-emacsd*'          ;<- nth 1
 :CALLED-BY `custom-file'                ;<- nth 2
 :CALLED-BY `mon-open-workspace'         ;<- nth 3
 :CALLED-BY `mon-open-moz-down'          ;<- nth 4
 :CALLED-BY `*mon-HG-root-path*'         ;<- nth 5
 :CALLED-BY `set-emacs-root'             ;<- nth 6
-:CALLED-BY `*mon-artist-naf-path*'          ;<- nth 7
+:CALLED-BY `*mon-artist-naf-path*'      ;<- nth 7
 :CALLED-BY `common-lisp-hyperspec-root' ;<- nth 8
 :CALLED-BY `browse-url-generic-program' ;<- nth 9
 :CALLED-BY  `browse-url-firefox-program';<- nth 10\n

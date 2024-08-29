@@ -45,7 +45,8 @@
 ;; `mon-help-view-file', `mon-help-temp-docstring-display',
 ;; `mon-help-get-mon-help-buffer', `mon-help-overlay-result',
 ;; `mon-help-find-result-for-overlay', `mon-help-overlay-on-region',
-;; `mon-help-propertize-tags', 
+;; `mon-help-propertize-tags', `mon-help-propertize-tags-in-buffer',
+;; `mon-help-font-lock-comment-keywords-matcher',
 ;; `mon-help-mon-tags', `mon-help-insert-tags', `mon-tags-apropos',
 ;; `mon-tags-naf-apropos', `mon-help-regexp-syntax', `mon-help-syntax-class',
 ;; `mon-help-search-functions', `mon-help-type-predicates',
@@ -323,7 +324,7 @@
 ;;
 ;;
 ;; KEYBINDINGS:
-;; Assigning a keybinding for `mod-doc-help-insert-cookie'
+;; Assigning a keybinding for `mon-insert-doc-help-cookie'
 ;; and make inserting the `*mon-doc-cookie*' variable easier esp. when
 ;; the doc-cookie is not default and/or you have trouble remembering
 ;; the ucs char-code for inserting '▶▶▶' \(ucs-insert \"25BA\"\) ;=> ▶
@@ -429,7 +430,7 @@
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
-(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
+  (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 ;; (eval-when-compile (require 'mon-cl-compat nil t))
 
@@ -511,7 +512,9 @@
 ;;; :CREATED <Timestamp: #{2011-01-15T13:53:58-05:00Z}#{11026} - by MON KEY>
 (defcustom *mon-doc-help-utils-xrefs*
     '(mon-map-subrs-and-hash mon-help-permanent-locals-find
-      mon-help-byte-optimizer-find mon-help-propertize-tags mon-help-mon-tags
+      mon-help-byte-optimizer-find  mon-help-mon-tags
+      mon-help-propertize-tags  mon-help-propertize-tags-in-buffer
+      mon-help-font-lock-comment-keywords-matcher
       mon-help-insert-tags mon-help-insert-tags-comment
       mon-help-overlay-for-example mon-help-delimited-region
       mon-help-overlay-on-region mon-help-overlay-result
@@ -603,7 +606,7 @@ The symbols contained of this list are defined in :FILE mon-doc-help-utils.el\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Friday July 03, 2009 @ 01:11.47 PM - by MON KEY>
-(defcustom *mon-doc-cookie* "▶▶▶"
+(defcustom *mon-doc-cookie* "▶▶▶" 
   "Default 'documentation cookie' used in `mon-*' functions and vars.\n
 A Documentation cookie delimter for use with `mon-help-function-spit-doc'.\n
 Used to delimit which portion of docstring should be commented out when
@@ -699,7 +702,7 @@ These should be formatted in upcase as either:
 (unless (and (intern-soft "*mon-help-mon-tags-alist*" obarray)
              (bound-and-true-p *mon-help-mon-tags-alist*))
   (setq *mon-help-mon-tags-alist*
-        '( ;; :NOTE When adding face props in emacs-lisp-mode make sure to 
+        '(;; :NOTE When adding face props in emacs-lisp-mode make sure to 
           ;;  set ``font-lock-face'' property to SOME-FACE prop-val
           ;;  setting just a ``face'' property won't light up.
           ;;  With `set-text-properties' & `add-text-properties' add the quoted
@@ -708,19 +711,26 @@ These should be formatted in upcase as either:
           ;;  With `put-text-property' add the quoted prop with prop-val e.g.:
           ;; (put-text-property START END 'font-lock-face font-lock-constant-face)
           ;; (put-text-property START END 'face font-lock-constant-face)
-          (comment-tags ;; `*regexp-mon-doc-help-comment-tags*'
+        (comment-tags ;; `*regexp-mon-doc-help-comment-tags*'
            (":AFTER" ":AS-OF" ":BEFORE" ":ADDED" 
             ":CHANGED" ":CHANGESET" ":CLEANUP" ":CLOSE" ":COMMENTED" ":COURTESY" ":CREATED"  
             ":DATE" ":DECLARED-SPECIAL" ":DEBUGGING" ":DEFAULT"
             ":EMACS-WIKI" ":EMACSWIKI-FILE" ":EVAL-BELOW-TO-TEST" 
-            ":FIXES" ":FIXME" ":FIX-ME" ":FROM" ;; :NOTE also has ":FILE"
+            ":FILE" ":FILE-CREATED"
+            ":FIXES" ":FIXME" ":FIX-ME" ":FROM" ;; :NOTE also has 
             ":HIS" ":IF-NOT-FEATURE-P" ":INSTALL-TO" ":INSTALLED-TO"
             ":LOAD-SPECIFIC-PROCEDURES" 
             ":MODIFICATIONS" 
+            ":NOTE"
+            ":PASTED"
+            ":PASTE-DATE"
+            ":PASTE-URL"
+            ":PASTE-TITLE"
             ":PREFIX"
             ":RENAMED" ":REQUIRES" ":REQUIRED-BY"
+            ":SEE"
             ":SEE-BELOW" ":SUBJECT" ":SUBDIR-OF"
-            ":TAGS-COMMON" ":TEST-ME" ":TESTING" ":TODO"  ":TO"
+            ":TAGS-COMMON" ":TEST" ":TEST-ME" ":TESTING" ":TODO"  ":TO"
             ":UNCOMMENT-BELOW-TO-TEST" ":UNCOMMENT-TO-TEST"
             ":VERSION" 
             ;; :NOTE ":WANTING" is used w/ ":TEST-ME" for expected return value. 
@@ -745,6 +755,7 @@ These should be formatted in upcase as either:
             ":NOTE"
             ":REGEXPS-IN" 
             ":SEE" ":SEE-ALSO" ":SOURCE" 
+            ":URL"
             ":USED-BY" ":USED-IN"))
           (meta-tags-keybindings ;; 
            ("<BEGINNING>" "<BUFFER>" "<CLASS>" "<COMMAND>" "<CONSTANT>"
@@ -1016,7 +1027,6 @@ Regexp generated from `docstr-tags' key:\n
 ;;;       Should recognize "^;; " and "^;;; " by syntax _then_ regexp.
 ;;; :CREATED <Timestamp: #{2009-11-21T13:51:13-05:00Z}#{09476} - by MON>
 (defcustom *regexp-mon-doc-help-comment-tags*
-  ;;
   (regexp-opt (cadr (assq 'comment-tags  *mon-help-mon-tags-alist*)) t)
   ;;
   "*Regexp for locating \"meta-syntactic\" type tags.\n
@@ -1034,6 +1044,9 @@ Regexp generated from `comment-tags' key:
 `*mon-help-propertize-tags-triples*'.\n▶▶▶"
   :type 'regexp
   :group 'mon-doc-help-utils)
+;;
+;; (setq *regexp-mon-doc-help-comment-tags*
+;;       (regexp-opt (cadr (assq 'comment-tags  *mon-help-mon-tags-alist*))))
 ;;
 ;;; :TEST-ME (search-backward-regexp *regexp-mon-doc-help-comment-tags*)
 ;;
@@ -1122,7 +1135,7 @@ two ``keyword'' regexps. Calling functions (or their expanders) should let-bind
   :group 'mon-doc-help-utils)
 ;;
 ;;; (progn (makunbound '*regexp-mon-doc-help-builtin-static-tags*)
-;;;        (unintern "*regexp-mon-doc-help-builtin-static-tags*" obarray) )
+;;;        (unintern "*regexp-mon-doc-help-builtin-static-tags*" obarray))
 
 ;;; ==============================
 ;;; :NOTE The file lisp/emacs-lisp/unsafep.el
@@ -1404,8 +1417,8 @@ Each hash entry has the form:\n
     (mapatoms #'(lambda (sbrp) 
                   (when (and (fboundp sbrp)
                              (symbol-function sbrp)
-                             (indirect-function sbrp t)
-                             (subrp (indirect-function sbrp t))
+                             (indirect-function sbrp)
+                             (subrp (indirect-function sbrp))
                              (let* ((sn (symbol-name sbrp))
                                     (sx (cons (sxhash sn) sbrp)))
                                (if (eq (symbol-function sbrp)
@@ -1713,8 +1726,12 @@ the current symbols in `obarray' having byte-optimizer props is rehashed.\n
  (defface mon-help-COMMENT-tag
     '((t 
        :inherit mon-help-KEY-tag 
-       :weight bold ;; :slant oblique
-       :foreground "DarkSlateGray3"))
+       :weight normal  ;; :slant oblique bold normal semi-light normal
+       ;; (color-desaturate-name "AntiqueWhite3" 20)  "#c0d9bf69bda3"
+       ;; (color-darken-name "AntiqueWhite3" 10)  "#bef9ae129943"   
+       :foreground "#b0269b6481d7"
+       ;; :foreground "DarkSlateGray3"
+       ))
    "*A mon-help-symbol comment tag face.\n
 :KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-comment-tags*'\n
 :SEE-ALSO `mon-help-META-tag', `mon-help-PNTR-tag', `mon-help-DYNATAB-tag',
@@ -1722,6 +1739,7 @@ the current symbols in `obarray' having byte-optimizer props is rehashed.\n
 `mon-help-INNER-KEY-tag', `mon-help-OLAY-RESULT',
 `mon-help-OLAY-RESULT-string-show', `mon-help-OLAY-RESULT-match-show'.\n▶▶▶"
    :group 'mon-doc-help-utils-faces)
+;; :NOTE
 ;;
 ;;; :TEST-ME (describe-face 'mon-help-COMMENT-tag)
 ;;
@@ -1869,12 +1887,12 @@ the current symbols in `obarray' having byte-optimizer props is rehashed.\n
     (,*regexp-mon-doc-help-docstring-tags-TABLES*  2 mon-help-DYNATAB-tag) ; "cadet blue"        
     (,*regexp-mon-doc-help-docstring-tags-DYNAMIC* 0 mon-help-DYNATAB-tag) ; "cadet blue"
     ;;  &rest MORE-TRIPLES
-    ;; (*regexp-mon-doc-help-comment-tags*           0 mon-help-COMMENT-tag)   ;"DarkSlateGray3"
-    ;; (*regexp-mon-doc-help-comment-tags*           0 mon-help-INNER-KEY-tag) ;"PaleTurquoise2"
-    ;; (*regexp-mon-doc-help-docstring-tags-URL*     2 mon-help-URL-wrap-tag)  ;"LightSkyBlue"
-    ;; (*regexp-mon-doc-help-docstring-tags-URL*     4 mon-help-URL-wrap-tag)  ;"LightSkyBlue"
-    ;; (*regexp-mon-doc-help-builtin-dynamic-tags*   1 mon-help-BUILTIN-tag)   ;"SteelBlue"
-    ;; (*regexp-mon-doc-help-builtin-static-tags*    0 mon-help-BUILTIN-tag)   ;"SteelBlue"
+    ;; (,*regexp-mon-doc-help-comment-tags*           0 mon-help-COMMENT-tag)   ;"DarkSlateGray3"
+    ;; (,*regexp-mon-doc-help-comment-tags*           0 mon-help-INNER-KEY-tag) ;"PaleTurquoise2"
+    ;; (,*regexp-mon-doc-help-docstring-tags-URL*     2 mon-help-URL-wrap-tag)  ;"LightSkyBlue"
+    ;; (,*regexp-mon-doc-help-docstring-tags-URL*     4 mon-help-URL-wrap-tag)  ;"LightSkyBlue"
+    ;; (,*regexp-mon-doc-help-builtin-dynamic-tags*   1 mon-help-BUILTIN-tag)   ;"SteelBlue"
+    ;; (,*regexp-mon-doc-help-builtin-static-tags*    0 mon-help-BUILTIN-tag)   ;"SteelBlue"
     )
   "List of triples for `mon-help-propertize-tags' to font-lock with.\n
 Elements of list have the form:\n
@@ -1896,6 +1914,57 @@ Elements of list have the form:\n
   :group 'mon-doc-help-utils)
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-28T21:48:16-04:00Z}#{24353} - by MON KEY>
+(defun mon-help-font-lock-comment-keywords-matcher (limit)
+  "Matcher function for use with `font-lock-keywords'.\n
+Identify and for font-lock purposes the following forms in a `lisp-mode' buffer.
+; :<KEYWORD> 
+;; :<KEYWORD> 
+;;; :<KEYWORD> 
+:<KEYWRD> is matched by the regexp in `*regexp-mon-doc-help-comment-tags*'.
+The face `mon-help-COMMENT-tag' is used for font-locoking..\n
+:EXAMPLE
+ \(cadr \(assoc 'comment-tags  *mon-help-mon-tags-alist*\)\)\n
+ \(describe-face 'mon-help-COMMENT-tag\)\n
+:SEE-ALSO `mon-help-propertize-tags-in-buffer',
+`mon-help-CL-make-help-xref-buttons-url-info'.\n▶▶▶"
+  (let* ((matched (search-forward-regexp *regexp-mon-doc-help-comment-tags* 
+                                         (or limit (pos-eol)) t))
+         (tpa-face (plist-get (text-properties-at (point)) 'face))
+         (m-beg   (and
+                   matched                   
+                   ;; if we're looking at a documentation string bail now.
+                   (not (eq tpa-face 'font-lock-doc-face))
+                   (not (eq tpa-face 'font-lock-string-face))
+                   (not (eq tpa-face 'font-lock-builtin-face))
+                   (not (eq tpa-face 'default))
+                   (match-beginning 0)))
+         (m-end     (and matched m-beg (match-end 0)))
+         (ppsexp    (and matched m-end (parse-partial-sexp (pos-bol) m-end nil t)))
+         (commentp  (and ppsexp (nth 8 ppsexp))))
+   (when (and matched m-end (not (= (point) m-end)))
+     (goto-char m-end))
+   (and commentp
+        m-end)))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-28T16:30:00-04:00Z}#{24353} - by MON KEY>
+(defun mon-help-propertize-tags-in-buffer (&optional buffer)
+  "Update \"*Help*\" buffer or BUFFER with text-propertization as per `mon-help-propertize-tags'.\n
+:NOTE This function is advised with `add-function' by `mon-set-system-specific-and-load-init'
+at loadtime.\n
+:EXAMPLE\n
+ \(advice-function-member-p
+  #'mon-help-propertize-tags-in-buffer 
+ \(symbol-function 'mon-help-CL-make-help-xref-buttons-url-info\)\)\n
+:SEE-ALSO `mon-help-font-lock-comment-keywords-matcher',
+`mon-help-CL-make-help-xref-buttons-url-info', `mon-help-mon-tags',
+`mon-help-insert-tags'.\n▶▶▶"
+  (with-current-buffer (get-buffer (or buffer "*Help*")) ;; (help-buffer)
+    (let ((buffer-read-only nil))
+      (mon-help-propertize-tags))))
+      
+;;; ==============================
 ;;; :PREFIX "mhpt-"
 ;;; :CREATED <Timestamp: #{2009-11-21T18:15:49-05:00Z}#{09476} - by MON>
 (defun mon-help-propertize-tags (&rest more-triples)
@@ -1909,16 +1978,19 @@ When MORE-TRIPLES is non-nil args are three valued lists of:\n
 Each list should have the form:\n
  \(some-regexp-or-var match-group face-name\)\n
 :EXAMPLE\n\n(mon-help-propertize-tags-TEST\)\n
-:SEE-ALSO `mon-help-propertize-tags-TEST', `mon-help-mon-tags',
-`mon-help-insert-tags'.\n▶▶▶"
+ \(with-current-buffer \(get-buffer \"*Help*\"\)
+   \(let \(\(buffer-read-only nil\)\)
+     \(mon-help-propertize-tags\)\)\)\n
+:SEE-ALSO `mon-help-propertize-tags-in-buffer', `mon-help-propertize-tags-TEST',
+`mon-help-mon-tags', `mon-help-insert-tags'.\n▶▶▶"
   (let ((mhpt-props
-         `(;;:WAS
-           ;; (,*regexp-mon-doc-help-docstring-tags*         0 mon-help-KEY-tag)   
-           ;; (,*regexp-mon-doc-help-meta-tags*              0 mon-help-META-tag)
-           ;; (,*regexp-mon-doc-help-pointer-tags*           2 mon-help-PNTR-tag)
-           ;; (,*regexp-mon-doc-help-docstring-tags-TABLES*  2 mon-help-DYNATAB-tag)
-           ;; (,*regexp-mon-doc-help-docstring-tags-DYNAMIC* 0 mon-help-DYNATAB-tag)
-           ,@*mon-help-propertize-tags-triples*
+         ;; :WAS
+         ;; `((,*regexp-mon-doc-help-docstring-tags*         0 mon-help-KEY-tag)   
+         ;;   (,*regexp-mon-doc-help-meta-tags*              0 mon-help-META-tag)
+         ;;   (,*regexp-mon-doc-help-pointer-tags*           2 mon-help-PNTR-tag)
+         ;;   (,*regexp-mon-doc-help-docstring-tags-TABLES*  2 mon-help-DYNATAB-tag)
+         ;;   (,*regexp-mon-doc-help-docstring-tags-DYNAMIC* 0 mon-help-DYNATAB-tag)
+         `(,@*mon-help-propertize-tags-triples*
            ,@(when (and more-triples (consp (car more-triples)))
                (mapcar #'(lambda (mhpt-L-0)
                            `(,(if (stringp (car mhpt-L-0)) 
@@ -1951,7 +2023,7 @@ Each list should have the form:\n
 ;;; ==============================
 ;;; \(mon-help-mon-tags :meta-keys t\)\n 
 ;;; :CREATED <Timestamp: #{2009-11-20T17:55:35-05:00Z}#{09475} - by MON>
-(defun* mon-help-mon-tags (&rest other-keys &key comment docs meta all &allow-other-keys) ;; meta-keys)
+(cl-defun mon-help-mon-tags (&rest other-keys &key comment docs meta all &allow-other-keys) ;; meta-keys)
   "A list of MON's commonly used tags.\n
 Valid keyword arguments are:\n
  :COMMENT :DOCS :META\n
@@ -1968,8 +2040,8 @@ by `completing-read'.\n
 \(mon-help-mon-tags 'comment-tags\)\n
 \(mon-help-mon-tags 'docstr-tags\)\n
 \(mon-help-mon-tags 'meta-tags\)\n
-\(mon-help-mon-tags 'all\)
-\(mon-help-mon-tags 'all-tags\)
+\(mon-help-mon-tags 'all\)\n
+\(mon-help-mon-tags 'all-tags\)\n
 \(mon-help-mon-tags 'comment-tags 'meta-tags :meta t\)\n
 \(mon-help-mon-tags t\)\n
 \(mon-help-mon-tags\)\n
@@ -2441,8 +2513,9 @@ SOME-OTHER-BUFFER with name before displaying contents there.\n
     (with-help-window dhb 
       (with-current-buffer dhb
         (insert the-help-doc)
-        ;; WAS (help-window-setup-finish (selected-window))        
-        (help-mode-finish)))))
+        (when (derived-mode-p 'help-mode)
+          (setq buffer-read-only t)
+          (help-make-xrefs (current-buffer)))))))
 ;;
 ;;; :TEST-ME (mon-help-temp-docstring-display (documentation 'mon-help-temp-docstring-display))
 ;;; :TEST-ME (mon-help-temp-docstring-display 
@@ -2504,15 +2577,15 @@ display the \"*MON-SHOW- *DOC*-BUFFER*\".\n
 ;;; :COURTESY Thinkig Machines Corp. :HIS help-hacks.el :WAS `help-tmc-hacks'
 ;;; :SEE (URL `ftp://ftp.sra.co.jp/pub/lang/lisp/misc/gmacs/gmacs/')
 ;;; :CREATED <Timestamp: #{2009-12-31T13:12:41-05:00Z}#{09534} - by MON KEY>
-(defun mon-help-get-mon-help-buffer (d-string) ;; :WAS ()
-  "Display D-STRING in `view-mode' with buffer `*mon-help-docstring-help-bffr*'.\n
+(defun mon-help-get-mon-help-buffer (docstring)
+  "Display DOCSTRING in `view-mode' with buffer `*mon-help-docstring-help-bffr*'.\n
 :SEE-ALSO `mon-help-temp-docstring-display', `mon-help-view-file'.\n▶▶▶"
   (interactive)
   (let ((current-buffer (current-buffer)))
     (switch-to-buffer 
      (get-buffer-create *mon-help-docstring-help-bffr*))
     (delete-region (mon-g2be -1 t) (mon-g2be 1 t))
-    (insert d-string)
+    (insert doctring)
     (mon-g2be -1)
     (view-mode current-buffer)))
 ;;
@@ -2553,7 +2626,7 @@ Signal an error when FILE-TO-VIEW does not exist or is unreadable.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-21T19:02:12-04:00Z}#{09345} - by MON>
 (defcustom *mon-tags-table-list* nil
-  "Consed list of paths and paths for `tags-table-list'.
+  "Consed list of paths and paths for `tags-table-list'.\n
 The car and cdr are as per the TAGS-TBL-LIST and TAGS-SPECS args to
 `mon-update-tags-tables' where the car is a list of pathnames and 
 the cdr is a list pathname transforms for format to use when generatign etags
@@ -2686,7 +2759,7 @@ with paths held by `*mon-tags-table-list*'.\n
 
 ;;; ==============================
 (defun mon-insert-doc-help-cookie ()
-  "Insert default 'documentation cookie' at point.\n
+  "Insert default 'documentation cookie' `*mon-doc-cookie*' at point.\n
 Everything up to `*mon-doc-cookie*' is commented out when inserted into a buffer.
 Default value for cookie is: \"\u25BA\u25BA\u25BA\".\n
 :EXAMPLE\n\n\(momentary-string-display 
@@ -2701,8 +2774,8 @@ otherwise.\n
 :SEE-ALSO `mon-insert-ebay-field-trigger-l-and-r',
 `mon-insert-ebay-field-trigger-l', `mon-insert-ebay-field-trigger-r'.\n▶▶▶"
   (interactive)
-  (insert "▶▶▶"))
-;;
+  (insert *mon-doc-cookie*))
+;; 
 ;;; :TEST-ME (mon-insert-doc-help-cookie)
 ;;; :TEST-ME (apply 'mon-insert-doc-help-cookie '(t))
 
@@ -3151,8 +3224,8 @@ template in buffer at point. Do not move point.\n
                      fname))))
          (midht-tm-cnt (or test-me-cnt 3))
          (midht-fnd       (match-string-no-properties 2))
-         (midht-fun-typs '("defun" "defun*" "defmacro" 
-                           "defmacro*" "defsubst" "defsubst*"))
+         (midht-fun-typs '("defun" "cl-defun" "defmacro" 
+                           "cl-defmacro" "defsubst" "cl-defsubst"))
          (var-typs       '("defvar" "defconst" "defcustom"))
          midht-msg-key
          ;; Signature (sym-name &key :alt-cookie :do-var :insertp :do-face :do-group :do-theme
@@ -3160,7 +3233,7 @@ template in buffer at point. Do not move point.\n
                               (let ((fun-typ (car (member midht-fnd midht-fun-typs))))
                                 (setq midht-msg-key 
                                       (if (or (string= fun-typ "defmacro")
-                                              (string= fun-typ "defmacro*"))
+                                              (string= fun-typ "cl-defmacro"))
                                           ":MACRO"
                                         ":FUNCTION")))
                               "      (mon-help-function-spit-doc '%s :insertp t)\n")
@@ -3282,7 +3355,7 @@ FUNCTION must be a function \(or special form\) according to
 \(mon-help-function-arity 'reduce\)\n
 :NOTE The CL-seq functions with &keys e.g. `reduce' returns 'many'
 as the cl-keys occurs in the &rest parameter position. This also occurs with
-functions defined with the CL packages `defun*' macro.
+functions defined with the CL packages `cl-defun' macro.
 :SEE `cl--lambda-list-keywords'.\n
 :ALIASED-BY `mon-function-arity'\n
 :SEE-ALSO `mon-help-function-args', `documentation-property',
@@ -3515,7 +3588,7 @@ Used to generate docstring of `mon-help-errors'.\n
               "`max-specpdl-size'"
               "`stack-trace-on-error'"
               "`memory-full'"
-              "`exit'   ;:NOTE Interned from eval.c with: \"Qexit = intern_c_string \(\"exit\"\);\""
+              "`exit'   ; :NOTE Interned from eval.c with: \"Qexit = intern_c_string \(\"exit\"\);\""
               "`debug'     \(symbol-plist 'debug\)"
               "`&rest'     \(symbol-plist '&rest\)"
               "`&optional' \(symbol-plist '&optional\)"
@@ -12955,9 +13028,9 @@ evaling, interrogation, deconstructing, etc.\n
 `&rest'                                      ; :NOTE \(symbol-plist '&rest\)
 `&optional'                                  ; :NOTE \(symbol-plist '&optional\)
 ;; :SYMBOL-CONSTRUCTORS-LISP-CL
-`defmacro*'
-`defsubst*'
-`defun*'
+`cl-defmacro'
+`cl-defsubst'
+`cl-defun'
 `define-compiler-macro' 
 `defstruct'
 `deftype'

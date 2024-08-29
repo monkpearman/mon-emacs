@@ -504,7 +504,7 @@ naf-mode/naf-mode-ulan-utils.el,614
 (defconst *naf-mode-ulan-rltd-ppl-corp* 463,18313
 (defconst *naf-mode-x-of-ulan-bol*499,20297
 
-naf-mode/mon-doc-help-utils.el,8344
+naf-mode/mon-doc-help-utils.el,8439
 (defgroup mon-doc-help-utils 457,22563
 (defgroup mon-doc-help-utils-faces 481,23656
 (defcustom *mon-doc-help-utils-xrefs*513,25419
@@ -512,176 +512,178 @@ naf-mode/mon-doc-help-utils.el,8344
 (defcustom *mon-help-docstring-help-bffr* 630,32523
 (defcustom *mon-help-custom-faces-builtins-tags*645,33116
 (defcustom *mon-help-mon-tags-alist* 677,35003
-(defcustom *mon-help-reference-keywords* 794,41085
-(defcustom *regexp-mon-doc-help-pointer-tags*863,45716
-(defcustom *regexp-mon-doc-help-docstring-tags-URL*905,47373
-(defcustom *regexp-mon-doc-help-docstring-tags-DYNAMIC* 946,49398
-(defcustom *regexp-mon-doc-help-docstring-tags-TABLES*972,50612
-(defcustom *regexp-mon-doc-help-docstring-tags*1002,52036
-(defcustom *regexp-mon-doc-help-comment-tags*1029,53332
-(defcustom *regexp-mon-doc-help-meta-tags*1058,54682
-(defcustom *regexp-mon-doc-help-builtin-dynamic-tags* 1090,56231
-(defcustom *regexp-mon-doc-help-builtin-static-tags*1117,57546
-(defcustom *mon-help-side-effect-free* 1143,58857
-(defcustom *mon-help-side-effect-and-error-free* 1232,64105
-(defcustom *mon-help-pure-functions* 1303,68434
-(defvar *mon-help-subrs* 1372,71944
-(defvar *mon-help-subrs-false* 1390,72956
-(defun mon-map-subrs-and-hash 1411,74029
-(defvar *mon-help-byte-optimizer-vals* 1484,77250
-(defcustom *mon-help-risky-local-variables*1504,78259
-(defvar *mon-help-permanent-locals* 1530,79643
-(defun mon-help-permanent-locals-find 1548,80670
-(defun mon-help-byte-optimizer-find 1617,84318
-(defface mon-help-KEY-tag1660,86500
-(defface mon-help-DYNATAB-tag1677,87274
-(defface mon-help-META-tag1694,88142
-(defface mon-help-PNTR-tag1710,88886
-(defface mon-help-INNER-KEY-tag1750,90697
-(defface mon-help-URL-wrap-tag1769,91486
-(defface mon-help-BUILTIN-tag1789,92304
-(defface mon-help-OLAY-RESULT1817,93422
-(defface mon-help-OLAY-RESULT-string-show1837,94198
-(defface mon-help-OLAY-RESULT-match-show1859,95005
-(defcustom *mon-help-propertize-tags-triples*1882,95891
-(defun mon-help-font-lock-comment-keywords-matcher 1918,98160
-(defun mon-help-propertize-tags-in-buffer 1952,99802
-(defun mon-help-propertize-tags 1970,100661
-(cl-defun mon-help-mon-tags 2026,103788
-(defun mon-help-insert-tags 2089,107019
-(defun mon-help-insert-tags-comment 2149,110297
-(defun mon-help-overlay-for-example 2162,110985
-(defun mon-help-delimited-region 2264,117451
-(defun mon-help-overlay-on-region 2340,121178
-(defun mon-help-overlay-result 2364,122414
-(defun mon-help-find-result-for-overlay 2424,125454
-(defun mon-help-temp-docstring-display 2475,127691
-(defun mon-help-buffer-spc-*DOC* 2527,130357
-(defun mon-help-get-mon-help-buffer 2580,133036
-(defun mon-help-view-file 2596,133685
-(defcustom *mon-tags-table-list* 2628,135317
-(defun mon-update-tags-tables 2662,136782
-(defun mon-update-tags-tables-loadtime 2725,139856
-(defun mon-tags-naf-apropos 2741,140588
-(defun mon-tags-apropos 2750,141023
-(defun mon-insert-doc-help-cookie 2761,141421
-(defmacro mon-help-put-var-doc-val->func 2793,142823
-(defmacro mon-help-swap-var-doc-const-val 2863,146762
-(defun mon-help-xref-symbol-value 3020,155472
-(cl-defun mon-help-function-spit-doc 3056,157436
-(defun mon-insert-doc-help-tail 3183,165226
-(defun mon-help-message-intrp 3293,171721
-(defun mon-help-function-arity 3348,174388
-(defcustom *mon-help-emacs-errors* 3402,176676
-(defun mon-help-errors 3483,180782
-(defun mon-help-function-args 3680,190619
-(defcustom *mon-help-interactive-spec-alist* 3724,192728
-(defun mon-help-parse-interactive-spec 3852,198829
-(defun mon-help-insert-documentation 3910,201816
-(defun mon-help-help-functions 3992,205966
-(defun mon-help-mon-help 4084,208995
-(defun mon-help-mon-functions 4297,214901
-(defun mon-help-ebay-template-mode 4955,231102
-(defun mon-help-emacs-introspect 5026,233578
-(defcustom *mon-emacs-external-programs-vars* 5237,239538
-(defun mon-help-package-keywords 5304,243280
-(defun mon-help-regexp-syntax 5396,247525
-(defun mon-help-syntax-class 5457,250186
-(defun mon-help-syntax-functions 5520,253184
-(defun mon-help-search-functions 5640,256617
-(defun mon-help-hooks 5772,260191
-(defun mon-help-file-dir-functions 5928,264136
-(defun mon-help-file-dir-functions-usage 6259,273175
-(defun mon-help-process-functions 6430,279451
-(defun mon-help-make-network-process 6542,282358
-(defun mon-help-server-functions 6627,286103
-(defun mon-help-inhibit-functions 6717,288683
-(defun mon-help-buffer-functions 6776,290606
-(defun mon-help-frame-functions 7025,297089
-(defun mon-help-window-functions 7262,302646
-(defun mon-help-mode-functions 7435,307763
-(defun mon-help-xml-functions 7519,310185
-(defun mon-help-eieio-defclass 7564,311484
-(defun mon-help-eieio-functions 7620,313985
-(defun mon-help-eieio-methods 7759,320533
-(defun mon-help-type-predicates 7919,329727
-(defun mon-help-number-functions 8043,335585
-(defun mon-help-predicate-functions 8170,337851
-(defun mon-help-sequence-functions 8449,344239
-(defun mon-help-key-functions 8611,347375
-(defun mon-help-load-functions 8978,357002
-(defun mon-help-read-functions 9058,359137
-(defun mon-help-print-functions 9181,365399
-(defun mon-help-marker-functions 9309,369173
-(defun mon-help-hash-functions 9374,370887
-(defun mon-help-plist-functions 9492,374962
-(defun mon-help-plist-properties 9570,377300
-(defun mon-help-faces-themes 9784,383116
-(defun mon-help-faces 9904,388682
-(defun mon-help-faces-basic 10044,398355
-(defun mon-help-faces-font-lock 10098,400387
-(defun mon-help-font-lock-functions 10143,402066
-(defun mon-help-font-lock 10272,406286
-(defun mon-help-overlay-functions 10339,409970
-(defun mon-help-text-property-functions 10418,412431
-(defun mon-help-text-property-properties 10513,419224
-(defun mon-help-text-property-stickyness 10603,425913
-(defun mon-help-text-property-functions-ext 10673,429633
-(defun mon-help-color-functions 10734,431974
-(defun mon-help-color-chart 10822,434557
-(defun mon-help-easy-menu 10986,447016
-(defun mon-help-widgets 11040,450458
-(defun mon-help-custom-keywords 11180,460548
-(defun mon-help-char-functions 11280,464712
-(defun mon-help-char-charset-functions 11403,468684
-(defun mon-help-char-coding-functions 11515,471894
-(defun mon-help-char-table-functions 11604,475558
-(defun mon-help-display-table-functions 11682,478091
-(defun mon-help-char-unidata-table 11749,480409
-(defun mon-help-char-composition 11885,484957
-(defun mon-help-char-ascii 12055,492490
-(defun mon-help-char-iso-8859-1 12147,498091
-(defun mon-help-char-ecma-48 12219,502678
-(defun mon-help-char-ecma-35 12277,505702
-(defun mon-help-diacritics 12334,508463
-(defun mon-help-char-logic 12499,514042
-(defun mon-help-char-representation 12542,515663
-(defun mon-help-char-raw-bytes 12705,523006
-(defun mon-help-binary-representation 12782,526310
-(defun mon-help-symbol-functions 13017,536421
-(defun mon-help-byte-compile-functions 13336,546380
-(defun mon-help-byte-code-vector-symbols 13701,558533
-(defun mon-help-ipv4-header 13751,561088
-(defun mon-help-nclose-functions 13850,566447
-(defun mon-help-iso-8601 13906,568551
-(defun mon-help-time-functions 14011,573353
-(defun mon-help-mon-time-functions 14105,576018
-(defun mon-help-bookmark-functions 14203,579038
-(defun mon-help-info-incantation 14341,582954
-(defun mon-help-tar-incantation 14362,583937
-(defun mon-help-rename-incantation 14399,585287
-(defcustom *regexp-clean-du-flags* 14428,586261
-(defun mon-help-du-incantation 14481,588172
-(defun mon-help-install-info-incantation 14534,590556
-(defun mon-help-hg-archive 14567,592207
-(defun mon-help-crontab 14614,594297
-(defun mon-help-permissions 14699,598859
-(defun mon-help-unix-commands 14790,604747
-(defun mon-help-unix-usage 14970,612468
-(defun mon-help-format-width 15238,628891
-(defun mon-index-elisp-symbol 15268,630333
-(defun mon-help-w32-functions 15289,631079
-(defcustom *w32-env-variables-alist* 15346,632927
-(defun mon-help-w32-env 15452,639945
-(defvar *mon-help-reference-keys* 15523,643300
-(defun mon-help-bind-help-keys-loadtime 16795,689416
-(defun mon-help-keys 16861,692947
-(defun mon-help-keys-wikify-anchors 16874,693425
-(defun mon-help-keys-wikify-heading 16932,696403
-(defun mon-help-keys-wikify 16960,697837
-(defun mon-help-escape-for-ewiki 17079,704159
-(defun mon-help-unescape-for-ewiki 17125,706064
-(defun mon-help-utils-loadtime 17169,707941
+(defcustom *mon-help-reference-keywords* 818,41709
+(defcustom *regexp-mon-doc-help-pointer-tags*887,46340
+(defcustom *regexp-mon-doc-help-docstring-tags-URL*929,47997
+(defcustom *regexp-mon-doc-help-docstring-tags-DYNAMIC* 970,50022
+(defcustom *regexp-mon-doc-help-docstring-tags-TABLES*996,51236
+(defcustom *regexp-mon-doc-help-docstring-tags*1026,52660
+(defcustom *regexp-mon-doc-help-comment-tags*1053,53956
+(defcustom *regexp-mon-doc-help-meta-tags*1082,55306
+(defcustom *regexp-mon-doc-help-cl-tags*1103,56275
+(defcustom *regexp-mon-doc-help-builtin-dynamic-tags* 1134,57765
+(defcustom *regexp-mon-doc-help-builtin-static-tags*1161,59080
+(defcustom *mon-help-side-effect-free* 1187,60391
+(defcustom *mon-help-side-effect-and-error-free* 1276,65639
+(defcustom *mon-help-pure-functions* 1347,69968
+(defvar *mon-help-subrs* 1416,73478
+(defvar *mon-help-subrs-false* 1434,74490
+(defun mon-map-subrs-and-hash 1455,75563
+(defvar *mon-help-byte-optimizer-vals* 1528,78784
+(defcustom *mon-help-risky-local-variables*1548,79793
+(defvar *mon-help-permanent-locals* 1574,81177
+(defun mon-help-permanent-locals-find 1592,82204
+(defun mon-help-byte-optimizer-find 1661,85852
+(defface mon-help-KEY-tag1704,88034
+(defface mon-help-DYNATAB-tag1721,88827
+(defface mon-help-META-tag1738,89714
+(defface mon-help-PNTR-tag1754,90477
+(defface mon-help-COMMENT-tag1792,92216
+(defface mon-help-INNER-KEY-tag1811,93133
+(defface mon-help-URL-wrap-tag1830,93941
+(defface mon-help-BUILTIN-tag1850,94778
+(defface mon-help-OLAY-RESULT1878,95915
+(defface mon-help-OLAY-RESULT-string-show1898,96691
+(defface mon-help-OLAY-RESULT-match-show1920,97498
+(defcustom *mon-help-propertize-tags-triples*1943,98384
+(defun mon-help-font-lock-comment-keywords-matcher 1980,100727
+(defun mon-help-propertize-tags-in-buffer 2014,102369
+(defun mon-help-propertize-tags 2034,103288
+(cl-defun mon-help-mon-tags 2090,106415
+(defun mon-help-insert-tags 2153,109646
+(defun mon-help-insert-tags-comment 2213,112924
+(defun mon-help-overlay-for-example 2226,113612
+(defun mon-help-delimited-region 2328,120078
+(defun mon-help-overlay-on-region 2404,123805
+(defun mon-help-overlay-result 2428,125041
+(defun mon-help-find-result-for-overlay 2488,128081
+(defun mon-help-temp-docstring-display 2539,130318
+(defun mon-help-buffer-spc-*DOC* 2591,132984
+(defun mon-help-get-mon-help-buffer 2644,135663
+(defun mon-help-view-file 2660,136312
+(defcustom *mon-tags-table-list* 2692,137944
+(defun mon-update-tags-tables 2726,139409
+(defun mon-update-tags-tables-loadtime 2789,142483
+(defun mon-tags-naf-apropos 2805,143215
+(defun mon-tags-apropos 2814,143650
+(defun mon-insert-doc-help-cookie 2825,144048
+(defmacro mon-help-put-var-doc-val->func 2857,145450
+(defmacro mon-help-swap-var-doc-const-val 2927,149389
+(defun mon-help-xref-symbol-value 3084,158099
+(cl-defun mon-help-function-spit-doc 3120,160063
+(defun mon-insert-doc-help-tail 3247,167853
+(defun mon-help-message-intrp 3357,174348
+(defun mon-help-function-arity 3412,177015
+(defcustom *mon-help-emacs-errors* 3466,179303
+(defun mon-help-errors 3547,183409
+(defun mon-help-function-args 3744,193246
+(defcustom *mon-help-interactive-spec-alist* 3788,195355
+(defun mon-help-parse-interactive-spec 3916,201456
+(defun mon-help-insert-documentation 3974,204443
+(defun mon-help-help-functions 4056,208593
+(defun mon-help-mon-help 4148,211622
+(defun mon-help-mon-functions 4361,217528
+(defun mon-help-ebay-template-mode 5019,233729
+(defun mon-help-emacs-introspect 5090,236205
+(defcustom *mon-emacs-external-programs-vars* 5301,242165
+(defun mon-help-package-keywords 5368,245907
+(defun mon-help-regexp-syntax 5460,250152
+(defun mon-help-syntax-class 5521,252813
+(defun mon-help-syntax-functions 5584,255811
+(defun mon-help-search-functions 5704,259244
+(defun mon-help-hooks 5836,262818
+(defun mon-help-file-dir-functions 5992,266763
+(defun mon-help-file-dir-functions-usage 6323,275802
+(defun mon-help-process-functions 6494,282078
+(defun mon-help-make-network-process 6606,284985
+(defun mon-help-server-functions 6691,288730
+(defun mon-help-inhibit-functions 6781,291310
+(defun mon-help-buffer-functions 6840,293233
+(defun mon-help-frame-functions 7089,299716
+(defun mon-help-window-functions 7326,305273
+(defun mon-help-mode-functions 7499,310390
+(defun mon-help-xml-functions 7583,312812
+(defun mon-help-eieio-defclass 7628,314111
+(defun mon-help-eieio-functions 7684,316612
+(defun mon-help-eieio-methods 7823,323160
+(defun mon-help-type-predicates 7983,332354
+(defun mon-help-number-functions 8107,338212
+(defun mon-help-predicate-functions 8234,340478
+(defun mon-help-sequence-functions 8513,346866
+(defun mon-help-key-functions 8675,350002
+(defun mon-help-load-functions 9042,359629
+(defun mon-help-read-functions 9122,361764
+(defun mon-help-print-functions 9245,368026
+(defun mon-help-marker-functions 9373,371800
+(defun mon-help-hash-functions 9438,373514
+(defun mon-help-plist-functions 9556,377589
+(defun mon-help-plist-properties 9634,379927
+(defun mon-help-faces-themes 9848,385743
+(defun mon-help-faces 9968,391309
+(defun mon-help-faces-basic 10108,400982
+(defun mon-help-faces-font-lock 10162,403014
+(defun mon-help-font-lock-functions 10207,404693
+(defun mon-help-font-lock 10336,408913
+(defun mon-help-overlay-functions 10403,412597
+(defun mon-help-text-property-functions 10482,415058
+(defun mon-help-text-property-properties 10577,421851
+(defun mon-help-text-property-stickyness 10667,428540
+(defun mon-help-text-property-functions-ext 10737,432260
+(defun mon-help-color-functions 10798,434601
+(defun mon-help-color-chart 10886,437184
+(defun mon-help-easy-menu 11050,449643
+(defun mon-help-widgets 11104,453085
+(defun mon-help-custom-keywords 11244,463175
+(defun mon-help-char-functions 11344,467339
+(defun mon-help-char-charset-functions 11467,471311
+(defun mon-help-char-coding-functions 11579,474521
+(defun mon-help-char-table-functions 11668,478185
+(defun mon-help-display-table-functions 11746,480718
+(defun mon-help-char-unidata-table 11813,483036
+(defun mon-help-char-composition 11949,487584
+(defun mon-help-char-ascii 12119,495117
+(defun mon-help-char-iso-8859-1 12211,500718
+(defun mon-help-char-ecma-48 12283,505305
+(defun mon-help-char-ecma-35 12341,508329
+(defun mon-help-diacritics 12398,511090
+(defun mon-help-char-logic 12563,516669
+(defun mon-help-char-representation 12606,518290
+(defun mon-help-char-raw-bytes 12769,525633
+(defun mon-help-binary-representation 12846,528937
+(defun mon-help-symbol-functions 13081,539048
+(defun mon-help-byte-compile-functions 13400,549007
+(defun mon-help-byte-code-vector-symbols 13765,561160
+(defun mon-help-ipv4-header 13815,563715
+(defun mon-help-nclose-functions 13914,569074
+(defun mon-help-iso-8601 13970,571178
+(defun mon-help-time-functions 14075,575980
+(defun mon-help-mon-time-functions 14169,578645
+(defun mon-help-bookmark-functions 14267,581665
+(defun mon-help-info-incantation 14405,585581
+(defun mon-help-tar-incantation 14426,586564
+(defun mon-help-rename-incantation 14463,587914
+(defcustom *regexp-clean-du-flags* 14492,588888
+(defun mon-help-du-incantation 14545,590799
+(defun mon-help-install-info-incantation 14598,593183
+(defun mon-help-hg-archive 14631,594834
+(defun mon-help-crontab 14678,596924
+(defun mon-help-permissions 14763,601486
+(defun mon-help-unix-commands 14854,607374
+(defun mon-help-unix-usage 15034,615095
+(defun mon-help-format-width 15302,631518
+(defun mon-index-elisp-symbol 15332,632960
+(defun mon-help-w32-functions 15353,633706
+(defcustom *w32-env-variables-alist* 15410,635554
+(defun mon-help-w32-env 15516,642572
+(defvar *mon-help-reference-keys* 15587,645927
+(defun mon-help-bind-help-keys-loadtime 16859,692043
+(defun mon-help-keys 16925,695574
+(defun mon-help-keys-wikify-anchors 16938,696052
+(defun mon-help-keys-wikify-heading 16996,699030
+(defun mon-help-keys-wikify 17024,700464
+(defun mon-help-escape-for-ewiki 17143,706786
+(defun mon-help-unescape-for-ewiki 17189,708691
+(defun mon-help-utils-loadtime 17233,710568
 
 naf-mode/mon-css-complete.el,4060
 (defvar *css-complete-at-ids* 152,7705
@@ -1086,36 +1088,36 @@ naf-mode/mon-doc-help-CL.el,3802
 (defun mon-help-CL-reader 4076,177656
 (defun mon-help-CL-chars 4123,179406
 (defun mon-help-CL-strings 4175,181177
-(defun mon-help-CL-structures 4239,183127
-(defun mon-help-CL-arrays 4271,184604
-(defun mon-help-CL-numbers 4338,186609
-(defun mon-help-CL-lambda-list 4449,189029
-(defun mon-help-CL-object-CLOS 4560,194087
-(defun mon-help-CL-method-combination 4649,196953
-(defun mon-help-CL-control-flow 4725,199770
-(defun mon-help-CL-eval-compile 4825,202137
-(defun mon-help-CL-load-compile 4884,203997
-(defun mon-help-CL-environment 4925,205651
-(defun mon-help-CL-package-functions 4985,207547
-(defun mon-help-CL-intern-symbol 5045,209524
-(defun mon-help-CL-types 5096,211335
-(defun mon-help-CL-type-declarations 5329,217213
-(defun mon-help-CL-sharpsign-syntax 5370,219097
-(defun mon-help-CL-format 5423,221865
-(defun mon-help-CL-format-usage 5618,227375
-(defun mon-help-slime-functions 5740,230790
-(defun mon-help-CL-slime-keys 6905,260407
-(defun mon-help-CL-swank-functions 7039,265035
-(defun mon-help-CL-local-time 7082,266478
-(defun mon-help-CL-minion 7229,272800
-(defvar *clhs-symbol-v3-or-v7* 7315,276702
-(defun mon-help-utils-CL-loadtime 9339,381356
-(defvar *mon-help-CL-symbols* 9366,382603
-(defun mon-help-CL-symbols 9414,384698
-(defun mon-cln-cxml-docs 9474,388140
-(defun mon-help-CL-lispdoc 9533,390710
-(defun mon-cln-ansi-info 9592,393870
-(defcustom *mon-CL-indent-specs* 9642,396091
+(defun mon-help-CL-structures 4239,183269
+(defun mon-help-CL-arrays 4271,184746
+(defun mon-help-CL-numbers 4352,187371
+(defun mon-help-CL-lambda-list 4563,194330
+(defun mon-help-CL-object-CLOS 4674,199388
+(defun mon-help-CL-method-combination 4763,202254
+(defun mon-help-CL-control-flow 4839,205071
+(defun mon-help-CL-eval-compile 4939,207438
+(defun mon-help-CL-load-compile 4998,209298
+(defun mon-help-CL-environment 5039,210952
+(defun mon-help-CL-package-functions 5099,212848
+(defun mon-help-CL-intern-symbol 5159,214825
+(defun mon-help-CL-types 5210,216636
+(defun mon-help-CL-type-declarations 5443,222514
+(defun mon-help-CL-sharpsign-syntax 5484,224398
+(defun mon-help-CL-format 5537,227166
+(defun mon-help-CL-format-usage 5732,232676
+(defun mon-help-slime-functions 5854,236091
+(defun mon-help-CL-slime-keys 7019,265708
+(defun mon-help-CL-swank-functions 7153,270336
+(defun mon-help-CL-local-time 7196,271779
+(defun mon-help-CL-minion 7343,278101
+(defvar *clhs-symbol-v3-or-v7* 7429,282003
+(defun mon-help-utils-CL-loadtime 9453,386657
+(defvar *mon-help-CL-symbols* 9480,387904
+(defun mon-help-CL-symbols 9528,389999
+(defun mon-cln-cxml-docs 9588,393441
+(defun mon-help-CL-lispdoc 9647,396011
+(defun mon-cln-ansi-info 9706,399171
+(defcustom *mon-CL-indent-specs* 9756,401392
 
 naf-mode/mon-region-utils.el,533
 (defun mon-region-position 143,4983
@@ -2988,21 +2990,21 @@ mon-default-loads.el,1022
 (defconst *mon-local-emacs-temp-dir*769,37843
 
 mon-keybindings.el,649
-(defgroup mon-keybindings 206,7312
-(defcustom *mon-keybindings-xrefs* 225,8397
-(defun mon-keybind-globally 254,9895
-(defun mon-keybind-dired-mode 386,15391
-(defun mon-keybind-completions 435,18028
-(defun mon-keybind-info-mode 458,19237
-(defun mon-keybind-w3m 538,22350
-(defun mon-keybind-emacs-lisp-mode 667,28409
-(defun mon-keybind-lisp-interaction-mode 716,31104
-(defun mon-keybind-slime-selector-helper 752,32965
-(defun mon-keybind-slime 769,33663
-(defun mon-keybind-slime-inspector 983,44705
-(defun mon-keybind-slime-fuzzy-completions 1019,46561
-(defun mon-conf-stamp-in-context 1057,48372
-(defun mon-keybind-conf-mode 1069,48831
+(defgroup mon-keybindings 206,7311
+(defcustom *mon-keybindings-xrefs* 225,8396
+(defun mon-keybind-globally 254,9894
+(defun mon-keybind-dired-mode 386,15390
+(defun mon-keybind-completions 435,18027
+(defun mon-keybind-info-mode 458,19236
+(defun mon-keybind-w3m 538,22349
+(defun mon-keybind-emacs-lisp-mode 667,28408
+(defun mon-keybind-lisp-interaction-mode 716,31103
+(defun mon-keybind-slime-selector-helper 752,32964
+(defun mon-keybind-slime 769,33662
+(defun mon-keybind-slime-inspector 983,44704
+(defun mon-keybind-slime-fuzzy-completions 1019,46560
+(defun mon-conf-stamp-in-context 1057,48371
+(defun mon-keybind-conf-mode 1069,48830
 
 mon-site-local-defaults.el,540
 (defun mon-string-wonkify 109,4246
@@ -3102,9 +3104,9 @@ mon-default-start-loads.el,3257
 (defun mon-load-cedet 3041,149142
 (defun mon-keybind-w32-init 3060,149888
 (defun mon-keybind-put-hooks-init 3095,151601
-(defun mon-set-github-paths-init 3129,153335
-(defun mon-set-mon-feature-customs-init 3156,154593
-(defun mon-set-system-specific-and-load-init 3225,157527
+(defun mon-set-github-paths-init 3130,153395
+(defun mon-set-mon-feature-customs-init 3157,154653
+(defun mon-set-system-specific-and-load-init 3226,157587
 
 slime-loads-GNU.el,0
 

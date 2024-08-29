@@ -232,7 +232,7 @@
   (put 'eval-expression   'disabled nil))
 
 ;;; ==============================
-;;; Tell BC whats who for `mon-keybind-put-hooks-init' & `mon-set-system-specific-and-load-init'
+;;; :NOTE Tell for `mon-keybind-put-hooks-init' & `mon-set-system-specific-and-load-init'
 (dolist (kybnd-fncn '(mon-keybind-w3m
                       mon-keybind-dired-mode
                       mon-keybind-completions
@@ -353,7 +353,7 @@ non-nil to will also override all error signaling.\n
   `(progn
      (cond ((or (and (intern-soft "IS-NOT-A-MON-SYSTEM" obarray)
                      (bound-and-true-p IS-NOT-A-MON-SYSTEM))
-                (not (intern-soft "IS-MON-SYSTEM-P" obarray)
+                (not (intern-soft "IS-MON-SYSTEM-P" obarray))
                 (not (bound-and-true-p IS-MON-SYSTEM-P)))
             (if (or *mon-default-start-load-sanity-WARN-ONLY* ,just-warn)
                 (warn
@@ -362,6 +362,7 @@ non-nil to will also override all error signaling.\n
               (error
                (concat ":FUNCTION `%s' "
                        "-- variable `IS-MON-SYSTEM-P' unbound or non-existent") ,fncn)))
+           
            ((memq ,fncn *mon-default-start-load-sanity*)
             (if (or *mon-default-start-load-sanity-WARN-ONLY* ,just-warn)
                 (warn
@@ -465,6 +466,8 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 
 ;;; ==============================
 ;; :FONT-LOCK/COLOR-THEME
+
+
 
 ;;; ==============================
 ;;; :NOTE :AFTER `mon-set-emacs-temp-file/dir-init'
@@ -777,6 +780,19 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 `mon-keybind-info-mode'.\n▶▶▶"
   (mon-default-start-error/sane
    'mon-set-info-lookup-init
+   ;; info-lookup-alist Cons cells are of the form:
+   ;;   (HELP-TOPIC . HELP-DATA)
+   ;; HELP-TOPIC is the symbol of a help topic.
+   ;; HELP-DATA is a HELP-TOPIC's public data set.
+   ;; Value is an alist with elements of the form
+   ;;  (HELP-MODE REGEXP IGNORE-CASE DOC-SPEC PARSE-RULE OTHER-MODES)
+   ;; (KEYWORD . ARGUMENT)
+   ;; KEYWORD is either `:topic', `:mode', `:regexp', `:ignore-case',
+   ;;  `:doc-spec', `:parse-rule', `:other-modes' or `:doc-spec-function'.
+   ;;  `:doc-spec-function' is used to compute a `:doc-spec', but instead of
+   ;;  doing so at load time, this is done when the user asks for info on
+   ;; the mode in question.
+
    (info-lookup-add-help
     ;; :doc-spec-function
     ;; :other-modes
@@ -788,12 +804,6 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
     ;; DOC-SPEC is a list of documentation specifications of the form
     ;;           (INFO-NODE             TRANS-FUNC PREFIX SUFFIX)
     :doc-spec '(("(ansicl)Symbol Index" nil        nil    nil)))
-   ;; (info-lookup-add-help
-   ;;  :mode 'slime-mode
-   ;;  :regexp "[^][()'\" \t\n]+"
-   ;;  :ignore-case t
-   ;;  :doc-spec '(("(ansicl)Symbol Index" nil        nil    nil))
-   ;;  )
    ))
 ;;
 (mon-set-info-lookup-init)
@@ -801,8 +811,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;;; ==============================
 ;;; :RENAMED `mon-switch-bookmark-file' -> `mon-set-bookmark-file-init'
 ;;; :COURTESY stefan@xsteve.at :VERSION 23.01.2001 :HIS xsteve-functions.el
-;;; :MODIFICATIONS <Timestamp: 2009-08-09-W32-7T03:31:36-0400Z - by MON KEY>
-;;; :MODIFICATIONS <Timestamp: #{2010-04-02T17:26:44-04:00Z}#{10135} - by MON KEY>
+;;; :CREATED <Timestamp: 2009-08-09-W32-7T03:31:36-0400Z - by MON KEY>
 (defun mon-set-bookmark-file-init (&optional new-bk-mrk-file warn-only)
   "Relocate where Emacs stores the `bookmark-default-file' at init time.\n
 When evaluated this procedure sets variables as `custom-set-variables'.
@@ -821,7 +830,6 @@ A bookmark file typically has a .bmk extension, for additional discussion:
 `bookmark-relocate'.\n▶▶▶"
   (mon-default-start-error/sane
    'mon-set-bookmark-file-init warn-only
-   ;; (setq bookmark-default-file new-bm) (setq bookmark-save-flag 1)
    (let ((new-bm (or new-bk-mrk-file
                      (concat (file-name-as-directory *mon-user-emacsd*)
                              (if (or (and (intern-soft "IS-MON-P-GNU" obarray)
@@ -845,16 +853,14 @@ A bookmark file typically has a .bmk extension, for additional discussion:
      ;; (custom-note-var-changed 'bookmark-default-file)
      ;; :DEBUGGING (get 'bookmark-default-file 'customized-value)
      (custom-set-variables
-      '(bookmark-save-flag        1)
-      '(bookmark-use-annotations  t) 
       ;; :NOTE When bookmark names are getting truncated set the variable nil.
       ;; `bookmark-bmenu-toggle-filenames' is also a <FUNCTION>.
-      ;; '(bookmark-bmenu-toggle-filenames nil)
-      ))
-   ))
+      ;; '(bookmark-bmenu-toggle-filenames nil)      
+      '(bookmark-save-flag        1)
+      '(bookmark-use-annotations  t))
+     ))
 ;;
 ;; (mon-set-bookmark-file-init t)
-(mon-set-bookmark-file-init)
 
 ;;; ==============================
 ;; :WOMAN-PATH
@@ -867,15 +873,14 @@ A bookmark file typically has a .bmk extension, for additional discussion:
 Signal an error when `IS-NOT-MON-SYSTEM'.\n
 When optional arg WARN-ONLY is non-nil message a warning instead of an error if
 function is already a member of variable `*mon-default-start-load-sanity*' as per
-`mon-default-start-error/sane'.\n
-:NOTE This is W32 Kludge. The integration of various Emacs/Cygwin/MinGW/MSYS
+`mon-default-start-error/sane'.\n990-[ko0
+:NOTE This is W32 Kludge. The integration of various Emacs/Cygwin/Mi8l54kl[]=-]=[-][nGW/MSYS
 installs and twiddling keep manpath terminally wacky on w32. The intent here is
 to help make it a little less so.\n
 :SEE-ALSO .\n▶▶▶"
   (mon-default-start-error/sane
    'mon-set-woman-manpath-init warn-only
    (require 'woman)
-   ;; (setq woman-use-own-frame nil)
    (custom-set-variables '(woman-use-own-frame nil))
    (when (and (intern-soft "IS-MON-P-W32" obarray)
               (bound-and-true-p IS-MON-P-W32))
@@ -1711,6 +1716,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    ;; (setq help-downcase-arguments t)
    (custom-set-variables
     '(help-downcase-arguments t t)
+    '(help-enable-symbol-autoload t)
     ;; '(view-remove-frame-by-deleting  nil);; :default t)
     ;; :NOTE May slow apropos down by ~10-20%
     '(apropos-do-all t))
@@ -1786,7 +1792,7 @@ variable it needs to be fast and shouldn't do any blocking or network seeks.\n
 When optional arg WARN-ONLY is non-nil message a warning instead of an error if
 function is already a member of variable `*mon-default-start-load-sanity*' as per
 `mon-default-start-error/sane'.\n
-:SEE-ALSO `'.\n▶▶▶"
+:SEE-ALSO .\n▶▶▶"
   (mon-default-start-error/sane
    'mon-set-ido-init warn-only
    ;; :NOTE .ido.last used to be "ido_last"
@@ -2117,11 +2123,13 @@ Signal an error when `IS-NOT-MON-SYSTEM'.\n
 When optional arg WARN-ONLY is non-nil message a warning instead of an error if
 function is already a member of variable `*mon-default-start-load-sanity*' as per
 `mon-default-start-error/sane'.\n
+Evaluates `mon-common-lisp-hyperspec-browse-url-set-init' to set value of
+`*mon-common-lisp-hyperspec-browser-function*' for use with `common-lisp-hyperspec'.\n
 :NOTE Evaluate before other slime initializations to ensure the path values
 aren't clobbered for the variables:\n
  `common-lisp-hyperspec-root', `common-lisp-hyperspec-issuex-table',
  `common-lisp-hyperspec-symbol-table'\n
-:NOTE Initizliztion of the above variables affect:
+:NOTE Initizliztion of the above variables affect the following:
 the function `mon-help-CL-symbols' and variable `*mon-help-CL-symbols*' in:
 :FILE mon-doc-help-CL.el\n
 :SEE-ALSO `mon-purge-cl-symbol-buffers-on-load'.\n▶▶▶"
@@ -2138,8 +2146,12 @@ the function `mon-help-CL-symbols' and variable `*mon-help-CL-symbols*' in:
      (unless (and (bound-and-true-p common-lisp-hyperspec-root)
                   (bound-and-true-p common-lisp-hyperspec-issuex-table)
                   (bound-and-true-p common-lisp-hyperspec-symbol-table))
-       ;;
-       (setq common-lisp-hyperspec-root (nth 8 (mon-get-mon-emacsd-paths)))
+       ;; Concat "file:/" to `common-lisp-hyperspec-root' so
+       ;; `common-lisp-common-lisp-hyperspec-glossary-term' can find the local file.
+       ;; If value of (nth 8 (mon-get-mon-emacsd-paths)) already has the file prepended, you fail, eg.
+       ;; (browse-url--non-html-file-url-p common-lisp-hyperspec-root) ; with "file:/" prefix
+       ;; (browse-url--non-html-file-url-p (substring common-lisp-hyperspec-root 6)) ; no "file:/" prefix
+       (setq common-lisp-hyperspec-root (concat "file:/" (nth 8 (mon-get-mon-emacsd-paths))))
        (setq common-lisp-hyperspec-issuex-table
              (cond ((string-match-p "v3" common-lisp-hyperspec-root)
                     (concat common-lisp-hyperspec-root "Data/Issue-Cross-Refs.text"))
@@ -2148,9 +2160,13 @@ the function `mon-help-CL-symbols' and variable `*mon-help-CL-symbols*' in:
              (cond ((string-match-p "v3" common-lisp-hyperspec-root)
                     (concat common-lisp-hyperspec-root "Data/Symbol-Table.text"))
                    (t (concat common-lisp-hyperspec-root "Data/Map_Sym.txt")))))
+     (eval-after-load (locate-library  "lib/hyperspec")
+       (progn
+         (mon-common-lisp-hyperspec-browse-url-set-init)
+         (message ":FUNCTION `mon-set-common-lisp-hspec-init'' evaluated `mon-common-lisp-hyperspec-browse-url-set-init'\n") ))
      )))
 ;;
-(mon-set-common-lisp-hspec-init t)
+;; (mon-set-common-lisp-hspec-init t)
 
 ;;; ==============================
 ;; :NOTE show-paren runs timers...
@@ -2206,6 +2222,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    ;; (when IS-MON-P-GNU (require 'slime-loads-GNU-clbuild)  (mon-slime-setup-init))
    (when (and (intern-soft "IS-MON-P" obarray)
               (bound-and-true-p IS-MON-P))
+     ;;
      (dolist (msli-D-1 *mon-lisp-safe-local-variable-values*
                        (custom-set-variables
                         `(safe-local-variable-values ,safe-local-variable-values)))
@@ -2732,13 +2749,15 @@ Signal an error when `IS-NOT-MON-SYSTEM'.\n
 When optional arg WARN-ONLY is non-nil message a warning instead of an error if
 function is already a member of variable `*mon-default-start-load-sanity*' as per
 `mon-default-start-error/sane'.\n
-:SEE-ALSO `mon-set-browser-init', `mon-set-url-pkg-init'.\n▶▶▶"
+:SEE-ALSO `mon-set-browser-init', `mon-set-url-pkg-init',
+`*mon-common-lisp-hyperspec-browser-function*', `mon-common-lisp-hyperspec-browse-url-w3m'.\n▶▶▶"
   (mon-default-start-error/sane
    'mon-set-w3m-init warn-only
    (when (or (and (intern-soft "IS-MON-P-GNU" obarray)
                   (bound-and-true-p IS-MON-P-GNU))
              (and (intern-soft "IS-MON-P-DARWIN" obarray)
                   (bound-and-true-p IS-MON-P-DARWIN)))
+     ;; (locate-library "w3m")
      (add-to-list 'load-path
                   (mon-build-path-for-load-path *mon-site-lisp-root* "emacs-w3m_GIT"))
      (require 'w3m-load)
@@ -2748,7 +2767,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
       ;; :NOTE Not sure if this is the best way/thing to do here.
       '(browse-url-browser-function 'w3m-browse-url t)
       '(w3m-use-cookies t t)
-      '(w3m-home-page "http://www.google.com" t)
+      '(w3m-home-page             "https://duckduckgo.com" t) ;; http://www.google.com
       '(w3m-fill-column 80 t)
       '(w3m-add-user-agent nil t)
       ;; '(w3m-language (symbol-value 'current-language-environment)))
@@ -2758,6 +2777,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
       '(w3m-default-save-directory "~/.emacs.d/emacs-w3m/w3m-deflault-saves") ;; :DEFAULT ~/.w3m
       )
      )))
+;;
 ;; (mon-set-w3m-init t)
 
 ;;; ==============================
@@ -2766,6 +2786,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;;; :CREATED <Timestamp: #{2010-01-29T16:00:47-05:00Z}#{10045} - by MON KEY>
 (defun mon-set-browser-init (&optional warn-only)
   "Set generic web browser related preferences on MON systems at init time.\n
+Set value of `browse-url-browser-function' and `browse-url-generic-program.'\n
 Signal an error when `IS-NOT-MON-SYSTEM'.\n
 When optional arg WARN-ONLY is non-nil message a warning instead of an error if
 function is already a member of variable `*mon-default-start-load-sanity*' as per
@@ -3245,9 +3266,13 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
             ;; (require 'url)
             (mon-set-url-pkg-init)
             (require 'slime-loads-GNU-clbuild)
+            ;; 
             (mon-slime-setup-init)
             (mon-define-common-lisp-style)
-            ;; :BEFORE mon-utils.el
+            ;; make sure our browser and w3m inits are present before `mon-set-common-lisp-hspec-init'
+            (mon-set-w3m-init)
+            (mon-set-browser-init)
+            ;; :NOTE Must come :BEFORE :FILE naf-mode/mon-utils.el !!!!!!
             (mon-set-common-lisp-hspec-init)
             )))
    ;;
@@ -3270,8 +3295,6 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
    (mon-set-unicodedata-init)
    ;; (mon-set-url-pkg-init)
    (mon-set-google-maps-init)
-   (mon-set-w3m-init)
-   (mon-set-browser-init)
    (mon-set-lisp-init)
    (mon-set-vc-init)
    (mon-set-magit-init)
@@ -3285,6 +3308,7 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
    (mon-set-erc-configs-init)
    (mon-set-github-paths-init t)
    (mon-set-bbdb-init)
+   (mon-set-bookmark-file-init)
    ;; ==============================
    ;; :REQUIRE-PACKAGES
    ;;
@@ -3335,7 +3359,33 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
          (setq tags-table-list (append tags-table-list gthr)))
        (custom-note-var-changed 'tags-table-list)))
    ;; Now put some keybindings on the mode-hooks:
-   (mon-keybind-put-hooks-init)
+   ;; (mon-keybind-put-hooks-init)
+   ;;
+   ;; :NOTE Following will make-sure mon-help-CL-<FOO> functions get url/info buttons assigned.
+   (add-function
+    :after (symbol-function 'help-make-xrefs)
+    #'mon-help-CL-make-help-xref-buttons-url-info)
+   ;; The advice can be remvoed with:
+   ;; (remove-function  (symbol-function 'help-make-xrefs)
+   ;;                   #'mon-help-CL-make-help-xref-buttons-url-info)
+   ;; The advice can be tested for presence in environment with:
+   ;; (advice-function-member-p #'mon-help-CL-make-help-xref-buttons-url-info (symbol-function 'help-make-xrefs))
+   ;;
+   ;; :NOTE following will ensure *Help* gets text properties as per `mon-help-propertize-tags'.
+   (add-function
+    :after (symbol-function 'mon-help-CL-make-help-xref-buttons-url-info)
+    #'mon-help-propertize-tags-in-buffer)
+   ;; (remove-function  (symbol-function 'mon-help-CL-make-help-xref-buttons-url-info) #'mon-help-propertize-tags-in-buffer)
+   ;;
+   ;; Following tells font-lock to put face mon-help-COMMENT-tag on Mon specific :<KEYWARDS>
+   ;; inside `emacs-lisp-mode' & `lisp-mode' comments.
+   (font-lock-add-keywords
+    'emacs-lisp-mode
+    '((mon-help-font-lock-comment-keywords-matcher . (0 'mon-help-COMMENT-tag t))))
+
+   (font-lock-add-keywords 
+    'lisp-mode
+    '((mon-help-font-lock-comment-keywords-matcher . (0 'mon-help-COMMENT-tag t))))
    ))
 ;;
 ;; (mon-set-system-specific-and-load-init t)
@@ -3365,4 +3415,5 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
 ;;; ==============================
 ;;; mon-default-start-loads.el ends here
 ;;; EOF
+
 

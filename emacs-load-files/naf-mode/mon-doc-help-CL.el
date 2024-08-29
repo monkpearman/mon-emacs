@@ -278,6 +278,8 @@ The symbols contained of this list are defined in :FILE <FILE>\n
   :group 'mon-doc-help-CL
   :group 'mon-xrefs)
 
+
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-23T17:47:48-05:00Z}#{09523} - by MON KEY>
 (defcustom *mon-help-CL-cmu-ai-repo* "http://www.cs.cmu.edu/Groups/AI/lang/lisp/"
@@ -861,7 +863,7 @@ loop returns the absent URL's:\n
                                    (format-time-string "%Y-%m-%d"))))
         (sys (cl-case system-type
                ((gnu/linux linux gnu/kfreebsd) 'gnu)
-               (darwin aix berkeley-unix hpux irix lynxos usg-unix-v 'nix-like)
+               ((darwin aix berkeley-unix hpux irix lynxos usg-unix-v) 'nix-like)
                (windows-nt 'wnz)))) ;; ms-dos cygwin
     (mapc #'(lambda (wb)
               (setq rmv-wb-pgs (delq wb rmv-wb-pgs)))
@@ -920,12 +922,13 @@ loop returns the absent URL's:\n
 `mon-wget-list-to-script-shell-command', `mon-wget-mon-pkgs', `mon-wget-rfc',
 `mon-wget-unicodedata-files'.\n▶▶▶"
   (let ((fnm-tst-wgt (file-name-nondirectory wget-fname))
-        (mjcwpfsc-sys (cl-case system-type
-               ((gnu/linux linux gnu/kfreebsd) 'gnu)
-               (darwin aix berkeley-unix hpux irix lynxos usg-unix-v 'nix-like)
-               ;; ms-dos cygwin
-               (windows-nt 'wnz)
-               (t (and (not (executable-find "wget")) 'no-exec)))) 
+        (mjcwpfsc-sys
+         (cl-case system-type
+           ((gnu/linux linux gnu/kfreebsd) 'gnu)
+           ((darwin aix berkeley-unix hpux irix lynxos usg-unix-v) 'nix-like)
+           ;; ms-dos cygwin
+           (windows-nt 'wnz)
+           (t (and (not (executable-find "wget")) 'no-exec)))) 
         read-wget-string)
     (unless (directory-files default-directory nil (concat fnm-tst-wgt "$"))
       (mon-format :w-fun #'error 
@@ -936,12 +939,14 @@ loop returns the absent URL's:\n
       (when (eq mjcwpfsc-sys 'wnz) (delete-char (- (skip-chars-forward "# "))))
       (setq read-wget-string 
             `(,(cond ((eq mjcwpfsc-sys 'no-exec) '("### NO wget executable in path"))
-                     ((eq mjcwpfsc-sys 'gnu)
+                     ((or (eq mjcwpfsc-sys 'gnu)
+                          (eq mjcwpfsc-sys 'nix-like))
                       (delete-region (mon-g2be -1 t) (1+ (line-end-position 1)))
                       (delete-and-extract-region (mon-g2be -1 t) (1+ (line-end-position 1))))
                      ((eq mjcwpfsc-sys 'wnz)
                       (delete-and-extract-region (mon-g2be -1 t) (line-end-position))))
-              . ,(cond ((eq mjcwpfsc-sys 'gnu) 
+              . ,(cond ((or (eq mjcwpfsc-sys 'gnu)
+                            (eq mjcwpfsc-sys 'nix-like))
                         (replace-regexp-in-string " \\\n" "\n" (mon-buffer-sub-no-prop)))
                        ((eq mjcwpfsc-sys 'wnz)
                         (subst-char-in-string 10 32 (mon-buffer-sub-no-prop) t))))))
@@ -1158,7 +1163,8 @@ loop returns the absent URL's:\n
 ;;; symbol `common-lisp-hyperspec-root' is present _now_.
 ;;; However, we shouldn't bind it if user hasn't loaded slime/hyperspec but
 ;;; _will_ later nor should we load hyperspec.el just for this one symbol...
-;;;
+;;; 
+;;; :NOTE This can only happen if slime isn't already loaded into our system. Which is should be, by now.
 (eval-when-compile (require 'hyperspec nil t))
 ;;
 (unless (or (bound-and-true-p common-lisp-hyperspec-root)
@@ -1211,7 +1217,7 @@ Buffer for emacs-w3m text properties from current Common Lisp Hyperspec parse.\n
   :group 'mon-doc-help-CL-hspec-parse)
 ;;
 ;;; :TEST-ME *mon-hspec-parse-buffer*
-;;;(progn (makunbound '*mon-hspec-parse-buffer*) (unintern "*mon-hspec-parse-buffer*" obarray) )
+;;; (progn (makunbound '*mon-hspec-parse-buffer*) (unintern "*mon-hspec-parse-buffer*" obarray) )
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-29T12:08:40-05:00Z}#{09532} - by MON KEY>
@@ -2178,6 +2184,169 @@ RETURN-PARSE-IN-BUFFER prior to insertion.\n
 ;;; :TEST-ME (describe-function 'mon-help-CL-emacs-functions)
 ;;; :TEST-ME (apply 'mon-help-CL-emacs-functions '(t))
 
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-28T02:17:08-04:00Z}#{24353} - by MON KEY>
+(defvar *mon-help-CL-functions-to-propertize*
+'(mon-help-CL-arrays mon-help-CL-bit-byte-bool-logic mon-help-CL-chars
+  mon-help-CL-conses mon-help-CL-control-flow mon-help-CL-environment
+  mon-help-CL-error-condition-restart mon-help-CL-eval-compile
+  mon-help-CL-file-dir-functions mon-help-CL-format mon-help-CL-format-usage
+  mon-help-CL-hash-tables mon-help-CL-intern-symbol mon-help-CL-iteration
+  mon-help-CL-lambda-list mon-help-CL-lispdoc mon-help-CL-load-compile
+  mon-help-CL-local-time mon-help-CL-method-combination mon-help-CL-numbers
+  mon-help-CL-object-CLOS mon-help-CL-package-functions mon-help-CL-pkgs
+  mon-help-CL-print mon-help-CL-reader mon-help-CL-reader-macro-syntax
+  mon-help-CL-sequence-predicates mon-help-CL-sequences
+  mon-help-CL-sharpsign-syntax mon-help-CL-slime-keys
+  mon-help-CL-stream-keywords mon-help-CL-streams mon-help-CL-strings
+  mon-help-CL-structures mon-help-CL-swank-functions mon-help-CL-symbols
+  mon-help-CL-time mon-help-CL-type-declarations mon-help-CL-types
+  mon-help-CL-do  
+  mon-help-CL-loop
+  mon-help-CL-loop-usage)
+"A list of `mon-help-cl-<FOO>' which should be propertized with help-url-button
+text properties when entering the *Help* buffer.\n
+:EXAMPLE\n\n
+:SEE-ALSO `mon-get-help-buffer-symbol', `help-fns-describe-function-functions',
+`'help-fns-describe-variable-functions'.\n▶▶▶")
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-28T02:16:05-04:00Z}#{24353} - by MON KEY>
+(defvar *mon-help-CL-help-xref-button-type* :info ;; :url
+"indicate which type of xref buttons to make in \"*Help*\" buffer.\n
+Valid values are one of the folowing keywordds :info  or :url.\n
+The function `mon-help-CL-make-help-xref-buttons-url-info' examines the value set here.
+When value is :info then `mon-help-CL-make-help-xref-buttons-info' is invoked.
+When value is :url then `mon-help-CL-make-help-xref-buttons-url' is invoked.
+:SEE-ALSO `*mon-help-CL-functions-to-propertize*', `mon-get-help-buffer-symbol',
+`common-lisp-hyperspec', `common-lisp-hyperspec--symbols',
+`common-lisp-hyperspec--reader-macros', `common-lisp-hyperspec--format-characters',
+`common-lisp-hyperspec--glossary-terms', `common-lisp-hyperspec--issuex-symbols',
+`common-lisp-hyperspec--reader-macros'.\n▶▶▶")
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-28T02:17:01-04:00Z}#{24353} - by MON KEY>
+(defun mon-get-help-buffer-symbol ()
+  "Return value of `help-mode--current-data' in *Help buffer.\n
+:EXAMPLE\n\n \(mon-get-help-buffer-symbol\)\n
+:SEE-ALSO `mon-help-buffer-symbol-mon-help-CL-p'.\n▶▶▶"
+  (plist-get (buffer-local-value 'help-mode--current-data (get-buffer "*Help*")) :symbol))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-28T02:16:37-04:00Z}#{24353} - by MON KEY>
+(defun mon-help-buffer-symbol-mon-help-CL-p ()
+  "Return non-nil if the current symbol being visited by \"*Help*\" buffer is a member of
+variable `*mon-help-CL-functions-to-propertize*'.`
+:EXAMPLE \n (save-excursion (describe-function 'mon-help-CL-arrays)
+                (mon-help-buffer-symbol-mon-help-CL-p))\n
+:SEE-ALSO `mon-get-help-buffer-symbol'.\n▶▶▶"
+  (memq (mon-get-help-buffer-symbol) *mon-help-CL-functions-to-propertize*)) 
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-28T02:16:33-04:00Z}#{24353} - by MON KEY>
+(defun mon-help-CL-make-help-xref-buttons-url (&optional buffer)
+  "Update \"*Help*\" buffer or BUFFER with URL `help-xref-button's when current `help-buffer' symbol satisfies `mon-help-buffer-symbol-mon-help-CL-p'.\n
+URL buttons are added for each Common Lisp function which matches a symbol name
+in `common-lisp-hyperspec--symbols'.\n
+This function ie evaluated as advise :after `help-make-xrefs' as if by `add-function'.\n
+:EXAMPLE\n\n \(describe-function 'mon-help-CL-arrays\)\n
+ \(advice-function-member-p #'mon-help-CL-make-help-xref-buttons \(symbol-function 'help-make-xrefs\)\)\n
+:SEE-ALSO `mon-get-help-buffer-symbol', `common-lisp-hyperspec',
+`common-lisp-hyperspec--symbols', `common-lisp-hyperspec--reader-macros',
+`common-lisp-hyperspec--format-characters',`common-lisp-hyperspec--glossary-terms',
+`common-lisp-hyperspec--issuex-symbols', `common-lisp-hyperspec--reader-macros'.\n▶▶▶"
+  (with-current-buffer (get-buffer (or buffer "*Help*")) ;; (help-buffer)
+  (let ((buffer-read-only nil))
+    (cl-loop
+     for cl-sym being the hash-keys of common-lisp-hyperspec--symbols
+     using (hash-values cl-href)
+     for search-string = (concat "\\(`\\)" "\\(" cl-sym "\\)" "\\('\\)")
+     for full-href = (concat common-lisp-hyperspec-root "Body/" (car cl-href))
+     do (progn
+          (goto-char (point-min))
+          (while (search-forward-regexp search-string (point-max) t)
+            (remove-text-properties (match-beginning 2) (match-end  2)  
+                                    '(button nil category nil help-args nil))
+            (help-xref-button 2 'help-url full-href)))))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-28T02:16:27-04:00Z}#{24353} - by MON KEY>
+(define-button-type 'help-info-mon
+  :supertype 'help-xref
+  'help-function #'mon-help-CL--help-info-mon-function
+  'help-echo (purecopy "mouse-2, RET: read this Info node"))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-28T02:16:23-04:00Z}#{24353} - by MON KEY>
+(defun mon-help-CL--help-info-mon-function (file-or-node)
+ "Normally `help-do-xref' generates a new \"*info*\" buffer as if by
+`generate-new-buffer-name' when following the `help-button-action's button
+help-function, which is `info', We setup an alternative button `help-info-mon'
+ that has this funciton as it's help-function and so we DO NOT generae a new
+\"*info*\" buffer.\n
+:SEE-ALSO `mon-help-CL-make-help-xref-buttons-info'.\n▶▶▶"
+  (info file-or-node "*info*"))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-28T02:16:20-04:00Z}#{24353} - by MON KEY>
+(defun mon-help-CL-make-help-xref-buttons-info (&optional buffer)
+  "Update \"*Help*\" buffer or BUFFER with URL `help-xref-button's using buttons
+of type help-info-mon which have the help-function property value
+`mon-help-CL--help-info-mon-function' when current `help-buffer' symbol
+satisfies `mon-help-buffer-symbol-mon-help-CL-p'.\n
+URL buttons are added for each Common Lisp function which matches a symbol name
+in `common-lisp-hyperspec--symbols'.\n
+This function ie evaluated as advise :after `help-make-xrefs' as if by `add-function'.\n
+:EXAMPLE\n\n \(describe-function 'mon-help-CL-arrays\)\n
+ \(advice-function-member-p #'mon-help-CL-make-help-xref-buttons \(symbol-function 'help-make-xrefs\)\)\n
+:SEE-ALSO `mon-get-help-buffer-symbol', `common-lisp-hyperspec',
+`common-lisp-hyperspec--symbols', `common-lisp-hyperspec--reader-macros',
+`common-lisp-hyperspec--format-characters',`common-lisp-hyperspec--glossary-terms',
+`common-lisp-hyperspec--issuex-symbols', `common-lisp-hyperspec--reader-macros'.\n▶▶▶"
+  (with-current-buffer (get-buffer (or buffer "*Help*")) ;; (help-buffer)
+  (let ((buffer-read-only nil))
+    (cl-loop
+     for cl-sym being the hash-keys of common-lisp-hyperspec--symbols
+     for search-string = (concat "\\(`\\)" "\\(" cl-sym "\\)" "\\('\\)")
+     do (progn
+          (goto-char (point-min))
+          (while (search-forward-regexp search-string (point-max) t)
+            ;; make sure we're only showing help-iinfo-mon buttons
+            (remove-text-properties (match-beginning 2) (match-end  2)  
+                                    '(button nil category nil help-args nil))
+            ;; The commented version below will set the buttons help-function property to
+            ;; `info' which in turn evaluates `generate-new-buffer-name', we
+            ;; don't want that as we get umpteen *info<N>* buffers.
+            ;; (help-xref-button 2 'help-info (concat "(ansicl) " (match-string  2)))
+            (help-xref-button 2 'help-info-mon (concat "(ansicl) " (match-string  2)))))))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-28T02:16:11-04:00Z}#{24353} - by MON KEY>
+(defun mon-help-CL-make-help-xref-buttons-url-info (&optional buffer)
+  "Update \"*Help*\" buffer or BUFFER with URL `help-xref-button's when current
+`help-buffer' symbol satisfies `mon-help-buffer-symbol-mon-help-CL-p'.\n
+:EXAMPLE\n\n \(describe-function 'mon-help-CL-arrays\)\n
+ \(advice-function-member-p
+ #'mon-help-CL-make-help-xref-buttons-url-info
+ \(symbol-function 'help-make-xrefs\)\)\n
+:SEE-ALSO `mon-get-help-buffer-symbol', `common-lisp-hyperspec',
+`common-lisp-hyperspec--symbols', `common-lisp-hyperspec--reader-macros',
+`common-lisp-hyperspec--format-characters',`common-lisp-hyperspec--glossary-terms',
+`common-lisp-hyperspec--issuex-symbols', `common-lisp-hyperspec--reader-macros'.\n▶▶▶"
+  (cond ((or (equal *mon-help-CL-help-xref-button-type* :info)
+             (equal *mon-help-CL-help-xref-button-type* :INFO))
+         (mon-help-CL-make-help-xref-buttons-info (or buffer "*Help*")))
+        ((or (equal *mon-help-CL-help-xref-button-type* :url)
+           (equal *mon-help-CL-help-xref-button-type* :URL))
+         (mon-help-CL-make-help-xref-buttons-url (or buffer "*Help*")))
+        (t (error ":FUNCTION `mon-help-CL-make-help-xref-buttons-url-info' - :VARIABLE `*mon-help-CL-help-xref-button-type*' value not :info or :url"))))
+;;
+;; :NOTE we advise `help-make-xrefs' in `mon-set-system-specific-and-load-init'
+;; at bottom of :FILE : "mon-default-start-loads.el"
+;; (add-function    :after (symbol-function 'help-make-xrefs)  #'mon-help-CL-make-help-xref-buttons-url-info)
+;; (remove-function  (symbol-function 'help-make-xrefs)  #'mon-help-CL-make-help-xref-buttons-url-info)
+;; (advice-function-member-p #'mon-help-CL-make-help-xref-buttons-url-info (symbol-function 'help-make-xrefs))
+
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-06-29T12:49:56-04:00Z}#{10262} - by MON KEY>
@@ -2273,7 +2442,9 @@ RETURN-PARSE-IN-BUFFER prior to insertion.\n
 `cl-fad:pathname-as-file'
 `cl-fad:walk-directory'
 `cl-fad::directory-wildcard'\n
-:SEE info node `(ansicl) '\n
+:SEE info node `(ansicl) Filenames'\n 
+:SEE info node `(ansicl) Pathnames'\n
+:SEE info node `(ansicl) Logical Pathnames''\n
 :SEE-ALSO `mon-help-CL-local-time', `mon-help-CL-loop', `mon-help-CL-time',
 `mon-help-CL-symbols', `mon-help-CL-lispdoc', `mon-help-CL-slime-keys',
 `mon-help-CL-swank-functions'.\n▶▶▶"
@@ -2339,11 +2510,11 @@ nil       return NIL
 :external-format { default other }
 
 :default   default (default)
-other      implementation-dependent
-
-:SEE info node `(ansicl) '\n
-:SEE (URL `http://psg.com/~dlamkins/sl/chapter19.html')
-:SEE-ALSO `mon-help-cl-types', `mon-help-CL-symbols', `mon-help-CL-sequences',
+other      implementation-dependent\n
+:SEE (URL `http://psg.com/~dlamkins/sl/chapter19.html')\n
+:SEE info node `(ansicl) open'\n
+:SEE info node `(ansicl) Stream Concepts'\n
+:SEE-ALSO `mon-help-CL-types', `mon-help-CL-symbols', `mon-help-CL-sequences',
 `mon-help-CL-iteration', `mon-help-CL-conses', `mon-help-CL-hash-tables',
 `mon-help-CL-print', `mon-help-CL-streams', `mon-help-CL-reader',
 `mon-help-CL-chars', `mon-help-CL-strings', `mon-help-CL-structures',
@@ -2474,53 +2645,52 @@ other      implementation-dependent
 ;; :CL-CONDITION-PRECEDENCE
 T
 |
-`- RESTART                                                 \(T\)
+`- `RESTART'                                                 \(T\)
 |
-`- CONDITION                                               \(T\)
+`- `CONDITION'                                               \(T\)
    |
-   `-- WARNING                                             \(CONDITION\)
-   |   `--- STYLE-WARNING                                  \(WARNING\)
+   `-- `WARNING'                                             \(CONDITION\)
+   |   `--- `STYLE-WARNING'                                  \(WARNING\)
    |
-   `-- SIMPLE-CONDITION                                    \(CONDITION\)
-   |   `___ SIMPLE-WARNING                                 \(SIMPLE-CONDITION WARNING\)
-   |   `___ SIMPLE-ERROR                                   \(SIMPLE-CONDITION ERROR\)
+   `-- `SIMPLE-CONDITION'                                    \(CONDITION\)
+   |   `___ `SIMPLE-WARNING'                                 \(SIMPLE-CONDITION WARNING\)
+   |   `___ `SIMPLE-ERROR'                                   \(SIMPLE-CONDITION ERROR\)
    |
-   `-- SERIOUS-CONDITION                                   \(CONDITION\)
+   `-- `SERIOUS-CONDITION'                                   \(CONDITION\)
        |
-       `--- STORAGE-CONDITION                              \(SERIOUS-CONDITION
+       `--- `STORAGE-CONDITION'                              \(SERIOUS-CONDITION\)
        |
-       `--- ERROR                                          \(SERIOUS-CONDITION
+       `--- `ERROR'                                          \(SERIOUS-CONDITION\)
             |
-            `---- CONTROL-ERROR                            \(ERROR\)
+            `---- `CONTROL-ERROR'                            \(ERROR\)
             |
-            `---- FILE-ERROR                               \(ERROR\)
+            `---- `FILE-ERROR'                               \(ERROR\)
             |
-            `---- PACKAGE-ERROR                            \(ERROR\)
+            `---- `PACKAGE-ERROR'                            \(ERROR\)
             |
-            `---- PARSE-ERROR                              \(ERROR\)
-            |     `____ READER-ERROR                       \(PARSE-ERROR STREAM-ERROR\)
+            `---- `PARSE-ERROR'                              \(ERROR\)
+            |     `____ `READER-ERROR'                       \(PARSE-ERROR STREAM-ERROR\)
             |                     
-            `---- PRINT-NOT-READABLE                       \(ERROR\)
+            `---- `PRINT-NOT-READABLE'                       \(ERROR\)
             |
-            `---- PROGRAM-ERROR                            \(ERROR\)
+            `---- `PROGRAM-ERROR'                            \(ERROR\)
             |
-            `---- TYPE-ERROR                               \(ERROR\)
+            `---- `TYPE-ERROR'                               \(ERROR\)
             |
-            `---- ARITHMETIC-ERROR                         \(ERROR\)
-            |     `----- DIVISION-BY-ZERO                  \(ARITHMETIC-ERROR\)
-            |     `----- FLOATING-POINT-INVALID-OPERATION  \(ARITHMETIC-ERROR\)
-            |     `----- FLOATING-POINT-INEXACT            \(ARITHMETIC-ERROR\)
-            |     `----- FLOATING-POINT-OVERFLOW           \(ARITHMETIC-ERROR\) 
-            |     `----- FLOATING-POINT-UNDERFLOW          \(ARITHMETIC-ERROR\)
+            `---- `ARITHMETIC-ERROR'                         \(ERROR\)
+            |     `----- `DIVISION-BY-ZERO'                  \(ARITHMETIC-ERROR\)
+            |     `----- `FLOATING-POINT-INVALID-OPERATION'  \(ARITHMETIC-ERROR\)
+            |     `----- `FLOATING-POINT-INEXACT'            \(ARITHMETIC-ERROR\)
+            |     `----- `FLOATING-POINT-OVERFLOW'           \(ARITHMETIC-ERROR\) 
+            |     `----- `FLOATING-POINT-UNDERFLOW'          \(ARITHMETIC-ERROR\)
             |
-            `---- STREAM-ERROR                             \(ERROR\)
-            |     `----- END-OF-FILE                       \(STREAM-ERROR\)
+            `---- `STREAM-ERROR'                             \(ERROR\)
+            |     `----- `END-OF-FILE'                       \(STREAM-ERROR\)
             |
-            `---- CELL-ERROR                               \(ERROR\)
-                  `----- UNBOUND-SLOT                      \(CELL-ERROR\)
-                  `----- UNBOUND-VARIABLE                  \(CELL-ERROR\)
-                  `----- UNDEFINED-FUNCTION                \(CELL-ERROR\)
-
+            `---- `CELL-ERROR'                               \(ERROR\)
+                  `----- `UNBOUND-SLOT'                      \(CELL-ERROR\)
+                  `----- `UNBOUND-VARIABLE'                  \(CELL-ERROR\)
+                  `----- `UNDEFINED-FUNCTION'                \(`CELL-ERROR'\)\n
 :SEE info node `(ansicl)Conditions'\n
 :SEE info node `(ansicl)Condition System Concepts'\n
 :SEE-ALSO `mon-help-errors', `*mon-help-emacs-errors*', `mon-help-CL-time',
@@ -2557,13 +2727,12 @@ For a given predicate P with elements of a sequence S as universe of discourse:\
  `some'     returns true iff (∃x)Px
             ≡ \(or (
  `notevery' returns true iff (∃x)¬Px 
-            ≡
-\n
+            ≡\n
 The latter two return false for the empty list, because truth of an
 existentially qualified statement requires at least one member in the
 universe of discourse.  They do not imply anything about every element
 of a sequence, only about a particular one, if it exists.\n
-:SEE info node `(ansicl) '\n
+:SEE info node `(ansicl)every; some; notevery; notany'\n
 :SEE-ALSO `mon-help-char-logic' `mon-help-CL-time', `mon-help-CL-local-time',
 `mon-help-CL-loop', `mon-help-CL-do', `mon-help-CL-bit-byte-bool-logic',
 `mon-help-CL-file-dir-functions', `mon-help-CL-pkgs', `mon-help-CL-symbols',
@@ -2599,6 +2768,7 @@ of a sequence, only about a particular one, if it exists.\n
 ;; CL-BIT-FUNCTIONS
 `#*'
 `bit'
+`bit+'
 `sbit'
 `bit-vector-p'
 `simple-bit-vector-p'\n
@@ -2618,6 +2788,7 @@ of a sequence, only about a particular one, if it exists.\n
 ¦ `bit-orc1'  ¦ or complement of BIT-ARRAY1 with BIT-ARRAY2   ¦
 ¦ `bit-orc2'  ¦ or BIT-ARRAY1 with complement of BIT-ARRAY2   ¦
 ¦_____________¦_______________________________________________¦\n
+:SEE info node `(ansicl) bit-and; bit-andc1; bit-andc2; bit-eqv; bit-ior; bit-nand; bit-nor; bit+'\n
 ;; :CL-BOOL-FUNCTIONS
  ____________________________________ 
 |                                    |
@@ -2645,6 +2816,7 @@ of a sequence, only about a particular one, if it exists.\n
 ¦ `boole-set'   ¦ -1   ¦   -1 ¦ 1111 ¦
 ¦ `boole-xor'   ¦  6   ¦  110 ¦ 0110 ¦
 ¦_______________¦______¦______¦______¦\n
+:SEE info node `(ansicl) boole-1; boole-2; boole-and; boole-andc1; boole-andc2; boole-c1; boole-+'\n
 ;; :CL-BIT-LOG-FUNCTIONS
 `logcount'
 `logbitp'
@@ -2666,18 +2838,20 @@ of a sequence, only about a particular one, if it exists.\n
 ¦ `logorc2’  ¦ or INTEGER-1 with complement of INTEGER-2   ¦  --     ¦
 ¦ `logxor’   ¦ exclusive or				   ¦  `0`    ¦
 ¦____________¦_____________________________________________¦_________¦\n
+
+:SEE info node `(ansicl) logand; logandc1; logandc2; logeqv; logior; lognand; lognor; lognot; lo+'\n
 ;; :CL-BIT-TYPES
 `array-element-type'
 `upgraded-array-element-type'
 `stream-element-type'
 `bit-vector'          ;<SYSTEM-CLASS>
-`simple-bit-vector` 
-`bit`
-`signed-byte`
-`unsigned-byte`
-`boolean`
-`simple-array`\n
-:SEE info node `(ansicl) '\n
+`simple-bit-vector'
+`bit'
+`signed-byte'
+`unsigned-byte'
+`boolean'
+`simple-array'\n
+:SEE info node `(ansicl) Arrays'\n
 :SEE-ALSO `mon-help-char-logic',`mon-help-CL-time', `mon-help-CL-local-time',
 `mon-help-CL-loop', `mon-help-CL-do', `mon-help-CL-sequence-predicates',
 `mon-help-CL-file-dir-functions', `mon-help-CL-pkgs', `mon-help-CL-symbols',
@@ -2878,14 +3052,14 @@ return expr
 
 ;; :LOOP-TYPE-DECLARATION
 type-spec   ::= of-type d-type-spec
-d-type-spec ::= type-specifier | (d-type-spec . d-type-spec)
-:SEE info node `(ansicl)Loop Facility'\n
+d-type-spec ::= type-specifier | (d-type-spec . d-type-spec\n
 - Peter D. Karp's CL Loop Tutorial at:
 :SEE (URL `http://www.ai.sri.com/~pkarp/loop.html')\n
 - Yusuke Shinyama's CL Loop examples:
 :SEE (URL `http://www.unixuser.org/~euske/doc/cl/loop.html')\n
 - Cl-Cookbook review of loop at:
 :SEE (URL `http://cl-cookbook.sourceforge.net/loop.html')\n
+:SEE info node `(ansicl) The LOOP Facility'\n
 :SEE-ALSO `mon-help-CL-loop-usage', `mon-help-CL-time', `mon-help-CL-local-time', 
 `mon-help-CL-do', `mon-help-CL-file-dir-functions', `mon-help-CL-pkgs',
 `mon-help-CL-sequence-predicates', `mon-help-CL-symbols', `mon-help-CL-lispdoc',
@@ -3280,14 +3454,12 @@ others will stay. What is an elegant form using `loop'?:\n
  \(loop :for <ELEMENT> in <LIST>
         :when \(<TEST> <ELEMENT>\) 
         :collect <ELEMENT>\)\n
-
 :NOTE The blocks of loop usage examples presented above when preceded with the
 prefix \":CLTL2-LOOP\" are excerpted from from the LaTeX to HTML extraction of:
- Steel, Guy L. \"Common Lisp the Language, Second Edition\". Butterworth-Heinemann, 1990.
+ Steel, Guy L. \"Common Lisp the Language, Second Edition\". Butterworth-Heinemann, 1990.\n
 :SEE (URL `http://lccn.loc.gov/89026016')
+:SEE info node `(ansicl) The LOOP Facility'\n
 :SEE (URL `ftp://ftp.cs.cmu.edu/user/ai/lang/lisp/doc/cltl/cltl_ht.tgz')
-
-
 :SEE-ALSO `mon-help-CL-loop', `mon-help-CL-do', `mon-help-CL-iteration'.\n▶▶▶"
   (interactive "i\nP")
   (if (or insertp intrp)
@@ -3304,6 +3476,12 @@ prefix \":CLTL2-LOOP\" are excerpted from from the LaTeX to HTML extraction of:
 ;;;###autoload
 (defun mon-help-CL-do (&optional insertp intrp)
   "The Common Lisp do loop.\n
+;; :CL-FUNCTIONS-DO
+`do'
+`do*'
+`dotimes'
+`dolist'
+
 ;; :DO-CLTL2-SYNTAX
 \(do \(\({var | \(var [init [step]]\)}*\)\)
     \(end-test {result}*\)
@@ -3353,7 +3531,8 @@ often doesn't have a statement body - all the work is already finished.\n
        )                 ;; DOing is DOne. 
     (setq k (cons j k))) ;; STATEMENT - cons the results of DOing - this is side-effect oriented.
 \(nreverse k))\n
-:SEE info node `(ansicl) '\n
+
+:SEE info node `(ansicl) do; do*'\n
 :SEE-ALSO `mon-help-CL-time', `mon-help-CL-local-time', `mon-help-CL-loop',
 `mon-help-CL-do', `mon-help-CL-file-dir-functions', `mon-help-CL-pkgs',
 `mon-help-CL-sequence-predicates', `mon-help-CL-symbols', `mon-help-CL-lispdoc',
@@ -3388,7 +3567,7 @@ CL-USER> \(get-decoded-time\)\n
  => 14     ;second\n44     ;minute\n12     ;hour\n15     ;date\n7      ;month
     2009   ;year\n2      ;day\nT      ;dayligt-p\n5      ;zone\n
 :SEE `SB-POSIX:TIME'\n
-:SEE info node `(ansicl) '\n
+:SEE info node `(ansicl) Environment'\n
 :SEE-ALSO `mon-help-CL-time', `mon-help-CL-local-time', `mon-help-CL-loop',
 `mon-help-CL-do', `mon-help-CL-file-dir-functions', `mon-help-CL-pkgs',
 `mon-help-CL-sequence-predicates', `mon-help-CL-symbols', `mon-help-CL-lispdoc',
@@ -3417,20 +3596,41 @@ CL-USER> \(get-decoded-time\)\n
 `map-into'
 `reduce'
 `count'
+`count-if'
+`count-if-not'
 `length'
 `reverse'
+`nreverse'
 `sort'
+`stable-sort'
 `find'
+`find-if'
+`find-if-not'
 `position'
+`position-if' 
+`position-if-not'
 `search'
 `mismatch'
 `replace'
 `substitute'
+`substitute-if'
+`substitute-if-not'
+`nsubstitute'
+`nsubstitute-if'
+`nsubstitute-if-not'
 `concatenate'
 `merge'
 `remove'
-`remove-duplicates'\n
-:SEE info node `(ansicl) '\n
+`remove-if'
+`remove-if-not'
+`delete'
+`delete-if'
+`delete-if-not'
+`remove-duplicates'
+`delete-duplicates'\n
+:SEE info node `(ansicl) Sequences'\n
+:SEE info node `(ansicl) Sequence Concepts'\n
+:SEE info node `(ansicl) Rules about Test Functions'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -3465,7 +3665,7 @@ CL-USER> \(get-decoded-time\)\n
 `dolist'
 `loop'
 `loop-finish'\n
-:SEE info node `(ansicl) '\n
+:SEE info node `(ansicl) Iteration'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -3495,16 +3695,47 @@ CL-USER> \(get-decoded-time\)\n
 (defun mon-help-CL-conses (&optional insertp intrp)
   "
 ;; :CL-FUNCTIONS-CONSES
-`first'   \(car <LIST>\)                        
-`second'  \(car \(cdr <LIST>\)\)                  
-`third'   \(car \(cddr <LIST>\)\)                 
-`fourth'  \(car \(cdddr <LIST>\)\)                
-`fifth'   \(car \(cddddr <LIST>\)\)               
-`sixth'   \(car \(cdr \(cddddr <LIST>\)\)\)         
-`seventh' \(car \(cddr \(cddddr <LIST>\)\)\)        
-`eighth'  \(car \(cdddr \(cddddr <LIST>\)\)\)       
-`ninth'   \(car \(cddddr \(cddddr <LIST>\)\)\)      
+`first'   \(`car <LIST>\)
+`second'  \(car \(cdr <LIST>\)\)
+`third'   \(car \(cddr <LIST>\)\)
+`fourth'  \(car \(cdddr <LIST>\)\)
+`fifth'   \(car \(cddddr <LIST>\)\)
+`sixth'   \(car \(cdr \(cddddr <LIST>\)\)\)
+`seventh' \(car \(cddr \(cddddr <LIST>\)\)\)
+`eighth'  \(car \(cdddr \(cddddr <LIST>\)\)\)
+`ninth'   \(car \(cddddr \(cddddr <LIST>\)\)\)
 `tenth'   \(car \(cdr \(cddddr \(cddddr <LIST>\)\)\)\)\n
+;;
+`car'
+`cdr'
+`caar'
+`cadr'
+`cdar'
+`cddr'
+`caaar'
+`caadr'
+`cadar'
+`caddr'
+`cdaar'
+`cdadr'
+`cddar'
+`cdddr'
+`caaaar'
+`caaadr'
+`caadar'
+`caaddr'
+`cadaar'
+`cadadr'
+`caddar'
+`cadddr'
+`cdaaar'
+`cdaadr'
+`cdadar'
+`cdaddr'
+`cddaar'
+`cddadr'
+`cdddar'
+`cddddr'
 ;;
 `butlast'
 `last'
@@ -3638,8 +3869,8 @@ FOR-AS-HASH ::=
                     { [ using \( hash-value <OTHER-VAR> \) ]\n
                 { { hash-value | hash-values} {in | of} <HASH-TABLE> 
                   { [ using \( hash-key <OTHER-VAR> \) ] }\n
-:SEE info node `(ansicl)Hash Table Concepts'\n
 :SEE info node `(ansicl)Hash Tables'\n
+:SEE info node `(ansicl)Hash Table Concepts'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -3725,8 +3956,8 @@ FOR-AS-HASH ::=
    `*read-eval*'                   t
    `*read-suppress*'               nil
    `*readtable*'                   ;; The standard readtable\n
-:SEE info node `(ansicl)with-standard-io-syntax'\n
-:SEE info node `(ansicl)The Lisp Printer'\n
+:SEE info node `(ansicl) with-standard-io-syntax'\n
+:SEE info node `(ansicl) The Lisp Printer'\n
 :SEE-ALSO `mon-help-CL-format', `mon-help-CL-symbols', `mon-help-CL-sequences',
 `mon-help-CL-iteration', `mon-help-CL-conses', `mon-help-CL-hash-tables',
 `mon-help-CL-print', `mon-help-CL-streams', `mon-help-CL-reader',
@@ -3814,7 +4045,7 @@ FOR-AS-HASH ::=
 `end-of-file'
 `*debug-io*'
 `*terminal-io*'\n
-:SEE info node `(ansicl) '\n
+:SEE info node `(ansicl) Streams'\n
 :SEE-ALSO `mon-help-CL-print', `mon-help-CL-format', `mon-help-CL-symbols',
 `mon-help-CL-sequences', `mon-help-CL-iteration', `mon-help-CL-conses',
 `mon-help-CL-hash-tables', `mon-help-CL-print', `mon-help-CL-reader',
@@ -3862,7 +4093,7 @@ FOR-AS-HASH ::=
 `*read-eval*'
 `*read-suppress*'
 `*readtable*'\n
-:SEE info node `(ansicl) '\n
+:SEE info node `(ansicl) Reader'\n
 :SEE-ALSO `mon-help-CL-streams', `mon-help-CL-print', `mon-help-CL-format',
 `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-chars',
@@ -3914,7 +4145,7 @@ FOR-AS-HASH ::=
 `char-code-limit'
 `char-name'
 `name-char'\n
-:SEE info node `(ansicl) '\n
+:SEE info node `(ansicl) Characters'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -3943,19 +4174,42 @@ FOR-AS-HASH ::=
 ;;;###autoload
 (defun mon-help-CL-strings (&optional insertp intrp)
   "
-;; :CL-FUNCTIONS-STRINGS
+;; :CL-TYPES-STRINGS
+`char'
+`schar'
+`string'
 `base-string'
 `simple-string'
 `simple-base-string'
-`simple-string-p'
-`char'
-`string'
-`string-upcase'
-`string-trim'
-`string='
+
+;; :CL-FUNCTIONS-STRINGS
 `stringp'
-`make-string'\n
-:SEE info node `(ansicl) '\n
+`simple-string-p'
+`make-string'
+`string-upcase'
+`nstring-upcase'
+`string-downcase'
+`nstring-downcase'
+`nstring-capitalize'
+`string-capitalize'
+`string-equal'
+`string-greaterp'
+`string-lessp'
+`string-not-equal'
+`string-not-greaterp'
+`string-not-lessp'
+`string-trim'
+`string-left-trim'
+`string-right-trim'
+`string/='
+`string<'
+`string<='
+`string='
+`string='
+`string>'
+`string>='
+:SEE info node `(ansicl) Strings'\n
+:SEE info node `(ansicl) String Concepts'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -3987,7 +4241,7 @@ FOR-AS-HASH ::=
 ;; :CL-FUNCTIONS-STRUCTURES
 `defstruct'
 `copy-structure'\n
-:SEE info node `(ansicl) '\n
+:SEE info node `(ansicl) Structures'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -4054,7 +4308,7 @@ FOR-AS-HASH ::=
 `simple-bit-vector-p'
 `char'
 `schar'\n
-:SEE info node `(ansicl) '\n
+:SEE info node `(ansicl) Arrays'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -4166,7 +4420,7 @@ FOR-AS-HASH ::=
 `floating-point-inexact'
 `floating-point-overflow'
 `floating-point-underflow'\n
-:SEE info node `(ansicl) '\n
+:SEE info node `(ansicl) Numbers'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -4195,23 +4449,34 @@ FOR-AS-HASH ::=
 (defun mon-help-CL-lambda-list (&optional insertp intrp)
 "
 Following table enumerates Common Lisp lambda lists and their syntax.\n
+`&ALLOW-OTHER-KEYS'
+`&AUX'
+`&BODY'
+`&ENVIRONMENT'
+`&KEY'
+`&OPTIONAL'
+`&REST'
+`&WHOLE'\n
 ;; :ORDINARY-LAMBDA-LIST\n
  \(var* 
    [&optional {var | \(var [init-form [supplied-p-parameter]]\)}*] 
    [&rest var] 
    [&key {var | \({var | \(keyword-name var\)} [init-form [supplied-p-parameter]]\)}* [&allow-other-keys]] 
    &aux {var | \(var [init-form]\)}*]\)\n
+:SEE info node `(ansicl) Ordinary Lambda Lists'\n
 ;; :GENERIC-LAMBDA-LIST\n
  \(var* 
    [&optional {var | \(var\)}*] 
    [&rest var] 
    [&key {var | \({var | \(keyword-name var\)}\)}* [&allow-other-keys]]\)\n 
+:SEE info node `(ansicl) Generic Function Lambda Lists'\n
 ;; :SPECIALIZED-LAMBDA-LIST\n
  \({var | \(var [specializer]\)}* 
    [&optional {var | \(var [init-form [supplied-p-parameter]]\)}*] 
    [&rest var] 
    [&key {var | \({var | \(keyword-name var\)} [init-form [supplied-p-parameter]]\)}* [&allow-other-keys]] 
    [&aux {var | \(var [init-form]\)}*]\)\n
+:SEE info node `(ansicl) Specialized Lambda Lists'\n
 ;; :MACRO-LAMBDA-LIST\n
  \([&whole var]  [&environment var]  var*  [&environment var]
     [&optional {var | \(var [init-form [supplied-p-parameter]]\)}*]  [&environment var] 
@@ -4221,6 +4486,7 @@ Following table enumerates Common Lisp lambda lists and their syntax.\n
     [&environment var]\)\n
  \([&whole var]  [&environment var]  var*  [&environment var]
     [&optional {var | \(var [init-form [supplied-p-parameter]]\)}*]  [&environment var] .  var\)\n
+:SEE info node `(ansicl) Macro Lambda Lists'\n
 ;; :DESTRUCTURING-LAMBDA-LIST\n
  \([&whole var] var* 
     [&optional {var | \(var [init-form [supplied-p-parameter]]\)}*]
@@ -4229,18 +4495,21 @@ Following table enumerates Common Lisp lambda lists and their syntax.\n
     [&allow-other-keys]]
     [&aux {var | \(var [init-form]\)}*]\)\n
  \([&whole var] var*   [&optional {var | \(var [init-form [supplied-p-parameter]]\)}*]  . var\)\n
+:SEE info node `(ansicl) Destructuring Lambda Lists'\n
 ;; :SETF-LAMBDA-LIST\n
  \(var* 
   [&optional {var | \(var [init-form [supplied-p-parameter]]\)}*] 
   [&rest var] 
   [&key {var | \({var | \(keyword-name var\)} [init-form [supplied-p-parameter]]\)}* [&allow-other-keys]] 
   [&environment var]\)\n 
+:SEE info node `(ansicl) Defsetf Lambda Lists'\n
 ;; :TYPE-LAMBDA-LIST\n
-:SEE macro-lambda-list\n
+:SEE info node `(ansicl) Deftype Lambda Lists'\n
 ;; :MODIFY-MACRO-LAMBDA-LIST\n
  \(var* 
    [&optional {var | \(var [init-form [supplied-p-parameter]]\)}*] 
    [&rest var]\)\n 
+:SEE info node `(ansicl) define-modify-macro Lambda Lists'\n
 ;; :METHOD-COMBINATION-LAMBDA-LIST\n
  \([&whole var] var*\)\n
  \([&whole var]  [&optional {var | \(var [init-form [supplied-p-parameter]]\)}*]\)\n
@@ -4248,6 +4517,7 @@ Following table enumerates Common Lisp lambda lists and their syntax.\n
  \([&whole var]  [&key {var | \({var | \(keyword-name var\)}
   [init-form [supplied-p-parameter]]\)}* [&allow-other-keys]]\)\n
  \([&whole var]  [&aux {var | \(var [init-form]\)}*]\)\n
+:SEE info node `(ansicl) Define-method-combination Arguments Lambda Lists'\n
 ;; :AUX-PARAMETERS
  ,----
  |  Q: What are AUX parameters for?
@@ -4259,6 +4529,8 @@ Following table enumerates Common Lisp lambda lists and their syntax.\n
  |  A: No. They're not real parameters.
  |
  `---- :SEE #lisp 2011-04-06T23:56 Q: <- drdo A: <- pjb\n
+:SEE info node `(ansicl) Boa Lambda Lists'\n
+:SEE info node `(ansicl) Lambda Lists'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -4347,7 +4619,7 @@ Following table enumerates Common Lisp lambda lists and their syntax.\n
  \(remove-method \(fdefinition 'my-generic\) \(find-method #'my-generic nil '\(my-class\) '\(t\)\)\)
  \(remove-method \(fdefinition 'my-generic\) \(find-method #'my-generic nil '\(t\) '\(t\)\)\)
  \(remove-method \(fdefinition 'my-generic\) \(find-method #'my-generic nil '\(t\) '\(eql <THING>\)\)\)
-:SEE info node `(ansicl) '\n
+:SEE info node `(ansicl) Objects'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -4420,7 +4692,8 @@ Following table enumerates Common Lisp lambda lists and their syntax.\n
 `standard-generic-function'
 `standard-method'
 
-:SEE info node `(ansicl)Generic Functions and Methods'\n
+:SEE info node `(ansicl) Generic Functions and Methods'\n
+:SEE info node `(ansicl) Method Selection and Combination'\n
 :SEE-ALSO `mon-help-CL-object-CLOS', `mon-help-CL-symbols',
 `mon-help-CL-sequences', `mon-help-CL-iteration', `mon-help-CL-conses',
 `mon-help-CL-hash-tables', `mon-help-CL-print', `mon-help-CL-streams',
@@ -4522,7 +4795,7 @@ Following table enumerates Common Lisp lambda lists and their syntax.\n
 `control-error'
 `program-error'
 `undefined-function'\n
-:SEE info node `(ansicl) '\n
+:SEE info node `(ansicl)Data and Control Flow'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -4581,7 +4854,7 @@ Following table enumerates Common Lisp lambda lists and their syntax.\n
 `special-operator-p'
 `constantp'
 `*macroexpand-hook*'\n
-:SEE info node `(ansicl) '\n
+:SEE info node `(ansicl)Evaluation and Compilation'.\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -4622,7 +4895,7 @@ Following table enumerates Common Lisp lambda lists and their syntax.\n
 `*compile-print*'
 `*load-print*'
 `*modules*'\n
-:SEE info node `(ansicl) '\n
+:SEE info node `(ansicl) System Condstruction'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -4682,7 +4955,7 @@ Following table enumerates Common Lisp lambda lists and their syntax.\n
 `machine-version'
 `software-type'
 `user-homedir-pathname'\n
-:SEE info node `(ansicl) '\n
+:SEE info node `(ansicl) Environment'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -4741,7 +5014,8 @@ Following table enumerates Common Lisp lambda lists and their syntax.\n
 `package-error'
 `package-error-package'
 `*package*'\n
-:SEE info node `(ansicl) '\n
+:SEE info node `(ansicl) Package Concepts'\n
+:SEE info node `(ansicl) Packages'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -4790,7 +5064,8 @@ Following table enumerates Common Lisp lambda lists and their syntax.\n
 `set'
 `unbound-variable'
 `*gensym-counter*'\n
-:SEE info node `(ansicl) '\n
+:SEE info node `(ansicl) Symbols'\n
+:SEE info node `(ansicl) Symbol Concepts'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -5022,7 +5297,7 @@ t
 `warning'
 
 :SEE info node `(ansicl)Type Specifiers'\n
-:SEE info node `(anscil)Integrating Types and Classes'
+:SEE info node `(anscil)Integrating Types and Classes'\n
 :SEE-ALSO `mon-help-CL-type-declarations', `mon-help-CL-symbols',
 `mon-help-CL-sequences', `mon-help-CL-iteration', `mon-help-CL-conses',
 `mon-help-CL-hash-tables', `mon-help-CL-print', `mon-help-CL-streams',
@@ -5115,8 +5390,8 @@ t
 `#+'   ;<SHARPSIGN-PLUS>              read-time Conditional
 `#-'   ;<SHARPSIGN-MINUS>             read-time Conditional\n
 :ALIASED-BY `mon-help-CL-reader-macro-syntax'\n
-:SEE info node `(ansicl)Sharpsign'
-:SEE info node `(ansicl)Features'
+:SEE info node `(ansicl)Sharpsign'\n
+:SEE info node `(ansicl)Features'\n
 :SEE info node `(ansicl)Use of Read-Time Conditionals'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
@@ -5311,11 +5586,10 @@ finding) and the relevant html file names for the relevant hspec nodes.\n
        ~`NL` ~:`NL` ~@`NL` ;; :NOTE Here `NL` implies ASCII the char 10,#o12,#xa
 
 ;; :CL-FUNCTIONS-FORMAT-INFO
-:SEE info node `(ansicl)Formatted Output'
-:SEE info node `(ansicl)Additional Information about FORMAT Operations'
-:SEE info node `(ansicl)Examples of FORMAT'
-:SEE info node `(ansicl)Notes about FORMAT'
-
+:SEE info node `(ansicl)Formatted Output'\n
+:SEE info node `(ansicl)Additional Information about FORMAT Operations'\n
+:SEE info node `(ansicl)Examples of FORMAT'\n
+:SEE info node `(ansicl)Notes about FORMAT'\n
 :SEE-ALSO `mon-help-CL-format-usage', `slime-format-string-expand',
 `mon-help-CL-streams', `mon-help-CL-print', `mon-help-cl-reader',
 `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
@@ -6935,8 +7209,8 @@ RFC 1123 timestring format.
 \(with-current-buffer \(get-buffer-create \"*RFC-1123*\"\)
    \(url-insert-file-contents  \"http://tools.ietf.org/rfc/rfc1123.txt\"\)
    \(display-buffer \(current-buffer\) t\)\)\n
-:SEE info node `(coreutils)Date input formats'\n\n
 :SEE `SB-POSIX:TIME'\n
+:SEE info node `(coreutils)Date input formats'\n
 :SEE-ALSO `mon-help-time-functions', `mon-help-mon-time-functions',
 `mon-help-iso-8601', `mon-help-CL-time', `mon-help-CL-loop', `mon-help-CL-do',
 `mon-help-CL-file-dir-functions', `mon-help-CL-pkgs',
@@ -7048,7 +7322,8 @@ the example directory of cl-irc:
                  ((string-match-p "Hyperspec-v7" common-lisp-hyperspec-root) #'cadr)
                  ;; Lispworks, MIT, NON-MON, etc.
                  ((or (string-match-p "HyperSpec" common-lisp-hyperspec-root) t) #'cadr))
-           ;; :NOTE The car maps to hyperspec-v3 the cadr hyperspec-v7.\n
+           ;; :NOTE The car maps to hyperspec-v3 the cadr hyperspec-v7.
+           ;; :SEE `common-lisp-hyperspec--symbols'
            '( ;; :HYPERSPEC-v3
              (("&whole" "sec_3-4-4.htm")
               ("*" "any_st.htm")

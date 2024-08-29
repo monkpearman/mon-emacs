@@ -4175,12 +4175,12 @@ FOR-AS-HASH ::=
 (defun mon-help-CL-strings (&optional insertp intrp)
   "
 ;; :CL-TYPES-STRINGS
-`char'
-`schar'
-`string'
-`base-string'
-`simple-string'
-`simple-base-string'
+`char'                    <ACCESSOR>
+`schar'                   <ACCESSOR>
+`string'                  <SYSTEM-CLASS>
+`base-string'             <TYPE>
+`simple-string'           <TYPE>
+`simple-base-string'      <TYPE>
 
 ;; :CL-FUNCTIONS-STRINGS
 `stringp'
@@ -4207,7 +4207,7 @@ FOR-AS-HASH ::=
 `string='
 `string='
 `string>'
-`string>='
+`string>='\n 
 :SEE info node `(ansicl) Strings'\n
 :SEE info node `(ansicl) String Concepts'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
@@ -4271,15 +4271,15 @@ FOR-AS-HASH ::=
 (defun mon-help-CL-arrays (&optional insertp intrp)
   "
 ;; :CL-FUNCTIONS-ARRAYS
-`array'
-`simple-array'
-`simple-vector'
-`bit-vector'
-`simple-bit-vector'
+`array'                          <SYSTEM-CLASS>
+`simple-array'                   <TYPE>
+`simple-vector'                  <TYPE>
+`bit-vector'                     <SYSTEM-CLASS>
+`simple-bit-vector'              <TYPE>
 `make-array'
 `adjust-array'
 `adjustable-array-p'
-`aref'
+`aref'                           <ACCESSOR>
 `array-dimension'
 `array-dimensions'
 `array-element-type'
@@ -4290,25 +4290,39 @@ FOR-AS-HASH ::=
 `array-row-major-index'
 `array-total-size'
 `arrayp'
-`fill-pointer'
-`row-major-aref'
+`fill-pointer'                   <ACCESSOR>
+`row-major-aref'                 <ACCESSOR>
 `upgraded-array-element-type'
-`array-dimension-limit'
-`array-rank-limit'
-`array-total-size-limit'
+`array-dimension-limit'          <CONSTANT> <VARIABLE>
+`array-rank-limit'               <CONSTANT> <VARIABLE>
+`array-total-size-limit'         <CONSTANT> <VARIABLE>
 `simple-vector-p'
-`svref'
-`vector'
+`svref'                          <ACCESSOR>
+`vector'                         <SYSTEM-CLASS>
+`vector'                         <FUNCTION>
 `vector-pop'
 `vector-push'
 `vectorp'
 `bit'
+`sbit'
 `bit-and'
+`bit-and'
+`bit-andc1'
+`bit-andc2'
+`bit-eqv'
+`bit-ior'
+`bit-nand'
+`bit-nor'
+`bit-not'
+`bit-orc1'
+`bit-orc2'
+`bit-xor'
 `bit-vector-p'
 `simple-bit-vector-p'
 `char'
 `schar'\n
 :SEE info node `(ansicl) Arrays'\n
+:SEE info node `(ansicl) Array Concepts'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -4338,47 +4352,76 @@ FOR-AS-HASH ::=
 (defun mon-help-CL-numbers (&optional insertp intrp)
   "
 ;; :CL-FUNCTIONS-NUMBERS
-`number'
-`real'
-`short-float'
-`rational'
-`ratio'
-`integer'
-`signed-byte'
-`unsigned-byte'
-`mod'
-`bit'
-`fixnum'
-`bignum'
+`number'                        <SYSTEM-CLASS>
+`real'                          <SYSTEM-CLASS>
+`short-float'                   <SYSTEM-CLASS>
+`rational'                      <SYSTEM-CLASS>
+`ratio'                         <SYSTEM-CLASS>
+`integer'                       <SYSTEM-CLASS>
+`signed-byte'                   <TYPE>
+`unsigned-byte'                 <TYPE>
+`mod'                           <TYPE-SPECIFIER>
+`bit'                           <TYPE>
+`fixnum'                        <TYPE>
+`bignum'                        <TYPE>
 `='
+`/='
+`<'
+`>'
+`<='
+`>='
 `max'
+`min'
 `minusp'
+`plusp'
 `zerop'
 `floor'
+`ceiling'
+`fceiling'
+`truncate'
+`ftruncate'
+`round'
+`fround'
 `sin'
+`cos'
+`tan'
 `asin'
-`pi'
+`acos'
+`atan'
+`pi'                          <CONSTANT> <VARIABLE>
 `sinh'
+`cosh'
+`tanh'
+`asinh'
+`acosh'
+`atanh'
 `*'
 `+'
 `-'
 `/'
 `1+'
+`1-'
 `abs'
 `evenp'
+`oddp'
 `exp'
+`expt'
 `gcd'
-`incf'
+`incf'                        <MACRO>
+`decf'                        <MACRO>
+`ooodecf'
 `lcm'
 `log'
 `mod'
+`rem'
 `signum'
 `sqrt'
-`random-state'
+`isqrt'
+`random-state'                  <SYSTEM-CLASS>
 `make-random-state'
 `random'
 `random-state-p'
-`*random-state*'
+`*random-state*'                <VARIABLE>
 `numberp'
 `cis'
 `complex'
@@ -4386,10 +4429,13 @@ FOR-AS-HASH ::=
 `conjugate'
 `phase'
 `realpart'
+`imagpart'
 `upgraded-complex-part-type'
 `realp'
 `numerator'
+`denominator'
 `rational'
+`rationalize'
 `rationalp'
 `ash'
 `integer-length'
@@ -4397,30 +4443,98 @@ FOR-AS-HASH ::=
 `parse-integer'
 `boole'
 `boole-1'
+`boole-2'                        <CONSTANT> <VARIABLE>
+`boole-and''                     <CONSTANT> <VARIABLE>
+`boole-andc1'                    <CONSTANT> <VARIABLE>
+`boole-andc2'                    <CONSTANT> <VARIABLE>
+`boole-c1'                       <CONSTANT> <VARIABLE>
+`boole-c2'                       <CONSTANT> <VARIABLE>
+`boole-clr'                      <CONSTANT> <VARIABLE>
+`boole-eqv'                      <CONSTANT> <VARIABLE>
+`boole-ior'                      <CONSTANT> <VARIABLE>
+`boole-nand'                     <CONSTANT> <VARIABLE>
+`boole-nor'                      <CONSTANT> <VARIABLE>
+`boole-orc1'                     <CONSTANT> <VARIABLE>
+`boole-orc2'                     <CONSTANT> <VARIABLE>
+`boole-set'                      <CONSTANT> <VARIABLE>
+`boole-xor'                      <CONSTANT> <VARIABLE>
 `logand'
+`logandc1'
+`logandc2'
+`logeqv'
+`logior'
+`lognand'
+`lognor'
+`lognot'
+`logorc1'
+`logorc2'
+`logxor'
 `logbitp'
 `logcount'
 `logtest'
 `byte'
+`byte-size'
+`byte-position'
 `deposit-field'
 `dpb'
-`ldb'
+`ldb'                             <ACCESSOR>
 `ldb-test'
-`mask-field'
-`most-positive-fixnum'
+`mask-field'                      <ACCESSOR>
+`most-positive-fixnum'            <CONSTANT> <VARIABLE>
+`most-negative-fixnum'            <CONSTANT> <VARIABLE>
 `decode-float'
+`scale-float'
+`float-radix'
+`float-sign'
+`float-digits'
+`float-precision'
+`integer-decode-float'
 `float'
 `floatp'
 `most-positive-short-float'
+`most-positive-short-float'                     <CONSTANT> <VARIABLE>
+`least-positive-short-float'                    <CONSTANT> <VARIABLE>
+`least-positive-normalized-short-float'         <CONSTANT> <VARIABLE>
+`most-positive-double-float'                    <CONSTANT> <VARIABLE>
+`least-positive-double-float'                   <CONSTANT> <VARIABLE>
+`least-positive-normalized-double-float'        <CONSTANT> <VARIABLE>
+`most-positive-long-float'                      <CONSTANT> <VARIABLE>
+`least-positive-long-float'                     <CONSTANT> <VARIABLE>
+`least-positive-normalized-long-float'          <CONSTANT> <VARIABLE>
+`most-positive-single-float'                    <CONSTANT> <VARIABLE>
+`least-positive-single-float'                   <CONSTANT> <VARIABLE>
+`least-positive-normalized-single-float'        <CONSTANT> <VARIABLE>
+`most-negative-short-float'                     <CONSTANT> <VARIABLE>
+`least-negative-short-float'                    <CONSTANT> <VARIABLE>
+`least-negative-normalized-short-float'         <CONSTANT> <VARIABLE>
+`most-negative-single-float'                    <CONSTANT> <VARIABLE>
+`least-negative-single-float'                   <CONSTANT> <VARIABLE>
+`least-negative-normalized-single-float'        <CONSTANT> <VARIABLE>
+`most-negative-double-float'                    <CONSTANT> <VARIABLE>
+`least-negative-double-float'                   <CONSTANT> <VARIABLE>
+`least-negative-normalized-double-float'        <CONSTANT> <VARIABLE>
+`most-negative-long-float'                      <CONSTANT> <VARIABLE>
+`least-negative-long-float'                     <CONSTANT> <VARIABLE>
+`least-negative-normalized-long-float'          <CONSTANT> <VARIABLE>
 `short-float-epsilon'
-`arithmetic-error'
+`short-float-epsilon'                           <CONSTANT> <VARIABLE>
+`short-float-negative-epsil'                    <CONSTANT> <VARIABLE>
+`single-float-epsilon'                          <CONSTANT> <VARIABLE>
+`single-float-negative-epsilon'                 <CONSTANT> <VARIABLE>
+`double-float-epsilon'                          <CONSTANT> <VARIABLE>
+`double-float-negative-epsilon'                 <CONSTANT> <VARIABLE>
+`long-float-epsilon'                            <CONSTANT> <VARIABLE>
+`long-float-negative-epsilon'
+`arithmetic-error'                              <CONDITION-TYPE>
 `arithmetic-error-operands'
-`division-by-zero'
-`floating-point-invalid-operation'
-`floating-point-inexact'
-`floating-point-overflow'
-`floating-point-underflow'\n
+`arithmetic-error-operation'
+`division-by-zero'                             <CONDITION-TYPE>
+`floating-point-invalid-operation'             <CONDITION-TYPE>
+`floating-point-inexact'                       <CONDITION-TYPE>
+`floating-point-overflow'                      <CONDITION-TYPE>
+`floating-point-underflow'                     <CONDITION-TYPE>\n
 :SEE info node `(ansicl) Numbers'\n
+:SEE info node `(ansicl) Number Concepts'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',

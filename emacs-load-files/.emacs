@@ -1,4 +1,3 @@
-
 ;;; :FILE-CREATED <Timestamp: #{2024-02-16} - by MON KEY>
 ;;; :FILE ~/.emacs
 ;;; ==============================
@@ -458,8 +457,13 @@ Sets following variables:\n
               `(file . ,(substitute-env-vars "${HOME}/.cache/common-lisp/sbcl-2.4.6-macosx-arm64/Users/monkpearman/Documents/HG-Repos/CL-MON-CODE/")))
 
 
+(message ":FILE ~/.emacs -- :LOADING :FILE emacs-load-files/site-local-private.el\n")
 (load "site-local-private.el")
+
+(message ":FILE ~/.emacs -- :LOADING :FILE emacs-load-files/mon-default-loads.el\n")
 (load "mon-default-loads.el")
+
+(message ":FILE ~/.emacs -- :LOADING :FILE emacs-load-files/mon-default-start-loads.el\n")
 (load "mon-default-start-loads.el")
 
 ;;; ================================================================

@@ -1669,6 +1669,11 @@ If char is not a character, return nil.\n
 ;;; mon-url-utils.el▶▶▶
 ;;; ==============================
 
+
+(unless (and (intern-soft "*mon-country-code-hash-table*" obarray)
+             (bound-and-true-p *mon-country-code-hash-table*))
+(defvaralias '*mon-country-code-hash-table* '*mon-tld-hash-table*))
+;;
 ;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
 ;;
 (unless (and (intern-soft "w3m-copy-this-url-as-kill" obarray)
@@ -1829,13 +1834,17 @@ If char is not a character, return nil.\n
              (fboundp 'mon-help-swank-functions))
 (defalias 'mon-help-swank-functions 'mon-help-CL-swank-functions))
 ;;
+(unless (and (intern-soft "mon-help-cl-symbols-html")
+             (fboundp 'mon-help-cl-symbols-html))
+(defalias 'mon-help-cl-symbols-html 'mon-help-CL-symbols-html))
+;;
 (unless (and (intern-soft "mon-help-cl-symbols")
-             (fboundp 'mon-help-cl-symbols))
+             (fboundp 'mon-help-cl-symbols-html))
 (defalias 'mon-help-cl-symbols 'mon-help-CL-symbols))
 ;;
 (unless (and (intern-soft "mon-hyperspec-lookup") 
              (fboundp 'mon-hyperspec-lookup))
-(defalias 'mon-hyperspec-lookup 'mon-help-CL-symbols))
+(defalias 'mon-hyperspec-lookup 'mon-help-CL-symbols-html))
 ;;
 (unless (and (intern-soft "mon-help-CL-reader-macro-syntax") 
              (fboundp 'mon-help-CL-reader-macro-syntax))

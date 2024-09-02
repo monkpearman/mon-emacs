@@ -24,6 +24,7 @@
 ;; FUNCTIONS:▶▶▶
 ;; `mon-help-CL-local-time', `mon-help-CL-loop', `mon-help-CL-time',
 ;; `mon-help-CL-file-dir-functions', `mon-help-CL-minion', `mon-help-CL-symbols', 
+;; `mon-help-CL-symbols-html', `mon-help-CL-symbols-info', 
 ;; `mon-help-CL-pkgs', `mon-bind-mon-help-CL-pkgs-loadtime',
 ;; `mon-help-CL-slime-keys', `mon-help-slime-functions',
 ;; `mon-help-CL-swank-functions',
@@ -49,6 +50,7 @@
 ;; `mon-help-CL-sharpsign-syntax', `mon-help-CL-types', `mon-help-CL-format',
 ;; `mon-help-CL-format-usage', `mon-cln-ansi-info', `mon-help-CL-lambda-list',
 ;; `mon-help-CL-method-combination', `mon-cln-cxml-docs',
+;; `mon-help-CL--help-info-mon-symbols-hash-table',
 ;; FUNCTIONS:◀◀◀
 ;;
 ;; MACROS:
@@ -2271,9 +2273,9 @@ This function ie evaluated as advise :after `help-make-xrefs' as if by `add-func
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2024-08-28T02:16:27-04:00Z}#{24353} - by MON KEY>
-(define-button-type 'help-info-mon
-  :supertype 'help-xref
-  'help-function #'mon-help-CL--help-info-mon-function
+(define-button-type 'help-info-mon-CL
+  :supertype 'help-info-mon
+  'help-function 'mon-help-CL--help-info-mon-function
   'help-echo (purecopy "mouse-2, RET: read this Info node"))
 
 ;;; ==============================
@@ -9474,25 +9476,127 @@ SEE-ALSO `mon-help-utils-CL-loadtime', `mon-after-mon-utils-loadtime',
 ;;
 ;;; :TEST-ME (mon-help-utils-CL-loadtime t)
 
-
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-31T17:26:29-04:00Z}#{24356} - by MON KEY>
+(defvar *mon-help-CL-symbols-for-info* nil
+  "A hash-table of Common-Lisp symbol names mapped to their respective \"(ansicl)\" info nodes.\n
+:EXAMPLE\n
+ \(gethash \"y-or-n-p\" *mon-help-CL-symbols-for-info*\)\n
+ \(let* \(\(complete-info-node
+        \(gethash 
+         \(completing-read \"CL Symbol \(tab completes\): \" *mon-help-CL-symbols-for-info*\)
+         *mon-help-CL-symbols-for-info*\)\)
+       \(info-node \(concat \"\(ansicl\) \" complete-info-node\)\)\)
+  \(info info-node \"*info*\"\)\)\n
+:CALLED-BY `mon-help-CL-symbols' when  `*mon-help-CL-help-xref-button-type*' is :info\n
+:SEE-ALSO `common-lisp-hyperspec-format-characters',
+`common-lisp-hyperspec-reader-macros', `common-lisp-hyperspec-root',
+`mon-set-common-lisp-hspec-init'.\n▶▶▶")
+
+;;; ==============================
+;;; :FIXME rename to *mon-help-CL-symbols-html*
 ;;; :CREATED <Timestamp: #{2010-01-29T00:47:51-05:00Z}#{10045} - by MON>
-(defvar *mon-help-CL-symbols* nil
-  "hash-table of Common-Lisp symbol names mapped to their respective Hspec .html files.\n
-Bound at compile/loadtime with var `*clhs-symbol-v3-or-v7*' according to the
+(defvar *mon-help-CL-symbols-html* nil
+  "A hash-table of Common-Lisp symbol names mapped to their respective Hspec
+.html files.\n 
+Bound at compile/loadtime with var `common-lisp-hyperspec--symbols' or if that
+isn't present in the environment, `*clhs-symbol-v3-or-v7*' according to the
 value of `common-lisp-hyperspec-root'.\n
 :NOTE `*clhs-symbol-v3-or-v7*' unloaded with `mon-help-utils-CL-loadtime'.\n
-:CALLED-BY `mon-help-CL-symbols'\n
+:CALLED-BY `mon-help-CL-symbols' when  `*mon-help-CL-help-xref-button-type*' is :url\n
 :CALLED-BY `mon-help-CL-lispdoc'\n
 :SEE-ALSO `common-lisp-hyperspec-format-characters',
 `common-lisp-hyperspec-reader-macros', `common-lisp-hyperspec-root',
 `mon-set-common-lisp-hspec-init'.\n▶▶▶")
 ;;;
-(unless (bound-and-true-p *mon-help-CL-symbols*)
-  (setq *mon-help-CL-symbols* (make-hash-table :test #'equal :size 1024))
-  (mapc #'(lambda (k) 
-            (puthash (car k) (cadr k) *mon-help-CL-symbols*)) 
-        *clhs-symbol-v3-or-v7*))
+(unless (bound-and-true-p *mon-help-CL-symbols-html*)
+  (setq *mon-help-CL-symbols-html* (make-hash-table :test #'equal :size 1024))
+  (if (bound-and-true-p common-lisp-hyperspec--symbols)
+      (setq *mon-help-CL-symbols-html* common-lisp-hyperspec--symbols)
+    (mapc #'(lambda (k) 
+            (puthash (car k) (cadr k) *mon-help-CL-symbols-html*))
+           *clhs-symbol-v3-or-v7*)))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-01T09:32:38-04:00Z}#{24357} - by MON KEY>a
+(defun mon-help-CL--help-info-mon-symbols-hash-table ()
+"Loadtime function to bind bind variable `*mon-help-CL-symbols-for-info*'.
+Populate `*mon-help-CL-symbols-for-info*'s hash-table with contents of 
+info node \"\(ansicl\) Index\" assuming it exists in the current environment.\n
+:EXAMPLE\n
+ \(gethash \"y-or-n-p\" \(mon-help-CL--help-info-mon-symbols-hash-table\)\)\n
+:SEE-ALSO `mon-help-CL-make-help-xref-buttons-url-info',
+`mon-help-CL-make-help-xref-buttons-info',
+`*mon-help-CL-help-xref-button-type*', `mon-help-CL--help-info-mon-function',
+`mon-help-propertize-tags-in-buffer', `help-info-mon', `help-info-mon-CL',
+`common-lisp-hyperspec--symbols', `mon-help-CL-symbols',
+`*mon-help-CL-symbols-html*'.\n▶▶▶"
+ (let ((symbol-index-start-substring
+        (and (or (member "Index"  (Info-index-nodes "ansicl"))
+                 (prog1 nil 
+                   (warn ":FUNCTION `mon-help-CL--help-info-mon-symbols-hash-table' -- failed to read info node \"\(ansicl\) Index\" ")))
+             (with-current-buffer
+                (progn (info (concat "(ansicl) " "Index") "*info*")
+                       (current-buffer))
+               (let ((start-substring 
+                      (progn (goto-char (point-min))
+                             (search-forward-regexp "^* Menu:" (point-max) t))))
+                 (prog1 
+                     (buffer-substring-no-properties start-substring (point-max))
+                   (kill-buffer (current-buffer)))))))
+       (scrub-buffer (get-buffer-create "*MON-SCRUB-ANSICL-INDEX*"))
+       (read-buffer-as-list '()))
+   (if symbol-index-start-substring
+       (with-current-buffer scrub-buffer
+         (erase-buffer)
+         (insert symbol-index-start-substring)
+
+         ;; Replace "* " at bol
+         (goto-char (point-min))
+         (while (search-forward-regexp "^* " nil t)
+           (replace-match "")
+           (when (looking-at "*")
+              (skip-chars-forward "*")))
+
+         ;; replace "{...whitespace...}(line 6)"
+         (goto-char (point-min))
+         (while (search-forward-regexp "[[:blank:]]+(line[[:blank:]]+[[:digit:]]+)$" (point-max) t)
+           (replace-match "") )
+         
+          
+          ;; Delete blank lines
+          (goto-char (point-min))
+          (while (and (search-forward-regexp "^$" (point-max) t)
+                      (not (= (point) (point-max))))
+            (delete-blank-lines))
+          
+          ;; Transform all remaining lines into lists of form:
+          ;; (SYMBOL-NAME" "NODE-TOPIC-NAME")
+           (goto-char (point-min))
+           (while (search-forward-regexp "^\\(.*\\)\\(:[[:blank:]]+\\)\\(.*.$\\)" (point-max) t)
+                  (replace-match "(\"\\1\"   \"\\3\")"))
+          
+          ;; Make it all into a list:
+           (goto-char (point-min))
+          (insert "(")
+          (goto-char (point-max))
+          (insert ")")
+          ;; read in contents of current-buffer
+          (goto-char (point-min))
+          (setq read-buffer-as-list
+                (read (current-buffer)))
+          (kill-buffer scrub-buffer))
+      (kill-buffer scrub-buffer))
+   (if read-buffer-as-list
+      (let ((ht (make-hash-table :test #'equal :size (length read-buffer-as-list))))
+        (dolist (pairs read-buffer-as-list
+                       (setq read-buffer-as-list ht))
+          (puthash (car pairs) (cadr pairs) ht)))
+    (message ":FUNCTION `mon-help-CL--help-info-mon-symbols-hash-table' -- failed to read info node \"\(ansicl\) Index\"")
+    read-buffer-as-list)))
+;;
+;;; (setq *mon-help-CL-symbols-for-info* (mon-help-CL--help-info-mon-symbols-hash-table))
+
 
 ;;; ==============================
 ;;; :TODO Add optional arg that allows lookup via info-look instead of hyperspec
@@ -9521,44 +9625,71 @@ value of `common-lisp-hyperspec-root'.\n
 ;;; KEYWORD is either `:topic', `:mode', `:regexp', `:ignore-case',
 ;;  `:doc-spec', `:parse-rule', or `:other-modes'.
 
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-01T17:36:20-04:00Z}#{24357} - by MON KEY>
+(defun mon-help-CL-symbols-info (&optional cl-symbol-string intrp)
+"Find the info node for CL-SYMBOL-STRING.\n
+CL-SYMBOL-STRING should be a hash-table key for '*mon-help-CL-symbols-for-info*',
+an error is signaled if not.\n
+When called-interactively or INTRP is non-nil CL-SYMBOL-STRING is read as if by
+`completing-read'.\n
+:EXAMPLE\n\n \(mon-help-CL-symbols-info \"CL\"\)\n
+ \(mon-help-CL-symbols-info nil t\)\n
+ \(call-interactively 'mon-help-CL-symbols-info\)\n
+:SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-symbols-html',
+`mon-help-CL--help-info-mon-function'.\n▶▶▶"
+  (interactive "\i\np")
+  (let* ((cl-symbol
+           (if (or intrp  (interactive-p))
+               (completing-read "CL Symbol (tab completes): " *mon-help-CL-symbols-for-info*)
+             (or (and (gethash cl-symbol-string *mon-help-CL-symbols-for-info*)
+                      cl-symbol-string)
+                 (error  ":FUNCTION `mon-help-CL-symbols-info' -- argument CL-SYMBOL-STRING not present in hash-table `*mon-help-CL-symbols-for-info*' :GOT %S" cl-symbol-string))))
+         (cl-symbol-info-node (gethash cl-symbol *mon-help-CL-symbols-for-info*))
+         (info-node (concat "(ansicl) " cl-symbol-info-node)))
+    (mon-help-CL--help-info-mon-function info-node)))
+
 
 ;;; ==============================
 ;;; :NOTE Consider optimizing this w/ `lazy-completion-table' macro
 ;;; :CREATED <Timestamp: #{2010-01-29T00:45:31-05:00Z}#{10045} - by MON>
-(defun mon-help-CL-symbols (&optional cl-symbol-string ffox intrp)
+(defun mon-help-CL-symbols-html (&optional cl-symbol-string ffox intrp)
   "Completion function for the Common Lisp symbols in the hspec.\n
-CL-SYMBOL-STRING is a string to associate with a value in `*mon-help-CL-symbols*'.\n
+CL-SYMBOL-STRING is a string to associate with a value in `*mon-help-CL-symbols-html*'.\n
 When `IS-MON-P-GNU' or a w3m executable is in path and `w3m-browse-url' is fboundp
 browse th hspec in Emacsw3m.\n
 When FFOX is non-nil or called-interactively with prefix arg ensure browsing with Firefox.\n
-:EXAMPLE\n\n\(mon-help-CL-symbols \"defclass\"\)\n\(mon-help-CL-symbols \"#<\"\)\n
-\(mon-help-CL-symbols nil nil\)\n\(mon-help-CL-symbols \"defclass\" t\)\n
-\(mon-help-CL-symbols nil nil t\)\n\(apply 'mon-help-CL-symbols nil nil '\(t\)\)\n
+:EXAMPLE\n\n\(mon-help-CL-symbols-html \"defclass\"\)\n\(mon-help-CL-symbols-html \"#<\"\)\n
+\(mon-help-CL-symbols-html nil nil\)\n\(mon-help-CL-symbols-html \"defclass\" t\)\n
+\(mon-help-CL-symbols-html nil nil t\)\n\(apply 'mon-help-CL-symbols-html nil nil '\(t\)\)\n
 :NOTE When using Hspec v3 and Emacs-w3m you may want to comment out the
 java-applet e.g.\n
  <APPLET HEIGHT=80 WIDTH=450 CODE=\"CLIndex.class\" CODEBASE=\"../Data/\"></APPLET>\n
 :SEE :FILE <`common-lisp-hyperspec-root'>FrontMatter/Symbol-Index.html\n
-:SEE-ALSO `*mon-help-CL-symbols*', `mon-help-CL-lispdoc',
-`mon-CL-package-complete', `common-lisp-hyperspec-issuex-table',
-`common-lisp-hyperspec-symbol-table' `quicklisp-system-complete',
-`mon-help-CL-pkgs', `mon-help-CL-file-dir-functions', `mon-help-CL-time',
-`mon-help-CL-loop', `mon-help-CL-do', `mon-help-CL-local-time',
-`mon-help-CL-swank-functions', `mon-help-CL-slime-keys',
-`common-lisp-hyperspec-root', `mon-help-utils-CL-loadtime',
-`mon-purge-cl-symbol-buffers-on-load', `mon-set-common-lisp-hspec-init'.\n▶▶▶"
+:SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-symbols-info',
+`*mon-help-CL-symbols-html*', `mon-help-CL-lispdoc', `mon-CL-package-complete',
+`common-lisp-hyperspec-issuex-table', `common-lisp-hyperspec-symbol-table'
+`quicklisp-system-complete', `mon-help-CL-pkgs',
+`mon-help-CL-file-dir-functions', `mon-help-CL-time', `mon-help-CL-loop',
+`mon-help-CL-do', `mon-help-CL-local-time', `mon-help-CL-swank-functions',
+`mon-help-CL-slime-keys', `common-lisp-hyperspec-root',
+`mon-help-utils-CL-loadtime', `mon-purge-cl-symbol-buffers-on-load',
+`mon-set-common-lisp-hspec-init'.\n▶▶▶"
   (interactive "\i\nP\np")
   ;;; :WAS (let ((rd-cl-sym (cond ((and cl-symbol-string (stringp cl-symbol-string))
-  ;;;                         (member cl-symbol-string *mon-help-CL-symbols*)
+  ;;;                         (member cl-symbol-string *mon-help-CL-symbols-html*)
   ;;;                         (cadr (assoc-string cl-symbol-string *clhs-symbol-v3-or-v7*)))
   ;;;                        ((or intrp t)
-  ;;;                         (cadr (assoc (completing-read "cl-cymbol :" *mon-help-CL-symbols*) 
+  ;;;                         (cadr (assoc (completing-read "cl-cymbol :" *mon-help-CL-symbols-html*) 
   ;;;                                      *clhs-symbol-v3-or-v7*))))))
   (let ((rd-cl-sym (cond ((and cl-symbol-string (stringp cl-symbol-string))
-                          (gethash cl-symbol-string *mon-help-CL-symbols*))
+                          (car (or (gethash cl-symbol-string *mon-help-CL-symbols-html*)
+                                   (error ":FUNCTION `mon-help-CL-symbols-html' -- arg CL-SYMBOL-STRING not present in hash-table `*mon-help-CL-symbols-html*' :GOT %S" cl-symbol-string))))
                          ((or intrp t) 
-                          (gethash 
-                           (completing-read "CL Symbol (tab completes): " *mon-help-CL-symbols*)
-                           *mon-help-CL-symbols*)))))
+                          (car (gethash 
+                                (completing-read "CL Symbol (tab completes): "
+                                                 *mon-help-CL-symbols-html*)
+                                *mon-help-CL-symbols-html*))))))
     (setq rd-cl-sym (concat 
                      (unless (or (string-match-p "file://" common-lisp-hyperspec-root) 
                                  (string-match-p "http://" common-lisp-hyperspec-root))
@@ -9576,14 +9707,73 @@ java-applet e.g.\n
           (t (browse-url-generic rd-cl-sym)))))
 ;; 
 ;;
-;;; :TEST-ME (mon-help-CL-symbols "defclass")
-;;; :TEST-ME (mon-help-CL-symbols "#<")
-;;; :TEST-ME (mon-help-CL-symbols nil nil)
-;;; :TEST-ME (mon-help-CL-symbols "defclass" t)
-;;; :TEST-ME (mon-help-CL-symbols nil nil t)
+;;; :TEST-ME (mon-help-CL-symbols-html "defclass")
+;;; :TEST-ME (mon-help-CL-symbols-html "#<")
+;;; :TEST-ME (mon-help-CL-symbols-html nil nil)
+;;; :TEST-ME (mon-help-CL-symbols-html "defclass" t)
+;;; :TEST-ME (mon-help-CL-symbols-html nil nil t)
 
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-01T18:24:01-04:00Z}#{24357} - by MON KEY>
+(defun mon-help-CL-symbols (&optional cl-symbol-string intrp)
+  "Find the URL or info node for CL-SYMBOL-STRING.\n
+CL-SYMBOL-STRING should be a hash-table key for
+When called-interactively or INTRP is non-nil CL-SYMBOL-STRING is read as if by
+`completing-read'.\n
+When value of `*mon-help-CL-help-xref-button-type*' is :info or :INFO
+CL-SYMBOL-STRING is found in it's corresponding \"*info*\" buffer, and
+CL-SYMBOL-STRING is dereferenced in hash-table `*mon-help-CL-symbols-for-info*'
+and passed to `mon-help-CL-symbols-info'.\n
+When value of `*mon-help-CL-help-xref-button-type*' is :url or :URL
+CL-SYMBOL-STRING is found in a corresponding web browser or emacw web buffer, and
+CL-SYMBOL-STRING is dereferenced in hash-table `*mon-help-CL-symbols-html*' and
+passed to `mon-help-CL-symbols-html'.\n
+:EXAMPLE\n
+ \(call-interactively 'mon-help-CL-symbols\)\n
+ \(mon-help-CL-symbols nil t\)\n
+ \(mon-help-CL-symbols \"CL\" t\)\n
+ \(let \(\(*mon-help-CL-help-xref-button-type* :info\)\)
+   \(mon-help-CL-symbols \"CL\"\)\)\n
+ \(let \(\(*mon-help-CL-help-xref-button-type* :url\)\)
+    \(mon-help-CL-symbols nil t\)\)\n
+ \(let \(\(*mon-help-CL-help-xref-button-type* :url\)\)
+    \(mon-help-CL-symbols \"clrhash\"\)\)\n
+:SEE-ALSO .\n▶▶▶"
+  (interactive "\i\np") 
+  (let* ((info-0-url-1
+          ;; 0 for :info, 1 for :url
+          (cond ((or (equal *mon-help-CL-help-xref-button-type* :info)
+                     (equal *mon-help-CL-help-xref-button-type* :INFO))
+                 0)
+                ((or (equal *mon-help-CL-help-xref-button-type* :url)
+                    (equal *mon-help-CL-help-xref-button-type* :URL))
+                 1)
+                (t (error ":FUNCTION `mon-help-CL-symbols' - :VARIABLE `*mon-help-CL-help-xref-button-type*' value not :info or :url"))))
+         (cl-symbol
+          (cond ((or intrp (interactive-p))
+                 (or (and (= info-0-url-1 0)
+                          (completing-read "CL Symbol (tab completes): " *mon-help-CL-symbols-for-info*))
+                     (and (= info-0-url-1 1)
+                          (completing-read "CL Symbol (tab completes): " *mon-help-CL-symbols-html*))))
+                (cl-symbol-string
+                 (or 
+                  ;; We're looking in the info table
+                  (and (= info-0-url-1 0)
+                       (or (and (gethash cl-symbol-string *mon-help-CL-symbols-for-info*)
+                                cl-symbol-string)
+                           (error ":FUNCTION `mon-help-CL-symbols' -- Argument CL-SYMBOL-STRING not found in hash-table `*mon-help-CL-symbols-for-info*' :GOT %S" cl-symbol-string)))
+                  ;; We're looking in the html table
+                  (and (= info-0-url-1 1)
+                           (or (and (gethash cl-symbol-string *mon-help-CL-symbols-html*)
+                                    cl-symbol-string)
+                               (error ":FUNCTION `mon-help-CL-symbols' -- Argument CL-SYMBOL-STRING not found in hash-table `*mon-help-CL-symbols-html*' :GOT %S" cl-symbol-string))))))))
+    (or (and (= info-0-url-1 0)
+             (mon-help-CL-symbols-info cl-symbol))
+        (and (= info-0-url-1 1)
+              (mon-help-CL-symbols-html cl-symbol)))))
 
 
+;;; ==============================
 ;;; :CREATED <Timestamp: #{2012-05-31T12:34:50-04:00Z}#{12224} - by MON KEY>
 (defun mon-cln-cxml-docs (start end)
   "Convert the markup of the CXML docstring between START and END to something more human friendly."
@@ -9649,12 +9839,13 @@ java-applet e.g.\n
 Default is to search the `symbol-at-point' or regexp matching the regexp:\n
  \"[A-Za-z0-9*%+-]+\"\n
 When there is no CL `symbol-at-point' prompts for a CL symbol to search for.\n
-If the variable `*mon-help-CL-symbols*' is bound and satisfies the predicate
+If the variable `*mon-help-CL-symbols-html*' is bound and satisfies the predicate
 `hash-table-p' try completing-read for a CL symbols in hash-table keys.\n
 Prompt for the type of search type for lispdoc.com as either:
   basic [b]  full-text [f]\n
 :SEE (URL `http://lispdoc.com')\n
-:SEE-ALSO `mon-help-CL-symbols', `mon-CL-package-complete',
+:SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-symbols-html',
+`mon-help-CL-symbols-info', `mon-CL-package-complete',
 `common-lisp-hyperspec-root', `common-lisp-hyperspec-issuex-table',
 `common-lisp-hyperspec-symbol-table' `quicklisp-system-complete',
 `mon-help-CL-pkgs', `mon-help-CL-file-dir-functions', `mon-help-CL-time',
@@ -9741,14 +9932,15 @@ The \"extended\" ‘loop’ form:
 `mon-cln-wiki', `mon-cln-xml-escapes', `mon-cln-xml<-parsed',
 `mon-cln-xml<-parsed-strip-nil'.\n▶▶▶"
   (interactive "r")
-  (save-excursion 
-    (save-restriction
-      (narrow-to-region start end)
-      (mon-g2be -1)
-      (dolist (mcai-D-0 *regexp-ansicl-info*)
-        (while (search-forward-regexp (car mcai-D-0) nil t)
-          (replace-match (cdr mcai-D-0)))
-        (mon-g2be -1)))))
+  (save-excursion
+    (let ((buffer-read-only nil))
+      (save-restriction
+        (narrow-to-region start end)
+        (mon-g2be -1)
+        (dolist (mcai-D-0 *regexp-ansicl-info*)
+          (while (search-forward-regexp (car mcai-D-0) nil t)
+            (replace-match (cdr mcai-D-0)))
+          (mon-g2be -1))))))
 
 
 ;;; ==============================

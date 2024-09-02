@@ -176,7 +176,7 @@
 ;;; CODE:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
@@ -3405,7 +3405,15 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
    ))
 ;;
 ;; (mon-set-system-specific-and-load-init t)
+
+
+
 (mon-set-system-specific-and-load-init)
+
+("^▷" . " ;  ")
+("^[[:blank:]]+▷" . " ; ")
+(search-forward-regexp "^[[:blank:]]+▷" (point-max) t)
+
 
 ;;; ==============================
 ;;; :NOTE Load keybindings last to ensure everything is loaded in first.
@@ -3431,5 +3439,6 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
 ;;; ==============================
 ;;; mon-default-start-loads.el ends here
 ;;; EOF
+
 
 

@@ -675,7 +675,6 @@ Default is \"*MON-HELP*\".\n
 ;;; would use "MATHEMATICAL LEFT/RIGHT ANGLE BRACKET" e.g.:
 ;;; ?\u27e8 "⟨" and ?\u27e9 "⟩"  (ucs-insert 10217) => ⟩ (ucs-insert 10216) => ⟨
 ;;; But, That code-point doesn't have glyph with our pref. font on current w32.
-;;; :MODIFICATIONS <Timestamp: #{2010-02-26T14:52:42-05:00Z}#{10085} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-11-20T17:41:52-05:00Z}#{09475} - by MON>
 (defcustom *mon-help-mon-tags-alist* nil
   "A list of commonly used MON tags.\n
@@ -786,6 +785,7 @@ These should be formatted in upcase as either:
             "<CONSTANT>"
             "<CLASS>"
             "<CONDITION-TYPE>"
+            "<LOCAL-MACRO>"
             "<FUNCTION>"
             "<MACRO>"
             "<RESTART>"
@@ -1775,8 +1775,12 @@ the current symbols in `obarray' having byte-optimizer props is rehashed.\n
        :inherit mon-help-KEY-tag
        :weight semi-bold  ;; :slant oblique bold normal semi-light normal
        ;; (color-desaturate-name "AntiqueWhite3" 20)  "#c0d9bf69bda3"
-       ;; (color-darken-name "sky blue" 10)
+       ;; (color-darken-name "sky blue" 80)
+       ;;
+       ;; (color- "sky blue" 80)
+       ;; (color-lighten-name "sky blue" 40)
         :foreground "#67b0c1cde69c"
+       ;; :foreground "#ffffffffffff"
        ))
    "*A mon-help-symbol Common Lisp tag face.\n
 :KEYWORD-REGEXPS-IN `*regexp-mon-doc-help-cl-tags*'\n
@@ -2073,14 +2077,14 @@ at loadtime.\n
  \(advice-function-member-p
   #'mon-help-propertize-tags-in-buffer 
  \(symbol-function 'mon-help-CL-make-help-xref-buttons-url-info\)\)\n
-:SEE-ALSO `mon-help-font-lock-comment-keywords-matcher',
-`mon-help-CL-make-help-xref-buttons-url-info', `mon-help-mon-tags',
-`mon-help-insert-tags'.\n▶▶▶"
-  (with-current-buffer (get-buffer (or buffer "*Help*")) ;; (help-buffer)
+:SEE-ALSO `mon-help-propertize-help-info-button', `mon-help-font-lock-comment-keywords-matcher',
+`mon-help-CL-make-help-xref-buttons-url-info', `mon-help-CL-make-help-xref-buttons-info',
+`mon-help-mon-tags', `mon-help-insert-tags'.\n▶▶▶"
+  (save-excursion
+    (with-current-buffer (get-buffer (or buffer "*Help*")) ;; (help-buffer)
     (let ((buffer-read-only nil))
       (mon-help-propertize-tags
-       '(*regexp-mon-doc-help-cl-tags* 0 mon-help-CL-tag)
-       ))))
+       '(*regexp-mon-doc-help-cl-tags* 0 mon-help-CL-tag))))))
 
 ;;; ==============================
 ;;; :PREFIX "mhpt-"
@@ -2097,9 +2101,10 @@ Each list should have the form:\n
  \(some-regexp-or-var match-group face-name\)\n
 :EXAMPLE\n\n(mon-help-propertize-tags-TEST\)\n
  \(with-current-buffer \(get-buffer \"*Help*\"\)
-   \(let \(\(buffer-read-only nil\)\)
+    \(let \(\(buffer-read-only nil\)\)
      \(mon-help-propertize-tags\)\)\)\n
-:SEE-ALSO `mon-help-propertize-tags-in-buffer', `mon-help-propertize-tags-TEST',
+:SEE-ALSO `mon-help-propertize-help-info-button',
+`mon-help-propertize-tags-in-buffer', `mon-help-propertize-tags-TEST',
 `mon-help-mon-tags', `mon-help-insert-tags'.\n▶▶▶"
   (let ((mhpt-props
          ;; :WAS
@@ -2128,13 +2133,14 @@ Each list should have the form:\n
                                             :w-args (caddr mhpt-L-0)))))
                        more-triples)))))
     (let ((case-fold-search nil))
-      (mapc #'(lambda (mhpt-L-1)              
+      (save-excursion
+        (mapc #'(lambda (mhpt-L-1)              
                 (mon-g2be -1)
                 (while (search-forward-regexp  (elt mhpt-L-1 0) nil t)
                   (add-text-properties  
                    (match-beginning (elt mhpt-L-1 1)) (match-end (elt mhpt-L-1 1)) 
                    `(face ,(elt mhpt-L-1 2)))))
-            mhpt-props))))
+            mhpt-props)))))
 ;;
 ;;; :TEST-ME (mon-help-propertize-tags-TEST)
 
@@ -2201,7 +2207,6 @@ by `completing-read'.\n
 ;; (comment-tags docstr-tags meta-tags-keybindings meta-tags)         
 ;;; ==============================
 ;;; :TODO Factor out the read-only-ness checks below to a dedicated macro/defsubst.
-;;; :MODIFICATIONS <Timestamp: #{2010-03-23T15:29:06-04:00Z}#{10122} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-11-20T18:20:17-05:00Z}#{09475} - by MON>
 ;;;###autoload
 (defun mon-help-insert-tags (&optional no-insrt intrp &rest tag-categ)
@@ -2477,7 +2482,6 @@ Overlay displayed with the face `minibuffer-prompt'.\n
     (remove-overlays (mon-g2be -1 t)  (mon-g2be 1 t) 'face 'minibuffer-prompt)))
 
 ;;; ==============================
-;;; :MODIFICATIONS <Timestamp: #{2010-01-12T12:36:15-05:00Z}#{10022} - by MON>
 ;;; :CREATED <Timestamp: #{2010-01-08T23:28:40-05:00Z}#{10015} - by MON>
 (defun mon-help-overlay-result (show-here to-here exit-c &optional show-str) ;for-secs 
   "Return overlay from SHOW-HERE TO-HERE and remove it with exit char EXIT-C.\n
@@ -2588,7 +2592,6 @@ Matches the following:
 ;;; :TODO Verify the logic on the arg KILL-EM-BEFORE-THEY-GROW no clear that its
 ;;;        doing anything or working correctly.
 ;;; :NOTE See the hidden fnctn: `make-help-screen'.
-;;; :MODIFICATIONS <Timestamp: #{2010-02-03T15:16:13-05:00Z}#{10053} - by MON>
 ;;; :CREATED <Timestamp: #{2009-12-20T17:50:49-05:00Z}#{09517} - by MON>
 (defun mon-help-temp-docstring-display (the-help-doc &optional some-other-buffer
                                                      kill-em-before-they-grow)
@@ -3772,7 +3775,6 @@ Used to generate docstring of `mon-help-errors'.\n
 
 
 ;;; ==============================
-;;; :MODIFICATIONS <Timestamp: #{2009-09-07T19:54:58-04:00Z}#{09371} - by MON KEY>
 ;;; :FIXES CL &key &aux args in the tail of Elisp &rest e.g.
 ;;;       (help-function-arglist 'mon-help-function-spit-doc)
 ;;;       ;=> (sym-name &rest --cl-rest--)
@@ -3965,7 +3967,6 @@ is a string value delimited by `<' and `>'.\n
 ;;; ==============================
 ;;; :PREFIX "mhpis-"
 ;;; :CREATED <Timestamp: #{2009-09-07T20:04:57-04:00Z}#{09372} - by MON KEY>
-;;; :MODIFICATIONS <Timestamp: #{2009-09-30T17:29:53-04:00Z}#{09403} - by MON KEY>
 ;;(eval-and-compile
 (defun mon-help-parse-interactive-spec (fname)
   (let* ((mhpis-int-spec *mon-help-interactive-spec-alist*)
@@ -6371,7 +6372,6 @@ This is different from getting the char's syntax:
 
 ;;; ==============================
 ;;; :RENAMED `mon-help-file-dir-functions' -> `mon-help-file-dir-functions-usage'
-;;; :MODIFICATIONS <Timestamp: #{2009-10-28T14:44:24-04:00Z}#{09443} - by MON KEY>
 ;;; :CREATED <Timestamp: Wednesday May 06, 2009 @ 01:13.41 PM - by MON KEY>
 ;;;###autoload
 (defun mon-help-file-dir-functions-usage (&optional insertp intrp)
@@ -15381,7 +15381,7 @@ whatis
 ;;; :NOTE This fails: (elisp-index-search "elisp-index-search")
 ;;; :COURTESY Andy Stewart <lazycat.manatee@gmail.com>
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/lazycat-toolkit.el')
-;;; :MODIFICATIONS <Timestamp: #{2009-08-26T17:36:47-04:00Z}#{09353} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-08-26T17:36:47-04:00Z}#{09353} - by MON KEY>
 ;;;###autoload
 (defun mon-index-elisp-symbol ()
   "Find TOPIC in the indices of the Emacs Lisp Reference Manual.\n
@@ -15458,7 +15458,6 @@ whatis
 
 
 ;;; ==============================
-;;; :MODIFICATIONS <Timestamp: #{2009-10-01T22:22:37-04:00Z}#{09405} - by MON KEY>
 ;;; :CREATED <Timestamp: Thursday July 02, 2009 @ 11:50.50 AM - by MON KEY>
 ;;(defvar *w32-env-variables-alist* nil
 (defcustom *w32-env-variables-alist* nil
@@ -15564,8 +15563,6 @@ Each element of List has the form:\n
 
 ;;; ==============================
 ;;; :REQUIRES `mon-string-justify-left'
-;;; :MODIFICATIONS <Timestamp: #{2010-01-08T18:51:29-05:00Z}#{10015} - by MON KEY>
-;;; :MODIFICATIONS <Timestamp: #{2009-10-01T22:22:37-04:00Z}#{09405} - by MON KEY>
 ;;; :CREATED <Timestamp: Thursday July 02, 2009 @ 11:50.50 AM - by MON KEY>
 (defun mon-help-w32-env (&optional insertp intrp)
   (interactive "i\nP")
@@ -15635,9 +15632,7 @@ Each element of List has the form:\n
 ;;; ==============================
 ;;; :COURTESY Aaaron Hawley :HIS
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley_source')
-;;; :MODIFICATIONS <Timestamp: #{2010-02-26T14:21:58-05:00Z}#{10085} - by MON KEY>
-;;; :MODIFICATIONS <Timestamp: #{2009-11-20T16:48:11-05:00Z}#{09475} - by MON KEY>
-;;; :MODIFICATIONS <Timestamp: Wednesday June 17, 2009 @ 11:31.47 AM - by MON KEY>
+;;; :CREATED <Timestamp: #{2010-02-26T14:21:58-05:00Z}#{10085} - by MON KEY>
 (defvar *mon-help-reference-keys* nil)
 ;;
 ;;
@@ -17074,7 +17069,7 @@ HEADING-TITLE a string used for the title of the return heading.\n
 ;;; ==============================
 ;;; :COURTESY Aaaron Hawley
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley_source')
-;;; :MODIFICATIONS <Timestamp: Wednesday June 17, 2009 @ 11:31.47 AM - by MON KEY>
+;;; :CREATED <Timestamp: Wednesday June 17, 2009 @ 11:31.47 AM - by MON KEY>
 (defun mon-help-keys-wikify (&optional use-var insrtp intrp)
   "Return content between delimiters wikified for insertion/update to EmacsWiki.\n
 Content should be delimited at top and bottom by:\n
@@ -17193,7 +17188,7 @@ Return value is a three elt list with the form:\n
 
 ;;; ==============================
 ;;; :NOTE Maybe MON remembers stealing this from Pascal Bourguignon?
-;;; :MODIFICATIONS <Timestamp: Saturday May 30, 2009 @ 06:26.12 PM - by MON KEY>
+;;; :CREATED <Timestamp: Saturday May 30, 2009 @ 06:26.12 PM - by MON KEY>
 (defun mon-help-escape-for-ewiki (&optional start end ref-sheet)
   "Escape special characters in the region as if a Lisp string.\n
 Inserts backslashes in front of special characters \(namely `\\' backslash, `\"'
@@ -17239,7 +17234,7 @@ supplied without the surrounding quotes.\n
 
 ;;; ==============================
 ;;; :NOTE Maybe MON remember stealing this from Pascal Bourguignon?
-;;; :MODIFICATIONS <Timestamp: Saturday May 30, 2009 @ 06:26.12 PM - by MON KEY>
+;;; :CREATED <Timestamp: Saturday May 30, 2009 @ 06:26.12 PM - by MON KEY>
 (defun mon-help-unescape-for-ewiki (&optional start end ref-sheet)
   "Unescape special characters from the CL string specified by the region.\n
 This amounts to removing preceeding backslashes from characters they escape.\n

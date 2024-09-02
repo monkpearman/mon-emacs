@@ -60,7 +60,7 @@
 ;; VARIABLES:
 ;; `*mon-help-CL-cmu-ai-repo*', `*mon-help-CL-ext-pkg-map*',
 ;; `*mon-hspec-root-dir*', `*mon-hspec-parse-buffer*', `*mon-hspec-unparse-buffer*',
-;; `*clhs-symbol-v3-or-v7*', `*mon-help-CL-symbols*',  `*mon-CL-indent-specs*',
+;; `*clhs-symbol-v3-or-v7*', `*mon-help-CL-symbols-html*',  `*mon-CL-indent-specs*',
 ;; `*regexp-ansicl-info*'
 ;;
 ;; GROUPS:
@@ -69,7 +69,7 @@
 ;; ALIASED/ADVISED/SUBST'D:
 ;; `mon-help-cl-packages'      -> `mon-help-CL-pkgs'
 ;; `mon-help-cl-symbols'       -> `mon-help-CL-symbols'
-;; `mon-hyperspec-lookup'      -> `mon-help-CL-symbols'
+;; `mon-hyperspec-lookup'      -> `mon-help-CL-symbols-html'
 ;; `mon-help-slime-keys'       -> `mon-help-CL-slime-keys'
 ;; `mon-help-swank-functions'  -> `mon-help-CL-swank-functions'
 ;; `mon-help-CL-reader-macro-syntax' -> `mon-help-CL-sharpsign-syntax'
@@ -84,7 +84,7 @@
 ;; `*cl-cmu-ai-repo*'                        -> `*mon-help-CL-cmu-ai-repo*'
 ;; `*cl-ext-pkg-map*'                        -> `*mon-help-CL-ext-pkg-map*'
 ;; `*cl-ext-pkg-map-no-pull*'                -> `*mon-help-CL-ext-pkg-map-no-pull*'
-;; `*mon-cl-symbols*'                        -> `*mon-help-CL-symbols*'
+;; `*mon-cl-symbols*'                        -> `*mon-help-CL-symbols-html*'
 ;; `*mon-hs-unprs-buffer*'                   -> `*mon-hspec-unparse-buffer*'
 ;; `*mon-hs-parse-buffer*'                   -> `*mon-hspec-parse-buffer*'
 ;; `*mon-hs-root-dir*'                       -> `*mon-hspec-root-dir*'
@@ -254,13 +254,14 @@
     mon-help-CL-sharpsign-syntax mon-help-CL-format mon-help-CL-format-usage
     mon-help-CL-slime-keys mon-help-CL-lambda-list mon-help-slime-functions
     mon-help-CL-swank-functions mon-help-CL-local-time mon-help-CL-minion
-    mon-help-utils-CL-loadtime mon-help-CL-symbols mon-help-CL-lispdoc
-    mon-cln-cxml-docs
+    mon-help-utils-CL-loadtime mon-help-CL-symbols mon-help-CL-symbols-html
+    mon-help-CL-symbols-info mon-help-CL-lispdoc
+    mon-cln-cxml-docs mon-help-CL--help-info-mon-symbols-hash-table
     ;; :VARIABLES
     *mon-help-CL-cmu-ai-repo* *mon-help-CL-ext-pkg-map*
     *mon-help-CL-ext-pkg-map-no-pull* mon-hspec-root-dir* *mon-hspec-parse-buffer*
     **mon-hspec-unparse-buffer* mon-CL-indent-specs* clhs-symbol-v3-or-v7*
-    *mon-help-CL-symbols*
+    *mon-help-CL-symbols-html* *mon-help-CL-symbols-for-info*
     *mon-doc-help-CL-xrefs*)
   "Xrefing list of `mon-help-CL-*' functions, constants, and variables.\n
 The symbols contained of this list are defined in :FILE <FILE>\n
@@ -279,8 +280,6 @@ The symbols contained of this list are defined in :FILE <FILE>\n
   :type '(repeat symbol)
   :group 'mon-doc-help-CL
   :group 'mon-xrefs)
-
-
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-23T17:47:48-05:00Z}#{09523} - by MON KEY>
@@ -816,7 +815,6 @@ Idiomatic loadtime evaulation of this fncn has the following form:\n
 ;;|
 ;;`----
 
-
 
 ;;; ==============================
 ;;; :RENAMED `mon--test--help-wget-cl-pkgs' -> `mon-help-CL-wget-pkgs-TEST'
@@ -900,7 +898,6 @@ loop returns the absent URL's:\n
 ;;; :TEST-ME (mon-help-CL-wget-pkgs (concat default-directory "test-wget-cl-pkgs"))
 ;;; :TEST-ME (mon-help-CL-wget-pkgs-TEST)
 
-
 ;;; ==============================
 ;;; :TODO If 'no-exec is t dl the files in `wget-fname' some other way.
 ;;;
@@ -959,7 +956,6 @@ loop returns the absent URL's:\n
 ;;;    ;;((system-type 'windows-nt))
 ;;;  (mon-help-CL-wget-pkgs-for-shell-command "wget-script-2009-12-24"))
 ;;; (mon-help-CL-wget-pkgs-for-shell-command "wget-script-2010-02-18")
-
 
 
 ;;; ==============================
@@ -2215,7 +2211,7 @@ text properties when entering the *Help* buffer.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2024-08-28T02:16:05-04:00Z}#{24353} - by MON KEY>
 (defvar *mon-help-CL-help-xref-button-type* :info ;; :url
-"indicate which type of xref buttons to make in \"*Help*\" buffer.\n
+"Indicates which type of xref buttons to make in \"*Help*\" buffer.\n
 Valid values are one of the folowing keywordds :info  or :url.\n
 The function `mon-help-CL-make-help-xref-buttons-url-info' examines the value set here.
 When value is :info then `mon-help-CL-make-help-xref-buttons-info' is invoked.
@@ -2229,7 +2225,7 @@ When value is :url then `mon-help-CL-make-help-xref-buttons-url' is invoked.
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2024-08-28T02:17:01-04:00Z}#{24353} - by MON KEY>
 (defun mon-get-help-buffer-symbol ()
-  "Return value of `help-mode--current-data' in *Help buffer.\n
+  "Return value of `help-mode--current-data' in \"*Help*\" buffer.\n
 :EXAMPLE\n\n \(mon-get-help-buffer-symbol\)\n
 :SEE-ALSO `mon-help-buffer-symbol-mon-help-CL-p'.\n▶▶▶"
   (plist-get (buffer-local-value 'help-mode--current-data (get-buffer "*Help*")) :symbol))
@@ -2247,12 +2243,16 @@ variable `*mon-help-CL-functions-to-propertize*'.`
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2024-08-28T02:16:33-04:00Z}#{24353} - by MON KEY>
 (defun mon-help-CL-make-help-xref-buttons-url (&optional buffer)
-  "Update \"*Help*\" buffer or BUFFER with URL `help-xref-button's when current `help-buffer' symbol satisfies `mon-help-buffer-symbol-mon-help-CL-p'.\n
+  "Update \"*Help*\" buffer or BUFFER with URL `help-xref-button'
+`help-info-mon-CL', when current `help-buffer' symbol satisfies
+`mon-help-buffer-symbol-mon-help-CL-p'.\n
 URL buttons are added for each Common Lisp function which matches a symbol name
 in `common-lisp-hyperspec--symbols'.\n
-This function ie evaluated as advise :after `help-make-xrefs' as if by `add-function'.\n
-:EXAMPLE\n\n \(describe-function 'mon-help-CL-arrays\)\n
- \(advice-function-member-p #'mon-help-CL-make-help-xref-buttons \(symbol-function 'help-make-xrefs\)\)\n
+:CALLED-BY `mon-help-CL-make-help-xref-buttons-url-info' when value of
+`*mon-help-CL-help-xref-button-type*' is :url.\n
+:EXAMPLE\n\n
+ \(let \(\(*mon-help-CL-help-xref-button-type* :url\)\)
+  \(describe-function 'mon-help-CL-arrays\)\)\n
 :SEE-ALSO `mon-get-help-buffer-symbol', `common-lisp-hyperspec',
 `common-lisp-hyperspec--symbols', `common-lisp-hyperspec--reader-macros',
 `common-lisp-hyperspec--format-characters',`common-lisp-hyperspec--glossary-terms',
@@ -2283,58 +2283,81 @@ This function ie evaluated as advise :after `help-make-xrefs' as if by `add-func
 (defun mon-help-CL--help-info-mon-function (file-or-node)
  "Normally `help-do-xref' generates a new \"*info*\" buffer as if by
 `generate-new-buffer-name' when following the `help-button-action's button
-help-function, which is `info', We setup an alternative button `help-info-mon'
- that has this funciton as it's help-function and so we DO NOT generae a new
+help-function, which is `info', We setup an alternative button `help-info-mon-CL'
+ that has this funciton as it's help-function and so we DO NOT generate a new
 \"*info*\" buffer.\n
-:SEE-ALSO `mon-help-CL-make-help-xref-buttons-info'.\n▶▶▶"
-  (info file-or-node "*info*"))
+:EXAMPLE\n\n  \(mon-help-CL--help-info-mon-function \"\(ansicl\) Symbol Index\"\)\n
+:SEE-ALSO `mon-help-CL-make-help-xref-buttons-info',
+`mon-help-CL--help-info-mon-symbols-hash-table', `*mon-help-CL-symbols-for-info*',
+`*mon-help-CL-help-xref-button-type*', `common-lisp-hyperspec--symbols',
+`mon-help-CL--help-info-mon-function'.\n▶▶▶"
+ ;; :WAS (info file-or-node "*info*")) 
+ (mon-help--info-button-function file-or-node))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2024-08-28T02:16:20-04:00Z}#{24353} - by MON KEY>
 (defun mon-help-CL-make-help-xref-buttons-info (&optional buffer)
   "Update \"*Help*\" buffer or BUFFER with URL `help-xref-button's using buttons
-of type help-info-mon which have the help-function property value
+of type help-info-mon-CL which have the help-function property value
 `mon-help-CL--help-info-mon-function' when current `help-buffer' symbol
 satisfies `mon-help-buffer-symbol-mon-help-CL-p'.\n
-URL buttons are added for each Common Lisp function which matches a symbol name
-in `common-lisp-hyperspec--symbols'.\n
-This function ie evaluated as advise :after `help-make-xrefs' as if by `add-function'.\n
-:EXAMPLE\n\n \(describe-function 'mon-help-CL-arrays\)\n
- \(advice-function-member-p #'mon-help-CL-make-help-xref-buttons \(symbol-function 'help-make-xrefs\)\)\n
-:SEE-ALSO `mon-get-help-buffer-symbol', `common-lisp-hyperspec',
+Info node buttons are added for each Common Lisp function which matches a symbol name
+in `*mon-help-CL-symbols-for-info*' or `common-lisp-hyperspec--symbols'.\n
+:CALLED-BY `mon-help-CL-make-help-xref-buttons-url-info' when value of
+`*mon-help-CL-help-xref-button-type*' is :info.\n
+:EXAMPLE\n
+ \(let \(\(*mon-help-CL-help-xref-button-type* :info\)\)
+  \(describe-function 'mon-help-CL-arrays\)\)\n
+:SEE-ALSO `mon-help-CL--help-info-mon-symbols-hash-table', `*mon-help-CL-symbols-for-info*',
+`help-info-mon', `help-info-mon-CL', `help-info-mon-CL',`help-info-mon-CL',
+`mon-get-help-buffer-symbol', `common-lisp-hyperspec',
 `common-lisp-hyperspec--symbols', `common-lisp-hyperspec--reader-macros',
 `common-lisp-hyperspec--format-characters',`common-lisp-hyperspec--glossary-terms',
 `common-lisp-hyperspec--issuex-symbols', `common-lisp-hyperspec--reader-macros'.\n▶▶▶"
   (with-current-buffer (get-buffer (or buffer "*Help*")) ;; (help-buffer)
-  (let ((buffer-read-only nil))
-    (cl-loop
-     for cl-sym being the hash-keys of common-lisp-hyperspec--symbols
-     for search-string = (concat "\\(`\\)" "\\(" cl-sym "\\)" "\\('\\)")
-     do (progn
-          (goto-char (point-min))
-          (while (search-forward-regexp search-string (point-max) t)
-            ;; make sure we're only showing help-iinfo-mon buttons
-            (remove-text-properties (match-beginning 2) (match-end  2)  
-                                    '(button nil category nil help-args nil))
-            ;; The commented version below will set the buttons help-function property to
-            ;; `info' which in turn evaluates `generate-new-buffer-name', we
-            ;; don't want that as we get umpteen *info<N>* buffers.
-            ;; (help-xref-button 2 'help-info (concat "(ansicl) " (match-string  2)))
-            (help-xref-button 2 'help-info-mon (concat "(ansicl) " (match-string  2)))))))))
+    (let ((buffer-read-only nil)
+          (hash-table (or (bound-and-true-p *mon-help-CL-symbols-for-info*)
+                          (bound-and-true-p common-lisp-hyperspec--symbols)
+                          (error (concat ":FUNCTION `mon-help-CL-make-help-xref-buttons-info' -- lookup hash-table :VARIABLE"
+                                    " `*mon-help-CL-symbols-for-info*' or `common-lisp-hyperspec--symbols' not `bound-and-true-p'")))))
+      (cl-loop
+       with ht = hash-table
+       for cl-sym being the hash-keys of ht ;; common-lisp-hyperspec--symbols
+       ;; using (hash-values cl-href)       
+       for search-string = (concat "\\(`\\)" "\\(" cl-sym "\\)" "\\('\\)")
+       do (progn
+            (goto-char (point-min))
+            (while (search-forward-regexp search-string (point-max) t)
+              ;; make sure we're only showing help-iinfo-mon buttons
+              (remove-text-properties (match-beginning 2) (match-end  2)  
+                                      '(button nil category nil help-args nil))
+              ;; The commented version below will set the buttons help-function property to
+              ;; `info' which in turn evaluates `generate-new-buffer-name', we
+              ;; don't want that as we get umpteen *info<N>* buffers.
+              ;; (help-xref-button 2 'help-info (concat "(ansicl) " (match-string  2)))
+              ;; (if (bound-and-true-p *mon-help-CL-symbols-for-info*)
+              (if (eq hash-table *mon-help-CL-symbols-for-info*)
+                  (help-xref-button 2 'help-info-mon-CL 
+                                    (concat "(ansicl) " (gethash cl-sym *mon-help-CL-symbols-for-info*)))
+                (help-xref-button 2 'help-info-mon-CL (concat "(ansicl) " (match-string  2))))))))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2024-08-28T02:16:11-04:00Z}#{24353} - by MON KEY>
 (defun mon-help-CL-make-help-xref-buttons-url-info (&optional buffer)
   "Update \"*Help*\" buffer or BUFFER with URL `help-xref-button's when current
 `help-buffer' symbol satisfies `mon-help-buffer-symbol-mon-help-CL-p'.\n
+`*mon-help-CL-help-xref-button-type*'
+:NOTE This function ie evaluated as advise :after `help-make-xrefs' as if by `add-function'.\n
 :EXAMPLE\n\n \(describe-function 'mon-help-CL-arrays\)\n
  \(advice-function-member-p
  #'mon-help-CL-make-help-xref-buttons-url-info
  \(symbol-function 'help-make-xrefs\)\)\n
-:SEE-ALSO `mon-get-help-buffer-symbol', `common-lisp-hyperspec',
+:SEE-ALSO `mon-help-CL--help-info-mon-symbols-hash-table', `*mon-help-CL-symbols-for-info*',
+`help-info-mon-CL', `mon-get-help-buffer-symbol', `common-lisp-hyperspec',
 `common-lisp-hyperspec--symbols', `common-lisp-hyperspec--reader-macros',
 `common-lisp-hyperspec--format-characters',`common-lisp-hyperspec--glossary-terms',
-`common-lisp-hyperspec--issuex-symbols', `common-lisp-hyperspec--reader-macros'.\n▶▶▶"
+`common-lisp-hyperspec--issuex-symbols',
+`common-lisp-hyperspec--reader-macros'.\n▶▶▶"
   (cond ((or (equal *mon-help-CL-help-xref-button-type* :info)
              (equal *mon-help-CL-help-xref-button-type* :INFO))
          (mon-help-CL-make-help-xref-buttons-info (or buffer "*Help*")))
@@ -2575,11 +2598,14 @@ other      implementation-dependent\n
 `unbound-variable'
 `undefined-function'
 `style-warning'
-`warning'\n
+`warning'
+`warning <1>'\n
 ;; :CL-ERROR-SIGNALERS
+`signal'
+`signal <4>'
 `singal'
 `warn'
-`error'
+`error <1>'
 `cerror'
 `package-error-package'
 `invalid-method-error'
@@ -2761,17 +2787,16 @@ of a sequence, only about a particular one, if it exists.\n
 `byte-position'
 `byte-size'
 `dpb'
-`ldb'
+`ldb'                     <ACCESSOR>
 `ldb-test'
 `deposit-field'
-`mask-field'
+`mask-field'              <ACCESSOR>
 `read-byte'
 `write-byte'\n
 ;; CL-BIT-FUNCTIONS
 `#*'
-`bit'
-`bit+'
-`sbit'
+`bit'                     <ACCESSOR>
+`sbit'                    <ACCESSOR>
 `bit-vector-p'
 `simple-bit-vector-p'\n
  ___________________________________
@@ -2828,17 +2853,17 @@ of a sequence, only about a particular one, if it exists.\n
 | :LOG-OP    | :LOG-OP-PERFORMED                           | :NO-ARG |
 |____________|_____________________________________________|_________|
 ¦            ¦                                             ¦         ¦
-¦ `logandc1’ ¦ and complement of INTEGER-1 with INTEGER-2  ¦  --     ¦
-¦ `logandc2’ ¦ and INTEGER-1 with complement of INTEGER-2  ¦  --     ¦
-¦ `logand’   ¦ and					   ¦  `-1`   ¦
-¦ `logeqv’   ¦ equivalence (exclusive nor)		   ¦  `-1`   ¦
-¦ `logior’   ¦ inclusive or				   ¦  `0`    ¦
-¦ `lognand’  ¦ complement of INTEGER-1 and INTEGER-2	   ¦  --     ¦
-¦ `lognor’   ¦ complement of INTEGER-1 or INTEGER-2	   ¦  --     ¦
-¦ `lognot’   ¦ complement				   ¦  --     ¦
-¦ `logorc1’  ¦ or complement of INTEGER-1 with INTEGER-2   ¦  --     ¦
-¦ `logorc2’  ¦ or INTEGER-1 with complement of INTEGER-2   ¦  --     ¦
-¦ `logxor’   ¦ exclusive or				   ¦  `0`    ¦
+¦ `logandc1' ¦ and complement of INTEGER-1 with INTEGER-2  ¦  --     ¦
+¦ `logandc2' ¦ and INTEGER-1 with complement of INTEGER-2  ¦  --     ¦
+¦ `logand'   ¦ and					   ¦  `-1`   ¦
+¦ `logeqv'   ¦ equivalence (exclusive nor)		   ¦  `-1`   ¦
+¦ `logior'   ¦ inclusive or				   ¦  `0`    ¦
+¦ `lognand'  ¦ complement of INTEGER-1 and INTEGER-2	   ¦  --     ¦
+¦ `lognor'   ¦ complement of INTEGER-1 or INTEGER-2	   ¦  --     ¦
+¦ `lognot'   ¦ complement				   ¦  --     ¦
+¦ `logorc1'  ¦ or complement of INTEGER-1 with INTEGER-2   ¦  --     ¦
+¦ `logorc2'  ¦ or INTEGER-1 with complement of INTEGER-2   ¦  --     ¦
+¦ `logxor'   ¦ exclusive or				   ¦  `0`    ¦
 ¦____________¦_____________________________________________¦_________¦\n
 
 :SEE info node `(ansicl) logand; logandc1; logandc2; logeqv; logior; lognand; lognor; lognot; lo+'\n
@@ -2846,7 +2871,7 @@ of a sequence, only about a particular one, if it exists.\n
 `array-element-type'
 `upgraded-array-element-type'
 `stream-element-type'
-`bit-vector'          ;<SYSTEM-CLASS>
+`bit-vector <1>'           <SYSTEM-CLASS>
 `simple-bit-vector'
 `bit'
 `signed-byte'
@@ -2876,7 +2901,7 @@ of a sequence, only about a particular one, if it exists.\n
 ;;; :ADDED <Timestamp: Tuesday June 23, 2009 @ 03:22.54 PM - by MON KEY>
 ;;;###autoload
 (defun mon-help-CL-loop (&optional insertp intrp)
-  "The Common Lisp `loop' macro.
+  "The Common Lisp `loop' macro.\n
 A CL loop has the form:\n \(loop CLAUSE...)\n
 ;; :LOOP-VALID-CLAUSES\n
     for VAR from/upfrom/downfrom NUM to/upto/downto/above/below NUM by NUM
@@ -2885,10 +2910,8 @@ A CL loop has the form:\n \(loop CLAUSE...)\n
     for VAR = INIT then EXPR
     for VAR across ARRAY
     with VAR = INIT\n
-;; :LOOP-MISCELLANEOUS-CLAUSES
-    named NAME
-    initially EXPRS...\n
-;; :LOOP-ACCUMULATION-CLAUSES\n
+;; :LOOP-ACCUMULATION-CLAUSES
+   :SEE info node `(ansicl) Value Accumulation Clauses'\n
     collect EXPR into VAR
     append EXPR into VAR
     nconc EXPR into VAR
@@ -2896,18 +2919,25 @@ A CL loop has the form:\n \(loop CLAUSE...)\n
     count EXPR into VAR
     maximize EXPR into VAR
     minimize EXPR into VAR\n
-;; :LOOP-TERMINATION-TEST-CLAUSES\n
+;; :LOOP-TERMINATION-TEST-CLAUSES
+   :SEE info node `(ansicl) Termination Test Clauses'\n
     repeat NUM
     while COND
     until COND
     always COND
     never COND
     thereis COND\n
-;; :LOOP-UNCONDITIONAL-EXECUTION-CLAUSE:\n
+;; :LOOP-UNCONDITIONAL-EXECUTION-CLAUSE
+   :SEE info node `(ansicl) Unconditional Execution Clauses'\n
     do EXPRS...\n
 ;; :LOOP-CONDITIONAL-EXECUTION-CLAUSES\n
+   :SEE info node `(ansicl) Conditional Execution Clauses'\n
     if COND CLAUSE [and CLAUSE]... else CLAUSE [and CLAUSE...]
     unless COND CLAUSE [and CLAUSE]... else CLAUSE [and CLAUSE...]\n
+;; :LOOP-MISCELLANEOUS-CLAUSES
+   :SEE info node `(ansicl) Miscellaneous Clauses'\n
+    named NAME
+    initially EXPRS...\n
 ;; :LOOP-FINALLY/RETURN-CLAUSES\n
     finally EXPRS...
     return EXPR
@@ -3129,7 +3159,7 @@ Following examples illustrate control clauses for directed loop iteration.
    ; 1\n \n   ; 2\n \n   ; 3\n \n   ;=> NIL\n
 ;; Print items in a list without using destructuring. Prints 3 lines.\n
   \(loop for item in '\(1 2 3\) 
-        do \(print item\)\)\n
+         do \(print item\)\)\n
    ; 1 \n   ; 2 \n   ; 3 \n   ; => NIL\n
 ;; Collect some numbers, initializing the loop variable `item` by setting it to
 ;; the result of evaluating expr1 on the first iteration, then setting it to the
@@ -3247,7 +3277,7 @@ designate clauses that accumulate values in lists and return them.
          append x\)\n
    ;=> \(A B \(C\)\)\n
 ;;; nconc sublists together. 
-;; :NOTE Only lists made by the call to `cl:list' are modified.
+;; :NOTE Only lists made by the call to `list <7>' are modified.
    \(loop for i upfrom 0
          as x in '\(a b \(c\)\)
          nconc \(if \(evenp i\)
@@ -3265,10 +3295,10 @@ designate clauses that accumulate values in lists and return them.
          finally \(return \(list :total cnt :s-cnt s :i-cnt i\)\)\)\n
    ;=> \(:TOTAL 13 :S-CNT 2 :I-CNT 2\)
 ;; Sum the elements of a list.
-   \(loop for i fixnum in '\(1 2 3 4 5\) ; With i declared a type `cl:fixnum'
+   \(loop for i fixnum in '\(1 2 3 4 5\) ; With i declared a type `fixnum'
          sum i\)\n
    ;=> 15\n
-   \(loop for v float in '\(1.2 4.3 5.7\) ; With v declared as type `cl:float'
+   \(loop for v float in '\(1.2 4.3 5.7\) ; With v declared as type `float'
          sum \(* 2.0 v\)\)\n
    ;=> 22.4\n
 ;; Determine the upper bounds of integers in a list
@@ -3298,7 +3328,7 @@ designate clauses that accumulate values in lists and return them.
          collect letters
          append nums\)
    ;=> \(A 1 2 B C D 3 4 E\)\n
-;; Count and collect names and ages into variables, return as if by `cl:values'.\n
+;; Count and collect names and ages into variables, return as if by `values'.\n
     \(loop for name in '\(fred sue alice joe june\)
           for age in '\(22 26 19 20 10\) 
           collect \(nconc \(list name\) age\) into name-and-age-list
@@ -3323,7 +3353,7 @@ designate clauses that accumulate values in lists and return them.
    ;=> \(1 3 6 10\)\n
 ;; The and bindings occur in parallel and their initialized values rely on the
 ;; lexical bindings established in the let form.
-;; The with/and idiom is similiar to `cl:let*'\n
+;; The with/and idiom is similiar to `let*'\n
    \(let \(\(a 5\) \(b 10\) \(c 1729\)\)
      \(loop with a = 1 
            and  b = \(+ a 2\) 
@@ -3589,11 +3619,12 @@ CL-USER> \(get-decoded-time\)\n
   "
 :: CL-SEQUENCES
 `sequence'
+`sequence <1>'
 `copy-seq'
-`elt'
+`elt'                       <ACCESSOR>
 `fill'
 `make-sequence'
-`subseq'
+`subseq'                    <ACCESSOR>
 `map'
 `map-into'
 `reduce'
@@ -3662,12 +3693,26 @@ CL-USER> \(get-decoded-time\)\n
 (defun mon-help-CL-iteration (&optional insertp intrp)
   "
 :CL-ITERATION
-`do'
-`dotimes'
-`dolist'
-`loop'
-`loop-finish'\n
+`do'                        <MACRO>
+`do*'
+`dotimes'                   <MACRO>
+`dolist'                    <MACRO>
+`map'
+`map-into'
+`mapc'
+`mapcar'
+`mapcan'
+`mapl'
+`maplist'
+`mapcon'
+`loop'                       <MACRO>
+`loop-finish'                <LOCAL-MACRO>
+`with-hash-table-iterator'   <MACRO>
+`do-all-symbols'             <MACRO>
+`do-symbols'                 <MACRO>
+`do-external-symbols'        <MACRO>\n
 :SEE info node `(ansicl) Iteration'\n
+:SEE info node `(ansicl) The LOOP Facility;\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -3696,6 +3741,93 @@ CL-USER> \(get-decoded-time\)\n
 ;;;###autoload
 (defun mon-help-CL-conses (&optional insertp intrp)
   "
+;;
+`butlast'
+`last'
+`nth'          <ACCESSOR>
+`nthcdr'
+`rest'         <ACCESSOR>
+;; 
+`atom'         <TYPE>
+`atom <1>'
+`endp'
+`consp'
+`listp'
+`null'
+`null <1>'      <SYSTEM-CLASS>
+`null <2>'   
+`null'
+;;
+`list <5>'      <SYSTEM-CLASS>
+`list'
+`list*'
+`make-list'
+`list-length'
+`copy-list'
+`copy-tree'
+;;
+`adjoin'
+`append'        <METHOD-SELECTION-COMBINATION>
+`append <1>'
+`revappend'
+`cons'
+`cons <3>'      <SYSTEM-CLASS>
+`cons <4>'
+`nconc'
+`nconc'         <METHOD-SELECTION-COMBINATION>
+`nconc <1>'
+`nreconc'
+`pop'           <MACRO>
+`push'          <MACRO>
+`pushnew'       <MACRO>
+`rplaca'
+`rplacd'
+;; 
+`acons'
+`assoc'
+`rassoc'
+`assoc-if'
+`rassoc-if'
+`assoc-if-not'
+`rassoc-if-not'
+`copy-alist'
+`sublis'
+`nsublis'
+`pairlis'
+;;
+`get-properties'
+`getf'          <ACCESSOR>
+`remf'          <ACCESSOR>
+;;
+`mapc'
+`mapcar'
+`mapcan'
+`mapl'
+`maplist'
+`mapcon'
+;;
+`nintersection'
+`intersection'
+`ldiff'
+`member'
+`member-if'
+`member-if-not'
+`set-difference'
+`nset-difference'
+`set-exclusive-or'
+`nset-exclusive-or'
+`subsetp'
+`tailp'
+`tree-equal'
+`union'
+`nunion'
+;;
+`subst'
+`subst-if'
+`subst-if-not'
+`nsubst'
+`nsubst-if'
+`nsubst-if-not'
 ;; :CL-FUNCTIONS-CONSES
 `first'   \(`car <LIST>\)
 `second'  \(car \(cdr <LIST>\)\)
@@ -3737,85 +3869,7 @@ CL-USER> \(get-decoded-time\)\n
 `cddaar'
 `cddadr'
 `cdddar'
-`cddddr'
-;;
-`butlast'
-`last'
-`nth'
-`nthcdr'
-`rest'
-;; 
-`atom'
-`endp'
-`consp'
-`listp'
-`nlistp'
-`null'
-;;
-`list'
-`list*'
-`make-list'
-`list-length'
-`copy-list'
-`copy-tree'
-;;
-`adjoin'
-`append'
-`revappend'
-`cons'
-`nconc'
-`nreconc'
-`pop'
-`push'
-`pushnew'
-`rplaca'
-`rplacd'
-;; 
-`acons'
-`assoc'
-`rassoc'
-`assoc-if'
-`rassoc-if'
-`assoc-if-not'
-`rassoc-if-not'
-`copy-alist'
-`sublis'
-`nsublis'
-`pairlis'
-;;
-`get-properties'
-`getf'
-`remf'
-;;
-`mapc'
-`mapcar'
-`mapcan'
-`mapl'
-`maplist'
-`mapcon'
-;;
-`nintersection'
-`intersection'
-`ldiff'
-`member'
-`member-if'
-`member-if-not'
-`set-difference'
-`nset-difference'
-`set-exclusive-or'
-`nset-exclusive-or'
-`subsetp'
-`tailp'
-`tree-equal'
-`union'
-`nunion'
-;;
-`subst'
-`subst-if'
-`subst-if-not'
-`nsubst'
-`nsubst-if'
-`nsubst-if-not'
+`cddddr'\n
 :SEE info node `(ansicl)Conses'\n
 :SEE info node `(ansicl)Conses as Trees'\n
 :SEE info node `(ansicl)Conses as Lists'\n
@@ -3849,7 +3903,7 @@ CL-USER> \(get-decoded-time\)\n
 (defun mon-help-CL-hash-tables (&optional insertp intrp)
   "
 ;; :CL-FUNCTIONS-HASH-TABLES
-`hash-table'
+`hash-table'                  <SYSTEM-CLASS>
 `make-hash-table'
 `hash-table-p'
 `hash-table-count'
@@ -3857,10 +3911,10 @@ CL-USER> \(get-decoded-time\)\n
 `hash-table-rehash-threshold'
 `hash-table-size'
 `hash-table-test'
-`gethash'
-`remhash'
+`gethash'                     <ACCESSOR>
+`remhash'                     <ACCESSOR>
 `maphash'
-`with-hash-table-iterator'
+`with-hash-table-iterator'    <MACRO>
 `clrhash'
 `sxhash'\n
 ;; :CL-LOOP-HASH-TABLES
@@ -3989,15 +4043,18 @@ FOR-AS-HASH ::=
 ;;;###autoload
 (defun mon-help-CL-streams (&optional insertp intrp)
   "
-;; :CL-FUNCTIONS-STREAMS
+;; :CL-SYSTEM-CLASS-STREAMS
 `stream'
-`broadcast-stream'
-`concatenated-stream'
-`echo-stream'
-`file-stream'
-`string-stream'
-`synonym-stream'
-`two-way-stream'
+`stream <7>'                  <SYSTEM-CLASS>
+`broadcast-stream'            <SYSTEM-CLASS>
+`concatenated-stream'         <SYSTEM-CLASS>
+`echo-stream'                 <SYSTEM-CLASS>
+`file-stream'                 <SYSTEM-CLASS>
+`string-stream'               <SYSTEM-CLASS>
+`synonym-stream'              <SYSTEM-CLASS>
+`two-way-stream'              <SYSTEM-CLASS>
+;; :CL-FUNCTIONS-STREAMS
+`stream <1>'
 `input-stream-p'
 `interactive-stream-p'
 `open-stream-p'
@@ -4019,35 +4076,38 @@ FOR-AS-HASH ::=
 `file-position'
 `file-string-length'
 `open'
-`stream-external-format'
-`with-open-file'
+`open <1>'
 `close'
-`with-open-stream'
 `listen'
 `clear-input'
 `finish-output'
 `y-or-n-p'
 `make-synonym-stream'
+`stream-external-format'
 `synonym-stream-symbol'
 `broadcast-stream-streams'
 `make-broadcast-stream'
 `make-two-way-stream'
 `two-way-stream-input-stream'
 `echo-stream-input-stream'
-`make-echo-stream'
 `concatenated-stream-streams'
+`make-echo-stream'
 `make-concatenated-stream'
-`get-output-stream-string'
 `make-string-input-stream'
 `make-string-output-stream'
-`with-input-from-string'
-`with-output-to-string'
-`stream-error'
+`with-open-file'              <MACRO>
+`with-open-stream'            <MACRO>
+`with-input-from-string'      <MACRO>
+`with-output-to-string'       <MACRO>
+`get-output-stream-string'
 `stream-error-stream'
-`end-of-file'
+`stream-error'                <CONDITION-TYPE>
+`end-of-file'                 <CONDITION-TYPE>
 `*debug-io*'
 `*terminal-io*'\n
 :SEE info node `(ansicl) Streams'\n
+:SEE info node `(ansicl) Stream Concepts'\n
+:SEE info node `(ansicl) File System Concepts'\n
 :SEE-ALSO `mon-help-CL-print', `mon-help-CL-format', `mon-help-CL-symbols',
 `mon-help-CL-sequences', `mon-help-CL-iteration', `mon-help-CL-conses',
 `mon-help-CL-hash-tables', `mon-help-CL-print', `mon-help-CL-reader',
@@ -4083,19 +4143,22 @@ FOR-AS-HASH ::=
 `read'
 `read-delimited-list'
 `read-from-string'
-`readtable-case'
+`readtable-case'                <ACCESSOR>
 `readtablep'
 `set-dispatch-macro-character'
+`get-dispatch-macro-character'
 `set-macro-character'
+`get-macro-character'
 `set-syntax-from-char'
-`with-standard-io-syntax'
-`reader-error'
+`with-standard-io-syntax'       <MACRO>
+`reader-error'                  <CONDITION-TYPE>
 `*read-base*'
 `*read-default-float-format*'
 `*read-eval*'
 `*read-suppress*'
 `*readtable*'\n
 :SEE info node `(ansicl) Reader'\n
+:SEE info node `(ansicl) Reader Concepts'\n
 :SEE-ALSO `mon-help-CL-streams', `mon-help-CL-print', `mon-help-CL-format',
 `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-chars',
@@ -4124,14 +4187,32 @@ FOR-AS-HASH ::=
 ;;;###autoload
 (defun mon-help-CL-chars (&optional insertp intrp)
   "
-;; :CL-FUNCTIONS-CHARS
+:CL-TYPES-CHARS
 `character'       <TYPE>
+`character <2>'   <SYSTEM-CLASS>
 `base-char'       <TYPE>
 `standard-char'   <TYPE>
-`extended-char'   <TYPE>
-`char'
+`extended-char'   <TYPE>\n
+;; :CL-FUNCTIONS-CHARS
+`character <3>'   <FUNCTION> 
+`char'            <ACCESSOR>
+`schar'           <ACCESSOR>
 `char='
-`character'       ;<FUNCTION>
+`char/='
+`char<'
+`char>'
+`char<='
+`char>='
+`char-equal'
+`char-not-equal'
+`char-lessp'
+`char-greaterp'
+`char-not-greaterp'
+`char-not-lessp'
+`char-upcase'
+`char-downcase'
+`lower-case-p'
+`both-case-p'
 `characterp'
 `alpha-char-p'
 `alphanumericp'
@@ -4139,15 +4220,16 @@ FOR-AS-HASH ::=
 `digit-char-p'
 `graphic-char-p'
 `standard-char-p'
-`char-upcase'
 `upper-case-p'
 `char-code'
 `char-int'
 `code-char'
-`char-code-limit'
+`char-code-limit'   <CONSTANT> <VARIABLE>
 `char-name'
 `name-char'\n
 :SEE info node `(ansicl) Characters'\n
+:SEE info node `(ansicl) Introduction to Characters'\n
+:SEE info node `(ansicl) Character Concepts'\n
 :SEE-ALSO `mon-help-CL-symbols', `mon-help-CL-sequences', `mon-help-CL-iteration',
 `mon-help-CL-conses', `mon-help-CL-hash-tables', `mon-help-CL-print',
 `mon-help-CL-streams', `mon-help-CL-reader', `mon-help-CL-chars',
@@ -7426,7 +7508,7 @@ the example directory of cl-irc:
 ;;; `common-lisp-hyperspec-symbol-table'
 ;;; `intern-clhs-symbol' 
 ;;; `common-lisp-hyperspec-strip-cl-package'
-;;; `common-lisp-hyperspec-symbols'
+;;; `common-lisp-hyperspec--symbols'
 ;;; :CREATED <Timestamp: #{2010-01-29T00:42:00-05:00Z}#{10045} - by MON>
 (defvar *clhs-symbol-v3-or-v7* nil)
 ;;
@@ -9445,16 +9527,13 @@ the example directory of cl-irc:
                        ("\"" "02_de.htm") ("'" "02_dc.htm") ("`" "02_df.htm") 
                        ("," "02_dg.htm") ("(" "02_da.htm") (")" "02_db.htm") 
                        (";" "02_dd.htm"))) ) )) ))
-;; ;)
-
-;; mon-bind-mon-help-CL-pkgs-loadtime
 
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-20T16:19:35-04:00Z}#{10116} - by MON KEY>
 (defun mon-help-utils-CL-loadtime (&optional w-msg-user)
   "Loadtime function to unbind CL symbols of :FILE mon-doc-help-CL.el.\n
-Unbind `*clhs-symbol-v3-or-v7*' as variable `*mon-help-CL-symbols*' now holds a
+Unbind `*clhs-symbol-v3-or-v7*' as variable `*mon-help-CL-symbols-html*' now holds a
 hashtable of all CL symbol/Hspec mappings post loadtime.\n
 When optional arge W-MSG-USER is non-nil message user that function was
 evaluated at loadtime.\n
@@ -9872,10 +9951,10 @@ Prompt for the type of search type for lispdoc.com as either:
                    (read-from-minibuffer
                     (concat msg-pfx "-- symbol (default " (format "%s" default) "): ")
                     (format "%s" default))
-                 (if (and (bound-and-true-p *mon-help-CL-symbols*)
-                          (hash-table-p *mon-help-CL-symbols*))
+                 (if (and (bound-and-true-p *mon-help-CL-symbols-html*)
+                          (hash-table-p *mon-help-CL-symbols-html*))
                      (completing-read (concat msg-pfx  "-- symbol (no default): ") 
-                                      *mon-help-CL-symbols*)
+                                      *mon-help-CL-symbols-html*)
                    (read-from-minibuffer (concat msg-pfx "-- symbol (no default): "))))))
     (if (and (string= inp "") (not wap) (not symbol-at-point))
         (message  (concat msg-pfx "-- must enter a symbol"))
@@ -9901,7 +9980,7 @@ Match car of elts in `*regexp-ansicl-info*' replace with cdr.\n
 \(mon-with-inhibit-buffer-read-only
   \(mon-cln-ansi-info \(mon-g2be -1 t\) \(mon-g2be 1 t\)\)\)\n
 ▶\n
-The \"extended\" ‘loop’ form:
+The \"extended\" `loop' form:
 
  -- Macro: loop [↓name-clause] {↓variable-clause}* {↓main-clause}* →
           {result}*\n

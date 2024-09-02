@@ -130,7 +130,7 @@
 (require 'mon-default-loads)
 
 ;; deactivated for 'DARWIN
-;; (eval-when-compile (require 'cl))
+;; (eval-when-compile (require 'cl-lib))
 
 (unless (featurep 'mon-site-local-defaults)
   (require 'mon-site-local-defaults nil t))

@@ -151,14 +151,13 @@
 
 ;;; CODE:
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 ;;; ==============================
-;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T15:24:47-05:00Z}#{11022} - by MON KEY>
 (defgroup mon-regexp-symbols nil
   "Customization group for variables and functions of :FILE mon-regexp-symbols.el\n
@@ -209,7 +208,6 @@ The symbols contained of this list are defined in :FILE mon-regexp-symbols.el\n
   :group 'mon-xrefs)
 
 ;;; ==============================
-;;; :CHANGESET 2256
 ;;; :CREATED <Timestamp: #{2010-11-01T15:28:15-04:00Z}#{10441} - by MON KEY>
 (defcustom *regexp-whitespace-chars*
   (concat "\\(:?[" (mapconcat #'(lambda (x) (format "%c" x))
@@ -434,7 +432,9 @@ Like `*regexp-symbol-defs*' but covers a broader range of operators.\n
                 "\\(?2:"
                 (substring
                  (regexp-opt ;; :NOTE doesn't match (def.* (setf <sym>) { ... }
-                  '("defadvice" "defalias" 
+                  '(
+                    "cl-defun" "cl-defmacro" "cl-defsubst"
+                    "defadvice" "defalias" 
                     "defclass" "defconst" "defconstant" "defcustom" 
                     "defface" 
                     "defgeneric" "defgroup" 
@@ -455,9 +455,7 @@ Like `*regexp-symbol-defs*' but covers a broader range of operators.\n
 ;;
 ;;; (progn (makunbound '*regexp-symbol-defs-big*) (unintern "*regexp-symbol-defs-big*" obarray) )
 
-
 ;;; ==============================
-;;; :CHANGESET 2406
 ;;; :CREATED <Timestamp: #{2011-01-20T18:36:27-05:00Z}#{11034} - by MON KEY>
 (defcustom *regexp-ansicl-info*
   '(("‘"     . "`")
@@ -472,6 +470,7 @@ Like `*regexp-symbol-defs*' but covers a broader range of operators.\n
     ;; Examples Return Value
     ("^→ "  . " ;=> ")
     ("^▷"   . " ;  ")
+    ("^[[:blank:]]+▷" . " ; ")
     ("↩$"   . ""))
   "List of regexp replacement pairs.\n
 Each elt of list is a consed pair of strings of the form:\n
@@ -480,14 +479,14 @@ Car of list is a regular expression, cdr is its replacement.\n
 :EXAMPLE\n\n\(assoc-string \"‘\" *regexp-ansicl-info*\)\n
  \(rassoc \" ;=> \" *regexp-ansicl-info*\)\n
 :CALLED-BY `mon-cln-ansi-info'\n
-:SEE-ALSO .\n▶▶▶"
+:SEE-ALSO `*mon-help-CL-symbols-for-info*', `mon-help-CL-symbols',
+`mon-help-CL-make-help-xref-buttons-url-info',
+`mon-help-CL-make-help-xref-buttons-info'.\n▶▶▶"
   :type '(alist :key-type regexp :value-type string)
   :group 'mon-doc-help-CL
   :group 'mon-regexp-symbols)
 
-
 ;;; ==============================
-;;; :CHANGESET 2410
 ;;; :CREATED <Timestamp: #{2011-02-18T16:53:03-05:00Z}#{11075} - by MON KEY>
 (defcustom *regexp-line-to-consed-pair* 
   '("^\\([A-z0-9-*]*\\)\\([[:blank:]]+\\)\\([A-z0-9-*].*\\)$" . "(\"\\1\" . \"\\3\")" )
@@ -676,7 +675,6 @@ The is a car regexp the cadr is its replacement.\n
 ;;;       (unintern "*regexp-clean-ebay-month->canonical-style2*" obarray) )
 
 ;;; ==============================
-;;; :MODIFICATIONS <Timestamp: #{2010-03-11T16:44:22-05:00Z}#{10104} - by MON KEY>
 ;;; :CREATED <Timestamp: Wednesday July 29, 2009 @ 05:12.02 PM - by MON KEY>
 (defcustom *regexp-clean-ebay-month->canonical-style3* nil 
   "List of regexps replacement pairs for cleaning eBay timestrings.\n
@@ -1072,7 +1070,6 @@ The is a car regexp the cadr is its replacement.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T13:51:26-05:00Z}#{11022} - by MON KEY>
 (defcustom *regexp-clean-irc-logs* "^[[:digit:]:]+ -+ \\(join\\|quit\\|part\\|nick\\): .*$"
   ;; "^[[:digit:]:]+ -+ \\(join\\|quit\\|part\\|nick\\|log\\): .*$"
@@ -1556,7 +1553,7 @@ The is a car regexp the cadr is its replacement.\n
 ;;;       Not ready to flag away à -> a).
 ;;; :RENAMED `regexp-defranc-benezit' -> `*regexp-defranc-benezit*'
 ;;; :REMOVED Benezit specific fields to `*regexp-clean-benezit-fields*'
-;;; :MODIFICATIONS <Timestamp: #{2009-09-18T15:07:44-04:00Z}#{09385} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-09-18T15:07:44-04:00Z}#{09385} - by MON KEY>
 (defcustom *regexp-defranc-benezit*
   '( ;; :BENEZIT-HEADERS-FRENCH
     ("Actif à" "Active in") 
@@ -1791,7 +1788,6 @@ The is a car regexp the cadr is its replacement.\n
 
 ;;; ==============================
 ;;; :COURTESY :FILE thingatpt.el
-;;; :CHANGESET 2092 <Timestamp: #{2010-08-27T16:14:48-04:00Z}#{10345} - by MON KEY>
 ;;; :CREATED <Timestamp: Saturday April 18, 2009 @ 04:32.19 PM - by MON KEY>
 (defcustom *regexp-wrap-url-schemes* nil   
   "Regexp to match URLS for wrapping with \(URL `'\).\n 
@@ -2016,8 +2012,7 @@ vanilla \" \" (char 32) instead.\n
 ;;; :TODO Conversion code-slide for `naf-mode' related code remains (unfinished) in:
 ;;; :FILE /notes/naf-url-googl-code-slide.el
 ;;; :MOVED <- mon-url-utils.el <Timestamp: Tuesday February 17, 2009>
-;;; :MODIFICATIONS <Timestamp: #{2010-03-22T11:51:21-04:00Z}#{10121} - by MON KEY>
-;;; :CHANGESET 1955 <Timestamp: #{2010-07-08T14:36:42-04:00Z}#{10274} - by MON KEY>
+;;; :CREATED <Timestamp: #{2010-07-08T14:36:42-04:00Z}#{10274} - by MON KEY>
 (defvar *regexp-clean-html-decimal-char-entity* nil
   "*Regexp to match replace utf8-escaped strings with character-representation.\n
   *A list of triples mapping HTML character refrences to text characters.\n
@@ -2148,11 +2143,9 @@ cadr of each sublist is an unescaped character literal.\n
   "*Regexp list to match and normalize ULAN encoded chars.\n
 :USED-IN `naf-mode'.\n
 :SEE-ALSO `mon-cln-ulan', `*regexp-clean-ulan*', `*regexp-clean-ulan-fields*',
-`*regexp-clean-ulan-dispatch-chars*',
-`*regexp-percent-encoding-reserved-chars*',
-`*regexp-clean-html-decimal-char-entity*',
-`*regexp-clean-html-named-char-entity*', `*regexp-clean-loc*',
-`*regexp-cp1252-to-latin1*'.\n▶▶▶")
+`*regexp-clean-ulan-dispatch-chars*', `*regexp-percent-encoding-reserved-chars*',
+`*regexp-clean-html-decimal-char-entity*', `*regexp-clean-html-named-char-entity*',
+`*regexp-clean-loc*', `*regexp-cp1252-to-latin1*'.\n▶▶▶")
 ;;
 ;;;(progn (makunbound '*regexp-cleann-ulan-diacritics*)
 ;;;       (unintern "*regexp-cleann-ulan-diacritics*" obarray) )
@@ -2207,7 +2200,7 @@ current approach guarantees success.\n
 ;;; ^Start: 
 ;;; ^location: => Location:
 ;;; ^active => Active:  ;date-active-face-ulan
-;;; :MODIFICATIONS <Timestamp: #{2009-08-31T14:50:10-04:00Z}#{09361} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-08-31T14:50:10-04:00Z}#{09361} - by MON KEY>
 (defvar *regexp-clean-ulan-fields*
  '(("^apprentice of "       ":APPRENTICE-OF ")     ;;; '(("^apprentice of "      "apprentice-of: ")     
    ("^apprentice was "      ":APPRENTICE-WAS ")    ;;;   ("^apprentice was "     "apprentice-was: ")    

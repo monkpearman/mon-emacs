@@ -244,7 +244,6 @@
 
 
 ;;; ==============================
-;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T19:01:43-05:00Z}#{11022} - by MON KEY>
 (defgroup mon-seq-utils nil
   "Customization group for variables and functions of :FILE mon-seq-utils.el\n
@@ -261,7 +260,6 @@
   :group 'mon-base)
 
 ;;; ==============================
-;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T19:01:45-05:00Z}#{11022} - by MON KEY>
 (defcustom *mon-seq-utils-xrefs* 
   '(mon-elt-> mon-elt-< mon-elt->elt mon-elt-<elt mon-maybe-cons mon-delq-cons
@@ -297,7 +295,6 @@ The symbols contained of this list are defined in :FILE mon-seq-utils.el\n
 ;;; ==============================
 
 ;;; ==============================
-;;; :CHANGESET 2202 <Timestamp: #{2010-10-21T13:03:09-04:00Z}#{10424} - by MON KEY>
 ;;; :CREATED <Timestamp: Wednesday June 03, 2009 @ 06:31.33 PM - by MON KEY>
 ;;; ==============================
 (defun mon-elt-> (w-after-lst after-elt w-insert-after-elt)
@@ -379,7 +376,6 @@ Signal an error when wither is not.\n
 
 ;;; ==============================
 ;;; :COURTESY :FILE macroexp.el :WAS `maybe-cons'
-;;; :CHANGESET 2017
 ;;; :CREATED <Timestamp: #{2010-07-31T16:27:59-04:00Z}#{10306} - by MON KEY>
 (defun mon-maybe-cons (w-car w-cdr original-cons)
   "Return a consed pair W-CAR and W-CDR. 
@@ -401,7 +397,6 @@ If not, cons em up.\n
 ;;; ==============================
 ;;; :PREFIX "mdc-"
 ;;; :COURTESY :FILE lisp/format.el :WAS `format-delq-cons'
-;;; :CHANGESET 2000 
 ;;; :CREATED <Timestamp: #{2010-07-27T16:38:27-04:00Z}#{10302} - by MON KEY>
 (defun mon-delq-cons (w-cons w-list)
   "Remove the given CONS from LIST by side effect and return the new LIST.\n
@@ -431,7 +426,6 @@ If not, cons em up.\n
       w-list)))
 
 ;;; ==============================
-;;; :CHANGESET 2211
 ;;; :CREATED <Timestamp: #{2010-10-27T13:45:58-04:00Z}#{10433} - by MON KEY>
 ;; (unless (and (intern-soft "mon-list-get-non-zerop")
 ;;              (fboundp 'mon-list-get-non-zerop))
@@ -549,7 +543,6 @@ When optional arg W-NO-ERRORS is non-nil do not signal an error instead return n
 
 ;;; ==============================
 ;;; :PREFIX "mdd-"
-;;; :CHANGESET 2035
 ;;; :CREATED <Timestamp: #{2010-08-04T21:51:44-04:00Z}#{10313} - by MON KEY>
 (defun mon-delq-dups (dup-list)
   "Like `delete-dups' but destructively removes `eq' duplicates from DUP-LIST.\n
@@ -646,7 +639,6 @@ is `eq'.
   in-list)
 
 ;;; ==============================
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T17:18:18-04:00Z}#{10381} - by MON KEY>
 (defun mon-list-last (in-list) ;; :NOTE Can't `defsubst' inline b/c it recurses.
   "Return the last element IN-LIST.\n
@@ -685,7 +677,6 @@ the dotted list at tail not the atom in cdr of dotted list, e.g.\n
 
 ;;; ==============================
 ;;; :COURTESY :FILE lisp/format.el :WAS `format-make-relatively-unique'
-;;; :CHANGESET 2001
 ;;; :CREATED <Timestamp: #{2010-07-27T16:48:53-04:00Z}#{10302} - by MON KEY>
 (defun mon-list-make-unique (list-a list-b &optional as-two-list)
   "Delete common elements of LIST-A and LIST-B.\n
@@ -751,7 +742,6 @@ When optional arg AS-TWO-LIST is non-nil return as two elt list.\n
 ;;; ==============================
 ;;; :PREFIX "mrf-"
 ;;; :COURTESY :FILE pcomplete.el :WAS `pcomplete-pare-list'
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T17:19:26-04:00Z}#{10381} - by MON KEY>
 (defun mon-list-filter (from-lst match-lst &optional w-pred)
   "Destructively remove FROM-LST all elements matching any in MATCH-LST.
@@ -783,7 +773,6 @@ When W-PRED is non-nil, it is a function which further filters FROM-LST for remo
 
 ;;; ==============================
 ;;; :COURTESY :FILE lisp/format.el  :WAS `format-common-tail'
-;;; :CHANGESET 2001
 ;;; :CREATED <Timestamp: #{2010-07-27T16:48:50-04:00Z}#{10302} - by MON KEY>
 (defun mon-list-match-tails (comp-a comp-b)
   "Given two lists that have a common tail, return the common tail.\n
@@ -817,7 +806,6 @@ When the last items of the two do not satsify equivialence return nil.\n
 
 ;;; ==============================
 ;;; :PREFIX "mlann-"
-;;; :CHANGESET 2119
 ;;; :CREATED <Timestamp: #{2010-09-13T14:58:49-04:00Z}#{10371} - by MON KEY>
 (defun mon-list-add-non-nil (add-elts-to add-elts-frm)
   "Add non-nil elements to tail of list.\n
@@ -864,7 +852,6 @@ ADD-ELTS-TO list with ADD-ELTS-FRM list.\n
 
 ;;; ==============================
 ;;; :COURTESY lisp/erc/erc.el :WAS `erc-list' -- use or/and/nlistp instead of if/listp
-;;; :CHANGESET 2367
 ;;; :CREATED <Timestamp: #{2010-12-17T12:42:55-05:00Z}#{10505} - by MON KEY>r
 (defun mon-list-ensure (obj-or-lst)
   "Return OBJ-OR-LST as a list, when OBJ-OR-LST is `nlistp' make it a list.\n
@@ -884,9 +871,7 @@ ADD-ELTS-TO list with ADD-ELTS-FRM list.\n
 ;;; ==============================
 ;;; :PREFIX "mlr-"
 ;;; :COURTESY :FILE lisp/format.el :WAS `format-reorder'
-;;; :CHANGESET 2233
 ;;; :ADDED Ability to support vectors transparently.
-;;; :CHANGESET 2001
 ;;; :CREATED <Timestamp: #{2010-10-29T13:17:11-04:00Z}#{10435} - by MON KEY>
 (defun %mon-list-reorder (list-items list-order &optional remv-dups)
   "Build the partial order return value for `mon-list-reorder'.\n 
@@ -911,7 +896,6 @@ arg was `vectorp'.\n
       mlr-rtn)))
 
 ;;; ==============================
-;;; :CHANGESET 2233
 ;;; :CREATED <Timestamp: #{2010-07-27T16:47:20-04:00Z}#{10302} - by MON KEY>
 (defun mon-list-reorder (seq-items seq-order &optional remv-dups)
   "Arrange SEQ-ITEMS to follow partial order of SEQ-ORDER.\n
@@ -1021,7 +1005,6 @@ SEQ-ORDER takes precedence else default to elt at index in SEQ-ITEMS, e.g.:\n
 ;;; :TEST-ME (mon-list-reorder-TEST)
 
 ;;; ==============================
-;;; :CHANGESET 2178
 ;;; :CREATED <Timestamp: #{2010-10-04T22:35:56-04:00Z}#{10401} - by MON KEY>
 (defun mon-union (lst-1 lst-2 &optional predicate)
   "Like `union' but without the CL keywords.\n
@@ -1056,7 +1039,6 @@ to avoid corrupting the original lst1 and lst2.\n
 ;;; ==============================
 ;;; :PREFIX "mmi-"
 ;;; :COURTESY lisp/erc/erc-compat.el :WAS `erc-member-if'
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T20:41:52-04:00Z}#{10381} - by MON KEY>
 (defun mon-member-if (predicate in-list)
   "Find the first item satisfying PREDICATE in IN-LIST.\n
@@ -1083,7 +1065,6 @@ Return the sublist of IN-LIST whose car matches.\n
 
 ;;; ==============================
 ;;; :COURTESY lisp/erc/erc-compat.el :WAS `erc-delete-if'
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T20:41:43-04:00Z}#{10381} - by MON KEY>
 (defun mon-delete-if (predicate in-seq)
   "Remove all items satisfying PREDICATE in IN-SEQ.\n
@@ -1120,7 +1101,6 @@ whenever possible.\n
 ;;; ==============================
 ;;; :PREFIX "mrin-"
 ;;; :COURTESY lisp/erc/erc-compat.el :WAS erc-remove-if-not
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T20:41:35-04:00Z}#{10381} - by MON KEY>
 (defun mon-remove-if-not (predicate in-seq)
   "Remove all items not satisfying PREDICATE IN-SEQ.\n
@@ -1148,7 +1128,6 @@ avoid corrupting IN-SEQ.\n
 ;;; ==============================
 ;;; :PREFIX "mri-"
 ;;; :COURTESY Tassilo Horn :HIS lisp/doc-view.el :WAS `doc-view-remove-if'
-;;; :MODIFICATIONS <Timestamp: #{2010-04-01T11:22:35-04:00Z}#{10134} - by MON KEY>
 ;;; :RENAMED parameter PREDICATE -> RMV-IF-PREDICATE; LIST -> RMV-LIST; 
 ;;; :RENAMED local var NEW-LIST -> MRI-NEW-LIST
 ;;; :CREATED <Timestamp: #{2010-04-01T11:08:43-04:00Z}#{10134} - by MON KEY>
@@ -1281,7 +1260,6 @@ and does not provide intelligent type checking.\n
 
 ;;; ==============================
 ;;; :COURTESY ediff-util.el `ediff-set-difference', `ediff-member' 
-;;; :CHANGESET 2233
 ;;; :CREATED <Timestamp: #{2010-11-02T14:14:09-04:00Z}#{10442} - by MON KEY>
 (defun mon-set-difference (set1-lst set2-lst comparison-func)
   "Return all items that appear in SET1-LST but not SET2-LST.\n
@@ -1459,11 +1437,6 @@ following applicable constraints hold for the value of mapped thing:\n
 ;;; ==============================
 ;;; :PREFIX "mmp1-"
 ;;; :COURTESY SBCL :FILE sblc/src/code/list.lisp
-;;; :MODIFICATIONS Now uses catch/throw instead of `return' and `setcdr' instead
-;;; of `rplacd'. local var arglists now uses `mon-copy-list-mac' instead of
-;;; `copy-list' to silence byte-compiler.  Elided the outer let binding of fun
-;;; around `%coerce-callable-to-fun' on `fun-designator'.
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T21:07:39-04:00Z}#{10381} - by MON KEY>
 (defun mon-map1 (fun-designator original-arglists accumulate take-car)
   "Helper function for implementation of CL mapping functions.\n
@@ -1540,7 +1513,6 @@ the resulting sequence.\n
         (:list (setcdr mmp1-tmp (list mmp1-rslt)) (setq mmp1-tmp (cdr mmp1-tmp))))))) 
 
 ;;; ==============================
-;;; :CHANGESET 2233
 ;;; :CREATED <Timestamp: #{2010-11-01T10:55:50-04:00Z}#{10441} - by MON KEY>
 (defun mon-mapc (mapc-fun mapc-lst &rest more-lsts)
   ;; #!+sb-doc
@@ -1566,8 +1538,6 @@ With one sequence like elisp's `mapc' with several, it is like the Common Lisp
 
 ;;; ==============================
 ;;; :COURTESY sblc/src/code/list.lisp
-;;; :MODIFICATIONS renamed args function -> mapcar-fun mapcar-list -> mapcan-list
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T21:07:32-04:00Z}#{10381} - by MON KEY>
 (defun mon-mapcar (mapcar-fun mapcar-lst &rest more-lsts)
   ;;#!+sb-doc
@@ -1610,7 +1580,6 @@ list runs out, any excess elements remaining in other lists are ignored.\n
 
 ;;; ==============================
 ;;; :COURTESY sblc/src/code/list.lisp
-;;; :MODIFICATIONS Renamed args function -> mapcan-fun list -> mapcan-list
 ;;; :CREATED <Timestamp: #{2010-09-19T18:25:08-04:00Z}#{10377} - by MON>
 (defun mon-mapcan (mapcan-fun mapcan-lst &rest rest-lst)
   ;;#!+sb-doc
@@ -1651,8 +1620,6 @@ combined into a list as if by `nconc' rather than `list', e.g.:\n
 
 ;;; ==============================
 ;;; :COURTESY sblc/src/code/list.lisp
-;;; :MODIFICATIONS renamed args function -> mapl-fun list -> mapl-list
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T21:07:11-04:00Z}#{10381} - by MON KEY>
 (defun mon-mapl (mapl-fun mapl-lst &rest more-lsts)
   ;;#!+sb-doc
@@ -1700,8 +1667,6 @@ are not accumulated; mapl-lst is returned.\n
 
 ;;; ==============================
 ;;; :COURTESY sblc/src/code/list.lisp
-;;; :MODIFICATIONS renamed args function -> mapcon-fun list -> mapcon-list
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T21:06:57-04:00Z}#{10381} - by MON KEY>
 (defun mon-mapcon (mapcon-fun mapcon-lst &rest more-lsts)
   ;;#!+sb-doc
@@ -1720,8 +1685,6 @@ are combined into a list as if by `nconc' rather than `list', e.g:
 
 ;;; ==============================
 ;;; :COURTESY sblc/src/code/list.lisp
-;;; :MODIFICATIONS renamed args function -> maplist-fun list -> maplist-list
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T21:06:44-04:00Z}#{10381} - by MON KEY>
 (defun mon-maplist (maplist-fun maplist-lst &rest more-lsts)
   ;;  #!+sb-doc
@@ -1761,7 +1724,6 @@ list was the last instance of that element in the input list.\n
 ;;; :TODO write `mon-subseq-TEST'
 ;;; :PREFIX "msbsq-"
 ;;; :COURTESY `widget-sublist'/`subseq'
-;;; :CHANGESET 2119
 ;;; :CREATED <Timestamp: #{2010-09-14T14:37:01-04:00Z}#{10372} - by MON KEY>
 (defun mon-subseq (in-seq seq-start &optional seq-end)
   "Return the sublist of SEQ from SEQ-START to SEQ-END.\n
@@ -1968,8 +1930,6 @@ If START or END is negative, it counts from the end."
 ;;; :PREFIX "mar-"
 ;;; :COURTESY Jared D. :WAS `assoc-replace'
 ;;; (URL `http://curiousprogrammer.wordpress.com/2009/07/26/emacs-utility-functions/')
-;;; :MODIFICATIONS <Timestamp: #{2010-02-10T20:17:04-05:00Z}#{10064} - by MON KEY>
-;;; Now returns the full association not just the value of key.
 ;;; :CREATED <Timestamp: #{2009-08-19T20:00:51-04:00Z}#{09344} - by MON KEY>
 (defun mon-assoc-replace (seq1 seq2)
   "Return alist with elts of the alist SEQ1 substituted with the element of
@@ -2063,8 +2023,7 @@ TREE-TO-FLATTEN is a proper-list, consed pair, or vector.\n
              (setq tree-to-flatten (cdr tree-to-flatten))))))
 
 ;;; ==============================
-;; mon-list-flatten-rotated
-;;; :CHANGESET 2202 <Timestamp: #{2010-10-20T12:28:20-04:00Z}#{10423} - by MON KEY>
+;;; :CREATED <Timestamp: #{2010-10-20T12:28:20-04:00Z}#{10423} - by MON KEY>
 (defun mon-list-flatten-rotated (lst-of-lsts)
   "Flatten LST-OF-LSTS - a list of lists.\n
 :EXAMPLE\n\n\(mon-list-flatten-rotated '\(\(a b c\) \(1 \(\(2 3\)\)\)\)\)\n
@@ -2108,7 +2067,6 @@ TREE-TO-FLATTEN is a proper-list, consed pair, or vector.\n
 ;;; ==============================
 ;;; :COURTESY Barry Margolin's 
 ;;; (URL `http://groups.google.com/group/comp.lang.lisp/browse_frm/thread/2d71b553b62e20b5#')
-;;; :CHANGESET 2331
 ;;; :CREATED <Timestamp: #{2010-11-27T17:06:03-05:00Z}#{10476} - by MON KEY>
 (defun mon-list-intersperse (w-lst w-item)
   "Intersperse sequence W-LST W-ITEM.\n
@@ -2144,7 +2102,6 @@ TREE-TO-FLATTEN is a proper-list, consed pair, or vector.\n
 ;; SOME returns NIL.
 
 ;;; ==============================
-;;; :CHANGESET 2356
 ;;; :CREATED <Timestamp: #{2010-12-07T22:34:24-05:00Z}#{10492} - by MON KEY>
 (defun mon-every (ev-pred ev-lst &rest ev-lsts)
   "Return true if predicate ev-pred is true of every element of ev-lst or ev-lsts.
@@ -2222,7 +2179,6 @@ Should byte-compile without CL runtime package warnings.\n
 
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS list.lisp :WAS `maptree'
-;;; :MODIFICATIONS <Timestamp: #{2010-01-16T19:20:11-05:00Z}#{10027} - by MON>
 ;;; `mon-maptree' uses `flet' cl--every -> `every'
 ;;; :CREATED <Timestamp: #{2009-09-28T17:40:37-04:00Z}#{09401} - by MON>
 (defun mon-maptree (fun &rest trees)
@@ -2282,7 +2238,6 @@ Only the elements from LIST-A must be an atom to be passed to ATOM-FUN.\n
 ;;; ==============================
 ;;; :PREFIX "mlm-"
 ;;; :COURTESY :FILE gnus-util.el :WAS `gnus-merge'
-;;; :CHANGESET 2112
 ;;; :CREATED <Timestamp: #{2010-09-06T21:02:35-04:00Z}#{10361} - by MON KEY>
 (defun mon-list-merge (type list1 list2 pred)
   "Destructively merge lists LIST1 and LIST2 to produce a new list.\n
@@ -2407,8 +2362,7 @@ This one accumulates permuatations by leveraging `mon-mapcan',
 ;;; =======================
 ;;; :PREFIX "mprm-"
 ;;; :COURTESY Christoph Conrad <cc@cli.de>
-;;; :CHANGESET 2331 <Timestamp: #{2010-11-27T16:11:58-05:00Z}#{10476} - by MON KEY>
-;;; :CHANGESET 2112
+;;; :CREATED <Timestamp: #{2010-11-27T16:11:58-05:00Z}#{10476} - by MON KEY>
 (defun mon-list-permute-1 (perm-lst)
   "Return a permuted list each elt of PERM-LST.\n
 PERM-LST is a list of elts to permute.\n
@@ -2561,7 +2515,6 @@ This one leverages `mon-mapcan' and recurses inside the an inner mapcar form.\n
 ;;     (setq mpc2-rslt (nreverse mpc2-rslt))))
 
 ;;; ==============================
-;;; :CHANGESET 2291
 ;;; :CREATED <Timestamp: #{2010-11-10T14:15:34-05:00Z}#{10453} - by MON KEY>
 (defun mon-list-string-longest (check-string-lst)
   "Return length of longest string in sequence CHECK-STRING-LST.\n
@@ -2599,7 +2552,6 @@ rather than repeatedly instantiating a new vector with each iteration.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2064
 ;;; :CREATED <Timestamp: #{2010-08-13T19:53:24-04:00Z}#{10325} - by MON KEY>
 (defun mon-bool-vector-pp (bool-vec)
 "Return print representation of bool-vector BOOL-VECT in various formats.\n

@@ -383,6 +383,7 @@
     mon-slime-ensure-fasl-temp-directory-exists
     slime-fuzzy-sroll-completions-up-from-target-buffer
     slime-fuzzy-sroll-completions-down-from-target-buffer
+    mon-slime-help-echo-overlay-no-echo
     ;; :VARIABLES
     *mon-common-lisp-hyperspec-browser-function*
     *slime-echo-arglist-STFU*
@@ -1175,13 +1176,18 @@ Evaluated at loadtime by `mon-common-lisp-hyperspec-browse-url-set-init'.\n
                   'mon-common-lisp-hyperspec-browse-url-eww)
               (unless (featurep 'eww) (require 'eww))))
       (progn
-        ;; first remove any existing handlers pairs we may already have set.
+        ;; First remove any existing handlers pairs we may already have set.
+        ;; :WAS
+        ;; (unless (null browse-url-handlers)          
+        ;; (mapcar #'(lambda (x) 
+        ;;               ;; (eql (car x) 'mon-common-lisp-hyperspec-use-dedicated-browser-p)
+        ;;               (when (eql (car x) 'mon-common-lisp-hyperspec-use-dedicated-browser-p)
+        ;;                 (setq browse-url-handlers (delete x browse-url-handlers))))
+        ;;           browse-url-handlers))
         (unless (null browse-url-handlers)
-          (mapcar #'(lambda (x) 
-                 (eql (car x) 'mon-common-lisp-hyperspec-use-dedicated-browser-p)
-                 (when (eql (car x) 'mon-common-lisp-hyperspec-use-dedicated-browser-p)
-                   (setq browse-url-handlers (delete x browse-url-handlers))))
-                  browse-url-handlers))
+          (dolist (i  browse-url-handlers)
+            (when (eql (car i) 'mon-common-lisp-hyperspec-use-dedicated-browser-p)
+                  (setq browse-url-handlers (delete i browse-url-handlers)))))
         (setq browse-url-handlers
               (push (cons 'mon-common-lisp-hyperspec-use-dedicated-browser-p
                           *mon-common-lisp-hyperspec-browser-function*)
@@ -1191,6 +1197,29 @@ Evaluated at loadtime by `mon-common-lisp-hyperspec-browse-url-set-init'.\n
                             "updating value of `browse-url-handlers'. New value:\n   %S")
                 :msg-args browse-url-handlers)
         browse-url-handlers)))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-02T12:56:21-04:00Z}#{24361} - by MON KEY>
+(defun mon-slime-help-echo-overlay-no-echo (start end presentation)
+  "Remove 'help-echo overlay property from slime-repl-presentations.
+START is a buffer position as per `slime-ensure-presentation-overlay'.
+END and PRESENTATION are ignored.
+The intention of this function is that it be evaluated 
+:after `slime-ensure-presentation-overlay' as if by `add-function'.
+:EXAMPLE\n 
+ \(advice-function-member-p #'mon-slime-help-echo-overlay-no-echo
+    \(symbol-function 'slime-ensure-presentation-overlay\)\)
+:SEE-ALSO `mon-help-CL-make-help-xref-buttons-url-info',
+`mon-help-CL-make-help-xref-buttons-info', `mon-help-propertize-tags',
+`mon-help-propertize-tags-in-buffer', `mon-help--info-button-function'.\n▶▶▶"
+  (when (get-text-property start 'slime-repl-presentation)
+    (dolist (overlay (overlays-at start))
+        (when (overlay-get overlay 'slime-repl-presentation)
+          (overlay-put overlay 'help-echo nil)))))
+;;
+;; (add-function :after (symbol-function 'slime-ensure-presentation-overlay) #'mon-slime-help-echo-overlay-no-echo)
+;; (remove-function (symbol-function 'slime-ensure-presentation-overlay) #'mon-slime-help-echo-overlay-no-echo)
+;; (advice-function-member-p #'mon-slime-help-echo-overlay-no-echo (symbol-function 'slime-ensure-presentation-overlay))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-06-23T20:38:32-04:00Z}#{10253} - by MON KEY>
@@ -2562,24 +2591,22 @@ the argument to ASDF:COERCE-NAME is CL:STRINGP the string's case is preserved.\n
 `slime-inspect-quicklisp-systems', `slime-inspect',
 `slime-inspect-presentation', `slime-inspect-definition'.\n▶▶▶"
   (interactive "s:FUNCTION `slime-inspect-asdf-system' -- name of system to inspect: \np" )
-  (setq system-name
-        (or (and (stringp system-name) 
-                 (or (and preserve-case system-name)
-                     (downcase system-name)))
-            (and (symbolp system-name) 
-                 (not (eq system-name t))
-                 (not (null system-name))
-                 (or (and preserve-case (symbol-name system-name))
-                     (downcase (symbol-name system-name))))
-            (error "arg SYMBOL-NAME neither `stringp' nor `symbolp', got: %S" system-name)))
-  (setq system-name 
+  (setq asdf-system-name
+        (or (and (stringp asdf-system-name) 
+                 (or (and preserve-case asdf-system-name)
+                     (downcase asdf-system-name)))
+            (and (symbolp asdf-system-name) 
+                 (not (eq asdf-system-name t))
+                 (not (null asdf-system-name))
+                 (or (and preserve-case (symbol-name asdf-system-name))
+                     (downcase (symbol-name asdf-system-name))))
+            (error "arg SYMBOL-NAME neither `stringp' nor `symbolp', got: %S" asdf-system-name)))
+  (setq asdf-system-name 
         (format "%S"
-                `(let ((asrp-if (asdf:system-registered-p ,system-name)))
+                `(let ((asrp-if (asdf:system-registered-p ,asdf-system-name)))
                    (or (and asrp-if (cdr asrp-if)) ASDF::*DEFINED-SYSTEMS*))))
-  (slime-eval-async `(swank::init-inspector ,system-name) 'slime-open-inspector))
-
-
-
+  (slime-eval-async `(swank::init-inspector ,asdf-system-name) 'slime-open-inspector))
+;;
 ;; (slime-eval-async `(swank:find-ql-system ,release)   'slime-quicklisp-open-inspector-if)
 ;; (slime-eval-async '(swank:find-ql-system "no-yason") 'slime-quicklisp-open-inspector-if)
 ;; (slime-eval-async `(swank:find-ql-release "yason")   'slime-quicklisp-open-inspector-if)

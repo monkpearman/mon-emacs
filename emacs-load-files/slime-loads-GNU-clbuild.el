@@ -56,6 +56,7 @@
 ;; `mon-slime-ensure-fasl-temp-directory-exists',
 ;; `slime-fuzzy-sroll-completions-up-from-target-buffer'
 ;; `slime-fuzzy-sroll-completions-down-from-target-buffer'
+;; `mon-slime-help-echo-overlay-no-echo'
 ;; FUNCTIONS:◀◀◀
 ;; 
 ;; MACROS:
@@ -2544,13 +2545,13 @@ If INSPECTED-PARTS is null minibuffer-message that ther is nothing to inspect.\n
 ;;; ==============================
 ;;; :PASTED (URL `http://paste.lisp.org/display/121086')
 ;;; :CREATED <Timestamp: #{2011-04-01T16:33:49-04:00Z}#{11135} - by MON KEY>
-(defun slime-inspect-asdf-system (system-name &optional preserve-case)
-  "Inspect an ASDF system with SYSTEM-NAME in *slime-inspector* buffer.\n
-If SYSTEM-NAME is not found display inspector for ASDF::*DEFINED-SYSTEMS*.\n
-SYSTEM-NAME is a string or symbol naming a system in the hash-table of
+(defun slime-inspect-asdf-system (asdf-system-name &optional preserve-case)
+  "Inspect an ASDF system with ASDF-SYSTEM-NAME in *slime-inspector* buffer.\n
+If ASDF-SYSTEM-NAME is not found display inspector for ASDF::*DEFINED-SYSTEMS*.\n
+ASDF-SYSTEM-NAME is a string or symbol naming a system in the hash-table of
 ASDF::*DEFINED-SYSTEMS*.\n
-When optional arg PRESERVE-CASE is non-nil do not downcase SYSTEM-NAME.\n
-If SYSTEM-NAME is T/NIL, or neither `stringp' nor `symbolp' signal an error.\n
+When optional arg PRESERVE-CASE is non-nil do not downcase ASDF-SYSTEM-NAME.\n
+If ASDF-SYSTEM-NAME is T/NIL, or neither `stringp' nor `symbolp' signal an error.\n
 :EXAMPLE\n\n \(slime-inspect-asdf-system \"cl-ppcre\"\)\n
  \(slime-inspect-asdf-system \"CL-PPCRE\" t\)\n
  \(slime-inspect-asdf-system \"not-a-system\"\)\n

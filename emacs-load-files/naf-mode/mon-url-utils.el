@@ -44,7 +44,7 @@
 ;; CLASSES:
 ;;
 ;; CONSTANTS:
-;; `*mon-tld-list*'
+;; `*mon-tld-hash-table*'
 ;;
 ;; VARIABLES:
 ;; `*hexcolor-keywords*', `*mon-url-search-paths*',
@@ -54,6 +54,7 @@
 ;; `mon-url-utils'
 ;; 
 ;; ALIASES:
+;; `*mon-tld-hash-table*'                     -> `*mon-country-code-hashtable*' 
 ;; `mon-search-wiki'                    -> `mon-search-wikipedia'
 ;; `mon-url-escape'                     -> `mon-url-encode'
 ;; `mon-url-unescape'                   -> `mon-url-decode'
@@ -80,8 +81,8 @@
 ;;                 -> `mon-tld-find-tld'
 ;; `tld-name'      -> `mon-tld-name'
 ;; `tld-tld'       -> `mon-tld-tld'
-;; `tld-list'      -> `*mon-tld-list*'
-;; `tld-list'      -> `*mon-tld-list*'
+;; `tld-list'      -> `*mon-tld-hash-table*'
+;; `tld-list'      -> `*mon-tld-hash-table*'
 ;;
 ;; MOVED: 
 ;; `mon-w3m-dired-file'          <- mon-dir-utils.el
@@ -169,7 +170,7 @@
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
-(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
+ (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 ;; :REQUIRED-BY `*regexp-wrap-url-schemes*'
 (require 'mon-regexp-symbols) 
@@ -196,7 +197,6 @@
 ;;; (declare-function mon-get-w3m-url-at-point-maybe "mon-url-utils.el" t t)
 
 ;;; ==============================
-;;; :CHANGESET 2180
 ;;; :CREATED <Timestamp: #{2010-10-04T14:07:58-04:00Z}#{10401} - by MON KEY>
 (defgroup mon-url-utils nil
   "Variables required by various `mon-*' web and url related functions.\n
@@ -211,7 +211,6 @@
   :group 'mon-base)
 
 ;;; ==============================
-;;; :CHANGESET 2405
 ;;; :CREATED <Timestamp: #{2011-01-20T16:18:34-05:00Z}#{11034} - by MON KEY>
 (defcustom *mon-url-utils-xrefs* 
   '(mon-its-all-text-purge-on-quit mon-html-fontify-generate-file-name
@@ -229,7 +228,7 @@
     ;; :VARIABLES
     *mon-url-search-paths* *mon-purge-on-its-all-text-on-quit*
     **mon-purge-htmlfontify-dir-on-quit* *regexp-hexcolor-keywords*
-    *mon-tld-list* *mon-url-utils-xrefs*)
+    *mon-tld-hash-table* *mon-url-utils-xrefs*)
   "Xrefing list of mon url related functions, constants, and variables.\n
 The symbols contained of this list are defined in :FILE mon-url-utils.el\n
 :SEE-ALSO `*mon-default-loads-xrefs*', `*mon-default-start-loads-xrefs*',
@@ -249,7 +248,6 @@ The symbols contained of this list are defined in :FILE mon-url-utils.el\n
 
 
 ;;; ==============================
-;;; :CHANGESET 1881
 ;;; :CREATED <Timestamp: #{2010-06-15T19:16:18-04:00Z}#{10242} - by MON KEY>
 (defcustom *mon-url-search-paths* 
   '( ;; . http://catalogue.bnf.fr/jsp/recherchemots_simple.jsp?nouvelleRecherche=O&nouveaute=O&host=catalogue
@@ -293,7 +291,6 @@ Each element of list has the format:\n
 ;;;(progn (makunbound '*mon-url-search-paths*) (unintern "*mon-url-search-paths*" obarray) )
 
 ;;; ==============================
-;;; :CHANGESET 2180
 ;;; :CREATED <Timestamp: #{2010-10-04T21:38:34-04:00Z}#{10401} - by MON KEY>
 (defcustom *mon-purge-on-its-all-text-on-quit* nil
   "Whether to evaluate `mon-its-all-text-purge-on-quit'.\n
@@ -306,15 +303,13 @@ Each element of list has the format:\n
 ;;
 ;; (when (and ;; (or (and (intern-soft "IS-MON-SYSTEM-P") 
 ;;        ;;          (bound-and-true-p IS-MON-SYSTEM-P))
-;;        (and (intern-soft "IS-W32-P" obarray)   ;; *IS-MON-OBARRAY*
+;;        (and (intern-soft "IS-W32-P" obarray)
 ;;             (bound-and-true-p IS-W32-P))
 ;;        (and (intern-soft "*mon-misc-path-alist*" obarray)
 ;;             (bound-and-true-p *mon-misc-path-alist*)))
 ;;   (setq *mon-purge-on-its-all-text-on-quit* t))
 
-
 ;;; ==============================
-;;; :CHANGESET 2180
 ;;; :CREATED <Timestamp: #{2010-10-04T21:47:56-04:00Z}#{10401} - by MON KEY>
 (defcustom *mon-purge-htmlfontify-dir-on-quit* nil
   "Whether to evaluate `mon-htmlfontify-dir-purge-on-quit'.\n
@@ -325,7 +320,7 @@ Each element of list has the format:\n
   :type 'boolean
   :group 'mon-url-utils)
 ;; 
-;; (when (and (intern-soft "IS-MON-SYSTEM-P")  ;; *IS-MON-OBARRAY*
+;; (when (and (intern-soft "IS-MON-SYSTEM-P")
 ;;            (bound-and-true-p IS-MON-SYSTEM-P))
 ;;   (setq *mon-purge-htmlfontify-dir-on-quit* t))
 
@@ -443,7 +438,6 @@ When `IS-MON-SYSTEM-P', this function is evaluated with:`n
 ;;; :TEST-ME (mon-html-fontify-generate-file-name)
 
 ;;; ==============================
-;;; :CHANGESET 2180 <Timestamp: #{2010-10-04T22:04:09-04:00Z}#{10401} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-03-23T21:05:10-04:00Z}#{10123} - by MON KEY>
 (defun mon-htmlfontify-dir-purge-on-quit ()
   "Delete files in `*emacs2html-temp*' matching \"emacs2firefox-.*\.html\".\n
@@ -491,7 +485,6 @@ Signals an error when any of the following occur:\n
 ;;; ==============================
 ;;; :COURTESY Thierry Volpiatto  :HIS tv-utils.el :WAS `tv-htmlfontify-buffer-to-firefox'
 ;;; :NOTE :REQUIRES :FILE `htmlfontify.el'
-;;; :MODIFICATIONS <Timestamp: #{2010-03-23T20:37:55-04:00Z}#{10123} - by MON KEY>
 ;;; :CREATED <Timestamp: Tuesday June 16, 2009 @ 08:28.49 PM - by MON>
 (defun mon-htmlfontify-buffer-to-firefox ()
   "Convert fontified buffer to an HTML file display it with Firefox.\n
@@ -525,7 +518,6 @@ Signals an error when any of the following occur:\n
 ;;; ==============================
 ;;; :COURTESY Thierry Volpiatto :HIS tv-utils.el :WAS `tv-htmlfontify-region-to-firefox'
 ;;; :NOTE :REQUIRES :FILE `htmlfontify.el'
-;;; :MODIFICATIONS <Timestamp: #{2010-03-23T20:38:06-04:00Z}#{10123} - by MON KEY>
 ;;; :CREATED <Timestamp: Tuesday June 16, 2009 @ 08:28.49 PM - by MON>
 (defun mon-htmlfontify-region-to-firefox (fontify-from fontify-to)
   "Convert fontified region to an html file and display it with Firefox.\n
@@ -574,7 +566,6 @@ Signals an error when any of the following occur:\n
 ;;; ==============================
 ;;; :COURTESY Alex Schroeder :HIS ConfigConfusibombus :WAS `url-decode'
 ;;; :SEE (URL `http://www.emacswiki.org/emacs-en/AlexSchroederConfigConfusibombus')
-;;; :CHANGESET 1756 <Timestamp: #{2010-05-21T12:22:16-04:00Z}#{10205} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-11-27T17:08:03-05:00Z}#{09485} - by MON KEY>
 (defun mon-url-encode (url-enc-str &optional insrtp intrp)
   "Return the encoded url string URL-ENC-STR.\n
@@ -594,11 +585,9 @@ at point. Moves point.\n
 ;;
 ;;; :TEST-ME (mon-url-encode "www.encode-me.com/ cash$<change[@+make:some|steal&&lie]")
 
-
 ;;; ==============================
 ;;; :COURTESY Alex Schroeder :HIS ConfigConfusibombus :WAS `url-decode'
 ;;; :SEE (URL `http://www.emacswiki.org/emacs-en/AlexSchroederConfigConfusibombus')
-;;; :CHANGESET 1756 <Timestamp: #{2010-05-21T12:15:42-04:00Z}#{10205} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-11-27T17:08:21-05:00Z}#{09485} - by MON KEY>
 (defun mon-url-decode (url-dec-str &optional insrtp intrp)
   "Return the decoded url string URL-DEC-STR.\n
@@ -626,7 +615,6 @@ at point. Moves point.\n
 ;;; ==============================
 ;;; :NOTE Maybe better to use firefox for ULAN - conkeror doesn't scroll well :(
 ;;;       Or, better even, just retrieve url synchronously. 
-;;; :CHANGESET 1759 <Timestamp: #{2010-05-21T14:12:08-04:00Z}#{10205} - by MON KEY>
 ;;; :CREATED <Timestamp: Friday February 13, 2009 @ 07:01.59 PM - by MON>
 (defun mon-search-ulan (&optional w-ulan-query)
   "Open ULAN in web browser.\n
@@ -686,8 +674,12 @@ ULAN name to search use: `mon-search-ulan-for-name'.\n
                              (msu-uqp msu-uqp)
                              ((and (not msu-bld-url) (not msu-uqp))
                               (cdr (assoc 'ulan-flbk *mon-url-search-paths*))))))
+    ;; browse-url-default-browser
     ;; (browse-url msu-ulan-url)))  :NOTE See above w/re conkeror/generic browswer
-    (browse-url-firefox msu-ulan-url)))
+    ;; :WAS (browse-url-firefox msu-ulan-url)    
+    (if (featurep 'eww)
+         (eww-browse-url msu-ulan-url)
+       (browse-url msu-ulan-url))))
 ;;
 ;;; :TEST-ME (mon-search-ulan "Pyle, Howard")
 ;;; :TEST-ME (mon-search-ulan t)
@@ -707,7 +699,7 @@ Default behavior is to prompt for name to search.\n
   (mon-search-ulan t))
 
 ;;; ==============================
-;;; :CHANGESET 1760 <Timestamp: #{2010-05-21T14:27:09-04:00Z}#{10205} - by MON KEY>
+;;; :CREATED <Timestamp: #{2010-05-21T14:27:09-04:00Z}#{10205} - by MON KEY>
 (defun mon-search-wikipedia (&optional wiki-word)
   "Look up word or phrase on Wikipedia.\n
 Generate a url from with the a word or phrase in the active region
@@ -817,8 +809,7 @@ Inserts:\n
 ;;; :PREFIX "mwou-"
 ;;; :TODO Add ability to evaluate the region programatically and otherwise.
 ;;; :REQUIRES `*regexp-wrap-url-schemes*' <- mon-regexp-symbols.el
-;;; :CHANGESET 2092 <Timestamp: #{2010-08-27T16:18:22-04:00Z}#{10345} - by MON KEY>
-;;; :MODIFICATIONS <Timestamp: Monday June 29, 2009 @ 06:22.48 PM - by MON>
+;;; :CREATED <Timestamp: Monday June 29, 2009 @ 06:22.48 PM - by MON>
 (defun mon-wrap-one-url (&optional intrp) ;;(&optional start end insertp)
   "Wrap 1\(one\)the URL  _after point_ with \(URL `<SOME-URL>'\).\n
 Conditional prefix matching regexps in variable `*regexp-wrap-url-schemes*'.
@@ -848,10 +839,10 @@ and is therefor dependent on the variables:\n
             (insert mwou-rplc-url))
         (let ((skpabl (concat "^" url-get-url-filename-chars ","))
               myb)
-          (if (and (or (setq myb (url-get-url-at-point))
+          (if (and (or (setq myb (thing-at-point-url-at-point))
                        (> (skip-chars-forward skpabl (line-end-position)) 0)
                        (< (skip-chars-backward skpabl (line-beginning-position)) 0))
-                   (or myb (setq myb (url-get-url-at-point))))
+                   (or myb (setq myb (thing-at-point-url-at-point))))
               (cond ((looking-at-p myb)
                      (delete-region (point) (+ (point) (length myb)))
                      (insert (concat "(URL `" myb "')")))
@@ -868,10 +859,8 @@ and is therefor dependent on the variables:\n
 ;;; :TEST-ME ftp://some.site.com
 ;;; :TEST-ME git://repo.or.cz/w/sbcl.git
 
-
 ;;; ==============================
 ;;; :PREFIX "mwau-"
-;;; :CHANGESET 2092 <Timestamp: #{2010-08-27T17:34:38-04:00Z}#{10345} - by MON KEY>
 ;;; :CREATED <Timestamp: Saturday April 18, 2009 @ 06:51.27 PM - by MON>
 (defun mon-wrap-all-urls ()
   "Wraps all URLs in buffer _after point_ with \(URL `<SOME-URL>'\).\n
@@ -915,7 +904,6 @@ Won't replace recursively on pre-existing wrapped URLs.\n
 ;;; :TEST-ME http://www.somethign.xomthing.com/blotto
 ;;; :TEST-ME ftp://some.site.com
 ;;; :TEST-ME git://repo.or.cz/w/sbcl.git
-
 
 ;;; ==============================
 ;;; :PREFIX "mwu-"
@@ -967,6 +955,7 @@ Uses MON's link_green_bold CSS.\n
 ;; (define-key html-mode-map "\M-5" 'wrap-url)))
 ;;  (global-set-key (kbd "<f6>") 'wrap-span-xnt)
 ;;; ==============================
+
 ;;; ==============================
 ;;; :PREFIX "mmhts-"
 (defun mon-make-html-table-string (textblock delim)
@@ -1020,7 +1009,6 @@ Into the following html table:\n
     (delete-region mmht-par1 mmht-par2)
     (insert (mon-make-html-table-string mmht-str col-sep) "\n")))
 
-
 ;;; ==============================
 ;;; :PREFIX "murtnb-"
 ;;; :CREATED <Timestamp: #{2010-03-23T19:33:48-04:00Z}#{10122} - by MON KEY>
@@ -1062,13 +1050,12 @@ corresponding to the host name arg.\n
 ;;; ==============================
 ;; :W3M-URL-GRABBER  
 
-;;(declare-function w3m-view-this-url "ext:w3m")
-;;(declare-function w3m-find-file   "ext:w3m")
-;;(declare-function mon-get-w3m-url-at-point-maybe "mon-url-utils")
+;; (declare-function w3m-view-this-url "ext:w3m")
+;; (declare-function w3m-find-file   "ext:w3m")
+;; (declare-function mon-get-w3m-url-at-point-maybe "mon-url-utils")
 ;; w3m-current-url <VARIABLE>
 ;;
 ;; (eval-when-compile (defvar w3m-current-url))
-
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-16T23:00:32-05:00Z}#{09513} - by MON KEY>
@@ -1150,7 +1137,6 @@ BUFFER. If BUFFER is nil or does no exist return URL.\n
             (t url-maybe)))))
 
 ;;; ==============================
-;;; :CHANGESET 1925
 ;;; :CREATED <Timestamp: #{2010-06-28T14:12:18-04:00Z}#{10261} - by MON KEY>
 (defun mon-w3m-goto-url-at-point (&optional w-new-session w-intrp-msg intrp)
   "Find the w3m URL at point in a new or existing w3m session.\n
@@ -1172,7 +1158,6 @@ not a URL at point message the user as such.\n
                                     "-- can't find URL at point: %d")
                         :msg-args (point))))
     (when u-at-pnt u-at-pnt)))
-
 
 ;;; ==============================
 ;;; ;WORKING-BUT-BUGGY-AS-OF
@@ -1263,7 +1248,6 @@ not a URL at point message the user as such.\n
 ;; ) ;; :CLOSE `eval-when-compile'
 ;;; ==============================
 
-
 ;;; ==============================
 ;;; :COURTESY Dave Pearson <davep@davep.org> :HIS tld.el 
 ;;; :SEE (URL `http://www.davep.org/emacs/tld.el')
@@ -1278,7 +1262,6 @@ not a URL at point message the user as such.\n
 ;;;       searches. Also, compared to emacs 20.7, the list of TLDs is more complete.
 ;;; (autoload 'tld "tld" "Perform a TLD lookup" t)
 ;;; ==============================
-;;; :CREATED <Timestamp: Tuesday May 19, 2009 @ 12:11.29 PM - by MON>
 ;;; :MODIFICATIONS Altered the original tld alist keys to reflect the those of
 ;;; mail-extr.el (e.g. notes pertaining to `what-doman') :SEE :FILE mail-extr.el
 ;;; Keep in mind that the country abbreviations follow ISO-3166.  There is
@@ -1289,14 +1272,15 @@ not a URL at point message the user as such.\n
 ;;; :SEE (URL `http://www.iana.org/domain-names.htm')
 ;;; :SEE (URL `http://www.iana.org/cctld/cctld-whois.htm')
 ;;; ==============================
-;;; :WAS `tld-list' -> `*mon-tld-list*'
-;;(defconst *mon-tld-list*
-(defcustom *mon-tld-list* nil
+;;; :WAS `tld-list' -> `*mon-tld-hash-table*'
+;;; :CREATED <Timestamp: Tuesday May 19, 2009 @ 12:11.29 PM - by MON>
+(defcustom *mon-tld-hash-table* nil
   "Hash table associating list of TLDs per ISO-3166 codes.\n
 :NOTE Country abbreviations are per ISO 3166 spec. There is an U.S. FIPS that
-specifies a different set of two-letter country abbreviations.
-Updated by the RIPE Network Coordination Centre. 
+specifies a different set of two-letter country abbreviations.  Updated by the
+RIPE Network Coordination Centre.\n
 :SOURCE ISO 3166 Maintenance Agency - :VERSION 2007-11-15.
+:ALIASED-BY `mon-url-escape'\n
 :SEE \(URL `http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1-semic.txt');
 :SEE \(URL `http://www.iana.org/domain-names.htm');
 :SEE \(URL `http://www.iana.org/cctld/cctld-whois.htm').\n
@@ -1304,9 +1288,9 @@ Updated by the RIPE Network Coordination Centre.
   :type  'sexp 
   :group 'mon-regexp-symbols)
 ;;
-(unless (and (intern-soft "*mon-tld-list*" obarray)
-             (bound-and-true-p *mon-tld-list*))
-  (setq *mon-tld-list*
+(unless (and (intern-soft "*mon-tld-hash-table*" obarray)
+             (bound-and-true-p *mon-tld-hash-table*))
+  (setq *mon-tld-hash-table*
         (mon-hash-from-alist
          '( ;; ISO 3166 codes:
            ("AC" . "Ascension Island")  
@@ -1586,59 +1570,72 @@ Updated by the RIPE Network Coordination Centre.
            ("INT" . "International Treaties")
            ("UUCP" . "Unix to Unix CoPy")
            ("ARPA" . "Advanced Research Projects Agency (U.S. DoD)"))))
-  (custom-note-var-changed '*mon-tld-list*))
+  (custom-note-var-changed '*mon-tld-hash-table*))
 ;;
 ;;; :WAS `tld-tld' -> `mon-tld-tld'
 (defsubst mon-tld-tld (tld)
   "Return the TLD portion of a TLD pair.\n
+:EXAMPLE\n\n \(mon-tld-tld \(mon-tld-find-tld \"US\"\)\)\n
 :SEE-ALSO `mon-tld-find-name',`mon-tld-find-tld', `mon-tld-name',
-`mon-tld',`*mon-tld-list*'.\n▶▶▶"
+`mon-tld',`*mon-tld-hash-table*'.\n▶▶▶"
   (car tld))
 ;;; :WAS `tld-name' -> `mon-tld-name'
 (defsubst mon-tld-name (tld)
   "Return the name portion of a TLD pair.\n
+:EXAMPLE\n\n \(mon-tld-name \(mon-tld-find-tld \"US\"\)\)\n
 :SEE-ALSO `mon-tld-find-name', `mon-tld-tld', `mon-tld-find-tld',
-`mon-tld',`*mon-tld-list*'.\n▶▶▶"
+`mon-tld',`*mon-tld-hash-table*'.\n▶▶▶"
   (cdr tld))
 ;;
-;; :FIXME THIS  `*mon-tld-list*' changed to hash-table but callers not adjusted.
+;;; ==============================
 ;;; :WAS `mon-tld-find-tld'
 (defun mon-tld-find-tld (tld)
-  "Lookup a TLD.\n
-If found a (TLD . NAME) pair is returned.\n
+  "Lookup a TLD in `*mon-tld-hash-table*' hash-table.\n
+If TLD is found a consed pair with the following form is returned
+  \(TLD . NAME\)\n
+TLD is a key into hashtable that dereferences a top level domain.
+TLD is `upcased' prior to lookup.\n
+:EXAMPLE\n
+ (mon-tld-find-tld \"jobs\")\n
+ (mon-tld-find-tld \"US\")\n
 :SEE-ALSO `mon-tld-find-name', `mon-tld-tld',`mon-tld-name', `mon-tld',
-`*mon-tld-list*'.\n▶▶▶"
-  ;; (gethash "ARPA" *mon-tld-list*)
-   ;; (let ((tld *mon-tld-list*))
-   ;;   (mon-hash-get-symbol-name-if tld t))
-  ;; (gethash (mon-hash-get-symbol-name-if tld)
-  (assoc-string (upcase tld) *mon-tld-list*) t)
-;;
+`*mon-tld-hash-table*'.\n▶▶▶"
+  ;; :WAS (assoc-string (upcase tld) *mon-tld-hash-table*) t)
+  (let* ((upcased-tld (upcase tld))
+        (maybe-key  (gethash (upcase tld) *mon-tld-hash-table*)))
+   (and maybe-key (cons upcased-tld maybe-key))))
+
+;;; ==============================
 ;;; :WAS `tld-find-name' -> `mon-tld-find-name'
 (defun mon-tld-find-name (name)
   "Lookup a TLD name. Returns a list of hits.\n
+:EXAMPLE\n\n \(mon-tld-find-name \"JOBS\"\)\n\n \(mon-tld-find-name \"US\"\)\n
 :SEE-ALSO `mon-tld-tld', `mon-tld-find-tld', `mon-tld-name', `mon-tld', 
-`*mon-tld-list*'.\n▶▶▶"
+`*mon-tld-hash-table*'.\n▶▶▶"
   (let ((case-fold-search t))
-    (loop for tld in *mon-tld-list*
-          when (string-match-p name (mon-tld-name tld))
-          collect tld)))
-;;
+    (cl-loop 
+     for tld the hash-keys of *mon-tld-hash-table*
+     using (hash-values tld-val)
+     when (string-match-p name tld)
+     collect (cons tld tld-val))))
+
+;;; ==============================
 ;;; :WAS `tld' -> `mon-tld'
 ;;;###autoload
 (defun mon-tld (search-tld)
-  "Search `*mon-tld-list*' for SEARCH-TLD.\n
-:EXAMPLE\n\n\(mon-tld \"UUCP\"\)\n
-\(call-interactively 'mon-tld\)\n
+  "Search `*mon-tld-hash-table*' for SEARCH-TLD.\n
+:EXAMPLE\n\n \(mon-tld \"UUCP\"\)\n\n \(mon-tld \"US\"\)\n
+ \(call-interactively 'mon-tld\)\n
 :SEE-ALSO `mon-tld-find-name', `mon-tld-tld', `mon-tld-find-tld', `mon-tld-name',
-`*mon-tld-list*'.\n▶▶▶"
+`*mon-tld-hash-table*'.\n▶▶▶"
   (interactive "s:FUNCTION `mon-tld' -- search TLD: ")
+  ;; :NOTE Why are we searching the substring of SEARCH-TLD for "."?
   (let* ((mtld-lkup (string= (substring search-tld 0 1) "."))
          (mtld-rslt     (if mtld-lkup 
                          (mon-tld-find-tld (substring search-tld 1)) 
                        (mon-tld-find-name search-tld))))
     (if mtld-rslt
-        (flet ((message-tld (msg-tld)
+        (cl-flet ((message-tld (msg-tld)
                  (message "%s is %s" (mon-tld-tld msg-tld) (mon-tld-name msg-tld))))
           (if mtld-lkup
               (message-tld mtld-rslt)
@@ -1646,10 +1643,11 @@ If found a (TLD . NAME) pair is returned.\n
                 (message-tld (car mtld-rslt))
               (with-output-to-temp-buffer "*MON-TLD*"
                 (princ "TLD    Name\n====== ========================================\n\n")
-                (loop for mltd-loop-tlds in mtld-rslt
-                      do (princ (format "%-6s %s\n" 
-                                        (mon-tld-tld mltd-loop-tlds) 
-                                        (mon-tld-name mltd-loop-tlds))))))))
+                (cl-loop 
+                 for mltd-loop-tlds in mtld-rslt
+                 do (princ (format "%-6s %s\n" 
+                                   (mon-tld-tld mltd-loop-tlds) 
+                                   (mon-tld-name mltd-loop-tlds))))))))
       ;; If nothing was found and it wasn't a mtld-lkup but it looks like
       ;; it might be a TLD re-submit it with a leading dot.
       (if (and (not mtld-lkup) (< (length search-tld) 7))

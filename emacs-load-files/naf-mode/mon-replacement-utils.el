@@ -185,7 +185,6 @@
 
 
 ;;; ==============================
-;;; :CHANGESET 2406
 ;;; :CREATED <Timestamp: #{2011-01-20T18:59:00-05:00Z}#{11034} - by MON KEY>
 (defgroup mon-replacement-utils nil
   "Customization group for variables and functions of :FILE mon-replacement-utils.el\n
@@ -200,7 +199,6 @@
   :group 'mon-base)
 
 ;;; ==============================
-;;; :CHANGESET 2406
 ;;; :CREATED <Timestamp: #{2011-01-20T18:58:56-05:00Z}#{11034} - by MON KEY>
 (defcustom *mon-replacement-utils-xrefs* 
   '(mon-is-naf-mode-p mon-is-naf-mode-and-llm-p mon-make-iso-latin-1-approximation
@@ -253,7 +251,6 @@ The symbols contained of this list are defined in :FILE mon-replacement-utils.el
 
 
 ;;; ==============================
-;;; :MODIFICATIONS <Timestamp: #{2010-03-12T14:14:46-05:00Z}#{10105} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-09-08T12:56:12-04:00Z}#{09372} - by MON KEY>
 (defun mon-is-naf-mode-p (&optional check-naf-buffer)  
   "Test if buffer is in `naf-mode'.\n
@@ -378,20 +375,22 @@ to test for active naf-mode before evaluating body.\n
 :SEE-ALSO `*iso-latin-1-approximation*',`mon-make-iso-latin-1-approximation',
 `mon-trans-cp1252-to-latin1', `mon-make-iso-latin-1-approximation-loadtime'.\n▶▶▶"
   (setq *iso-latin-1-approximation* (make-vector 256 0))
-  (cl-loop for i from 0 to 127 
-     do (aset *iso-latin-1-approximation* i i))
-  (cl-loop for i from 128 below 160 
-     for c from 0 below 32 
-     do (aset *iso-latin-1-approximation* i c))
-  (cl-loop for i from 160 to 255
-     for c across (concat " !cL$Y|S\"Ca<--R\"o~23'uP.,1o>***?"
-                          "AAAAAAECEEEEIIIITNOOOOOxOUUUUYPs"
-                          "aaaaaaeceeeeiiiitnooooo/ouuuuypy")
-     do (aset *iso-latin-1-approximation* i c))       
+  (cl-loop
+   for i from 0 to 127 
+   do (aset *iso-latin-1-approximation* i i))
+  (cl-loop
+   for i from 128 below 160 
+   for c from 0 below 32 
+   do (aset *iso-latin-1-approximation* i c))
+  (cl-loop
+   for i from 160 to 255
+   for c across (concat " !cL$Y|S\"Ca<--R\"o~23'uP.,1o>***?"
+                        "AAAAAAECEEEEIIIITNOOOOOxOUUUUYPs"
+                        "aaaaaaeceeeeiiiitnooooo/ouuuuypy")
+   do (aset *iso-latin-1-approximation* i c))
   *iso-latin-1-approximation*)
 
 ;;; ==============================
-;;; :CHANGESET 2301
 ;;; :CREATED <Timestamp: #{2010-11-11T15:21:29-05:00Z}#{10454} - by MON KEY>
 (defun mon-make-iso-latin-1-approximation-loadtime ()
   "Loadtime function binds variable `*iso-latin-1-approximation*'.\n
@@ -656,7 +655,6 @@ Optional args BEG and END specify a region of the buffer on which to operate.\n
 ;;; :SEE (URL `http://xah-forum.blogspot.com/2009_03_08_archive.html')
 ;;; :PREFIX "mcs-"
 ;;; :MODIFICATIONS Abstracted to handle lists vectors, conses, in any combinations.
-;;; :CHANGESET 2144 <Timestamp: #{2010-09-22T14:20:50-04:00Z}#{10383} - by MON KEY>
 ;;; :CREATED <Timestamp: Wednesday April 29, 2009 @ 12:49.37 PM - by MON KEY>
 (defun mon-string-canonical (canonize-string canon-table)
   "Return the canonical form of CANONIZE-STRING per a lookup in CANON-TABLE.\n
@@ -904,7 +902,6 @@ Used as a helper function to search over symbol bound regexp lists.\n
 
 ;;; ==============================
 ;;; :PREFIX "mrrrl-"
-;;; :MODIFICATIONS <Timestamp: #{2009-08-31T12:12:52-04:00Z}#{09361} - by MON KEY>
 ;;; :CREATED <Timestamp: Wednesday February 04, 2009 @ 07:04.37 PM - by MON KEY>
 (defun mon-replace-region-regexp-lists (start end &optional regexp-list with-results intrp)
   "Interactive version of `mon-replace-region-regexp-lists-nonint'.\n
@@ -1093,7 +1090,6 @@ unk84240548\n\[500006383]\nFRBNF12656015\nFRBNF32759170\n◀\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2214
 ;;; :CREATED <Timestamp: #{2010-10-26T16:39:05-04:00Z}#{10432} - by MON KEY>
 (defvar *mon-regexp-unintern* (concat "\\((unintern\\)" ;grp1
                                       "\\([[:space:]]+\\)" ;grp2
@@ -1163,7 +1159,6 @@ the most recent invocation of `mon-replace-unintern-w-query'.\n
 
 ;;; ==============================
 ;;; :PREFIX "mruwq-"
-;;; :CHANGESET 2214
 ;;; :CREATED <Timestamp: #{2010-10-26T16:42:37-04:00Z}#{10432} - by MON KEY>
 (defun mon-replace-unintern-w-query  ()
   "Find replace occurences of unintern forms in current buffer.\n
@@ -1606,7 +1601,6 @@ Intended for cleaning raw irc log files pulled from
       (delete-matching-lines *regexp-clean-irc-logs*))))
 
 ;;; ==============================
-;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T12:46:10-05:00Z}#{11022} - by MON KEY>
 ;;;###autoload
 (defun mon-cln-freenode-log ()
@@ -1716,7 +1710,6 @@ Replace  & ,  > ,  <  with their respective encoded representation.\n
 
 ;;; ==============================
 ;;; :PREFIX "mcxe-"
-;;; :CHANGESET 2108
 ;;; :CREATED <Timestamp: #{2010-09-03T15:35:19-04:00Z}#{10355} - by MON KEY>
 (defun mon-cln-xml-escapes () 
   "Replace all occurences of HTML style numeric entity refs in current XML buffer.\n
@@ -1804,7 +1797,6 @@ representation of XML file fname at point. Does not move point.\n
 
 ;;; ==============================
 ;;; :PREFIX "mcxpsn-"
-;;; :MODIFICATIONS <Timestamp: #{2009-11-17T17:00:10-05:00Z}#{09472} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-31T20:57:30-04:00Z}#{09362} - by MON KEY>
 (defun mon-cln-xml<-parsed-strip-nil (fname &optional insrtp intrp)
   "De-string-ification of xml parse results from with `xml-parse-file'.\n
@@ -1834,7 +1826,6 @@ Does not move point.\n
 ;;; ==============================
 ;;; :PREFIX "mcuc-"
 ;;; :GLOBAL-KEYBINDING (global-set-key "\C-cu:" 'mon-cln-up-colon)
-;;; :MODIFICATIONS <Timestamp: #{2010-03-01T15:29:58-05:00Z}#{10091} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-12-19T02:39:48-05:00Z}#{09516} - by MON>
 (defun mon-cln-up-colon (start end &optional insrtp intrp)
   "Return colonized string in region at BOL.\n
@@ -2045,7 +2036,6 @@ message results of toggling.\n
 
 ;;; ==============================
 ;;; :PREFIX "mtcr-"
-;;; :MODIFICATIONS <Timestamp: #{2010-02-13T16:44:19-05:00Z}#{10066} - by MON KEY>
 ;;; :CREATED <Timestamp: Thursday April 30, 2009 @ 05:08.23 PM - by MON KEY>
 (defun mon-toggle-case-regexp (case-toggle-match up-down &optional replace-n
                                                  w-results intrp)
@@ -2364,7 +2354,7 @@ For interactive whitespace region adjustment use `mon-cln-BIG-whitespace',
 ;;; :PREFIX "mcul-"
 ;;; :NOTE Duplicate lines are killed to kill-ring. IOW, clobbers the ring.
 ;;;       Testing a kill-ring restore inside the unwind-protect.
-;;; :MODIFICATIONS <Timestamp: #{2010-01-26T20:57:22-05:00Z}#{10043} - by MON KEY>
+;;; :CREATED <Timestamp: #{2010-01-26T20:57:22-05:00Z}#{10043} - by MON KEY>
 (defun mon-cln-uniq-lines (beg end)
   "Return the unique lines in region, ommitting ducplicates.\n
 Called programmatically ARGS BEG and END denote the \(region to sort\) and uniquify.
@@ -2575,7 +2565,6 @@ Following is the relevant URL containing content apropos this procedure:
 ;;;       List/Hierarchical Position: Person
 ;;;       Nationalities: French (preferred) ... etc.
 ;;; :PREFIX "mcu-"
-;;; :MODIFICATIONS <Timestamp: #{2009-08-31T22:53:08-04:00Z}#{09362} - by MON KEY>
 ;;; :CREATED <Timestamp: Tuesday April 07, 2009 @ 11:35.38 AM - by MON KEY>
 (defun mon-cln-ulan (start end &optional with-results intrp)
   "Clean periods, linebreaks, whitespace, tabs, etc. from ULAN scrapes in *<BUFFER>*.
@@ -2935,7 +2924,7 @@ Useful for those with `.' at end of string.\n
 ;;;       filename and clean any redundant or pre-existing URLs, and optionally
 ;;;       pass the file on to shell process. Also, need to adjust the script to
 ;;;       account for rename rules on files wget pulls.
-;;; :MODIFICATIONS <Timestamp: #{2009-08-11T16:52:26-04:00Z}#{09332} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-08-11T16:52:26-04:00Z}#{09332} - by MON KEY>
 (defun bug-cln-gilt-group (start end)
   "Clean image links from html source at gilt.com.\n
 Useful to get a working list to pass to a useable wget file e.g.:\n

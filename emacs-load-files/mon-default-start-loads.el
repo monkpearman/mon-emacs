@@ -3360,22 +3360,38 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
        (custom-note-var-changed 'tags-table-list)))
    ;; Now put some keybindings on the mode-hooks:
    (mon-keybind-put-hooks-init t)
+   ;; 
+   (add-function :after (symbol-function 'slime-ensure-presentation-overlay)
+                 #'mon-slime-help-echo-overlay-no-echo)
+   ;; (remove-function (symbol-function 'slime-ensure-presentation-overlay) #'mon-slime-help-echo-overlay-no-echo)
+
+   (setq *mon-help-CL-symbols-for-info* (mon-help-CL--help-info-mon-symbols-hash-table))
    ;;
    ;; :NOTE Following will make-sure mon-help-CL-<FOO> functions get url/info buttons assigned.
    (add-function
     :after (symbol-function 'help-make-xrefs)
     #'mon-help-CL-make-help-xref-buttons-url-info)
    ;; The advice can be remvoed with:
-   ;; (remove-function  (symbol-function 'help-make-xrefs)
-   ;;                   #'mon-help-CL-make-help-xref-buttons-url-info)
-   ;; The advice can be tested for presence in environment with:
+   ;; (remove-function  (symbol-function 'help-make-xrefs) #'mon-help-CL-make-help-xref-buttons-url-info)
    ;; (advice-function-member-p #'mon-help-CL-make-help-xref-buttons-url-info (symbol-function 'help-make-xrefs))
+
    ;;
    ;; :NOTE following will ensure *Help* gets text properties as per `mon-help-propertize-tags'.
    (add-function
     :after (symbol-function 'mon-help-CL-make-help-xref-buttons-url-info)
     #'mon-help-propertize-tags-in-buffer)
+   ;;
    ;; (remove-function  (symbol-function 'mon-help-CL-make-help-xref-buttons-url-info) #'mon-help-propertize-tags-in-buffer)
+   ;; (advice-function-member-p #'mon-help-propertize-tags-in-buffer (symbol-function 'mon-help-CL-make-help-xref-buttons-url-info))
+   
+   ;; :NOTE following will ensure *Help* gets help-info-button's that don't
+   ;; generate new *info* buffers when following info nodes.
+   (add-function
+    :after (symbol-function 'mon-help-propertize-tags-in-buffer)
+    #'mon-help-propertize-help-info-button)
+   ;; (remove-function  (symbol-function 'mon-help-propertize-help-info-button) #'mon-help-propertize-tags-in-buffer)
+   ;; (advice-function-member-p #'mon-help-propertize-tags-in-buffer (symbol-function 'mon-help-propertize-tags-in-buffer))
+
    ;;
    ;; Following tells font-lock to put face mon-help-COMMENT-tag on Mon specific :<KEYWARDS>
    ;; inside `emacs-lisp-mode' & `lisp-mode' comments.

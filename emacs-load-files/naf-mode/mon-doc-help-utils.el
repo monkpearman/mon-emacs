@@ -103,6 +103,7 @@
 ;; `mon-help-byte-compile-functions', `mon-update-tags-tables-loadtime',
 ;; `mon-help-marker-functions', `mon-help-predicate-functions', 
 ;; `mon-help-number-functions', `mon-help-unix-usage',
+;; `mon-help--info-button-function', `mon-help-propertize-help-info-button',
 ;; FUNCTIONS:◀◀◀
 ;;
 ;; MACROS:
@@ -514,6 +515,8 @@
     '(mon-map-subrs-and-hash mon-help-permanent-locals-find
       mon-help-byte-optimizer-find  mon-help-mon-tags
       mon-help-propertize-tags  mon-help-propertize-tags-in-buffer
+      mon-help--info-button-function
+      mon-help-propertize-help-info-button
       mon-help-font-lock-comment-keywords-matcher
       mon-help-insert-tags mon-help-insert-tags-comment
       mon-help-overlay-for-example mon-help-delimited-region
@@ -2008,6 +2011,57 @@ The face `mon-help-COMMENT-tag' is used for font-locoking..\n
      (goto-char m-end))
    (and commentp
         m-end)))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-02T17:53:01-04:00Z}#{24361} - by MON KEY>
+(define-button-type 'help-info-mon
+  :supertype 'help-xref
+  'help-function 'mon-help--info-button-function
+  'help-echo (purecopy "mouse-2, RET: read this Info node"))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-28T02:16:23-04:00Z}#{24353} - by MON KEY>
+(defun mon-help--info-button-function (file-or-node)
+ "Normally `help-do-xref' generates a new \"*info*\" buffer as if by
+`generate-new-buffer-name' when following the `help-button-action's button
+help-function, which is `info'. We setup an alternative button `help-info-mon'
+ that has this funciton as it's help-function and so we DO NOT generate a new
+\"*info*\" buffer.\n
+:EXAMPLE\n\n  \(mon-help--info-button-function \"\(ansicl\) Symbol Index\"\)\n
+:SEE-ALSO `mon-help-propertize-help-info-button', `mon-help-propertize-tags',
+`mon-help-propertize-tags-in-buffer', `mon-help-CL-make-help-xref-buttons-url-info'.\n▶▶▶"
+ (info file-or-node "*info*"))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-02T18:00:35-04:00Z}#{24361} - by MON KEY>
+(defun mon-help-propertize-help-info-button (&optional buffer)
+  "Remove text properties in BUFFER with a property `category' and property value
+`help-info-button' and replace with property value `help-info-mon-button'.\n
+The button `help-info-mon-button' will have as it's `help-function' property value
+`mon-help--info-button-function', but any previoulsy assigned `help-args'
+property values will remain unchanged.\n
+BUFFER is a buffer or buffer-name, default is \"*Help*\".\n
+The intention of this function is to allow following info node links in
+\"*Help*\" buffers without them generating additional new \"*info*\" buffers, eg
+info buffers having buffer names of the form \"*info <N>* \".\n
+:NOTE Run as advise as if by `add-function' :after `mon-help-propertize-tags-in-buffer'.\n 
+:EXAMPLE
+  \(advice-function-member-p #'mon-help-propertize-tags-in-buffer
+    \(symbol-function 'mon-help-propertize-tags-in-buffer\)\)\n
+:SEE-ALSO `mon-help--info-button-function', `mon-help-propertize-tags', 
+`mon-help-CL-make-help-xref-buttons-url-info', `mon-help-CL-make-help-xref-buttons-info'.\n▶▶▶"
+  (save-excursion
+    (with-current-buffer (get-buffer (or buffer "*Help*")) ;; (help-buffer)
+      (let ((match-obj nil)
+            (buffer-read-only nil)
+            (help-args-for-button nil))
+        (while (setq match-obj (text-property-search-forward 'category)) 
+          (when  (string-equal  (symbol-name (prop-match-value match-obj)) "help-info-button")
+            (setq help-args-for-button 
+                  (car (plist-get (text-properties-at (prop-match-beginning match-obj)) 'help-args)))
+            (make-text-button (prop-match-beginning match-obj) (prop-match-end match-obj)
+                              'type 'help-info-mon 'help-args (list help-args-for-button))))))))
+
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2024-08-28T16:30:00-04:00Z}#{24353} - by MON KEY>

@@ -456,7 +456,7 @@
 ;;; CODE:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
@@ -464,7 +464,6 @@
 
 ;;; ==============================
 ;;; :NOTE before :FILE mon-error-utils.el mon-text-property-utils.el
-;;; :CHANGESET 2171
 ;;; :CREATED <Timestamp: #{2010-10-02T11:32:40-04:00Z}#{10396} - by MON KEY>
 (defgroup mon-base nil
   "Top level group from which other mon related packages and groups inherit.\n
@@ -481,7 +480,6 @@
   :group 'local)
 
 ;;; ==============================
-;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T14:24:52-05:00Z}#{11022} - by MON KEY>
 (defgroup mon-xrefs nil
   "Customization group for xrefing variables `*mon-.*-xrefs*'.\n
@@ -542,14 +540,13 @@ needs.\n
 ;;; ==============================
 ;;; :TODO Extend this list into an alist with elements containing 
 ;;; plist keys :requires :required-by :optional etc.
-;;; :CHANGESET 2112
 ;;; :CREATED <Timestamp: #{2010-09-06T16:54:51-04:00Z}#{10361} - by MON KEY>
 (defvar *mon-utils-post-load-requires* nil
   "*List of features loaded by feature mon-utils.el\n
 :CALLED BY `mon-utils-require-features-at-loadtime'\n
 :SEE-ALSO `mon-after-mon-utils-loadtime'.\n▶▶▶")
 ;;
-(unless (and (intern-soft "*mon-utils-post-load-requires*" obarray) ;; *IS-MON-OBARRAY*
+(unless (and (intern-soft "*mon-utils-post-load-requires*" obarray)
              (bound-and-true-p *mon-utils-post-load-requires*))
   (setq *mon-utils-post-load-requires*
         '(mon-macs
@@ -605,10 +602,10 @@ needs.\n
           mon-iptables-regexps
           mon-get-freenode-lisp-logs
           mon-mysql-utils
+          mon-elisp-fileset
           )))
 
 ;;; ==============================
-;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T14:27:34-05:00Z}#{11022} - by MON KEY>
 (defcustom *mon-xrefs-xrefs*
   '(*mon-regexp-symbols-xrefs*
@@ -679,7 +676,7 @@ Such that evaluation of the following two forms returns non-nil:\n
   :group 'mon-base)
 
 ;;; ==============================
-;; :TODO The `:type` key should have required match.
+;;; :TODO The `:type` key should have required match.
 ;;; :CREATED <Timestamp: #{2009-10-24T12:07:10-04:00Z}#{09436} - by MON KEY>
 (defcustom *mon-default-comment-divider* (mon-comment-divider-w-len 30)
   "Preferred mon-comment-divider for lisp source sectioning.\n
@@ -707,7 +704,6 @@ These values are used to inform calling functions according to some heuristic.\n
   :group 'mon-base)
 
 ;;; ==============================
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T15:39:13-04:00Z}#{10381} - by MON>
 (defvar *mon-recover-nil-t-default-plist* nil
   "Bound at loadtime to the default plists of `nil' and `t'.\n
@@ -722,7 +718,6 @@ Recover plists with `mon-recover-nil-t-default-plist' if they become corrupted.\
 ;;; :TODO This should be evaluated before slime.el b/c she is the one stepping
 ;;;       on `nil's plist! Currently this isn't happening as it would require
 ;;;       moving it much further up in the loadtime sequence...
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T16:01:23-04:00Z}#{10381} - by MON KEY>
 (defun mon-recover-nil-t-default-plist (&optional intrp)
   "Recover the default loadtime plists value of `nil' and `t'.\n
@@ -760,18 +755,6 @@ Called in a post-loadtime environement restores the plist values stored in
             `(:nil-default-plist ,(symbol-plist nil) :t-default-plist  ,(symbol-plist t)))
       (mon-message :msg-spec '(":FUNCTION `mon-recover-nil-t-default-plist' "
                                "-- :VARIALBE `*mon-recover-nil-t-default-plist*' bound at loadtime")))))
-
-;;; ==============================
-;;; :NOTE `mon-get-mon-emacsd-paths' is an interpreted function in:
-;;; :FILE mon-default-start-loads.el
-;;; :MOVED into `mon-utils-require-features-at-loadtime'
-;; (when (fboundp 'mon-get-mon-emacsd-paths)
-;;   (fset 'mon-get-emacsd-paths 
-;;         (byte-compile
-;;          (indirect-function 'mon-get-mon-emacsd-paths)))
-;;   (message 
-;;    "`byte-compile'd :FUNCTION `mon-get-mon-emacsd-paths' at loadtime"))
-
 ;;; ==============================
 ;;; :PREFIX "mcffl-"
 ;;; :NOTE Adding an optional arg W-SIGNAL-ERROR doesn't really make sense as the
@@ -829,7 +812,6 @@ the filename of feature FEATURE-AS-SYMBOL when it is in loadpath.\n
 
 ;;; ==============================
 ;;; :PREFIX "murfal-"
-;;; :CHANGESET 2112
 ;;; :CREATED <Timestamp: #{2010-09-06T17:05:28-04:00Z}#{10361} - by MON KEY>
 (defun mon-utils-require-features-at-loadtime ()
   "Evaluated as the last form in mon-utils.el\n
@@ -847,13 +829,12 @@ varaible `*mon-utils-post-load-requires*'\n
                  (concat ":FUNCTION `mon-utils-require-features-at-loadtime' "
                          "-- :FEATURE mon-utils :REQUIRED :FEATURE " murfal-L-1 " on load")))
             murfal-did-rqr)))
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
              (bound-and-true-p IS-MON-SYSTEM-P))
     ;; Load here instead of from :FILE naf-mode.el
     (require 'mon-rename-whitespace-files)
-    (require 'naf-mode-sql-skeletons nil t)
-    (require 'mon-dbc-xml-utils)
-    ))
+    (require 'naf-mode-sql-skeletons nil t) ;; (locate-library "naf-mode/naf-mode-sql-skeletons")
+    (require 'mon-dbc-xml-utils)))
 
 ;;; ==============================
 ;;; :TODO Build additional fncn/macro to populate docstrings at loadtime.
@@ -914,13 +895,13 @@ Peforms loadtime evaluation of functions defined in mon-utils.el:\n
     (eval-after-load "mon-doc-help-utils" '(mon-help-utils-loadtime t))
     ;; :NOTE Moved (mon-help-utils-CL-loadtime t) -> `mon-run-post-load-hooks'
     (eval-after-load "mon-doc-help-CL"    '(mon-bind-mon-help-CL-pkgs-loadtime t))
-    ;; :NOTE See docs `mon-bind-cifs-vars-at-loadtime' and notes at BOF
-    ;; mon-cifs-utils.el for alternative application with args 
+    ;; :NOTE See docs `mon-bind-cifs-vars-at-loadtime' and notes at beginning of 
+    ;; :FILE mon-cifs-utils.el for alternative application with args 
     ;; NO-MISC-PATH NO-MAP-MOUNT-POINTS e.g.: 
     ;; (eval-after-load 'mon-cifs-utils '(mon-bind-cifs-vars-at-loadtime nil t)) 
     ;;
-    ;; :NOTE we no longer evaluate following as the drive doesn't
-    ;; exist. Uncomment if we ever establis another CIFS routine
+    ;; :NOTE we no longer evaluate following as the drive doesn't  exist.
+    ;;  Uncomment if we ever establis another CIFS routine
     ;; (eval-after-load "mon-cifs-utils"           '(mon-bind-cifs-vars-at-loadtime))
     (eval-after-load "mon-cl-compat-regexps"    '(mon-CL-cln-colon-swap t))    
     (eval-after-load "mon-empty-registers"      '(progn (mon-set-register-tags-loadtime t)
@@ -942,16 +923,15 @@ Peforms loadtime evaluation of functions defined in mon-utils.el:\n
     (mon-check-feature-for-loadtime       'mon-drive-transfer-utils)
     (mon-check-feature-for-loadtime       'mon-jg-directory-creator)
     (mon-check-feature-for-loadtime       'mon-color-utils)
-    (eval-after-load "mon-boxcutter" '(boxcutter-mkdir-loadtime))
-    (mon-check-feature-for-loadtime   'mon-boxcutter)
-    (mon-check-feature-for-loadtime   'thumbs)
-    (mon-check-feature-for-loadtime   'mon-aliases)))
+    (eval-after-load "mon-boxcutter"      '(boxcutter-mkdir-loadtime))
+    (mon-check-feature-for-loadtime       'mon-boxcutter)
+    (mon-check-feature-for-loadtime       'thumbs)
+    (mon-check-feature-for-loadtime       'mon-aliases)))
 
 ;;; ==============================
 ;;; :PREFIX "mmap-"
 ;;; :COURTESY Andy Stewart <lazycat.manatee@gmail.com> :WAS `match-at-point'
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/lazycat-toolkit.el')
-;;; :CHANGESET 1768 <Timestamp: #{2010-05-25T19:21:55-04:00Z}#{10212} - by MON KEY>
 ;;; :CREATED <Timestamp: Wednesday June 03, 2009 @ 06:18.14 PM - by MON KEY>
 (defun mon-match-at-point (match-regexp)
   "Return the buffer substring around point matching MATCH-REGEXP.\n
@@ -989,7 +969,6 @@ nil if there is no match in the buffer.\n
 
 ;;; ==============================
 ;;; :PREFIX "mlbp-"
-;;; :CHANGESET 2035
 ;;; :CREATED <Timestamp: #{2010-08-04T20:00:08-04:00Z}#{10313} - by MON KEY>
 (defun mon-looking-back-p (regexp &optional limit greedy)
   "Like `looking-back' but doesn't modify the match data.\n
@@ -1076,7 +1055,7 @@ unreadable object with the '#' prefix so we strip it.\n
 ;;; ==============================
 ;;; :PREFIX "mvhs-"
 (defun mon-view-help-source ()
-  "
+  "When visiting files from \"*Help*\" buffer toggle `view-mode' on entry to visited file.\n
 :SEE-ALSO `mon-get-text-properties-category', `mon-line-test-content'.\n▶▶▶"
   (interactive)
   (eval-when-compile (require 'ffap))
@@ -1103,7 +1082,6 @@ unreadable object with the '#' prefix so we strip it.\n
                       mvhs-get-bfr)))))))))
 
 ;;; ==============================
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-05-27T20:09:25-04:00Z}#{10214} - by MON KEY>
 (defun mon-map-obarray-symbol-plist-props (w-prop-sym &optional display-in-buffer intrp)
   "Map atoms in obarray looking for the plist property W-PROP-SYM.\n
@@ -1173,7 +1151,7 @@ return results in that buffer creating one if it doesn't exist.\n
 ;;; :TEST-ME (mon-map-obarray-symbol-plist-props 'permanent-local t)
 
 ;;; ==============================
-;;; :MODIFICATIONS <Timestamp: Saturday May 30, 2009 @ 06:26.12 PM - by MON KEY>
+;;; :CREATED <Timestamp: Saturday May 30, 2009 @ 06:26.12 PM - by MON KEY>
 (defun mon-escape-lisp-string-region (start end)
   "Escape special characters in the region as if a lisp string.
 Insert backslashes in front of special characters (namely  \`\\' backslash,
@@ -1226,7 +1204,6 @@ without the surrounding quotes.\n
 
 ;;; ==============================
 ;;; :COURTESY :FILE custom.el :WAS `custom-quote'
-;;; :CHANGESET 1997
 ;;; :CREATED <Timestamp: #{2010-07-27T15:29:09-04:00Z}#{10302} - by MON KEY>
 (defun mon-quote-sexp (sexp)
   "Quote SEXP as if by `quote' if it is not self quoting.\n
@@ -1258,7 +1235,7 @@ Return value of `eval-expression-print-length'.\n
 When `eval-expression-print-length' is nil and NEW-DEPTH is non-nil or
 called-interactively with prefix arg use length, else set length to 12 - the
 default.\n
-When `eval-expression-print-length' is non-nil set length to nil.
+When `eval-expression-print-length' is non-nil set length to nil.\n
 When `eval-expression-print-length' and NEW-DEPTH are non-nil set length.\n
 :EXAMPLE\n\n\(mon-toggle-eval-length\)\n\n\(mon-toggle-eval-length 16\)\n
 \(mon-toggle-eval-length nil t\)\n\n\(mon-toggle-eval-length 1 t\)\n
@@ -1291,7 +1268,6 @@ When `eval-expression-print-length' and NEW-DEPTH are non-nil set length.\n
 ;;; eval-expression-print-length
 
 ;;; ==============================
-;;; :CHANGESET 2233 <Timestamp: #{2010-11-06T20:47:12-04:00Z}#{10446} - by MON KEY>
 ;;; :CREATED: <Timestamp: #{2009-10-20T15:56:02-04:00Z}#{09432} - by MON>
 (defun mon-pretty-print-sexp-at-point (start end &optional CL->downcase);; intrp)
   "Pretty print the region in buffer. Do not move point.\n
@@ -1331,8 +1307,6 @@ When `eval-expression-print-length' and NEW-DEPTH are non-nil set length.\n
           (mon-wrap-with (concat fw "\n") (concat "\n" bw) t)
           (search-forward-regexp (concat "\n" bw))
           (set-marker mk2 (point))
-          ;; deprecated `preceding-sexp'
-          ;; (eval (preceding-sexp))
           (eval (elisp--preceding-sexp))
           (search-backward-regexp (concat "\n" bw) nil t)
           (set-marker mk1 (point))
@@ -1375,8 +1349,7 @@ after point.\n
 Return point after commented result. Best on trivial expressions.\n
 :EXAMPLE\n\(+ 1 3)\n;;;=> 4\n^point^\n
 :SEE-ALSO `mon-princ-cb', `mon-pretty-print-sexp-at-point', `mon-eval-expression',
-`mon-eval-print-last-sexp', `mon-eval-sexp-at-point', `mon-toggle-eval-length'.
-▶▶▶"
+`mon-eval-print-last-sexp', `mon-eval-sexp-at-point', `mon-toggle-eval-length'.\n▶▶▶"
   (interactive)
   (let* ((mesap-wrap (sexp-at-point))
 	 (mesap-val (eval mesap-wrap))      
@@ -1468,10 +1441,7 @@ Subsequent calls mark higher levels of sexps.\n
           (forward-sexp)))
       (mark-sexp -1))))
 
-
-
 ;;; ==============================
-;;; :CHANGESET 2447
 ;;; :CREATED <Timestamp: #{2011-06-17T19:58:41-04:00Z}#{11245} - by MON KEY>
 ;;; :SOURCE (URL `http://lists.gnu.org/archive/html/help-gnu-emacs/2010-06/msg00136.html')
 (defun mon-list-fonts-display (&optional matching)
@@ -1521,9 +1491,7 @@ cannot be used to display its own name\).\n
         (goto-char (point-min)))
       (display-buffer buf))))
 
-
 ;;; ==============================
-;;; :CHANGESET 2447
 ;;; :CREATED <Timestamp: #{2011-06-17T20:05:45-04:00Z}#{11245} - by MON KEY>
 (defun mon-font-at-point (&optional position)
 "Like `font-at' but returns font at `point' if position is ommitted.
@@ -1532,7 +1500,6 @@ position is as per `font-at'
 :ALIASED-BY `font-at-point'\n
 :SEE-ALSO `mon-list-fonts-display'.\n▶▶▶"
   (font-at (or position (point))))
-
 
 ;;; ==============================
 ;;; :COURTESY Nikolaj Schumacher  :VERSION 2008-10-20
@@ -1547,11 +1514,9 @@ position is as per `font-at'
         (progn
           (skip-syntax-forward "^\"")
           (goto-char (1+ (point)))
-          ;; deprecated (decf arg))
           (cl-decf  arg))
       (skip-syntax-backward "^\"")
       (goto-char (1- (point)))
-      ;; deprecated (incf arg)))
       (cl-incf arg)))
   (up-list arg))
 
@@ -1588,7 +1553,6 @@ With ARG, begin column display at current column, not at left margin.\n
        (point)))))
 ;;
 ;;; :TEST-ME (call-interactively 'mon-show-columns)
-
 
 ;;; ==============================
 ;;; :PREFIX "mnae-"
@@ -1743,7 +1707,6 @@ The function `byte-compile-file' was only easily accesible from the menu.\n
   ;; (byte-compile-file buffer-file-name t))
   (byte-compile-file buffer-file-name))
 
-
 ;;; ==============================
 ;;; :PREFIX "mcwn-"
 ;;; :COURTESY Francois Fleuret <fleuret@idiap.ch> :HIS fleuret.emacs.el
@@ -1777,7 +1740,7 @@ Add .el if required, and use `load-path' to find it.\n
 ;;; :PREFIX "mloa-"
 ;;; :COURTESY Francois Fleuret <fleuret@idiap.ch> :WAS `ff/load-or-alert'
 ;;; This is useful when using the same .emacs in many places.
-;;; :MODIFICATIONS <Timestamp: #{2010-03-05T16:17:17-05:00Z}#{10095} - by MON KEY>
+;;; :CREATED <Timestamp: #{2010-03-05T16:17:17-05:00Z}#{10095} - by MON KEY>
 ;;;###autoload
 (defun mon-load-or-alert (lib-name &optional compile-when-needed)
   "Try to load the specified file LIB-NAME.\n
@@ -1802,7 +1765,10 @@ failure.\n
         (set-buffer-modified-p nil))
       nil))
 
+;;; ==============================
 (defun mon-erc-query-user ()
+"Convenience function for `erc-cmd-QUERY'.\n
+:SEE-ALSO .\n▶▶▶"
   (interactive)
   (call-interactively 'erc-cmd-QUERY))
 

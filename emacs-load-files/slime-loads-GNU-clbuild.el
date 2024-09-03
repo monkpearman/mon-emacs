@@ -1775,17 +1775,14 @@ Inserts RETURN-STR at point moving point to end of the insertion.\n
 `slime-popup-buffer-quit-function', `slime-popup-restore-data', `window-buffer',
 `selected-window'.\n▶▶▶"
   (interactive)
-  ;; (let ((slm-dscr (get-buffer (slime-buffer-name :description))))
-  ;;   (if (and slm-dscr (eq (current-buffer) slm-dscr))
-  ;;       ;; (or (slime-popup-buffer-quit t) (quit-window))
-  ;;       (quit-window)
-  ;;     (when (and slm-dscr (buffer-live-p slm-dscr)
-  ;;                (get-buffer-window slm-dscr 'visible))
-  ;;       (with-selected-window (get-buffer-window slm-dscr 'visible)
-  ;;         ;; (or (slime-popup-buffer-quit t) (quit-window))
-  ;;         (quit-window)
-  ;;         )))))
-  (slime-popup-buffer-quit t))
+  ;; :WAS (slime-popup-buffer-quit t))
+  (let ((slm-dscr (get-buffer (slime-buffer-name :description))))
+  (if (and slm-dscr (eq (current-buffer) slm-dscr))
+      (quit-window  nil (get-buffer-window slm-dscr 'visible))
+    (when (and slm-dscr (buffer-live-p slm-dscr)
+               (get-buffer-window slm-dscr 'visible))
+      (with-selected-window (get-buffer-window slm-dscr 'visible)
+        (quit-window nil (get-buffer-window slm-dscr 'visible)))))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2011-03-10T13:33:08-05:00Z}#{11104} - by MON KEY>
@@ -1869,7 +1866,7 @@ Also `fset's `slime-macroexpand-again' -> `slime-macroexpand-again-fix'.\n
 hasn't occured yet and we can't get it into the environment until slime is actually loaded.\n
 :SEE-ALSO `slime-connected-hook',`'mon-slime-description-view-source-file',
 `*slime-show-description-hook*'.\n▶▶▶"
- (unless (equal (symbol-function 'oslime-show-description)
+ (unless (equal (symbol-function 'slime-show-description)
                 (symbol-function 'mon-slime-show-description))
   (fset 'slime-show-description (symbol-function 'mon-slime-show-description)))
  

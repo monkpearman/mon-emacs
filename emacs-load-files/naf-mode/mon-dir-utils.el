@@ -243,7 +243,7 @@
 ;;; CODE:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
@@ -262,7 +262,7 @@
 (require 'mon-dir-locals-alist) 
 ;;
 (require 'mon-replacement-utils)
-(require 'mon-css-color)           ;; :NOTE _before_ mon-rename-image-utils.el
+(require 'mon-css-color)           ; :NOTE _before_ mon-rename-image-utils.el
 (require 'mon-rename-image-utils)
 ;;; ==============================
 
@@ -811,7 +811,6 @@ is null return nil.\n
                  (find-file mdffof-other-frm-fl)))
               (t (find-file-other-frame mdffof-other-frm-fl)))))))
 
-
 ;;; ==============================
 ;;; :PREFIX "mcfdal-"
 ;;; :CREATED <Timestamp: #{2009-10-11T10:18:36-04:00Z}#{09417} - by MON>
@@ -902,7 +901,6 @@ When current-buffer is not a dired-mode buffer kill is as if by `mon-copy-file-p
 ;;
 ;;; :TEST-ME (mon-toggle-dired-dwim-target)
 ;;; :TEST-ME (mon-toggle-dired-dwim-target)
-
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-12-09T13:08:08-05:00Z}#{10494} - by MON KEY>
@@ -1592,7 +1590,6 @@ When '+' is not added to directory name input is finished and function returns.\
 ;;; ==============================
 ;;; :PREFIX "mfrn-"
 ;;; :COURTESY Thierry Volpiatto :HIS tv-utils.el :WAS `tv-reduce-file-name'
-;;; :MODIFICATIONS <Timestamp: #{2009-09-01T20:39:35-04:00Z}#{09363} - by MON>
 ;;; :CREATED <Timestamp: #{2010-06-17T12:00:24-04:00Z}#{10244} - by MON KEY>
 (cl-defun mon-file-reduce-name (fname level &key unix-close expand)
   "Reduce file-name by LEVEL (an integer) depending on LEVEL's value.\n
@@ -1714,8 +1711,6 @@ Signal an error if any of the args aren't in the path.\n
 
 ;;; ==============================
 ;;; :PREFIX "mbwp-"
-;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T11:38:50-0400Z - by MON>
-;;; :REMOVED Best I can see the (and * t) is totally pointless; removed it.
 ;;; :CREATED <Timestamp: Saturday May 23, 2009 @ 11:38.18 AM - by MON>
 (defun mon-buffer-written-p (&optional insrtp intrp)
   "Non-nil current buffer has been written to a file or created with `find-file'
@@ -1747,8 +1742,6 @@ Signal an error if any of the args aren't in the path.\n
 ;;; ==============================
 ;;; :PREFIX "mssbn-"
 ;;; :RENAMED `mon-split-string-buffer-name' -> `mon-string-split-buffer-name'
-;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T11:48:58-0400Z - by MON>
-;;; :ADDED optional args insrtp intrp
 ;;; :CREATED <Timestamp: Saturday May 23, 2009 @ 11:50.56 AM - by MON>
 (defun mon-string-split-buffer-name (&optional insrtp intrp)
   "Return current `buffer-name' as a list with split-string.\n
@@ -1778,8 +1771,6 @@ of split strings at point.\n
 ;;; ==============================
 ;;; :PREFIX "mss-"
 ;;; :RENAMED `mon-split-string-buffer-parent-dir-quick' -> `mon-string-split-buffer-parent-dir-quick'
-;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T11:48:58-0400Z - by MON>
-;;; :ADDED optional args insrtp
 ;;; :CREATED <Timestamp: Saturday May 23, 2009 @ 08:17.10 PM - by MON>
 (defun mon-string-split-buffer-parent-dir-quick (&optional insrtp)
   "Like `mon-string-split-buffer-parent-dir' but with less checks.\n
@@ -1805,7 +1796,6 @@ insert the split in buffer. Moves point.\n
 
 ;;; ==============================
 ;;; :PREFIX "mssbpd-"
-;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T11:48:58-0400Z - by MON>
 ;;; :CREATED <Timestamp: Saturday May 23, 2009 @ 12:31.43 PM - by MON>
 (defun mon-string-split-buffer-parent-dir (&optional insrtp intrp)
   "Return buffers parent sans buffer's file name as a split-string list.\n
@@ -1851,9 +1841,6 @@ e.g. \n\(split-string \(directory-file-name \(expand-file-name \"./\"\)\)\"/\" t
 
 ;;; ==============================
 ;;; :PREFIX "mgbpd-"
-;;; :MODIFICATIONS <Timestamp: #{2009-10-27T16:24:19-04:00Z}#{09442} - by MON KEY>
-;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T11:26:49-0400Z - by MON>
-;;; :ADDED optional insrtp, intrp args 
 ;;; :CREATED <Timestamp: Saturday May 23, 2009 @ 11:28.41 AM - by MON>
 (defun mon-get-buffer-parent-dir (&optional w-full-path insrtp intrp)
   "Return buffers' parent directory as a string.\n
@@ -1918,7 +1905,6 @@ It might not.\n
 ;;; :TEST-ME (mon-get-buffer-parent-dir nil t)
 ;;; :TEST-ME (call-interactively 'mon-get-buffer-parent-dir)
 
-
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2011-05-14T14:33:05-04:00Z}#{11196} - by MON KEY>
 (defun mon-string-split-pathname (pathname &optional keep-relative-prefixes)
@@ -1973,7 +1959,6 @@ pathname prefixes.\n
 
 ;;; ==============================
 ;;; :PREFIX "mssdr-"
-;;; :MODIFICATIONS <Timestamp: #{2011-05-14T14:13:21-04:00Z}#{11196} - by MON KEY>
 ;;; :CREATED <Timestamp: Saturday May 23, 2009 @ 08:37.50 PM - by MON>
 (defun mon-string-split-dir-recurse (&optional alt-path reverse-path w-no-error)
   "Return default-directory as list of recursively split strings.\n
@@ -2146,7 +2131,7 @@ Return an unqaulified directory namestring component when following are true:\n
 
 ;;; =======================
 ;;; :TODO Consider adding optional arg W-FULL which would toggle the optional
-;;; FULL arg to `directory-files-and-attributes'. See comments below.
+;;;  FULL arg to `directory-files-and-attributes'. See comments below.
 ;;; :COURTESY :FILE lisp/startup.el :WAS `normal-top-level-add-subdirs-to-load-path'
 ;;; :NOTE Significantly modified.
 ;;; :CREATED <Timestamp: #{2010-05-27T15:32:43-04:00Z}#{10214} - by MON KEY>
@@ -2230,7 +2215,6 @@ signal an error.\n
 ;;; :TEST-ME (mon-add-subdirs-to-list default-directory)
 ;;; :TEST-ME (let (gets-set) (mon-add-subdirs-to-list default-directory 'gets-set) gets-set)
 
-
 ;;; ==============================
 ;;; :COURTESY lisp/erc/erc.el :WAS `erc-find-file'
 ;;; :CREATED <Timestamp: #{2010-12-17T12:28:53-05:00Z}#{10505} - by MON KEY>
@@ -2255,7 +2239,7 @@ If FILE is found, return the path to it.
 
 ;;; ================================================================
 ;;; :PREFIX "misib-"
-;;; :MODIFICATIONS <Timestamp: Tuesday February 17, 2009 @ 05:50.26 PM - by MON>
+;;; :CREATED <Timestamp: Tuesday February 17, 2009 @ 05:50.26 PM - by MON>
 (defun mon-insert-subdirs-in-buffer (&optional pth-to-l)
   "Insert at point the top-level subdirs found in PTH-TO-L.\n
 PTH-TO-L is nil or called-interactively prompt for a path name.\n
@@ -2386,7 +2370,7 @@ Unlike `mon-copy-file-path' path doesn't copy to file's path kill ring.\n
 ;;; :TEST-ME (call-interactively 'mon-path)
 
 ;;; ==============================
-;;; :MODIFICATIONS <Timestamp: Tuesday July 21, 2009 @ 05:19.11 PM - by MON>
+;;; :CREATED <Timestamp: Tuesday July 21, 2009 @ 05:19.11 PM - by MON>
 (defun mon-copy-file-path (&optional insrtp intrp)
   "Copy current buffer's file path(s) to kill-ring. Return path value as message.\n
 In `dired-mode' or `Buffer-menu-mode' copy file paths of _marked_ files to kill-ring.\n
@@ -2451,7 +2435,7 @@ When current-buffer is in `dired-mode' the kill is as if by `mon-copy-file-dired
 ;;; :TEST-ME (call-interactively 'mon-copy-file-path)
 
 ;;; ==============================
-;;; :MODIFICATIONS: <Timestamp: Tuesday July 21, 2009 @ 05:21.05 PM - by MON>
+;;; :CREATED <Timestamp: Tuesday July 21, 2009 @ 05:21.05 PM - by MON>
  (defun mon-insert-path ()
    ":DEPRECATED use `mon-copy-file-path'.\nInsert current file's path at point.\n
 :SEE-ALSO `mon-copy-file-path', `mon-path', `mon-add-subdirs-to-list',
@@ -2669,7 +2653,7 @@ significant consideration given the value of variables
 `mon-file-dir-attributes->plist'.\n▶▶▶"
   (save-excursion
     ;; Why are we `save-window-excursion' here? 
-    ;; s-w-e is a bad idean when using multi-frames.
+    ;; s-w-e is a bad idea when using multi-frames.
     (save-window-excursion 
       (let ((mdbl-cur-bfr (get-buffer (current-buffer)))
 	    (mdbl-in-dir w-dir)

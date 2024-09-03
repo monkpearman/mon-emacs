@@ -101,7 +101,7 @@
 
 ;;; CODE:
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-06-20T17:56:24-04:00Z}#{10247} - by MON KEY>

@@ -183,7 +183,7 @@
 ;;; Code:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
@@ -1523,7 +1523,6 @@ Function names so generated include:\n
 
 ;;; ==============================
 ;;; :PREFIX "cchtcbn-"
-;;; :CHANGESET 1833
 ;;; :CREATED <Timestamp: #{2010-06-08T17:31:52-04:00Z}#{10232} - by MON KEY>
 (defun css-color:html-color-by-name (&optional this-css-color insrtp intrp prompt)
   "Complete an html css color from `*css-color:html-colors*'.\n
@@ -1560,7 +1559,6 @@ Default prompt is: \"CSS color name: \"\n
 
 ;;; ==============================
 ;;; :PREFIX "ccec-"
-;;; :CHANGESET 1839
 ;;; :CREATED <Timestamp: #{2010-06-09T21:05:21-04:00Z}#{10233} - by MON KEY>
 (defun css-color:examine-color (fg-color bg-color)
   "Test css-colors interactively.\n

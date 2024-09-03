@@ -95,7 +95,7 @@
 ;;; CODE:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))

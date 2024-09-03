@@ -124,7 +124,7 @@
 ;;; CODE:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
@@ -133,7 +133,6 @@
 (declare-function w32-shell-execute "w32fns.c")
 
 ;;; ==============================
-;;; :CHANGESET 2405
 ;;; :CREATED <Timestamp: #{2011-01-19T15:54:00-05:00Z}#{11033} - by MON KEY>
 (defgroup mon-env-proc-utils nil
   "Customization group for variables and functions of :FILE mon-env-proc-utils.el\n
@@ -151,7 +150,6 @@
   :group 'mon-base)
 
 ;;; ==============================
-;;; :CHANGESET 2405
 ;;; :CREATED <Timestamp: #{2011-01-19T15:54:06-05:00Z}#{11033} - by MON KEY>
 (defcustom *mon-env-proc-utils-xrefs* 
   '(mon-get-system-specs mon-get-env-vars-symbols mon-get-env-vars-strings
@@ -210,7 +208,6 @@ Does not move point.\n
 
 ;;; ==============================
 ;;; :PREFIX "mgevsym-"
-;;; :CHANGESET 2349 <Timestamp: #{2010-12-04T14:07:56-05:00Z}#{10486} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-01-18T20:20:35-05:00Z}#{10032} - by MON>
 (defun mon-get-env-vars-symbols ()
   "Return a list of symbols for current-process' environmental-variables.\n
@@ -246,8 +243,8 @@ like `mon-get-env-vars-strings' but returns symbols instead of strings.\n
 ;;; :COURTESY :FILE emacs/lisp/env.el :WAS `read-envvar-name' 
 ;;; :CREATED <Timestamp: #{2009-10-16T15:29:37-04:00Z}#{09425} - by MON KEY>
 (defun mon-get-env-vars-strings (&optional as-strings insrtp intrp)
-  "Return a list strings for the current process' enviromental variables.
-When AS-STRINGS is non-nil or called with a prefix-arg return as strings.
+  "Return a list strings for the current process' enviromental variables.\n
+When AS-STRINGS is non-nil or called with a prefix-arg return as strings.\n
 When insrtp or called-interactively insert returned vars at point.\n
 :EXAMPLE\(mon-get-env-vars-strings\)\n
 \(mon-get-env-vars-strings t\)\n
@@ -380,8 +377,6 @@ When called-interactively pretty-print return value in buffer named
 ;;; :PREFIX "mgspl"
 ;;; :NOTE MON recently found the :FILE proced.el 
 ;;;       Some of this might be accomplished with that excellent package.
-;;; :CHANGESET 1708 <Timestamp: #{2010-04-12T17:02:32-04:00Z}#{10151} - by MON KEY>
-;;; :CHANGESET 1703 <Timestamp: #{2010-04-07T14:39:56-04:00Z}#{10143} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-10-16T15:49:07-04:00Z}#{09425} - by MON KEY>
 (defun mon-get-sys-proc-list (&optional intrp)
   "Return a full lisp list of current system-proceses.\n

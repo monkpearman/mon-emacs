@@ -115,7 +115,7 @@
 ;;; CODE:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
@@ -132,9 +132,7 @@
 (declare-function mon-mapcar                   "mon-seq-utils" (mapcar-fun mapcar-lst &rest more-lsts))
 (declare-function mon-list-proper-p            "mon-seq-utils" (putatively-proper))
 
-
 ;;; ==============================
-;;; :CHANGESET 2389
 ;;; :CREATED <Timestamp: #{2011-01-12T20:41:13-05:00Z}#{11023} - by MON KEY>
 (defgroup mon-error-utils nil
   "Customization group for mon symbols, functions, variables, errors, warnings.\n
@@ -151,7 +149,6 @@
   :group 'mon-base)
 
 ;;; ==============================
-;;; :CHANGESET 2174
 ;;; :CREATED <Timestamp: #{2010-10-02T12:06:51-04:00Z}#{10396} - by MON KEY>
 (defgroup mon-error-warn nil
   "Customization group for mon errors and warnings.\n
@@ -159,7 +156,6 @@
   :group 'mon-error-utils)
 
 ;;; ==============================
-;;; :CHANGESET 2389
 ;;; :CREATED <Timestamp: #{2011-01-12T19:48:17-05:00Z}#{11023} - by MON KEY>
 (defcustom *mon-error-utils-xrefs* 
   '(mon-error-toplevel mon-error mon-error-string-err
@@ -189,7 +185,6 @@ The symbols contained of this list are defined in :FILE <FILE>\n
   :group 'mon-xrefs)
 
 ;;; ==============================
-;;; :CHANGESET 2141
 ;;; :CREATED <Timestamp: #{2010-09-17T19:18:44-04:00Z}#{10375} - by MON KEY>
 (defvar *mon-error-gather* nil
   "Temporary string container for gathering error messages.\n
@@ -201,7 +196,6 @@ The symbols contained of this list are defined in :FILE <FILE>\n
 
 ;;; ==============================
 ;;; :COURTESY slime.el :WAS `slime-message-function'
-;;; :CHANGESET 2174
 ;;; :CREATED <Timestamp: #{2010-10-02T11:10:48-04:00Z}#{10396} - by MON KEY>
 (defcustom *mon-message-function* 'message
   "Defualt message formatting function for `mon-message'.\n
@@ -224,7 +218,6 @@ format-string's spec e.g. function is `apply'ed as:\n
 
 ;;; ==============================
 ;;; :PREFIX "mfrmt-"
-;;; :CHANGESET 2353
 ;;; :CREATED <Timestamp: #{2010-12-06T12:56:39-05:00Z}#{10491} - by MON KEY>
 (defun mon-format (&rest fmt-keys)
   "Like `format' but supports keywords and multi string/arg sequences.\n
@@ -555,7 +548,6 @@ leading newline, it is stripped but any subesequent chars remain.
 
 
 ;;; ==============================
-;;; :CHANGESET 2174
 ;;; :CREATED <Timestamp: #{2010-10-02T11:10:54-04:00Z}#{10396} - by MON KEY>
 (cl-defun mon-message (&key msg-spec msg-args msg-delim (msg-fun *mon-message-function*))
   "Like `message' but supports keyword args and multi-line delimited messages.\n
@@ -593,7 +585,6 @@ indicated with the following table:\n
                        :w-delim ,msg-delim)))
 
 ;;; ==============================
-;;; :CHANGESET 2358
 ;;; :CREATED <Timestamp: #{2010-12-08T21:35:58-05:00Z}#{10493} - by MON KEY>
 (cl-defun mon-string-not-null-nor-zerop-ERROR (&key fun-name locus got-val w-error)
   "Format and maybe signal error for `mon-string-not-null-nor-zerop'.\n
@@ -638,7 +629,6 @@ Keyword :W-ERROR when non-nil will pass generated format string to error.\n
 ;; (mon-string-not-null-nor-zerop-ERROR :w-error t :fun-name "some-function-name" :locus "some-param-name" :got-val 8.8)
 
 ;;; ==============================
-;;; :CHANGESET 2370
 ;;; :CREATED <Timestamp: #{2010-12-31T13:24:02-05:00Z}#{10525} - by MON KEY>
 (cl-defun mon-symbol-void-ERROR (&key fun-name locus got-val w-error)
   "Format and maybe signal error for void or uninterned symbols not in obarray.\n
@@ -684,7 +674,6 @@ Keyword :W-ERROR when non-nil will pass generated format string to error.\n
                              ,got-val))))
 
 ;;; ==============================
-;;; :CHANGESET 2370
 ;;; :CREATED <Timestamp: #{2010-12-31T15:38:45-05:00Z}#{10525} - by MON KEY>
 (cl-defun mon-vectorp-ERROR (&key fun-name locus got-val w-error)
   "Format and maybe signal error for failed `vectorp' constraint.\n
@@ -722,7 +711,6 @@ Keyword :W-ERROR when non-nil will pass generated format string to error.\n
                               `("")))))
 
 ;;; ==============================
-;;; :CHANGESET 2389
 ;;; :CREATED <Timestamp: #{2011-01-12T19:56:11-05:00Z}#{11023} - by MON KEY>
 (cl-defun mon-file-non-existent-ERROR (&key fun-name locus got-val w-error)
   "Format and maybe signal error for failed `file-exists-p' constraint.\n
@@ -756,7 +744,6 @@ Keyword :W-ERROR when non-nil will pass generated format string to error.\n
                               `("")))))
 
 ;;; ==============================
-;;; :CHANGESET 2389
 ;;; :CREATED <Timestamp: #{2011-01-14T12:42:04-05:00Z}#{11025} - by MON KEY>
 (cl-defun mon-buffer-non-existent-ERROR (&key fun-name locus got-val w-error)
   "Format and maybe signal error for failed `mon-buffer-exists-p' constraint.\n
@@ -795,7 +782,6 @@ Keyword :W-ERROR when non-nil will pass generated format string to error.\n
                               `("")))))
 
 ;;; ==============================
-;;; :CHANGESET 2405
 ;;; :CREATED <Timestamp: #{2011-01-20T17:04:16-05:00Z}#{11034} - by MON KEY>
 (cl-defun mon-list-proper-p-ERROR (&key fun-name locus got-val w-error)
   "Format and maybe signal error for failed `mon-list-proper-p' constraint.\n
@@ -825,7 +811,6 @@ Keyword :W-ERROR when non-nil will pass generated format string to error.\n
                         ,(or (and locus (upcase locus)) "")
                         ,@(or (and got-val `(,got-val ,(type-of got-val)))
                               `("")))))
-  
 
 
 ;;; ==============================
@@ -906,7 +891,6 @@ Useful for passing around to helper functions that prompt.\n
 
 ;;; ==============================
 ;;; :COURTESY slime.el :WAS `slime-display-warning'
-;;; :CHANGESET 2174
 ;;; :CREATED <Timestamp: #{2010-10-02T12:04:54-04:00Z}#{10396} - by MON KEY>
 (defun mon-display-warning (message &rest args)
   "Invoke `display-warning' with arg type as `mon` and message as `warning`.\n
@@ -1036,7 +1020,6 @@ Keyword :FORMAT-ARGUMENTS a list it is applied as both the:\n
 
 ;;; ==============================
 ;;; :PREFIX "mesef-" 
-;;; :CHANGESET 2174
 ;;; :CREATED <Timestamp: #{2010-10-07T12:35:40-04:00Z}#{10404} - by MON KEY>
 (defun mon-error-string-err-format (fun-name locus-arg got-arg-val
                                         &optional w-error-signaled)
@@ -1107,7 +1090,6 @@ error-string.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2141
 ;;; :CREATED <Timestamp: #{2010-09-17T19:18:29-04:00Z}#{10375} - by MON KEY>
 (defun mon-error-gather (arg)
   "Push ARG \(a char\) onto current `*mon-error-gather*'s stack.\n
@@ -1124,7 +1106,6 @@ messages.\n
     (push arg *mon-error-gather*))
 
 ;;; ==============================
-;;; :CHANGESET 2141
 ;;; :CREATED <Timestamp: #{2010-09-17T19:18:26-04:00Z}#{10375} - by MON KEY>
 (defun mon-error-gather-peek ()
   "Peek at the current errors on the `*mon-error-gather*'s stack.\n
@@ -1145,7 +1126,6 @@ When stack is empty return the empty string.\n
   (concat (reverse *mon-error-gather*) nil))
 
 ;;; ==============================
-;;; :CHANGESET 2141
 ;;; :CREATED <Timestamp: #{2010-09-17T19:18:33-04:00Z}#{10375} - by MON KEY>
 (defun mon-error-gather-reset ()
   "Reset the `*mon-error-gather*' errors stack.\n
@@ -1159,7 +1139,6 @@ When stack is empty return the empty string.\n
   (setq *mon-error-gather*))
 
 ;;; ==============================
-;;; :CHANGESET 2141
 ;;; :CREATED <Timestamp: #{2010-09-17T19:18:37-04:00Z}#{10375} - by MON KEY>
 (defun mon-error-gather-finalize ()
   "Return finalized string on the `*mon-error-gather*'s stack.\n
@@ -1200,7 +1179,6 @@ Reset it with `mon-error-gather-reset'.\n
 ;;; ==============================
 ;;; :NOTE Following establishes a lexical environment for `mon-write-string'
 ;;; helper functions.
-;;; :CHANGESET 2195
 ;;; :CREATED <Timestamp: #{2010-10-18T15:02:34-04:00Z}#{10421} - by MON KEY>
 (cl-eval-when (compile load eval)
   (lexical-let (mws-gthr)
@@ -1281,7 +1259,6 @@ state resets the value of the currrently captured string-stack state.\n
 
 ;;; ==============================
 ;;; :TODO Add support for :start :end indexes into string as per CL's `write-string'
-;;; :CHANGESET 2195
 ;;; :CREATED <Timestamp: #{2010-10-18T21:01:35-04:00Z}#{10421} - by MON KEY>
 (cl-defun mon-write-string (&key w-string read-current reset-null reset-bind)
   "Capture/access lexical environment value of current string-stack state.\n
@@ -1374,7 +1351,6 @@ with the format:\n\n \( <STRING> . other\)\n
                     `(,(symbol-value reset-bind) . ,reset-bind)))
                  (t `(,(%mon-write-string-reset) . ,mws-chk-typ)))))
         (reset-null    (%mon-write-string-reset))))
-
 ;;
 ;; ,---- :UNCOMMENT-BELOW-TO-TEST
 ;; |
@@ -1442,7 +1418,6 @@ with the format:\n\n \( <STRING> . other\)\n
 
 
 ;;; ==============================
-;;; :CHANGESET 1980
 ;;; :CREATED <Timestamp: #{2010-07-16T12:57:27-04:00Z}#{10285} - by MON KEY>
 ;; (defun mon-error-format (symbol-type symbol-name descr-spec &rest fmt-args)
 ;;   "Return a formatted error string.\n

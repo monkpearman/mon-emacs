@@ -154,7 +154,7 @@
 
 ;;; CODE:
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
@@ -189,7 +189,6 @@
 ;;; :TODO Convert this to a defcustom so users can select which of the functions
 ;;; they wish to have generated at loadtime. But, this would mean they can't be used
 ;;; in calling functions...
-;;; :CHANGESET 2117 <Timestamp: #{2010-09-11T13:33:02-04:00Z}#{10366} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-09-09T17:01:53-04:00Z}#{10364} - by MON>
 (defvar *mon-alphabet-as-type-generate* nil
   "*List of strings each an arg to `mon-alphabet-as-type'.\n
@@ -386,8 +385,6 @@ of being entirely self contained, and therefor does not rely on external calls.\
       (stringD-w-nl
        (mapconcat #'identity (funcall maat-tycon 'list-stringD) "\n")))))
 ;;
-
-;;
 ;;; :TEST-ME (mon-alphabet-as-type 'cons-keyU->num)
 ;;; :TEST-ME (mon-alphabet-as-type 'cons-keyD->num)
 ;;; :TEST-ME (mon-alphabet-as-type 'cons-symU->num)
@@ -409,9 +406,7 @@ of being entirely self contained, and therefor does not rely on external calls.\
 ;;; :TEST-ME (mon-alphabet-as-type 'stringU-w-spc)
 ;;; :TEST-ME (mon-alphabet-as-type 'stringD-w-spc)
 
-
 ;;; ==============================
-;;; :CHANGESET 2117
 ;;; :CREATED <Timestamp: #{2010-09-09T15:13:12-04:00Z}#{10364} - by MON>
 (defmacro mon-alphabet-as-defun (as-fun-type)
   "Return a defun form with AS-FUN-TYPE as arg to `mon-alphabet-as-type'.\n
@@ -433,7 +428,6 @@ of being entirely self contained, and therefor does not rely on external calls.\
 ;;; (put 'mon-alphabet-as-defun 'lisp-indent-function <INT>) 
 
 ;;; ==============================
-;;; :CHANGESET 2117
 ;;; :CREATED <Timestamp: #{2010-09-09T16:03:01-04:00Z}#{10364} - by MON>
 (defun mon-alphabet-as-bc (fun-name)
   "Byte compile FUN-NAME defun form returned by `mon-alphabet-as-defun'.\n
@@ -457,7 +451,6 @@ Return a cons with the format:\n
 ;;        (unintern 'mon-alphabet-as-cons-keyU->num) )
 
 ;;; ==============================
-;;; :CHANGESET 2117
 ;;; :CREATED <Timestamp: #{2010-09-11T13:33:28-04:00Z}#{10366} - by MON KEY>
 (defun mon-alphabet-as-map-bc (fun-name-lst)
   "Map mon-alphabet-as-* args to generate byte-code-function's.\n
@@ -511,9 +504,7 @@ function.\n
 ;; |
 ;; `----
 
-
 ;;; ==============================
-;;; :CHANGESET 2117
 ;;; :CREATED <Timestamp: #{2010-09-11T13:33:34-04:00Z}#{10366} - by MON KEY>
 (defun mon-alphabet-as-doc-loadtime (sym-arg-cons &optional w-args-cons-rtn)
   "Put docstrings on mon-alphabet-as-type convenience functions at loadtime.\n
@@ -571,7 +562,6 @@ Add function-documentation property to functions plist for following functions:
              (format maat-doc-tmplt (upcase (cdr maat)) (car maat)))))))
 
 ;;; ==============================
-;;; :CHANGESET 2117
 ;;; :CREATED <Timestamp: #{2010-09-11T13:33:38-04:00Z}#{10366} - by MON KEY>
 (defun mon-alphabet-as-map-fun-prop (prop-fun-lst)
   "Plist of functions generated with `*mon-alphabet-as-type-generate*'.\n
@@ -592,7 +582,6 @@ Used for symbol-> string lookup via intern-soft  if/when we want to unintern.\n
                prop-fun-lst)))
 
 ;;; ==============================
-;;; :CHANGESET 2117
 ;;; :CREATED <Timestamp: #{2010-09-11T13:33:41-04:00Z}#{10366} - by MON KEY>
 (defun mon-alphabet-as-unintern-fun (&optional funintern-lst)
   "Unintern `mon-alphabet-as-type' convenience functions.\n
@@ -677,8 +666,8 @@ Where the first most form \(a list of strings\) is the preferred format.\n
 If either FROM-LETTER or TO-LETTER is upper-cased return value will be uppercased.\n
 When TO-LETTER comes before FROM-LETTER in a lexicographic sort the two args are
 swapped; this check is exclusive of case check.\n
-:EXAMPLE\n\n\(mon-string-alpha-list \"a\" \"f\"\)\n\(mon-string-alpha-list \"A\" \"F\"\)
-\(mon-string-alpha-list \"l\" \"G\"\)\n\(mon-string-alpha-list \"g\" \"l\"\)\n
+:EXAMPLE\n\n\(mon-string-alpha-list \"a\" \"f\"\)\n\n\(mon-string-alpha-list \"A\" \"F\"\)\n
+\(mon-string-alpha-list \"l\" \"G\"\)\n\n\(mon-string-alpha-list \"g\" \"l\"\)\n
 :NOTE Use this to get a list of symbols instead:\n
 \(princ \(mon-string-alpha-list \"m\" \"r\"\)\)\n
 :SEE-ALSO `mon-alphabet-as-type', `number-sequence', `mon-string-to-sequence', 

@@ -179,7 +179,7 @@
 
 ;;; CODE:
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-01-20T15:26:28-05:00Z}#{10033} - by MON KEY>
@@ -565,7 +565,6 @@ unless optional arg FORCED-COLONIC is non-nil.\n
        (message 
         (concat ":FUNCTION `mon-CL-cln-colon-swap' "
                 "-- we've given `*clean-cl-symbols-with-regexp*' her colonic already"))))
-                
 ;;
 ;;; :TEST-ME (mon-CL-cln-colon-swap)
 ;;; :TEST-ME (describe-variable '*regexp-clean-cl-symbols*)

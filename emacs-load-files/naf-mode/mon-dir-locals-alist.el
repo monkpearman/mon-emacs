@@ -130,7 +130,7 @@
 ;;; CODE:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 ;;
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
@@ -139,7 +139,6 @@
 (declare-function mon-bind-nefs-photos-at-loadtime "mon-dir-utils-local")
 
 ;;; ==============================
-;;; :CHANGESET 2178
 ;;; :CREATED <Timestamp: #{2010-10-02T18:49:38-04:00Z}#{10396} - by MON KEY>
 (defgroup mon-dir-locals nil
   "Site local directories needed in various `mon-*' functions.\n
@@ -156,7 +155,6 @@
 ;;; ==============================
 ;;; :NOTE `IS-MON-SYSTEM-P' may be called already use a temporary symbol and
 ;;;       unintern it at EOF.
-;;; :CHANGESET 1790
 ;;; :CREATED <Timestamp: #{2010-05-28T17:35:26-04:00Z}#{10215} - by MON KEY>
 (defcustom *mon-bind-dir-locals-alist* nil 
   "Whether to bind variables defined in :FILE mon-dir-locals-alist.el.\n
@@ -388,8 +386,6 @@ Path relative to the alist key ``the-nef-drv'' in `*mon-misc-path-alist*'.\n
 ;;; ==============================
 ;;; :NOTE Following Global Variables
 ;;; :CREATED <Timestamp: Wednesday May 06, 2009 @ 07:49.11 PM - by MON KEY>
-;;; ==============================
-;;; :MODIFICATIONS <Timestamp: #{2009-09-29T13:04:26-04:00Z}#{09402} - by MON KEY>
 (defcustom *mon-nef-scan-path* nil
   "User conditional path to a local NEF archived photos drive/path.\n
 :SUBDIR-OF `*mon-nef-scan-base-path*'\n
@@ -426,7 +422,7 @@ directory's paths as the directory doesnt' change that much.\n
 ;;; ==============================
 ;;; :TODO This needs to be a hash-table.
 ;;; :NOTE Var loaded from `mon-dir-utils.el' at loadtime.
-;;; :MODIFICATIONS <Timestamp: Thursday May 28, 2009 @ 04:43.15 PM - by MON KEY>
+;;; :CREATED <Timestamp: Thursday May 28, 2009 @ 04:43.15 PM - by MON KEY>
 (defvar *mon-nefs_photos_nefs-alist* nil
   "*Directory contents as an alist for path `*mon-nef-scan-nefs-path*'.
 A list generated with `mon-dir-nef-update-photos-alist' and bound at loadtime

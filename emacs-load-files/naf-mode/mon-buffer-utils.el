@@ -131,16 +131,14 @@
 ;;; CODE:
 
 
-;; deprecated
-;; (eval-when-compile (require 'cl))
+;; :DEPRECATED
+;; (eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
   (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
-
 ;;; ==============================
-;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T18:44:19-05:00Z}#{11022} - by MON KEY>
 (defgroup mon-buffer-utils nil
   "Customization group for variables and functions of :FILE mon-buffer-utils.el\n
@@ -160,7 +158,6 @@
   :group 'mon-base)
 
 ;;; ==============================
-;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T18:44:23-05:00Z}#{11022} - by MON KEY>
 (defcustom *mon-buffer-utils-xrefs* 
   '(mon-g2be mon-buffer-sub-no-prop mon-buffer-sub-no-prop-check
@@ -185,9 +182,7 @@ The symbols contained of this list are defined in :FILE mon-buffer-utils.el\n
   :group 'mon-buffer-utils
   :group 'mon-xrefs)
 
-
 ;;; ==============================
-;;; :CHANGESET 2411
 ;;; :CREATED <Timestamp: #{2011-02-19T11:53:24-05:00Z}#{11076} - by MON KEY>
 (defcustom *mon-get-hidden-buffers-known* 
  '(" *autoload*" " *autoload-file*" " apropos-temp" 
@@ -242,9 +237,7 @@ The symbols contained of this list are defined in :FILE mon-buffer-utils.el\n
 ;; " *Minibuf-[0-9]+*" 
 
 ;;; ==============================
-;;; :MODIFICATIONS <Timestamp: #{2010-03-20T12:59:35-04:00Z}#{10116} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-03-10T20:04:58-05:00Z}#{10104} - by MON KEY>
-;;; :WAS (defun mon-g2be (&optional min/max)
 (defun mon-g2be (&optional min/max-go no-go)
   "Move point as with `goto-char' to `point-max' or `point-min'.\n
 If optional arg MIN/MAX-GO is non-nil it may be any of the following:
@@ -332,7 +325,6 @@ returns the value of the point it moved into as an integer value.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2171
 ;;; :CREATED <Timestamp: #{2010-10-02T17:18:20-04:00Z}#{10396} - by MON KEY>y
 (defun mon-buffer-sub-no-prop (&optional buf-beg buf-end)
   "Convenience function like `buffer-substring-no-properties'.\n
@@ -377,7 +369,6 @@ Following will fail:\n
 
 ;;; ==============================
 ;;; :PREFIX "mbsnpc-"
-;;; :CHANGESET 2171
 ;;; :CREATED <Timestamp: #{2010-10-02T17:17:28-04:00Z}#{10396} - by MON KEY>
 (defun mon-buffer-sub-no-prop-check (bfr-beg bfr-end bfr-current)
   "Helper function for `mon-buffer-sub-no-prop'.\n
@@ -527,7 +518,6 @@ Following will fail successfully:\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2171
 ;;; :CREATED <Timestamp: #{2010-10-02T13:45:41-04:00Z}#{10396} - by MON KEY>
 (defun mon-buffer-narrowed-p (&optional buffer-or-name)
   "Test if narrowing is in effect in BUFFER-OR-NAME.\n
@@ -582,12 +572,10 @@ size of the narrowed-region is = `buffer-size', esp. when not
           (setq or-chk-wdn `(t . [,(mon-g2be -1 t) ,(mon-g2be 1 t) ,@(append or-chk-wdn nil)]))))
        or-chk-wdn))))
 
-
 ;;; ==============================
 ;;; :COURTESY anything.el :WAS `anything-empty-buffer-p'
 ;;; Added default to `current-buffer' and signal if BUFFER-OR-NAME is provided
 ;;; but doesn't exist.
-;;; :CHANGESET 2299
 ;;; :CREATED <Timestamp: #{2010-11-11T21:35:35-05:00Z}#{10454} - by MON KEY>
 (defun mon-buffer-empty-p (&optional buffer-or-name)
   "Return non-nil if buffer-size of current-buffer is zerop.\n
@@ -636,7 +624,6 @@ Return `#<killed buffer>' if buffered killed, else nil.\n
         (get-buffer mbep-sok))))
 
 ;;; ==============================
-;;; :CHANGESET 2390
 ;;; :CREATED <Timestamp: #{2011-01-13T17:16:09-05:00Z}#{11024} - by MON KEY>
 (defun mon-buffer-name-is-file-name-p (&optional buffer-or-name)
   "Whether current-buffer's buffer-name names an existing file-name.\n
@@ -696,12 +683,10 @@ existing buffer as per `mon-buffer-exists-p', signal an error if not.\n
              mbnifnp-chk)
         mbnifnp-chk)))
 
-
 ;;; ==============================
 ;;; :NOTE Slimes `slime-buffer-name' w/ arg HIDDEN -> " *slime-%s*"
 ;;;       also,  \" *cl-connection*\" \" 
 ;;; :PREFIX "mgbh-"
-;;; :CHANGESET 2088
 ;;; :CREATED <Timestamp: #{2010-08-27T20:26:53-04:00Z}#{10345} - by MON KEY>
 (defun mon-get-buffer-hidden (&optional intrp)
   "Return a list conses of the currently hidden buffers.\n
@@ -759,9 +744,7 @@ buffers include:\n
 ;;; :TEST-ME (mon-get-buffer-hidden)
 ;;; :TEST-ME (mon-get-buffer-hidden t)
 
-
 ;;; ==============================
-;;; :CHANGESET 2390
 ;;; :CREATED <Timestamp: #{2011-01-13T15:45:15-05:00Z}#{11024} - by MON KEY>
 (defun mon-get-buffer-hidden-if (hidden-regexp &optional buffer-name-only)
   "Return a list of hidden buffer matching HIDDEN-REGEXP.\n
@@ -782,7 +765,6 @@ Default is to return a list of consed pairs each of the form:\n
                         (mon-get-buffer-hidden)))))
 
 ;;; ==============================
-;;; :CHANGESET 2390
 ;;; :CREATED <Timestamp: #{2011-01-13T23:22:49-05:00Z}#{11024} - by MON KEY>
 (defun mon-buffer-kill-hidden-if (kill-matching-regexp &optional test-first)
   "Kill all hidden buffers matching KILL-MACTHING-REGEXP.\n
@@ -807,7 +789,6 @@ return a list of what would have been killed with car of returned list as
                                  :killed-buffers) ,gthr)))))
 
 ;;; ==============================
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-29T19:16:42-04:00Z}#{10393} - by MON KEY>
 (defun mon-get-buffer-window-if (buffer-or-name &optional frame)
   "Return window if BUFFER-OR-NAME exists and there is a window displaying it.\n
@@ -825,7 +806,6 @@ When ommitted or nil the default is to search only the `selected-frame'.\n
 
 ;;; ==============================
 ;;; :PREFIX "mpbor-"
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-24T11:49:29-04:00Z}#{10385} - by MON KEY>
 (defun mon-print-buffer-object-readably (buffer-or-name &optional as-form)
   "Return a form containing a printed representation of BUFFER-OR-NAME.\n
@@ -860,7 +840,6 @@ Default is to return a lisp form for `eval'.\n
 
 ;;; ==============================
 ;;; :COURTESY :FILE slime.el :WAS `slime-recently-visited-buffer'
-;;; :CHANGESET 1967
 ;;; :CREATED <Timestamp: #{2010-07-12T12:42:51-04:00Z}#{10281} - by MON KEY>
 (defun mon-get-buffer-w-mode (w-mode &optional not-visible-only)
   "Return the most recently visited buffer whose major-mode is W-MODE.\n
@@ -894,7 +873,7 @@ not already visible. Default is to consider all buffers on all frames.\n
 ;;; :CREATED <Timestamp: #{2010-11-22T19:48:23-05:00Z}#{10471} - by MON KEY>
 (defun mon-buffer-check-local-value (w-predicate check-value check-for 
                                                  &optional w-buffer)
-  "Whether a buffer-local-value is non-nil in a buffer.\n
+  "Check whether a buffer-local-value is non-nil in a buffer.\n
 Return non-nil when the buffer-local-value of CHECK-VALUE satisfies
 W-PREDICATE testing CHECK-FOR in current-buffer or W-BUFFER.\n
 W-PREDICATE is a an applicable symbol argument to `mon-equality-or-predicate'.\n
@@ -1062,7 +1041,7 @@ This is an alternative definition of `append-to-buffer' with a \"\n\".\n
 
 
 ;;; ==============================
-;;; "mmsb-"
+;;; :PREFIX "mmsb-"
 ;;; :CREATED <Timestamp: #{2009-12-01T13:54:34-05:00Z}#{09492} - by MON KEY>
 (defun mon-make-shell-buffer ()
   "Return a new *shell* buffer.\n
@@ -1104,7 +1083,7 @@ But, this way MON has fine-grain control over the assigned name suffix.\n
 ;;;              (prog1 (princ kl-bf) (kill-buffer kl-bf)))
 
 ;;; ==============================
-;;; :NOTE I tried to figure out how to do this with `defadvice'... that was bad!
+;;; :NOTE Tried to figure out how to do this with `defadvice'... that was bad!
 ;;; :CREATED <Timestamp: #{2009-12-01T15:18:38-05:00Z}#{09492} - by MON KEY>
 (defun mon-shell ()
   "Return *shell* buffer.\n

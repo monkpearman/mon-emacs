@@ -122,16 +122,13 @@
 ;;; CODE:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
-
-
 ;;; ==============================
-;;; :CHANGESET 2421
 ;;; :CREATED <Timestamp: #{2011-03-07T16:02:21-05:00Z}#{11101} - by MON KEY>
 (defgroup mon-doc-help-char-encoding-lossage nil
   "Customization group for variables and functions of :FILE mon-doc-help-char-encoding-lossage.el\n
@@ -144,7 +141,6 @@
   :group 'mon-doc-help-utils)
 
 ;;; ==============================
-;;; :CHANGESET 2421
 ;;; :CREATED <Timestamp: #{2011-03-07T13:43:16-05:00Z}#{11101} - by MON KEY>
 (defun mon-make-encoding-position-lossage-table (table-keys table-vals)
   "Map keys in TABLE-KEYS to values in TABLE-VALS.\n
@@ -186,7 +182,6 @@ signalled if not.\n
           finally (return gthr-vals))))
 
 ;;; ==============================
-;;; :CHANGESET 2421
 ;;; :CREATED <Timestamp: #{2011-03-07T16:03:32-05:00Z}#{11101} - by MON KEY>
 (defcustom *mon-doc-help-char-encoding-lossage-xrefs*
   '(mon-get-encoding-codepoint mon-get-encoding-position-lossage
@@ -358,7 +353,6 @@ proper names e.g. the city of l'Haÿ-les-Roses or of poet Pierre Louÿs.\n
   :group 'mon-doc-help-char-encoding-lossage)
 
 ;;; ==============================
-;;; :CHANGESET 2420
 ;;; :CREATED <Timestamp: #{2011-03-06T00:24:36-05:00Z}#{11097} - by MON KEY>
 (defun mon-get-encoding-codepoint (from-plist w-key &optional when-not-char &rest rest)
   "Find W-KEY in plist FROM-PLIST.\n
@@ -419,9 +413,7 @@ lieu of WHEN-NOT-CHAR.\n
                   (cons t (format "%s %S" w-key mgfe-if)))
              (cons t "")))))
 
-
 ;;; ==============================
-;;; :CHANGESET 2420
 ;;; :CREATED <Timestamp: #{2011-03-06T00:24:39-05:00Z}#{11097} - by MON KEY>
 (defun mon-get-encoding-position-lossage (from-plist key-for-int-val 
                                                      &optional w-raw-byte)
@@ -462,7 +454,6 @@ When W-RAW-BYTE is non-nil cdr of return value will contain \" :RAW-BYTE \".\n
                   (or (and w-raw-byte " :RAW-BYTE ") ""))))))
 
 ;;; ==============================
-;;; :CHANGESET 2420
 ;;; :CREATED <Timestamp: #{2011-03-06T00:24:41-05:00Z}#{11097} - by MON KEY>
 (defun mon-get-encoding-point-hist (w-plist rules &optional w-raw-byte); &rest rules)
   "Apply RULES to W-PLIST maybe W-RAW-BYTE.\n
@@ -496,10 +487,7 @@ iteratively within a `mon-get-encoding-map-results' form.\n
       (let ((rl-if (apply (car r) w-plist `(,@(cdr r) ,w-raw-byte))))
         (when (car rl-if) (push rl-if rstls))))))
 
-
-
 ;;; ==============================
-;;; :CHANGESET 2420
 ;;; :CREATED <Timestamp: #{2011-03-06T00:24:44-05:00Z}#{11097} - by MON KEY>
 (defun mon-get-encoding-map-results (results w-buffer)
   "Helper function for `mon-get-encoding-point-hist-map-plists'.
@@ -529,9 +517,7 @@ Return value inserted in buffer W-BUFFER.\n
                 (terpri (current-buffer))))
           results)))
 
-
 ;;; ==============================
-;;; :CHANGESET 2420
 ;;; :CREATED <Timestamp: #{2011-03-06T00:24:46-05:00Z}#{11097} - by MON KEY>
 (cl-defun mon-get-encoding-point-hist-map-plists (w-plists w-rules &optional w-raw-byte
                                                          &key w-buffer-named w-buffer-header)
@@ -576,17 +562,16 @@ Keyword arg W-BUFFER-HEADER is a string to insert at beginning of returned buffe
       (display-buffer mgephmp-bfr t))))
 
 ;;; ==============================
-;;; :CHANGESET 2419
 ;;; :CREATED <Timestamp: #{2011-03-05T17:28:40-05:00Z}#{11096} - by MON KEY>
 ;;;###autoload
 (defun mon-help-cp1252-iso-8859-1-lossage ()
   "Return CP-1252 -> ISO-8859-1 character encoding conversion lossage.\n
 Results returned to buffer with name: \"*MON-HELP-CP1252-8859-1-LOSSAGE*\".\n
 :EXAMPLE\n\n\(mon-help-cp1252-iso-8859-1-lossage\)\n
-:SEE \(URL `http://en.wikipedia.org/wiki/Windows-1252'\)
-:SEE \(URL `http://en.wikipedia.org/wiki/ISO/IEC_8859-1'\)
-:SEE \(URL `http://www.eki.ee/letter/chardata.cgi?cp=CP1252+%28Western%29&cp1=8859-1'\)
-:SEE \(URL `http://www.eki.ee/letter/'\)
+:SEE \(URL `http://en.wikipedia.org/wiki/Windows-1252'\)\n
+:SEE \(URL `http://en.wikipedia.org/wiki/ISO/IEC_8859-1'\)\n
+:SEE \(URL `http://www.eki.ee/letter/chardata.cgi?cp=CP1252+%28Western%29&cp1=8859-1'\)\n
+:SEE \(URL `http://www.eki.ee/letter/'\)\n
 :SEE-ALSO `mon-get-encoding-codepoint', `mon-get-encoding-position-lossage',
 `mon-get-encoding-point-hist', `mon-get-encoding-map-results',
 `mon-get-encoding-point-hist-map-plists',
@@ -602,18 +587,16 @@ Results returned to buffer with name: \"*MON-HELP-CP1252-8859-1-LOSSAGE*\".\n
    :w-buffer-named "*MON-HELP-CP1252-8859-1-LOSSAGE*"
    :w-buffer-header ";; Lossage when converting Windows CP-1252 --> ISO-8859-1"))
 
-
 ;;; ==============================
-;;; :CHANGESET 2421
 ;;; :CREATED <Timestamp: #{2011-03-07T14:26:02-05:00Z}#{11101} - by MON KEY>
 ;;;###autoload
 (defun mon-help-iso-8859-1-8859-15-lossage ()
   "Return ISO-8859-1 --> ISO-8859-15 character encoding conversion lossage.\n
 Results returned to buffer with name: \"*MON-HELP-CP1252-8859-1-LOSSAGE*\".\n
 :EXAMPLE\n\n\(mon-help-iso-8859-1-8859-15-lossage\)\n
-:SEE \(URL `http://en.wikipedia.org/wiki/ISO/IEC_8859-15'\)
-:SEE (URL `http://www.cs.tut.fi/~jkorpela/latin9.html')
-:SEE \(URL `http://www.eki.ee/letter/'\)
+:SEE \(URL `http://en.wikipedia.org/wiki/ISO/IEC_8859-15'\)\n
+:SEE (URL `http://www.cs.tut.fi/~jkorpela/latin9.html')\n
+:SEE \(URL `http://www.eki.ee/letter/'\)\n
 :SEE-ALSO `mon-get-encoding-codepoint', `mon-get-encoding-position-lossage',
 `mon-get-encoding-point-hist', `mon-get-encoding-map-results',
 `mon-get-encoding-point-hist-map-plists',
@@ -630,7 +613,6 @@ Results returned to buffer with name: \"*MON-HELP-CP1252-8859-1-LOSSAGE*\".\n
    :w-buffer-header ";; Lossage when converting ISO-8859-1 --> ISO-8859-15"))
 
 ;;; ==============================
-;;; :CHANGESET 2421
 ;;; :CREATED <Timestamp: #{2011-03-07T16:30:22-05:00Z}#{11101} - by MON KEY>
 ;;;###autoload
 (defun mon-help-cp1252-iso-8859-15-lossage ()
@@ -657,8 +639,6 @@ Results returned to buffer with name: \"*MON-HELP-CP1252-8859-15-LOSSAGE*\".\n
    *cp1252-8859-1-lossage* *cp1252-8859-15-lossage-rules* t
    :w-buffer-named "*MON-HELP-CP1252-8859-15-LOSSAGE*"
    :w-buffer-header ";; Lossage when converting Windows CP-1252 --> ISO-8859-15"))
-
-
 
 
 

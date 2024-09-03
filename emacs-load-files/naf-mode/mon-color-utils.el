@@ -142,7 +142,7 @@
 
 ;;; CODE:
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
@@ -181,9 +181,7 @@ RETURN:  A triplet \(red green blue\)\n
                   (truncate (+ mcm-L-1 (* (- mcm-L-2 mcm-L-1)  factor))))
               color-a color-b))
 
-
 ;;; ==============================
-;;; :CHANGESET 2313
 ;;; :CREATED <Timestamp: #{2010-11-12T15:16:25-05:00Z}#{10455} - by MON KEY>
 (defun mon-color-mix-display (&optional mix-factor)                       
   "Read two color names and return a mixed color value.\n
@@ -246,12 +244,9 @@ For each color name, we keep the variant that DOES have spaces.\n
 ;;              (fboundp '))
 ;; (mon-defined-colors-without-duplicates)
 
-
-
 ;;; ==============================
 ;;; :NOTE This fncn returns different HSV value than `css-color:rgb-to-hsv'
 ;;; :COURTESY Juri Linkov :WAS `rgb-to-hsv'
-;;; :CHANGESET 1720 <Timestamp: #{2010-05-07T14:05:50-04:00Z}#{10185} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-09-04T16:08:42-04:00Z}#{09365} - by MON KEY>
 (defun mon-rgb-to-hsv (red-val green-val blue-val)
   "Return RED-VAL, GREEN-VAL, BLUE-VAL colors as hue, saturation, value list.\n
@@ -345,7 +340,7 @@ Output values for saturation and value are in [0..1] range.\n
 ;;; ==============================
 ;;; :WAS `colorcomp'
 (defun mon-colorcomp (color)
-  "Allow fiddling with COLOR in a new buffer.
+  "Allow fiddling with COLOR in a new buffer.\n
 The buffer is in MON Color Components mode.\n
 :SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp',
 `mon-colorcomp-copy-as-kill-and-exit', `mon-help-color-functions',
@@ -468,9 +463,9 @@ The string is formatted #RRGGBB (hash followed by six hex digits).\n
 
 ;;; ==============================
 ;;; :PREFIX "mcm-"
-;;; :NOTE Changed default bindings. 
-;;; :MODIFICATIONS <Timestamp: #{2009-09-04T16:32:08-04:00Z}#{09365} - by MON KEY>
 ;;; :WAS `colorcomp-mode-map'
+;;; :NOTE Changed default bindings. 
+;;; :CREATED <Timestamp: #{2009-09-04T16:32:08-04:00Z}#{09365} - by MON KEY>
 (unless (and (intern-soft "*mon-colorcomp-mode-map*" obarray)
              (bound-and-true-p  *mon-colorcomp-mode-map*))
   (setq *mon-colorcomp-mode-map*

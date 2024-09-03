@@ -409,7 +409,6 @@ Run on the `kill-buffer-hook'.\n
                                    (search-forward-regexp "^[[:digit:]]+" (line-end-position) t)
                                    (point))
                                  'face 'css-check-applied-face))))))))
-              
 
 (defun css-check-undo-application-at-p ()
   "Undo `css-check's  pplication of csstidy changes at point.\n
@@ -460,9 +459,7 @@ Run on the `kill-buffer-hook'.\n
                                    (point))
                                  'face 'css-check-unapplied-face))))))))
 
-
 ;;; ==============================
-;;; :CHANGESET 2053
 ;;; :CREATED <Timestamp: #{2010-08-07T19:10:38-04:00Z}#{10316} - by MON KEY>
 (defun css-check-buffer-mode-css-p (&optional w-prompt-if-not)
   "Is current buffer a css-mode buffer.\n
@@ -488,7 +485,6 @@ When optional arg W-PROMPT-IF-NOT is non-nil prompt to make it so.\n
       t)))
 
 ;;; ==============================
-;;; :CHANGESET 2053
 ;;; :CREATED <Timestamp: #{2010-08-07T18:45:45-04:00Z}#{10316} - by MON KEY>
 (defun css-check-buffer-offer-save ()
   "Offer to save current CSS file when `buffer-modified-p'.\n

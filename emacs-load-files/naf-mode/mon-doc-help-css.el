@@ -123,7 +123,7 @@
 ;;; CODE:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
@@ -318,7 +318,6 @@ appears in the two files: misc.cpp and misc.hpp   When the code blocks for
 
 
 ;;; ==============================
-;;; :CHANGESET 1828
 ;;; :CREATED <Timestamp: #{2010-06-04T15:47:25-04:00Z}#{10225} - by MON KEY>
 (defun mon-help-css-complete (&optional insertp intrp)
   "A list of functions variables from the \(mon-\)css-complete package.\n
@@ -428,7 +427,6 @@ appears in the two files: misc.cpp and misc.hpp   When the code blocks for
 
 
 ;;; ==============================
-;;; :CHANGESET 1828
 ;;; :CREATED <Timestamp: #{2010-06-04T15:49:33-04:00Z}#{10225} - by MON KEY>
 (defun mon-help-css-mode (&optional insertp intrp)
   "List of functions and vars for `css-mode'.\n
@@ -483,7 +481,6 @@ appears in the two files: misc.cpp and misc.hpp   When the code blocks for
 
 
 ;;; ==============================
-;;; :CHANGESET 1828
 ;;; :CREATED <Timestamp: #{2010-06-04T15:57:44-04:00Z}#{10225} - by MON KEY>
 (defun mon-help-css-color (&optional insertp intrp)
   "A List of functions and vars for working with css-color-mode\n
@@ -584,7 +581,6 @@ appears in the two files: misc.cpp and misc.hpp   When the code blocks for
 
 
 ;;; ==============================
-;;; :CHANGESET 1833
 ;;; :CREATED <Timestamp: #{2010-06-08T18:20:49-04:00Z}#{10232} - by MON KEY>
 (defun mon-help-css-properties (&optional insertp intrp)
   "A list of CSS properties.\n

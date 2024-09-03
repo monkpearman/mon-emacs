@@ -100,7 +100,7 @@
 
 ;;; CODE:
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
@@ -136,7 +136,6 @@
 ;; (CHARNAME . CHAR-CODE)  ("VARIATION-SELECTOR" . 917999)
   ;; We need to do something here to make sure the pairs get consd up the way we need.
   ;; end result shold be that value of global var `*mon-ampersand-sharp-diacritic-pairs*' is an alist with elements that have the form: ("S&#807" . "Ş")
-
   (let  ((tbl (ucs-names))
          (latin-withs ()))
     (loop 
@@ -160,6 +159,7 @@
                       (format "%c" (cadr dc)))
                 formatted-pairs))))))
 
+;;; ==============================
 (defun mon-replace-ampersand-sharp-chars-in-buffer ()
   (interactive)
   (with-current-buffer (current-buffer)
@@ -175,6 +175,7 @@
 
 ;; (progn (search-forward-regexp "^\\( (\\)\\(\".*\"\\)\\( +\\)\\(.*\\)\\()\\)" nil t)
 ;;        (replace-match "(\\4\n:initarg :\\4\n:accessor \\4\n:documentation \":ORIGINAL-FIELD \\2\")"))
+;;; ==============================
 (defun mon-dbc-replace-consed-pairs-region-with-parsed-defclass-slots (start end)
   "Replace each consed pair in region insert a defclass template.\n
 Elements of CONSED-PAIRS are as per the consed pairs of FIELD-TO-ACCESSOR-ALIST
@@ -233,7 +234,6 @@ Inserted template has the format:\n
 (defalias 'mon-dbc-xml-insert-parsed-defclass-slots 'mon-insert-parsed-defclass-slots)
 
 ;;; ==============================
-;;; :CHANGESET 2383
 ;;; :CREATED <Timestamp: #{2011-01-07T16:05:15-05:00Z}#{11015} - by MON KEY>
 (defun mon-dbc-xml-parse-clean-fields (start end)
   "Transform XML schema from START to END into an intermediate format.\n

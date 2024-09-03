@@ -102,7 +102,7 @@
 
 ;;; CODE:
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 ;;; 
 ;; (defgroup mon-doc-help-mail nil
@@ -387,7 +387,6 @@ password-read
 ;;; :TEST-ME (mon-help-mail-functons )
 
 ;;; ==============================
-;;; :CHANGESET 2442
 ;;; :CREATED <Timestamp: #{2011-05-14T12:48:57-04:00Z}#{11196} - by MON KEY>
 (defun mon-help-bbdb-functons (&optional insertp intrp)
 "BBDB v3 related functions, variables, pathnames, info-nodes, groups, etc.\n
@@ -453,9 +452,6 @@ password-read
 ;;; :TEST-ME (mon-help-bbdb-functons )
 ;;; :TEST-ME (mon-help-bbdb-functons )
 ;;; :TEST-ME (mon-help-bbdb-functons )
-
-
-
 
 ;;; ==============================
 (provide 'mon-doc-help-mail)

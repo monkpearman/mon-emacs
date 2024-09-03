@@ -144,18 +144,13 @@
 ;;; CODE:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
-
-
-;; mon-multi-isearch-rmv-hook
-
 ;;; ==============================
-;;; :CHANGESET 2291
 ;;; :CREATED <Timestamp: #{2010-11-09T22:26:44-05:00Z}#{10452} - by MON KEY>
 (defcustom *mon-popup-pos-x-offset* 
   (or (and (eq window-system 'x) 40)
@@ -256,7 +251,7 @@ the tedium of building the entire scaffolding.\n
 
 ;;; ==============================
 ;;; :RENAMED `mon-trunc' -> `mon-toggle-truncate-line'
-;;; :MODIFICATIONS <Timestamp: #{2009-10-26T15:45:18-04:00Z}#{09441} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-10-26T15:45:18-04:00Z}#{09441} - by MON KEY>
 (defun mon-toggle-truncate-line (&optional intrp)
   "Toggle the truncate-line variable and redraw the display.\n
 When optional arg intrp is non-nil or called-interactively message user that
@@ -312,7 +307,6 @@ change has occured.\n
 ;;; (funcall (lambda () (if (bolp) (forward-line -1) (beginning-of-line))))
 
 ;;; ==============================
-;;; :CHANGESET 1885
 ;;; :CREATED <Timestamp: #{2010-06-16T11:43:14-04:00Z}#{10243} - by MON KEY>
 (defun mon-line-move-n (&optional move-cnt) 
   "Move cursor as if by `line-move' with its NOERROR arg non-nil.\n
@@ -329,7 +323,6 @@ otherwise duplicate anonymous forms with identical behavior.\n
   (line-move (or (and (integerp move-cnt) move-cnt) 0) t))
 
 ;;; ==============================
-;;; :CHANGESET 1885
 ;;; :CREATED <Timestamp: #{2010-06-16T12:09:24-04:00Z}#{10243} - by MON KEY>
 (defun mon-line-move-next (&optional move-next-cnt)
   "Move cursor vertically forward as if by `mon-line-move-n'.\n
@@ -344,7 +337,6 @@ otherwise duplicate anonymous forms with identical behavior.\n
    (or (and (integerp move-next-cnt) (abs move-next-cnt)) 1)))
 
 ;;; ==============================
-;;; :CHANGESET 1885
 ;;; :CREATED <Timestamp: #{2010-06-16T12:09:54-04:00Z}#{10243} - by MON KEY>
 (defun mon-line-move-prev (&optional move-prev-cnt)
   "Move cursor vertically forward as if by `mon-line-move-n'.\n
@@ -357,7 +349,6 @@ otherwise duplicate anonymous forms with identical behavior.\n
   (interactive "P")
   (mon-line-move-n 
    (or (and (integerp move-prev-cnt) (- (abs move-prev-cnt))) -1)))
-
 
 ;;; ==============================
 ;;; :COURTESY :FILE bookmark.el :WAS `bookmark-read-search-input'
@@ -403,8 +394,7 @@ When W-KBD-QUIT is non-nil a when C-g is caught tail of list is non-nil.\n
 ;;; ==============================
 ;;; :PREFIX "mmrn-"
 ;;; :NOTE Inspired by Thierry Volpiatto :HIS tv-utils.el :WAS `multi-read-name'
-;;; :MODIFICATIONS <Timestamp: #{2010-03-30T14:02:31-04:00Z}#{10132} - by MON KEY>
-;;; :CHANGESET 2291 <Timestamp: #{2010-11-11T20:52:23-05:00Z}#{10454} - by MON KEY>
+;;; :CREATED <Timestamp: #{2010-03-30T14:02:31-04:00Z}#{10132} - by MON KEY>
 (defun mon-read-multiple (&optional multi-fun &rest multi-fun-args)
   "Prompt indefinely while a comma \",\" \(char 44\) is  suffixed to read value.\n
 Return a list of containing each input read.\n
@@ -499,7 +489,6 @@ When non-nil PROMPT args should be ommitted.\n
 ;;; `mouse-selection-click-count-buffer'
 ;;; (posn-x-y (event-start (read-event nil nil 0.0))
 ;;; :FILE mon-css-complete.el
-;;; :CHANGESET 2291 
 ;;; :CREATED <Timestamp: #{2010-11-09T22:29:47-05:00Z}#{10452} - by MON KEY>
 (defun mon-postion-for-x-popup-menu ()                              
   "Return a position for displaying an `x-popup-menu'.\n
@@ -515,7 +504,6 @@ Returned value is informed by variable `*mon-popup-pos-x-offset*'.\n
          (cpfxpm-win (posn-window cpfxpm)))
     `((,(+ *mon-popup-pos-x-offset* (car cpfxpm-x-y)) ,(cdr cpfxpm-x-y))
       ,cpfxpm-win)))
-
 
 ;; (x-popup-menu 
 ;;  (mon-postion-for-x-popup-menu)
@@ -534,7 +522,6 @@ Returned value is informed by variable `*mon-popup-pos-x-offset*'.\n
 ;;     ("three-bubba.A" . A)
 ;;     ("three-bubba.B" . B)
 ;;     ("three-bubba.C" . C))))
-
 
 ;;; ==============================
 ;;; :COURTESY Sandip Chitale <sandipchitale@attbi.com>
@@ -663,7 +650,6 @@ Can be alled programatically within a wrapper functions.\n
 ;;;               (when (listp event)(cadr event)))
 
 ;;; ==============================
-;;; :CHANGESET 1898
 ;;; :CREATED <Timestamp: #{2010-06-18T15:18:46-04:00Z}#{10245} - by MON KEY>
 (defun mon-abort-recursive-edit ()
   "Try to exit gracefully from hung/corrupted `recursive-edit' minibuffer.\n
@@ -680,7 +666,6 @@ Repeatedly invoke `exit-recursive-edit' and `abort-recursive-edit' when
 
 ;;; ==============================
 ;;; :PREFIX "maawf-"
-;;; :CHANGESET 2087
 ;;; :CREATED <Timestamp: #{2010-08-25T18:12:21-04:00Z}#{10343} - by MON KEY>
 (defun mon-abort-autosave-when-fucked (&optional fucked-minibuffer-count)
   "HELP! Getme the fuck out of autosave hell.\n
@@ -785,7 +770,7 @@ Default is \"processing .... \"
 ;;; :CREATED <Timestamp: Friday March 20, 2009 @ 09:17.35 PM - by MON KEY>
 (defun mon-kill-appending (beg end)
   "Append the region current to the kill ring without killing it.\n
-Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.
+Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.\n
 :ALIASED-BY `mon-append-next-kill'\n
 :SEE-ALSO `mon-append-to-buffer', `mon-append-to-register'.\n▶▶▶"
   (interactive "r")
@@ -817,7 +802,6 @@ Redefines `append-to-register' with a \"\n\".\n
   (if w-region-deleted (delete-region start end)))
 
 ;;; ==============================
-;;; :CHANGESET 2389
 ;;; :CREATED <Timestamp: #{2011-01-12T18:55:12-05:00Z}#{11023} - by MON KEY>
 (defun mon-multi-isearch-rmv-hook (&optional w-regex)
   "Remove `multi-isearch-setup' from local buffers `isearch-mode-hook'.\n

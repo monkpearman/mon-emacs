@@ -1,8 +1,6 @@
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-21T18:02:47-04:00Z}#{09345} - by MON KEY>
-;;; :MODIFICATIONS <Timestamp: #{2010-04-06T12:11:52-04:00Z}#{10142} - by MON KEY>
-;;; ==============================
-
 (defun mon-map-elisp-fileset (&optional to-fileset-file insrtp intrp)
   "Return the list of *.el files in local Emacs load files.
 Maps the values of follwing variables: 

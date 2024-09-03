@@ -111,7 +111,7 @@
 ;;; CODE:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
@@ -119,7 +119,6 @@
 
 
 ;;; ==============================
-;;; :CHANGESET 2389
 ;;; :CREATED <Timestamp: #{2011-01-12T19:04:38-05:00Z}#{11023} - by MON KEY>
 (defgroup mon-post-load-hooks nil
   "Customization group for variables and functions of :FILE mon-post-load-hooks.el\n
@@ -137,7 +136,6 @@
   :group 'mon-base)
 
 ;;; ==============================
-;;; :CHANGESET 2389
 ;;; :CREATED <Timestamp: #{2011-01-12T19:04:21-05:00Z}#{11023} - by MON KEY>
 (defcustom *mon-post-load-hooks-xrefs* 
   '(mon-purge-cl-symbol-buffers-on-load mon-run-post-load-hooks
@@ -236,12 +234,12 @@ When this buffer exists it is killed by `mon-run-post-load-hooks'.\n
 ;;;(progn (makunbound '*mon-post-load-hook-trigger-buffer*)
 ;;;       (unintern "*mon-post-load-hook-trigger-buffer*" obarray) )
 
-
-;; 
+;;; ==============================
 (defun mon-run-post-load-hooks-helper ()
-  "helper function for `mon-run-post-load-hooks'. Used for references as a hook
-function for `add-hook' and `kill-hook' when frobbing buffer
-`*mon-post-load-hook-trigger-buffer*'.\n"
+  "Helper function for `mon-run-post-load-hooks'.\n
+Used for references as a hook function for `add-hook' and `kill-hook' when
+frobbing buffer `*mon-post-load-hook-trigger-buffer*'.\n
+:SEE-ALSO `visit-tags-table', `tags-file-name'.\n▶▶▶"
   (let ((default-directory (or (caar *mon-tags-table-list*) default-directory)))
     (visit-tags-table default-directory (or tags-file-name t))
     ;; (visit-tags-table (caar *mon-tags-table-list*))
@@ -499,7 +497,7 @@ Empty/Delete the following when the `kill-emacs-hook' is run:\n
 (defun mon-scratch-postload ()
   "Switch to a fresh *scratch* buffer setting buffer-local value of
 `default-directory' `*mon-emacs-root*'\n
-:SEE-ALSO `mon-scratch'"
+:SEE-ALSO `mon-scratch'.\n▶▶▶"
   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
              (bound-and-true-p IS-MON-SYSTEM-P)
              *mon-emacs-root*)
@@ -518,7 +516,7 @@ Empty/Delete the following when the `kill-emacs-hook' is run:\n
                 (format ";;; current-directory is %s\n" default-directory))
         (emacs-lisp-mode)
         (display-buffer (current-buffer))))))
-
+;;
 ;; (mon-scratch-postload)
 
 ;;; ==============================

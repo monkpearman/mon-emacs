@@ -62,7 +62,7 @@
 ;;; CODE:
 
 ;; `mon-bind-doc-help-proprietery-vars-at-loadtime' <- `setf' 
-(eval-when-compile (require 'cl)) 
+(eval-when-compile (require 'cl-lib)) 
 
 (defvar *mon-compromise-my-ms-W32-virginity* (bound-and-true-p IS-MON-SYSTEM-P)
   "*Set this variable non-nil to make `mon-help-w32-shell-execute' avaiable.\n

@@ -146,7 +146,7 @@
 ;;; CODE:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
@@ -246,8 +246,6 @@ Image directories defined in global variables: \n
            (bound-and-true-p *mon-naf-mode-root*))
 ;;; ==============================
 ;;; :PREFIX "mfmef-"
-;;; :MODIFICATIONS <Timestamp: #{2010-05-22T17:06:35-04:00Z}#{10206} - by MON KEY>
-;;; :MODIFICATIONS <Timestamp: #{2010-04-06T12:11:52-04:00Z}#{10142} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-21T18:02:47-04:00Z}#{09345} - by MON KEY>
 (defun* mon-file-map-elisp-fileset (&optional (to-fileset-file nil got-tff) insrtp intrp 
                                               &rest these-dirs 
@@ -353,14 +351,14 @@ lisp/ source tree when Emacs was built with the\n
 ;;|                      "/TEST-mon-file-map-elisp-fileset.el"))
 ;;`----
 
-(when (and (intern-soft "*mon-emacs-root*" obarray)  ;; *IS-MON-OBARRAY*
+(when (and (intern-soft "*mon-emacs-root*" obarray)
            (bound-and-true-p *mon-emacs-root*))
 ;;; ==============================
 ;;; :NOTE There are better ways to accomplish this and the :TODO's are misguided.
 ;;; :TODO Make a global var for this and default to it. 
 ;;; :TODO Add post save hook to record the directory for new or modified .naf's.
 ;;; :COURTESY Stefan Reichor, stefan@xsteve.at :HIS xsteve-functions.el :VERSION 2001-03-28
-;;; :MODIFICATIONS <Timestamp: Monday February 09, 2009 @ 09:34.29 PM - by MON>
+;;; :CREATED <Timestamp: Monday February 09, 2009 @ 09:34.29 PM - by MON>
 (defun mon-dir-save-current ()
   "Save the current directory to a specific file.\n
 :NOTE This function is only relevant if the following evaluates non-nil:
@@ -394,10 +392,9 @@ lisp/ source tree when Emacs was built with the\n
         (message "Saved directory '%s' to %s" file-name current-sys-type)
         (kill-buffer (current-buffer))))))
 
-
 ;;; ==============================
 ;;; :PREIFX "mdsctf-"
-;;; :MODIFICATIONS <Timestamp: #{2009-08-11T18:12:53-04:00Z}#{09332} - by MON>
+;;; :CREATED <Timestamp: #{2009-08-11T18:12:53-04:00Z}#{09332} - by MON>
 (defun mon-dir-save-current-to-file (&optional intrp)
   "Save the current files directory path to a file.\n
 Default file is held by global var `*mon-record-current-directory*'.\n
@@ -473,7 +470,6 @@ Default path held by global var: `*mon-artist-naf-path*'.\n
 ;;
 ;;; :TEST-ME (mon-explorer-naf-artist "b")
 
-
 ;;; ==============================
 ;;; :CREATED <Timestamp: Monday February 09, 2009 @ 09:35.31 PM - by MON>
 (defun mon-explorer-naf-brand (w-prefix)
@@ -529,7 +525,7 @@ Default naf path held by the var: `*mon-artist-naf-path*'.\n
 	 (naf-alph-path (concat *mon-artist-naf-path* dl))
 	 (default-directory naf-alph-path))
     (dired-other-window naf-alph-path)))
-
+;;
 ;;; :TEST-ME (mon-dired-naf-artist-letter "b")
 
 ;;; ==============================
@@ -554,7 +550,7 @@ Default naf path held by the var: `*mon-brand-naf-path*'.\n
 	 (naf-alph-path (concat *mon-brand-naf-path* dl))
 	 (default-directory naf-alph-path))
     (dired-other-window naf-alph-path)))
-
+;;
 ;;; :TEST-ME (mon-dired-naf-brand-letter  "b")
 
 
@@ -567,7 +563,7 @@ Default naf path held by the var: `*mon-brand-naf-path*'.\n
                 (bound-and-true-p *mon-ebay-images-bmp-path*))
            (and (intern-soft "*mon-ebay-images-jpg-path*" obarray)
                 (bound-and-true-p *mon-ebay-images-jpg-path*)))
-;;
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: Thursday June 25, 2009 @ 06:03.54 PM - by MON>
 (defun mon-dired-naf-image-dir (naf-path-name &optional intrp)
@@ -605,13 +601,12 @@ When called-interactively complete the key to dired to the directory val.\n
                        nef-alist)))
           (dired (concat *mon-nef-scan-nefs-path* "/" get-nef-dir)))
       (dired (cdr (assoc mdnid-in-dir  mdnid-img-pths))))))
-  ;;
 ;;; :TEST-ME (mon-dired-naf-image-dir "nefs-archived")
-  ;;
+
 ) ;; :CLOSE when *mon-vars*
 
 
-(when (and (intern-soft "*mon-nef-scan-nefs-path*" obarray) ;; *IS-MON-OBARRAY*
+(when (and (intern-soft "*mon-nef-scan-nefs-path*" obarray)
            (bound-and-true-p *mon-nef-scan-nefs-path*))
 ;;; ==============================
 ;;; :PREFIX "mdnupa-"
@@ -997,7 +992,7 @@ Return value includes those formatted with:\n
 ;;; :TEST-ME (mon-dir-nef-big *mon-nefs_photos_nefs-alist*)
 
 
-(when (and (intern-soft "*mon-nef-scan-nefs-path*" obarray) ;; *IS-MON-OBARRAY*
+(when (and (intern-soft "*mon-nef-scan-nefs-path*" obarray)
            (bound-and-true-p *mon-nef-scan-nefs-path*))
 ;;; ==============================
 ;;; :PREFIX "mdnd-"
@@ -1148,7 +1143,7 @@ List value built with `mon-dir-build-list' per completion specs.\n
 ;; `----
 
 
-(when (and (intern-soft "*bug-HG-path*" obarray)  ;; *IS-MON-OBARRAY*
+(when (and (intern-soft "*bug-HG-path*" obarray)
            (bound-and-true-p *bug-HG-path*))
 ;;; ==============================
 ;;; :CREATED <Timestamp: Tuesday July 21, 2009 @ 05:36.07 PM - by MON>

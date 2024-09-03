@@ -76,8 +76,7 @@
 ;;; ==============================
 ;;; CODE:
 
-(eval-when-compile (require 'cl))
-
+(eval-when-compile (require 'cl-lib))
 
 ;;; ==============================
 ;;; :TODO Finish populating the map and build the replace function.

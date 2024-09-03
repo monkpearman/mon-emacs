@@ -107,7 +107,7 @@
 ;;; CODE:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
@@ -115,9 +115,7 @@
 
 (require 'button)
 
-
 ;;; ==============================
-;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T14:21:04-05:00Z}#{11022} - by MON KEY>
 (defgroup mon-button-utils nil
   "Customization group for variables and functions of :FILE mon-button-utils.el.\n
@@ -137,7 +135,6 @@
   :group 'mon-base)
 
 ;;; ==============================
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T13:36:20-04:00Z}#{10381} - by MON KEY>
 (defcustom *mon-button-utils-xrefs* 
   '(*mon-button-utils-xrefs*
@@ -158,7 +155,6 @@ Symbols  defined in :FILE mon-button-utils.el\n
   :group 'mon-xrefs)
 
 ;;; ==============================
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T13:40:28-04:00Z}#{10381} - by MON KEY>
 (defvar *mon-default-button-map*
   (let ((map (make-sparse-keymap "MON default button map")))
@@ -182,11 +178,7 @@ Symbols  defined in :FILE mon-button-utils.el\n
   ;; :button-doc #'(lambda () (apropos-describe-plist (button-category-symbol 'naf-dir)))
   ;; )
 
-
-
-
 ;;; ==============================
-;;; :CHANGESET 2128
 ;;; :CREATED <Timestamp: #{2010-09-14T12:09:11-04:00Z}#{10372} - by MON KEY>
 (defun mon-button-at-point-p (&optional putative-button-at)
   "Return non-nil when there is a `button` property on char at point.\n
@@ -226,11 +218,10 @@ Arg PUTATIVE-BUTTON-AT when non-nil, is a buffer-position to check for button pr
       (symbol-plist hld-prps))))
 
 ;;; ==============================
-;;; This works except for the ugly symbol name handling:
-;;; :CHANGESET 2133
+;;; :NOTE This works except for the ugly symbol name handling:
 ;;; :CREATED <Timestamp: #{2010-09-14T20:17:15-04:00Z}#{10372} - by MON KEY>
 (defun mon-button-at-point-describe-button-plist (&optional button-at-psn)
-  "Return pp'd display of buttons current props as if by `apropos-describe-plist'.
+  "Return pp'd display of buttons current props as if by `apropos-describe-plist'.\n
 :EXAMPLE\n\n
 :SEE-ALSO `apropos-describe-plist' `mon-button-get-plist', `mon-button-get-plist-props',
 `mon-button-at-point-p', `mon-button-at-point-describe-button-plist',
@@ -247,7 +238,6 @@ Arg PUTATIVE-BUTTON-AT when non-nil, is a buffer-position to check for button pr
     (apropos-describe-plist mbapp)))
 
 ;;; ==============================
-;;; :CHANGESET 2128
 ;;; :CREATED <Timestamp: #{2010-09-14T11:41:00-04:00Z}#{10372} - by MON KEY>
 (defun mon-button-get-plist (type-button)
   "Return a plist of enumerating properites for a button-type.\n
@@ -287,7 +277,6 @@ is implemented by both overlays and text-properties this indirection allows:
         :BUTTON-PLIST ,(symbol-plist get-bcs)))))
 
 ;;; ==============================
-;;; :CHANGESET 2128
 ;;; :CREATED <Timestamp: #{2010-09-14T10:50:10-04:00Z}#{10372} - by MON KEY>
 (defun mon-button-get-plist-props (type-of-button)
   "Return a plist properties for TYPE-OF-BUTTON.\n
@@ -317,15 +306,13 @@ TYPE-OF-BUTTON is a button constructed with `define-button-type'.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2128
 ;;; :CREATED <Timestamp: #{2010-09-13T23:13:16-04:00Z}#{10371} - by MON KEY>
 (defun mon-follow-button ()
   "
 :EXAMPLE\n\n
-:SEE-ALSO .\n▶▶▶"
+:SEE-ALSO `button-activate', `button-at'.\n▶▶▶"
   (interactive)
   (button-activate (button-at (point))))
-
 
 ;;;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ;;;; :NOTE  STOPPED ON THIS WORKING HERE
@@ -383,7 +370,6 @@ TYPE-OF-BUTTON is a button constructed with `define-button-type'.\n
 ;; sldb-default-action/mouse
 
 ;;; ==============================
-;;; :CHANGESET 2133
 ;;; :CREATED <Timestamp: #{2010-09-14T20:39:44-04:00Z}#{10372} - by MON KEY>
 (defun tt--make-test-button ()
   "
@@ -409,7 +395,6 @@ TYPE-OF-BUTTON is a button constructed with `define-button-type'.\n
 ;;     (display-buffer pp-bfr t)))
 
 ;;; ==============================
-;;; :CHANGESET 2128
 ;;; :CREATED <Timestamp: #{2010-09-13T23:12:37-04:00Z}#{10371} - by MON KEY>
 (defvar *naf-button-map* 
   (let ((map (make-sparse-keymap "naf button map")))
@@ -421,9 +406,7 @@ TYPE-OF-BUTTON is a button constructed with `define-button-type'.\n
 :EXAMPLE
 :SEE-ALSO .\n▶▶▶")
 
-
 ;;; ==============================
-;;; :CHANGESET 2128
 ;;; :CREATED <Timestamp: #{2010-09-13T23:13:44-04:00Z}#{10371} - by MON KEY>
 (defface naf-mode-artist-face-inverted
   '((((class color))
@@ -437,9 +420,7 @@ TYPE-OF-BUTTON is a button constructed with `define-button-type'.\n
 ;; (describe-face 'naf-mode-artist-face-inverted)
 ;; (unintern 'naf-mode-artist-face-inverted)
 
-
 ;;; ==============================
-;;; :CHANGESET 2128
 ;;; :CREATED <Timestamp: #{2010-09-13T23:12:44-04:00Z}#{10371} - by MON KEY>
 (define-button-type 'naf-dir
   'help-echo "Click for NAF directory"
@@ -447,15 +428,14 @@ TYPE-OF-BUTTON is a button constructed with `define-button-type'.\n
   :naf-path-label  "naf dirctory path"
   :naf-dir-label "naf name"
   ;;'action #'naf-btn-activate
-  :button-doc #'(lambda () (apropos-describe-plist (button-category-symbol 'naf-dir)))
-  )
+  :button-doc #'(lambda () (apropos-describe-plist (button-category-symbol 'naf-dir))))
+;;
 ;; (symbol-plist 'naf-dir)
 ;; (funcall (plist-get (symbol-plist (button-category-symbol 'naf-dir)) :button-doc))
 ;;
 ;; (progn (unintern 'naf-dir) (unintern 'naf-dir-button))
 
 ;;; ==============================
-;;; :CHANGESET 2128
 ;;; :CREATED <Timestamp: #{2010-09-13T23:12:48-04:00Z}#{10371} - by MON KEY>
 (define-button-type 'naf-artist :supertype 'naf-dir
   'face 'naf-mode-artist-face
@@ -466,8 +446,7 @@ TYPE-OF-BUTTON is a button constructed with `define-button-type'.\n
             (dired  (button-get button :naf-path)))
   'mouse-action (lambda (button)
                   (dired  (button-get button :naf-path)))
-  :button-doc #'(lambda () (apropos-describe-plist (button-category-symbol 'naf-artist)))
-  )
+  :button-doc #'(lambda () (apropos-describe-plist (button-category-symbol 'naf-artist))))
 ;;
 ;; (symbol-plist 'naf-artist)
 ;; (funcall (plist-get (symbol-plist (button-category-symbol 'naf-artist)) :button-doc))
@@ -480,17 +459,14 @@ TYPE-OF-BUTTON is a button constructed with `define-button-type'.\n
 ;;
 ;; (progn (unintern 'naf-artist) (unintern 'naf-artist-button))
 
-
 ;;; ==============================
-;;; :CHANGESET 2128
 ;;; :CREATED <Timestamp: #{2010-09-13T23:12:52-04:00Z}#{10371} - by MON KEY>
 (defun insert-naf-artist-button (name path)
   "Insert a button to the an artist NAF directory PATH for NAME.\n
-NAME is an NAF artist name.
+NAME is an NAF artist name.\n
 PATH is a path to the artist naf directory.\n
 :EXAMPLE\(let \(\(inhibit-read-only t\)\)
-   \(insert-naf-artist-button \"bubba the grand\" default-directory\))
-
+   \(insert-naf-artist-button \"bubba the grand\" default-directory\))\n
 :SEE-ALSO .\n▶▶▶"
   (let ((name-l (length name)))
     (apply #'make-text-button
@@ -500,10 +476,8 @@ PATH is a path to the artist naf directory.\n
 ;;
 ;;; (insert-naf-artist-button "bubba the grand" default-directory)
 
-
 ;;; ==============================
 ;;; :COURTESY :FILE button.el
-;;; :CHANGESET 2128
 ;;; :CREATED <Timestamp: #{2010-09-14T11:43:04-04:00Z}#{10372} - by MON KEY>
 (defun naf-btn-activate (button)
   "
@@ -515,10 +489,8 @@ PATH is a path to the artist naf directory.\n
                                    "-- no path for button: %s")
                            button))))
 
-
 ;;; ==============================
 ;;; :COURTESY :FILE button.el
-;;; :CHANGESET 2128
 ;;; :CREATED <Timestamp: #{2010-09-14T11:43:10-04:00Z}#{10372} - by MON KEY>
 (defun naf-next-label-button (bttn-psn)
   "
@@ -539,7 +511,6 @@ PATH is a path to the artist naf directory.\n
 	(setq label (button-get button :naf-label))
 	(setq type (button-get button 'type))))
     (and label button)))
-
 
 ;;; ==============================
 (provide 'mon-button-utils)

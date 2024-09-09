@@ -603,6 +603,7 @@ needs.\n
           mon-get-freenode-lisp-logs
           mon-mysql-utils
           mon-elisp-fileset
+          mon-scramble-string
           )))
 
 ;;; ==============================

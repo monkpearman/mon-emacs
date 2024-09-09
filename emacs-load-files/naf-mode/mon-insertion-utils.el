@@ -2386,9 +2386,9 @@ helps ensure multi-os portability.\n
                                                 *mon-github-repository-name-for-pathname* 
                                                 (concat *mon-github-repository-default-pathname* "/naf-mode"))
            mift-fname "\n"
-           ";; EMACSWIKI-URL: http://www.emacswiki.org/emacs/" mift-fname "\n"
-           ";; FIRST-PUBLISHED:\n;;\n"
-           ";; EMACSWIKI: { URL of an EmacsWiki describing " mift-fnm-sans ". }\n;;\n"
+           ;; ";; GITHUB-URL: https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/" mift-fname "\n"
+           ;; ";; FIRST-PUBLISHED:\n;;\n"
+           ;; ";; EMACSWIKI: { URL of an EmacsWiki describing " mift-fnm-sans ". }\n;;\n"
            ";; FILE-CREATED:\n;; <Timestamp: " (mon-timestamp :naf t) "\n;;\n"
            (substring (mon-comment-divider-w-len 65 ) 1) "\n\n"
            ";;; LICENSE:\n\n"
@@ -2398,7 +2398,7 @@ helps ensure multi-os portability.\n
            (mon-insert-gnu-licence-gfdl) "\n"
            (mon-build-copyright-string nil nil t t nil t) "\n\n"
            ";;; CODE:\n\n"
-           "\(eval-when-compile \(require 'cl\)\)\n\n"
+           "\(eval-when-compile \(require 'cl-lib\)\)\n\n"
            *mon-default-comment-divider*
            "\n;;  { ...\n;;   "  mift-fnm-sans " Contents here\n;;   ... }\n\n"
            *mon-default-comment-divider* "\n" 

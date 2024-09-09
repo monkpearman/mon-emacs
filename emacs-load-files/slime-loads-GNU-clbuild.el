@@ -1200,10 +1200,10 @@ Evaluated at loadtime by `mon-common-lisp-hyperspec-browse-url-set-init'.\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2024-09-02T12:56:21-04:00Z}#{24361} - by MON KEY>
-(defun mon-slime-help-echo-overlay-no-echo (start end presentation)
+(defun mon-slime-help-echo-overlay-no-echo (start _end _presentation)
   "Remove 'help-echo overlay property from slime-repl-presentations.
 START is a buffer position as per `slime-ensure-presentation-overlay'.
-END and PRESENTATION are ignored.
+_END and _PRESENTATION are ignored.
 The intention of this function is that it be evaluated 
 :after `slime-ensure-presentation-overlay' as if by `add-function'.
 :EXAMPLE\n 
@@ -1282,7 +1282,7 @@ Evaluates `slime-setup', `slime-require'.\n
    '(lisp-lambda-list-keyword-alignment t)
    '(lisp-lambda-list-keyword-parameter-alignment t)
    '(lisp-lambda-list-keyword-parameter-indentation 0)
-   ;; '(slime-asdf-collect-notes t)
+   ;; '(slime-asdf-collect-notes t) ; :DEFAULT T
    ;; :NOTE :SEE (common-lisp-style-names)
    '(common-lisp-style-default "mon"))
   
@@ -1299,7 +1299,7 @@ Evaluates `slime-setup', `slime-require'.\n
   ;; (setq slime-protocol-version (slime-changelog-date))
   
   ;; (require 'slime-autoloads)
-  
+  ;; variable `slime-contribs' holds the list of contribs slime knows about.
   (slime-setup '(slime-fancy 
                  ;; slime-cl-indent
                  ;; slime-cover
@@ -1421,6 +1421,12 @@ Evaluates `slime-setup', `slime-require'.\n
     (defslime-repl-shortcut nil ("ql-system" "ql-sys")
       (:handler 'slime-inspect-quicklisp-system)
       (:one-liner "inspect a quicklisp system"))))
+  
+  ;; Slime doesn't earmuff it's variables and `slime-contribs' one always throws me.
+  (eval-after-load "slime"
+    (unless (and (intern-soft "*slime-contribs*")
+                 (bound-and-true-p *slime-contribs*))
+      (defvaralias '*slime-contribs* 'slime-contribs)))
 
   ;; :NOTE Following needs to occur REALLY late in the load process and can only
   ;; happen _AFTER_ slime connnects!!!

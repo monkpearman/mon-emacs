@@ -479,8 +479,6 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;;; ==============================
 ;; :FONT-LOCK/COLOR-THEME
 
-
-
 ;;; ==============================
 ;;; :NOTE :AFTER `mon-set-emacs-temp-file/dir-init'
 ;;; :CREATED <Timestamp: #{2010-04-02T19:09:16-04:00Z}#{10135} - by MON KEY>
@@ -2733,7 +2731,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 :SEE-ALSO `google-define'.\n▶▶▶"
   (mon-default-start-error/sane
    'mon-set-goolge-maps-init warn-only
-   (add-to-list 'load-path (expand-file-name "google-maps" *mon-site-lisp-root*))
+   (mon-build-path-for-load-path *mon-site-lisp-root* "google-maps")
    (require 'google-maps)
    ;; ==============================
    ;; :CREATED <Timestamp: #{2010-08-19T17:28:36-04:00Z}#{10334} - by MON>
@@ -3437,7 +3435,10 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
    ;; :DIRED
    (require 'dired-details)
    (dired-details-install)
+
+   (cl-pushnew (mon-build-path-for-load-path *mon-site-lisp-root* "dired-efap-GIT") load-path)
    (require 'dired-efap)
+
    ;; ==============================
    ;; :DOREMI
    ;; :NOTE This is Drew Adams' Do Re Mi commands consolidated to one file.
@@ -3451,6 +3452,9 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
    (require 'uniq nil t)
    (require 'regexpl nil t)
    (require 'register-list nil t)
+   
+   (cl-pushnew (mon-build-path-for-load-path *mon-site-lisp-root* "boxquote-GIT") load-path
+               :test 'equal)
    (require 'boxquote nil t)
    (require 'align-let nil t)
    ;; ==============================
@@ -3461,7 +3465,8 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
    ;; :NOTE This is a patched version of Matsushita Akihisa's color-cccur.el
    ;; :SEE (URL `http://www.bookshelf.jp/elc/color-occur.el')
    (require 'mon-color-occur)
-   ;;; ==============================
+
+   ;; ==============================
    (require 'etags)
    (when (or (and (intern-soft "IS-MON-P-GNU" obarray)
                   (bound-and-true-p IS-MON-P-GNU))
@@ -3534,14 +3539,7 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
 ;;
 ;; (mon-set-system-specific-and-load-init t)
 
-
-
 (mon-set-system-specific-and-load-init)
-
-("^▷" . " ;  ")
-("^[[:blank:]]+▷" . " ; ")
-(search-forward-regexp "^[[:blank:]]+▷" (point-max) t)
-
 
 ;;; ==============================
 ;;; :NOTE Load keybindings last to ensure everything is loaded in first.

@@ -105,6 +105,7 @@ mon-rename-image-utils.el
 mon-rename-images-supplemental.el
 mon-rename-whitespace-files.el
 mon-replacement-utils.el
+mon-scramble-string.el
 mon-seq-utils.el
 mon-string-utils.el
 mon-syntax-utils.el

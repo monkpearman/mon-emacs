@@ -143,7 +143,9 @@ When non-nil FLAGS are additional flags to pass to wget. These have the form:
                               (format-time-string "%Y-%m-%d"))))
         (sys (cond ((eq system-type 'windows-nt) 'wnz)
                    ((or (eq system-type 'gnu/linux) 
-                        (eq system-type 'linux)) 'gnu)))
+                        (eq system-type 'linux)) 'gnu)
+                   ((eq system-type 'darwin) 
+                    'darwin)))
         (unravel-flags (if flags (mapconcat #'identity flags " ")))
         the-get)
     ;;(when (and base-url (not (string= base-url "")))
@@ -161,7 +163,7 @@ When non-nil FLAGS are additional flags to pass to wget. These have the form:
                (insert (concat "# " wget-p  " --no-parent " "--no-directories "  
                                unravel-flags
                                " -i " (file-name-nondirectory wget-fname) "\n")))
-              ((eq sys 'gnu)
+              ((member sys '(gnu darwin))
                (insert 
                 (concat "#! /bin/sh\nwget --no-parent --no-directories" unravel-flags " \x5c\n"))
                (while (search-forward-regexp "[a-z]$" nil t) 
@@ -292,7 +294,7 @@ directory containing or which is to contain WGET-FNAME.\n
          (shell-command 
           (concat (car (mon-wget-list-to-script-shell-command (car mwlts))) " &")
           UCmswst))
-        (gnu/linux
+        ((or gnu/linux darwin)
          (mon-wget-list-to-script-shell-command (car mwlts))
          (shell-command (concat (car mwlts) " &") UCmswst))))))
 ;;  
@@ -305,7 +307,6 @@ directory containing or which is to contain WGET-FNAME.\n
 ;
 ;;; ==============================
 ;;; :TODO This is buggy on w32 paths. incorporate use the procedures above.
-;;; :CHANGESET 1849 <Timestamp: #{2010-06-12T11:31:11-04:00Z}#{10236} - by MON KEY>
 ;;; :CREATED <Timestamp: Tuesday June 30, 2009 @ 02:30.21 PM - by MON KEY>
 (defun mon-wget-rfc (rfc-num &optional url-insert)
   "Fetch an RFC with RFC-NUM with wget.\n
@@ -337,36 +338,50 @@ When optional arg URL-INSERT is non-nil return the contents of RFC-NUM as if by
 ;; (url-insert-file-contents fetch-from)
 
 ;;; ==============================
-;;; :CHANGESET 1792
 ;;; :CREATED <Timestamp: #{2010-05-29T15:35:16-04:00Z}#{10216} - by MON KEY>
 (defun mon-wget-unicodedata-files (&optional in-wget-dir save-wget-file-name)
-  "Generate a wget script and fetch URL list in variable
-`*mon-unidata-file-list*'.  SAVE-WGET-FILE-NAME is file to save the wget script
-to.  Fetched urls will be saved to this files directory.  When SAVE-WGET-FILE-NAME
-is ommitted and `IS-MON-SYSTEM-P'is null default is to save to default-directory
-and write the wget script to the file named mon-wget-unicode-data-YYYY-MM-DD.\n
+  "Generate a wget script and fetch URL list in variable `*mon-unidata-file-list*'.\n
+IN-WGET-DIR is a directory in which to save the retrieved files, and should end
+with trailing slash sucht that following returns non-nil:\n
+ \(equal \(file-name-directory in-wget-dir\) in-wget-dir\)\n
+When IN-WGET-DIR is null or ommitted a directory will be created in
+`*mon-site-lisp-root*' if it's value is non-null or `default-directory'.
+In either case, the directory structure will have the form: \n
+ \"UNICODE-DATA/wget-unicode-data-%Y-%m-%d\"\n
+SAVE-WGET-FILE-NAME is file to save the wget script to IN-WGET-DIR or the
+defaulting directory.\n
+When SAVE-WGET-FILE-NAME is ommitted and `IS-MON-SYSTEM-P'is null default is to
+save to `default-directory' and write the wget script to the file named:\n
+ mon-wget-unicode-data-YYYY-MM-DD.\n
 :SEE-ALSO `mon-set-unicodedata-init', `mon-help-diacritics',
 `mon-wget-list-give-script-to-shell-command', `mon-wget-rfc'.\n▶▶▶"
-  (let ((mwucs (cond ((and in-wget-dir save-wget-file-name)
-                      `(in-wget-dir . save-wget-file-name))
-                     ((intern-soft "IS-MON-SYSTEM-P")
-                      `(,(concat 
-                          (file-name-directory describe-char-unicodedata-file)
-                          (format-time-string "wget-unicode-data-%Y-%m-%d")) .
-                          ,(format-time-string "mon-wget-unicode-data-%Y-%m-%d")))
-                     (t `(,(concat 
-                            default-directory
-                            (format-time-string "wget-unicode-data-%Y-%m-%d")) .
-                            ,(format-time-string "mon-wget-unicode-data-%Y-%m-%d"))))))
+  (let ((mwucs (cond 
+                ((and in-wget-dir save-wget-file-name)
+                 (cons in-wget-dir save-wget-file-name))
+                ((intern-soft "IS-MON-SYSTEM-P")
+                 (cons 
+                  (concat 
+                   (expand-file-name "UNICODE-DATA/" (or *mon-site-lisp-root* default-directory))
+                   (format-time-string "wget-unicode-data-%Y-%m-%d/")) 
+                  (format-time-string "mon-wget-unicode-data-%Y-%m-%d")))
+                (t (cons
+                    (concat 
+                     (expand-file-name "UNICODE-DATA/" (or *mon-site-lisp-root* default-directory))                            (format-time-string "wget-unicode-data-%Y-%m-%d/"))
+                    (format-time-string "mon-wget-unicode-data-%Y-%m-%d"))))))
     (unless (file-directory-p (car mwucs))
       (mkdir (car mwucs)))
     (let ((dir-now default-directory))
       (unwind-protect
           (progn
             (cd (car mwucs))
-            (mon-wget-list-give-script-to-shell-command 
+            ;; (loop 
+            ;;  for url in *mon-unidata-file-list*
+            ;;  for split = (member "UNIDATA" (file-name-split url))
+            ;;  do (when (= (length split) 3)
+            ;;       (mkdir (nth 1 split) pwd)))
+            (mon-wget-list-give-script-to-shell-command
              *mon-unidata-file-list* "" 
-             (concat (car mwucs) "/" (cdr mwucs))))
+             (concat (car mwucs) (cdr mwucs))))
         (cd dir-now)))))
 ;;
 ;; :TEST-ME (mon-wget-unicodedata-files)
@@ -374,43 +389,83 @@ and write the wget script to the file named mon-wget-unicode-data-YYYY-MM-DD.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-05-29T15:08:20-04:00Z}#{10216} - by MON KEY>
 (defvar *mon-unidata-file-list* nil
-  "A list of unicode related file lists.
-This list is current to the Unicode 5.2.0 final data files for the Unicode
-Character Database \(UCD\) circa Summer/Autumn 2009.\n
-:SEE (URL `http://www.unicode.org/Public/UNIDATA/')
-:SEE (URL `http://www.unicode.org/Public/UNIDATA/UnicodeData.txt').
-:SEE (URL `ftp://www.unicode.org/Public/zipped/5.2.0/UCD.zip').
+  "A list of Unicode related file lists.
+Data files for the Unicode Character Database \(UCD\), for Version 15.1.0 of the
+Unicode Standard current circa 2023-08-28 .\n
+:SEE (URL `http://www.unicode.org/Public/UNIDATA/').\n
+:SEE (URL `http://www.unicode.org/Public/UNIDATA/UnicodeData.txt').\n
+:SEE (URL `ftp://www.unicode.org/Public/zipped/5.2.0/UCD.zip').\n
 :SEE-ALSO `describe-char-unicodedata-file', `describe-char-unidata-list',
-`mon-help-diacritics', `mon-help-char-representation'.\n▶▶▶")
+`mon-help-diacritics', `mon-help-char-representation', 
+`mon-wget-unicodedata-files', `mon-set-unicodedata-init'.\n▶▶▶")
 ;;
 (unless (and (not (intern-soft "IS-MON-SYSTEM-P"))
              (bound-and-true-p *mon-unidata-file-list*))
   (setq *mon-unidata-file-list*  
         (let ((mufl-files 
                '((nil ;; :TOP-DIR 
-                  "ArabicShaping.txt" "BidiMirroring.txt"
-                  "BidiTest.txt" "Blocks.txt" "CJKRadicals.txt" "CaseFolding.txt"
-                  "CompositionExclusions.txt" "DerivedAge.txt"
-                  "DerivedCoreProperties.txt" "DerivedNormalizationProps.txt"
-                  "EastAsianWidth.txt" "HangulSyllableType.txt" "Index.txt"
-                  "Jamo.txt" "LineBreak.txt" "NameAliases.txt"
-                  "NamedSequences.txt" "NamedSequencesProv.txt" "NamesList.txt"
-                  "NormalizationCorrections.txt" "NormalizationTest.txt"
-                  "PropList.txt" "PropertyAliases.txt" "PropertyValueAliases.txt"
-                  "ReadMe.txt" "Scripts.txt" "SpecialCasing.txt"
-                  "StandardizedVariants.txt" "UnicodeData.txt")
+                  "ArabicShaping.txt"
+                  "BidiBrackets.txt"
+                  "BidiCharacterTest.txt"                  
+                  "BidiMirroring.txt"
+                  "BidiTest.txt"
+                  "Blocks.txt"
+                  "CJKRadicals.txt"
+                  "CaseFolding.txt"
+                  "CompositionExclusions.txt"
+                  "DerivedAge.txt"
+                  "DerivedCoreProperties.txt"
+                  "DerivedNormalizationProps.txt"
+                  "EastAsianWidth.txt"
+                  "EmojiSources.txt"
+                  "EquivalentUnifiedIdeograph.txt"
+                  "HangulSyllableType.txt"
+                  "Index.txt"
+                  "IndicPositionalCategory.txt"
+                  "IndicSyllabicCategory.txt"
+                  "Jamo.txt"
+                  "LineBreak.txt"
+                  "NameAliases.txt"
+                  "NamedSequences.txt"
+                  "NamedSequencesProv.txt" "NamesList.txt"
+                  "NormalizationCorrections.txt"
+                  "NormalizationTest.txt"
+                  "NushuSources.txt"                  
+                  "PropList.txt"
+                  "PropertyAliases.txt"
+                  "PropertyValueAliases.txt"
+                  "ReadMe.txt"
+                  "Scripts.txt"
+                  "ScriptExtensions.txt"
+                  "SpecialCasing.txt"
+                  "StandardizedVariants.txt"
+                  "TangutSources.txt"                  
+                  "UnicodeData.txt"
+                  "USourceData.txt"
+                  "VerticalOrientation.txt")
                  (auxiliary ;; :AUXILLARY-DIR 
-                  "GraphemeBreakProperty.txt" "GraphemeBreakTest.txt"
-                  "LineBreakTest.txt" "SentenceBreakProperty.txt"
-                  "SentenceBreakTest.txt" "WordBreakProperty.txt"
+                  "GraphemeBreakProperty.txt"
+                  "GraphemeBreakTest.txt"
+                  "LineBreakTest.txt"
+                  "SentenceBreakProperty.txt"
+                  "SentenceBreakTest.txt"
+                  "WordBreakProperty.txt"
                   "WordBreakTest.txt")
                  (extracted ;; :EXTRACTED-DIR 
-                  "DerivedBidiClass.txt" "DerivedBinaryProperties.txt"
-                  "DerivedCombiningClass.txt" "DerivedDecompositionType.txt"
-                  "DerivedEastAsianWidth.txt" "DerivedGeneralCategory.txt"
-                  "DerivedJoiningGroup.txt" "DerivedJoiningType.txt"
-                  "DerivedLineBreak.txt" "DerivedNumericType.txt"
-                  "DerivedNumericValues.txt")))
+                  "DerivedBidiClass.txt"
+                  "DerivedBinaryProperties.txt"
+                  "DerivedCombiningClass.txt"
+                  "DerivedDecompositionType.txt"
+                  "DerivedEastAsianWidth.txt"
+                  "DerivedGeneralCategory.txt"
+                  "DerivedJoiningGroup.txt"
+                  "DerivedJoiningType.txt"
+                  "DerivedLineBreak.txt"
+                  "DerivedNumericType.txt"
+                  "DerivedNumericValues.txt")
+                 (emoji ;; :EMOJI-DIR
+                  "emoji-data.txt"
+                  "emoji-variation-sequences.txt")))
               (mufl-url (or (when (and (intern-soft "*mon-url-search-paths*")
                                        (bound-and-true-p *mon-url-search-paths*))
                               (cdr (assoc 'unicode *mon-url-search-paths*)))

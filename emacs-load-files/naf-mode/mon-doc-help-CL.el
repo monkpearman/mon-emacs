@@ -2228,17 +2228,21 @@ When value is :url then `mon-help-CL-make-help-xref-buttons-url' is invoked.
   "Return value of `help-mode--current-data' in \"*Help*\" buffer.\n
 :EXAMPLE\n\n \(mon-get-help-buffer-symbol\)\n
 :SEE-ALSO `mon-help-buffer-symbol-mon-help-CL-p'.\n▶▶▶"
+  ;; (buffer-local-value 'help-mode--current-data (get-buffer "*Help*"))
   (plist-get (buffer-local-value 'help-mode--current-data (get-buffer "*Help*")) :symbol))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2024-08-28T02:16:37-04:00Z}#{24353} - by MON KEY>
 (defun mon-help-buffer-symbol-mon-help-CL-p ()
-  "Return non-nil if the current symbol being visited by \"*Help*\" buffer is a member of
-variable `*mon-help-CL-functions-to-propertize*'.`
-:EXAMPLE \n (save-excursion (describe-function 'mon-help-CL-arrays)
-                (mon-help-buffer-symbol-mon-help-CL-p))\n
-:SEE-ALSO `mon-get-help-buffer-symbol'.\n▶▶▶"
-  (memq (mon-get-help-buffer-symbol) *mon-help-CL-functions-to-propertize*)) 
+  "Return non-nil if the current symbol being visited by \"*Help*\" buffer does
+not satisfy `subrp' and is a member of variable `*mon-help-CL-functions-to-propertize*'.\n
+:EXAMPLE\n \(save-excursion \(describe-function 'mon-help-CL-arrays\)
+                \(mon-help-buffer-symbol-mon-help-CL-p\)\)\n
+:SEE-ALSO `mon-get-help-buffer-symbol'.\n▶▶▶"         
+  ;; help-fns-function-description-header
+ (let ((help-sym (mon-get-help-buffer-symbol)))
+   (and (not (subrp (symbol-function help-sym)))
+        (memq (mon-get-help-buffer-symbol) *mon-help-CL-functions-to-propertize*))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2024-08-28T02:16:33-04:00Z}#{24353} - by MON KEY>
@@ -2358,13 +2362,14 @@ in `*mon-help-CL-symbols-for-info*' or `common-lisp-hyperspec--symbols'.\n
 `common-lisp-hyperspec--format-characters',`common-lisp-hyperspec--glossary-terms',
 `common-lisp-hyperspec--issuex-symbols',
 `common-lisp-hyperspec--reader-macros'.\n▶▶▶"
+(when (mon-help-buffer-symbol-mon-help-CL-p)
   (cond ((or (equal *mon-help-CL-help-xref-button-type* :info)
              (equal *mon-help-CL-help-xref-button-type* :INFO))
          (mon-help-CL-make-help-xref-buttons-info (or buffer "*Help*")))
         ((or (equal *mon-help-CL-help-xref-button-type* :url)
            (equal *mon-help-CL-help-xref-button-type* :URL))
          (mon-help-CL-make-help-xref-buttons-url (or buffer "*Help*")))
-        (t (error ":FUNCTION `mon-help-CL-make-help-xref-buttons-url-info' - :VARIABLE `*mon-help-CL-help-xref-button-type*' value not :info or :url"))))
+        (t (error ":FUNCTION `mon-help-CL-make-help-xref-buttons-url-info' - :VARIABLE `*mon-help-CL-help-xref-button-type*' value not :info or :url")))))
 ;;
 ;; :NOTE we advise `help-make-xrefs' in `mon-set-system-specific-and-load-init'
 ;; at bottom of :FILE : "mon-default-start-loads.el"

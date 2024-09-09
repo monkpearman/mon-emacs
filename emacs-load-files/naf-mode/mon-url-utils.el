@@ -35,6 +35,7 @@
 ;; `mon-url-encode', `mon-url-decode' `mon-get-host-address',
 ;; `mon-url-retrieve-to-new-buffer', `mon-its-all-text-purge-on-quit',
 ;; `mon-html-fontify-generate-file-name', `mon-w3m-goto-url-at-point',
+;; `mon-get-chrome-url', `mon-get-chrome-url-insert',
 ;; FUNCTIONS:◀◀◀
 ;;
 ;; MACROS:
@@ -224,7 +225,7 @@
     mon-w3m-kill-url-at-point mon-get-w3m-url-at-point-maybe
     mon-get-w3m-url-at-point mon-w3m-goto-url-at-point
     mon-w3m-read-gnu-lists-nxt-prv mon-tld-tld mon-tld-name mon-tld-find-tld
-    mon-tld-find-name mon-tld
+    mon-tld-find-name mon-tld mon-get-chrome-url mon-get-chrome-url-insert
     ;; :VARIABLES
     *mon-url-search-paths* *mon-purge-on-its-all-text-on-quit*
     **mon-purge-htmlfontify-dir-on-quit* *regexp-hexcolor-keywords*
@@ -805,6 +806,61 @@ Inserts:\n
                    dn dt lt)))
     (insert  dbc-url)))
 
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-04T18:42:21-04:00Z}#{24363} - by MON KEY>
+(defun mon-get-chrome-url ()
+  "Get current URL and it's title from  Chrome browser.\n
+Return a cons cell of the form:\n
+ \(<URL> . <URL-TITLE>\)\n
+:NOTE This funciton leverages `do-applescript', as such, when `system-type' is
+not darwin or when \"Google Chrome\" is not present in `process-attributes' as
+an element of a procss returned by `list-system-processes' warn and return nil.\n
+:EXAMPLE\n
+ \(mon-get-chrome-url\)\n
+:SEE-ALSO `mon-get-chrome-url-insert', `do-applescript', `mon-wrap-one-url'.\n▶▶▶"
+  (interactive)
+  (if (not (eq system-type  'darwin))
+      (prog1 nil
+        (warn ":FUNCTION `mon-get-chrome-url' uses `do-applescript' -- `system-type' is not darwin. :GOT %S" system-type))
+    (if (cl-loop
+         for proc in (list-system-processes)
+         for attribs = (process-attributes proc)
+         for proc-comm = (cdr (assoc 'comm attribs))
+         for proc-euid = (cdr (assoc 'euid attribs))
+         when (and proc-comm
+                   (equal proc-comm "Google Chrome")
+                   proc-euid
+                   (equal proc-euid (user-real-uid)))
+         return t)
+        (let ((url (do-applescript "tell application \"Google Chrome\" to return URL of active tab of front window"))
+              (url-title (do-applescript "tell application \"Google Chrome\" to return Title of active tab of front window")))
+          ;; (if intrp
+          ;;     (prin1 (cons url url-title) (current-buffer))
+          ;;   (cons url url-title))
+          (if (called-interactively-p 'any)
+              (prin1 (cons url url-title) t)
+            (cons url url-title)))
+      (prog1 nil
+        (warn ":FUNCTION `mon-get-chrome-url' -- `list-system-processes' does not find \"Google Chrome\" for `user-real-login-name': %S with `real-user-id': %S" (user-real-login-name) (user-real-uid))))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-05T12:59:35-04:00Z}#{24364} - by MON KEY>
+(defun mon-get-chrome-url-insert ()
+  "Return a URL and it's title as per `mon-get-chrome-url' and insert it in
+`current-buffer' moving point.\n
+Inserted values are as follows:\n
+:URL <URL>
+:URL-TILE <URL-TITLE>\n
+:EXAMPLE\n
+ \(let \(\(buffer-read-only nil\)\)
+   (newline)
+  \(call-interactively 'mon-get-chrome-url-insert\)\)\n
+:SEE-ALSO `do-applescript', `mon-wrap-one-url', `mon-wrap-all-urls'.\n▶▶▶"
+  (interactive)
+  (let ((url-data (mon-get-chrome-url)))
+    (when url-data 
+      (insert (format ":URL %s\n:URL-TITLE %s" (car url-data) (cdr url-data))))))
+    
 ;;; ==============================
 ;;; :PREFIX "mwou-"
 ;;; :TODO Add ability to evaluate the region programatically and otherwise.

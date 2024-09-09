@@ -1082,6 +1082,40 @@ Sets the following variables:\n
 ;;
 ;; (mon-set-bbdb-init)
 
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-08-23T14:55:33-04:00Z}#{24345} - by MON KEY>
+(defvar *mon-desktop-not-to-save-buffer-names*
+  (list 
+   "magit:.*"
+   "magit-diff:.*"
+   "magit-process:.*"
+   "magit-revision:.*"
+   "*Backtrace*"
+   "\\*info\\*<[0-9]>"
+   "*Compile-Log*"
+   "*Ido Completions*"
+   "*MON-HELP-CL-EXT-PKG-MAP*"
+   "*scratch*"
+   "*slime-events*"
+   "*slime-repl sbcl*"
+   "*Dired log*"
+   "*Disabled Command*"
+   "*Messages*"
+   "*Process List*"
+   "*Register List*"
+   "*Shortdoc regexp*")
+ "A list of buffer name patterns for buffers which `desktop-save' should not save.
+Each element of list is a string or a regular expression identifying a buffer
+name and will be checked with `mon-desktop-buffers-not-to-save-function-buffer-name-helper'
+via wrapper function `mon-desktop-buffers-not-to-save-function' as per `desktop-save-buffer-p' which
+is a helper function for `desktop-save'.\n
+:SEE-ALSO `*mon-desktop-desktop-modes-not-to-save*',
+`*mon-desktop-desktop-locals-to-save*',
+`*mon-desktop-not-to-save-buffer-names*',
+`*mon-desktop-desktop-modes-not-to-save*',
+`mon-desktop-buffers-not-to-save-function-buffer-name-helper',
+`mon-desktop-buffers-not-to-save-function-mode-name-helper',
+`mon-desktop-buffers-not-to-save-function', `mon-set-desktop-init'.\n▶▶▶")
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2024-08-25T13:20:29-04:00Z}#{24347} - by MON KEY>
@@ -1123,41 +1157,6 @@ is a helper function for `desktop-save'.\n
 `*mon-desktop-not-to-save-buffer-names*',
 `*mon-desktop-desktop-modes-not-to-save*',
 `mon-desktop-buffers-not-to-save-function-buffer-name-helper',
-`mon-desktop-buffers-not-to-save-function', `mon-set-desktop-init'.\n▶▶▶")
-  
-;;; ==============================
-;;; :CREATED <Timestamp: #{2024-08-23T14:55:33-04:00Z}#{24345} - by MON KEY>
-(defvar *mon-desktop-not-to-save-buffer-names*
-  (list 
-   "magit:.*"
-   "magit-diff:.*"
-   "magit-process:.*"
-   "magit-revision:.*"
-   "*Backtrace*"
-   "\\*info\\*<[0-9]>"
-   "*Compile-Log*"
-   "*Ido Completions*"
-   "*MON-HELP-CL-EXT-PKG-MAP*"
-   "*scratch*"
-   "*slime-events*"
-   "*slime-repl sbcl*"
-   "*Dired log*"
-   "*Disabled Command*"
-   "*Messages*"
-   "*Process List*"
-   "*Register List*"
-   "*Shortdoc regexp*")
- "A list of buffer name patterns for buffers which `desktop-save' should not save.
-Each element of list is a string or a regular expression identifying a buffer
-name and will be checked with `mon-desktop-buffers-not-to-save-function-buffer-name-helper'
-via wrapper function `mon-desktop-buffers-not-to-save-function' as per `desktop-save-buffer-p' which
-is a helper function for `desktop-save'.\n
-:SEE-ALSO `*mon-desktop-desktop-modes-not-to-save*',
-`*mon-desktop-desktop-locals-to-save*',
-`*mon-desktop-not-to-save-buffer-names*',
-`*mon-desktop-desktop-modes-not-to-save*',
-`mon-desktop-buffers-not-to-save-function-buffer-name-helper',
-`mon-desktop-buffers-not-to-save-function-mode-name-helper',
 `mon-desktop-buffers-not-to-save-function', `mon-set-desktop-init'.\n▶▶▶")
 
 ;;; ==============================

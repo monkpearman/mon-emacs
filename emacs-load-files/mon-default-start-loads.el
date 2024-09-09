@@ -51,7 +51,8 @@
 ;; `mon-set-custom-customizations-init', `mon-set-show-paren-init',
 ;; `mon-set-github-paths-init', `mon-set-bbdb-init',
 ;; `mon-set-printer-postscript-init', `mon-set-split-window-init',
-;; `mon-set-vc-init', `mon-set-magit-init',
+;; `mon-set-vc-init', `mon-set-magit-init', `mon-set-triples-ekg-init'
+;; `mon-set-markdown-mode-init',
 ;; FUNCTIONS:◀◀◀
 ;;
 ;; MACROS:
@@ -292,6 +293,8 @@ The symbols contained of this list are defined in :FILE mon-default-start-loads.
           mon-set-pdf-view-init
           mon-set-epa-configs-init
           mon-set-erc-configs-init
+          mon-set-triples-ekg-init
+          mon-set-markdown-mode-init
           ;; :VARIABLES
           *mon-default-start-load-sanity*
           *mon-default-start-load-sanity-WARN-ONLY*
@@ -2781,8 +2784,118 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;; (mon-set-w3m-init t)
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-08T20:01:41-04:00Z}#{24367} - by MON KEY>
+(defun mon-set-markdown-mode-init (&optional warn-only)
+  "Set loadpath for markdown and edit-indirect libraries.\n
+:EXAMPLE\n
+ \(locate-library \"markdown-mode\"\)\n
+\(locate-library \"edit-indirect\"\)\n
+:SEE-ALSO `mon-set-triples-ekg-init'.\n▶▶▶"
+  (mon-default-start-error/sane
+   'mon-set-browser-init warn-only
+
+   ;; :NOTE edit-indirect is required by markdown-mode
+   ;; edit-indirect
+   (cl-pushnew (mon-build-path-for-load-path *mon-site-lisp-root* "edit-indirect-GIT")
+               load-path :test 'equal)
+
+   ;; markdown-mode
+   (cl-pushnew (mon-build-path-for-load-path *mon-site-lisp-root* "markdown-mode-GIT")
+               load-path :test 'equal)
+
+   (require 'edit-indirect)
+
+   (require 'markdown-mode)
+   
+   (autoload 'markdown-mode "markdown-mode"
+     "Major mode for editing Markdown files" t)
+   
+   (add-to-list 'auto-mode-alist
+                '("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode))
+
+   (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
+   (autoload 'gfm-mode "markdown-mode"
+     "Major mode for editing GitHub Flavored Markdown files" t)
+
+   (with-eval-after-load 'markdown-mode
+     (define-key markdown-mode-map (kbd "C-c C-e") #'markdown-do))
+   ))
+;;
+;; (mon-set-markdown-mode-init t)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-04T11:42:24-04:00Z}#{24363} - by MON KEY>
+(defun mon-set-triples-ekg-init (&optional warn-only)
+  "Set loadpath for triples and ekg libraries.\n
+:EXAMPLE\n
+ \(locate-library \"ekg\"\)\n
+ \(locate-library \"triples\"\)\n
+:SEE info node `(ekg)'\n
+:SEE-ALSO `ekg-capture-mode-hook', `ekg-edit-mode-hook', `ekg-auto-save-mode'
+`mon-set-markdown-mode-init'\n▶▶▶"
+  (mon-default-start-error/sane
+   'mon-set-browser-init warn-only
+   ;; triples-mon-fork-GIT
+   (cl-pushnew (mon-build-path-for-load-path *mon-site-lisp-root* "triples-mon-fork-GIT")
+               load-path :test 'equal)
+   (cl-pushnew (mon-build-path-for-load-path *mon-site-lisp-root* "ekg-mon-fork-GIT")
+               load-path :test 'equal)
+   (cl-pushnew (mon-build-path-for-load-path *mon-site-lisp-root* "ekg-mon-fork-GIT/contrib")
+               load-path :test 'equal)
+   (require 'triples)
+   ;; (setq triples-default-database-filename  <SOME-TRIPLES-DB-FILE>.db"
+   (require 'ekg)
+   ;; (require 'ekg-embedding) ;; requires LLM stuff
+   (require 'ekg-auto-save)
+   (require 'ekg-email)
+   ;; 
+   ;; (setq ekg-capture-default-mode <MODE>)  ; :DEFAULT 'org-mode
+   (setq ekg-capture-default-mode 'text-mode)
+   (custom-note-var-changed 'ekg-capture-default-mode)
+
+   (setq ekg-capture-default-mode 'text-mode)
+   (custom-note-var-changed 'ekg-capture-default-mode)
+
+   ;; (setq ekg-db-file <FILENAME> )  ; :DEFAULT nil when null defaults to `triples-default-database-filename'
+   (setq ekg-db-file (file-name-concat user-emacs-directory "ekg-SDP-testing-2024-09-08.db"))
+   (custom-note-var-changed 'ekg-db-file)
+
+   ;; (setq ekg-acceptable-modes <MODES-LIST>) ; :DEFAULT '(org-mode markdown-mode text-mode)
+   ;; (setq ekg-capture-auto-tag-funcs <FUNCTIONS-LIST>) ; :DEFAULT '(ekg-date-tag)
+
+   ;; (setq ekg-notes-display-images <BOOLEAN>) ; :DEFAULT t
+   ;; (setq ekg-save-no-message <BOOLEAN>) ; :DEFAULT nil
+   ;; (setq ekg-confirm-on-buffer-kill <BOOLEAN>) ; :DEFAULT nil
+   ;; (setq ekg-inline-custom-tag-completion-symbols <SYMBOLS-LIST>)
+   ;; (setq ekg-default-num-backups <NUBMER>) ; :DEFAULT 5
+   ;; (setq ekg-default-backups-strategy <STRATEGY>) ; :DEFAULT 'daily
+   ;; (setq ekg-inline-populate-inline-text-tags <BOOLEAN> ) ; :DEFAULT t
+   ;;
+   ;; ekg Hooks
+   ;; (add-hook ekg-add-schema-hook <HOOK>)
+   ;; (add-hook ekg-note-save-hook <HOOK>)
+   ;; (add-hook ekg-note-delete-hook <HOOK>)
+   ;; (add-hook ekg-note-pre-save-hook  <HOOK>)
+   ;; (add-hook ekg-note-pre-delete-hook <HOOK>)
+   ;; (add-hook ekg-note-add-tag-hook <HOOK>)
+
+   (add-hook 'ekg-capture-mode-hook #'ekg-auto-save-mode)
+   (add-hook 'ekg-edit-mode-hook #'ekg-auto-save-mode)
+   ;; Following adds some ekg related helper functions. We're not currently
+   ;; running a forked version of ekg so we need to check for the presence of
+   ;; these functions in the environment before requiring them on the grounds
+   ;; that they may eventually be merged into ekg.
+   ;; :SEE (URL `https://github.com/ahyatt/ekg/discussions/181')
+   (when (and (locate-library "ekg-GIT/mon-ekg")
+              (or (not (fboundp 'ekg-tags-complete))
+                  (not (fboundp 'ekg-tags-complete-doc))))
+     (require 'mon-ekg))
+   ))
+;;
+;; (mon-set-triples-ekg-init t)
+
+;;; ==============================
 ;;; :TODO Entire conditional can be replaced with one call to `mon-get-mon-emacsd-paths'.
-;;; :MODIFICATIONS <Timestamp: #{2010-04-02T21:29:00-04:00Z}#{10136} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-01-29T16:00:47-05:00Z}#{10045} - by MON KEY>
 (defun mon-set-browser-init (&optional warn-only)
   "Set generic web browser related preferences on MON systems at init time.\n
@@ -3358,6 +3471,13 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
        (when gthr
          (setq tags-table-list (append tags-table-list gthr)))
        (custom-note-var-changed 'tags-table-list)))
+
+   ;; markdown-mode
+   (mon-set-markdown-mode-init t)
+
+   ;; ekg and triples
+   (mon-set-triples-ekg-init t)
+
    ;; Now put some keybindings on the mode-hooks:
    (mon-keybind-put-hooks-init t)
    ;; 

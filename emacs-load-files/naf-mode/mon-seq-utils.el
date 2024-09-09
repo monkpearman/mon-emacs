@@ -236,7 +236,7 @@
 ;;; CODE:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
@@ -296,7 +296,6 @@ The symbols contained of this list are defined in :FILE mon-seq-utils.el\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday June 03, 2009 @ 06:31.33 PM - by MON KEY>
-;;; ==============================
 (defun mon-elt-> (w-after-lst after-elt w-insert-after-elt)
   "Insert W-INSERT-AFTER-ELT AFTER-ELT into W-AFTER-LST.\n
 :SEE-ALSO `mon-elt->', `mon-elt->elt', `mon-elt-<', `mon-elt-<elt',
@@ -372,7 +371,6 @@ Signal an error when wither is not.\n
                        :w-args w-exchange-to-elt)))
   (mon-elt->elt w-exchange-lst w-exchange-from-elt w-exchange-to-elt)
   (mon-elt->elt w-exchange-lst w-exchange-to-elt w-exchange-from-elt))
-
 
 ;;; ==============================
 ;;; :COURTESY :FILE macroexp.el :WAS `maybe-cons'
@@ -849,7 +847,6 @@ ADD-ELTS-TO list with ADD-ELTS-FRM list.\n
 ;; |     :RETURN ,(mon-list-add-non-nil atl afl)))
 ;; `----
 
-
 ;;; ==============================
 ;;; :COURTESY lisp/erc/erc.el :WAS `erc-list' -- use or/and/nlistp instead of if/listp
 ;;; :CREATED <Timestamp: #{2010-12-17T12:42:55-05:00Z}#{10505} - by MON KEY>r
@@ -866,7 +863,6 @@ ADD-ELTS-TO list with ADD-ELTS-FRM list.\n
   (or (and (nlistp obj-or-lst)
            (list obj-or-lst))
       obj-or-lst))
-
 
 ;;; ==============================
 ;;; :PREFIX "mlr-"
@@ -1816,7 +1812,6 @@ If SEQ-END is omitted, it defaults to the length of SEQ.\n
 ;; | (mon-subseq  nil  3  0)
 ;; `----
 
-
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2024-04-12T13:13:08-04:00Z}#{24155} - by MON KEY>
 (defun %mon-edmacro-subseq (seq start &optional end)
@@ -1846,7 +1841,6 @@ If START or END is negative, it counts from the end."
 		 (aset res i (aref seq start))
 		 (setq i (1+ i) start (1+ start)))
 	       res))))))
-
 
 ;;; ==============================
 ;;; :PREFIX "msbl-"
@@ -2076,7 +2070,7 @@ TREE-TO-FLATTEN is a proper-list, consed pair, or vector.\n
             '\(a s d f g\) '\(g f d s a\)
             '\(q w e r t\) '\(t r e w q\)\)\n
 :SEE-ALSO `mon-transpose', `mon-map-append', `mon-mapcan', `mon-mapcon'.\n▶▶▶"
-  (let ((mil-list* ;; this is cl.el's `list*' 
+  (let ((mil-list* ;; this is cl.el's `cl-list*' 
          #'(lambda (mil-L-1-arg &rest mil-L-1-rest)
              (cond ((not mil-L-1-rest) mil-L-1-arg)
                    ((not (cdr mil-L-1-rest)) 
@@ -2089,13 +2083,12 @@ TREE-TO-FLATTEN is a proper-list, consed pair, or vector.\n
                         (cons mil-L-1-arg mil-L-1-cpy)))))))
     (if (null (cdr w-lst))
         w-lst
-      ;; If we could use cl.el's `list*', then following would work:
+      ;; If we could use cl.el's `cl-list*', then following would work:
       ;; :WAS (list* (car w-lst) w-item
       ;;          (mon-intersperse-list (cdr w-lst) w-item))
       (apply mil-list* 
              (car w-lst) 
              (list w-item (mon-list-intersperse (cdr w-lst) w-item))))))
-
 
 ;; SOME is similar, except as soon as the predictae returns a non-NIL
 ;; value, SOME returns that value.  If the end of a sequence is reached,
@@ -2156,7 +2149,7 @@ Each sequence should satisfy `mon-sequence-mappable-p', signal an error if not.\
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-06-15T14:40:11-04:00Z}#{10242} - by MON KEY>
-(defun* mon-mismatch (sqn1 sqn2 &key (sqn1-str 0) (sqn1-end (length sqn1))
+(cl-defun mon-mismatch (sqn1 sqn2 &key (sqn1-str 0) (sqn1-end (length sqn1))
                            (sqn2-str 0) (sqn2-end (length sqn2)))
   "Implementation of `edmacro-mismatch' function with keywords.\n
 Compare SQN1 with SQN2, return index of first mismatching element.
@@ -2259,7 +2252,6 @@ predicate on the elements.\n
           (push (pop list2) mlm-res)
         (push (pop list1) mlm-res)))
     (nconc (nreverse mlm-res) list1 list2)))
-
 
 ;;; ==============================
 ;;; :PREFIX "mcmbn-"

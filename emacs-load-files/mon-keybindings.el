@@ -409,14 +409,15 @@ Added to the `dired-mode-hook' at intit with `mon-keybind-put-hooks-init'.\n
                 ("C-c M-w d"       wdired-change-to-wdired-mode)
                 ("C-c M-u"         mon-dired-unmark-elc)
                 ("C-z b"           mon-dired-unmark-elc)
+                ("C-c r"           dired-efap)
                 ("<f2>"            dired-efap))))
     (cl-loop 
      for keys in kmp
-     do (define-key dired-mode-map (kbd (car keys)) (cdr keys))))
+     do (define-key dired-mode-map (kbd (car keys)) (cadr keys))))
   (and (featurep 'dired-efap)
        (and (intern-soft "IS-MON-P-W32" obarray)
             (bound-and-true-p IS-MON-P-W32))
-        (define-key dired-mode-map  [M-f2] 'dired-efap)))
+       (define-key dired-mode-map  "M-<f2>" 'dired-efap)))
 ;;
 ;; (remove-hook 'dired-mode-hook 'mon-keybind-dired-mode)
 ;; (add-hook 'dired-mode-hook 'mon-keybind-dired-mode)

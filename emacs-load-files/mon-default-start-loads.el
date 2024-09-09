@@ -330,10 +330,19 @@ Setting this variable non-nil may be useful when:\n
 ;;; ==============================
 ;;; :RENAMED `bld-path-for-load-path' -> `mon-build-path-for-load-path'
 (defun mon-build-path-for-load-path (expand-path suffix-path)
-  "Return a path for `load-path' by concat'ing EXPAND-PATH and SUFFIX-PATH.\n
+  "Return a path for `load-path' joining EXPAND-PATH and SUFFIX-PATH
+as if by `expand-file-name' \(but with arguments order reversed\).\n
+EXPAND-PATH is the base pathname.\n
+SUFFIX-PATH is the pathname to ajoin to the _END_ of `expand-path'
+:EXAMPLE\n
+ \(mon-build-path-for-load-path *mon-site-lisp-root* \"magit_2024\"\)\n
+ \(mon-build-path-for-load-path \"~/\" \"FOO\"\)\n
+ \(mon-build-path-for-load-path \"DEVHOME\" \"FOO\"\)\n
+ \(mon-build-path-for-load-path \"HOME\" \"FOO\"\)\n
 :SEE-ALSO `mon-set-custom-file-init', `mon-set-buffer-local-comment-start',
 `mon-set-bookmark-file-init', `mon-set-infopath-init', `mon-build-path'.\n▶▶▶"
-  (concat (file-name-as-directory expand-path) suffix-path))
+  ;; :WAS (concat (file-name-as-directory expand-path) suffix-path))
+  (expand-file-name suffix-path expand-path))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-04-02T18:13:07-04:00Z}#{10135} - by MON KEY>

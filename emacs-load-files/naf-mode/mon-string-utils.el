@@ -157,7 +157,7 @@
 ;;; CODE:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
@@ -165,14 +165,13 @@
 
 
 ;;; ==============================
-;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T19:05:30-05:00Z}#{11022} - by MON KEY>
 (defgroup mon-string-utils  nil
   "Customization group for variables and functions of :FILE mon-string-utils.el\n
 :SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
 `mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
 `mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
-`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils', `mon-color-utils',
 `mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
 `mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
 `mon-url-utils', `mon-boxcutter'.\n▶▶▶"
@@ -180,7 +179,6 @@
   :group 'mon-base)
 
 ;;; ==============================
-;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T19:05:32-05:00Z}#{11022} - by MON KEY>
 (defcustom *mon-string-utils-xrefs* 
   '(mon-string-split mon-string-spread mon-string-justify-left
@@ -198,10 +196,10 @@ The symbols contained of this list are defined in :FILE mon-string-utils.el\n
 :SEE-ALSO `*mon-default-loads-xrefs*', `*mon-default-start-loads-xrefs*',
 `*mon-dir-locals-alist-xrefs*', `*mon-testme-utils-xrefs*',
 `*mon-button-utils-xrefs*', `*mon-buffer-utils-xrefs*',
-`*mon-line-utils-xrefs*', `*mon-plist-utils-xrefs*'
+`*mon-line-utils-xrefs*', `*mon-plist-utils-xrefs*', `*mon-color-utils-xrefs*',
 `*mon-seq-utils-xrefs*', `*mon-window-utils-xrefs*', `*naf-mode-xref-of-xrefs*',
 `*naf-mode-faces-xrefs*', `*naf-mode-date-xrefs*', `*mon-ulan-utils-xrefs*',
-`*mon-xrefs-xrefs'.\n▶▶▶"
+`*mon-xrefs-xrefs*'.\n▶▶▶"
   :type '(repeat symbol)
   :group 'mon-string-utils 
   :group 'mon-xrefs)
@@ -210,7 +208,6 @@ The symbols contained of this list are defined in :FILE mon-string-utils.el\n
 ;;; ==============================
 ;;; :NOTE Heavily modified version of `dired-split' :SEE :FILE dired-aux.el
 ;;; Which had the comment, "here should be a builtin split function - inverse to mapconcat."
-;;; :CHANGESET 2178
 ;;; :CREATED <Timestamp: #{2010-10-06T20:15:46-04:00Z}#{10403} - by MON KEY>
 (defun mon-string-split (split-pattern w-string-to-split &optional limit-to w-empty-string)
   "With regexp SPLIT-PATTERN, split W-STRING-TO-SPLIT into a list of substrings.\n
@@ -271,7 +268,6 @@ return value of following form will always be equal W-STRING-TO-SPLIT:\n
 ;;; The algorithm is based on equation (3.25) on page 85 of Concrete
 ;;; Mathematics by Ronald L. Graham, Donald E. Knuth, and Oren Patashnik,
 ;;; Addison-Wesley, Reading, MA, 1989.
-;;; :CHANGESET 1995
 ;;; :CREATED <Timestamp: #{2010-07-26T18:06:51-04:00Z}#{10301} - by MON KEY>
 (defun mon-string-spread (string-bag spread-char spread-length) ;; 
   "Concatenate list of STRING-BAG separated by SPREAD-CHAR to SPREAD-LENGTH.\n
@@ -367,11 +363,8 @@ If SPREAD-LENGTH is too short STRING-BAG is concatenated and result truncated.\n
 ;;;
 ;;; :PREFIX "msjl-"
 ;;; :COURTESY Pascal Bourguignon :HIS pjb-strings.el :WAS `string-justify-left'
-;;; :CHANGESET 1738 <Timestamp: #{2010-05-17T08:57:22-04:00Z}#{10201} - by MON KEY>
-;;; :MODIFICATIONS <Timestamp: #{2010-02-03T18:08:59-05:00Z}#{10053} - by MON KEY>
 ;;; :ADDED `save-match-data' for `split-string'
 ;;; :RENAMED LEFT-MARGIN arg -> lft-margin. `left-margin' is a global var.
-;;; :MODIFICATIONS <Timestamp: #{2010-02-20T14:55:40-05:00Z}#{10076} - by MON KEY>
 ;;; Added optional arg NO-RMV-TRAIL-WSPC. Relocated save-match-data and
 ;;; conditional type error checks. Rewrote docstring
 (defun mon-string-justify-left (justify-string &optional justify-width 
@@ -787,7 +780,7 @@ Signal an error when an arg does not satisfy `stringp'.\n
 ;;; :PREFIX "msr-"
 ;;; :COURTESY Jared D. :WAS `string-repeat'
 ;;; :SEE (URL `http://curiousprogrammer.wordpress.com/2009/07/26/emacs-utility-functions/')
-;;; :MODIFICATIONS <Timestamp: #{2009-08-19T20:13:32-04:00Z}#{09344} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-08-19T20:13:32-04:00Z}#{09344} - by MON KEY>
 (defun mon-string-repeat (rpt-str rpt-cnt &optional insrtp w-spc intrp)
   "Return the string RPT-STR RPT-CNT times.\n
 When optional INSRTP is non-nil or called-interactively insert STR at point.
@@ -821,7 +814,6 @@ When W-SPC is non-nil return string with whitespace interspersed.\n
 ;;; :TEST-ME (mon-string-repeat "bubba" 3 t t)
 ;;; :TEST-ME (mon-string-repeat "bubba" 3 nil t)
 ;;; :TEST-ME (call-interactively 'mon-string-repeat) 
-
 
 
 ;;; ==============================
@@ -975,8 +967,6 @@ Useful for working with w32 registry keys of type REG_BINARY.\n
 ;;; :COURTESY Marc Tfardy  
 ;;; :SOURCE Newsgroups: comp.emacs 
 ;;; :SUBJECT Re: re-search-forward and assoc list
-;;;
-;;; :MODIFICATONS <Timestamp: Sunday May 31, 2009 @ 08:22.06 AM - by MON KEY>
 ;;; :CREATED <Timestamp: Friday March 27, 2009 @ 04:50.09 PM - by MON KEY>
 ;;; ==============================
 (defun mon-string-infix (string-lst infix-str)
@@ -1009,9 +999,7 @@ INFIX-STR is a string to intersperse with.
 ;;; :TEST-ME (equal (mon-string-infix '("a" "b" "c" "d") "+") "a+b+c+d")
 ;;; :TEST-ME (not (ignore-errors (mon-string-infix '("a" "b" "c" "d") 'I-fail-silently)))
 
-
 ;;; ==============================
-;;; :CHANGESET 2331
 ;;; :CREATED <Timestamp: #{2010-11-27T17:44:28-05:00Z}#{10476} - by MON KEY>
 (defun mon-string-explode (w-str)
   "Split characters in string W-STR into list of strings.\n
@@ -1256,11 +1244,9 @@ String obtained by splitting read-string from mini-buffer.\n
 ;;;
 ;;; :TEST-ME (call-interactively 'mon-string-to-regexp)
 
-
 ;;; ==============================
 ;;; :PREFIX "msmil-"
 ;;; :NOTE Modelled after `erc-list-match' but using catch/throw instead of memq/mapcar
-;;; :CHANGESET 2365
 ;;; :CREATED <Timestamp: #{2010-12-16T14:36:12-05:00Z}#{10504} - by MON KEY>y
 (defun mon-string-match-in-list-p (regexp-lst match-str &optional match-from)
   "Return non-nil if any regexp in REGEXP-LST matches MATCH-STR.\n

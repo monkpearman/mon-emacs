@@ -3,7 +3,8 @@
 ;;; ==============================
 ;;
 ;; The Bare bones installation requirements to get a sane Emacs up and running.
-;; use this sequence for loading the emacs files:
+;; See bottom of file for additional details.
+;; We use the following sequence for loading files into in our Emacs environment:
 ;;
 ;; 1. ~/.emacs is loaded
 ;; 2. ~/Documents/HG-Repos/site-local-private.el
@@ -18,7 +19,7 @@
 ;; -> (require 'mon-utils)      ; !!!!!! :NOTE This is where evyerthing else of the mon-*.el packages gets loaded. !!!!!!
 ;;
 ;; ==============================
-;; ‘C-x C-c’ will kill the current Emacs. :NOTE Behaves specially if using Emacs as a server.
+;; :NOTE ‘C-x C-c’ will kill the current Emacs. :NOTE Behaves specially if using Emacs as a server.
 ;;  If you type it from a client frame, it closes the client connection.
 ;;
 ;; (server-running-p)
@@ -43,6 +44,9 @@
 ;; (system-name)
 ;; (user-login-name)
 ;; (user-original-login-name (user-real-uid))
+;;
+;; (native-comp-available-p)
+;; emacs-version
 ;;
 ;; (setenv "<ENV-VAR>"
 ;;
@@ -69,23 +73,7 @@
 ;; (expand-file-name (pwd))
 ;; (pwd)
 ;;
-;; ==============================
-;; Keybinding Interrogation for Darwin:
-;;
-;; mac-function-modifier ;; none
-;; mac-control-modifier ;; control
-;; mac-command-modifier ;; super
-;; mac-option-modifier ;; meta - consider making this something different.
-;; mac-right-command-modifier
-;; mac-right-control-modifier
-;; mac-right-option-modifier
-;; mac-right-option-modifier
-;;
-;;
 ;; initial-buffer-choice
-;;
-;; (native-comp-available-p)
-;; emacs-version
 ;; ==============================
 
 
@@ -107,7 +95,7 @@
 (setq ring-bell-function 'ignore)
 ;; (setq visible-bell nil)
 
-;; This from mon-default-start-loads
+;; This from :FILE mon-default-start-loads.el
 (unless show-paren-mode (show-paren-mode 1))
 
 ;; (set-scroll-bar-mode 'left)
@@ -116,7 +104,7 @@
 (unless (null scroll-bar-mode) (scroll-bar-mode -1))
 (unless (null tool-bar-mode) (tool-bar-mode -1))
 
-;; Comment this out we need it at moment
+;; Comment this out, we need it at moment:
 ;; (unless (null menu-bar-mode) (menu-bar-mode -1))
 ;; (menu-bar-mode t)
 
@@ -124,12 +112,13 @@
 (setq-default indent-tabs-mode nil)
 (setq inhibit-startup-message t)
 
-;; Set this later elsewhere, and make sure we open into the emacs-load-files directory.
-;; (setq initial-buffer-choice "*scratch*")
-
 (setq text-quoting-style 'grave)
 (custom-note-var-changed 'text-quoting-style)
 
+;; Non-nil means cutting and pasting uses the clipboard.
+;; (setq-default select-enable-clipboard 1)
+
+;;; ==============================
 ;; :NOTE Fullscreen on macOS is a bit special, in that apps get their own
 ;; desktop where other windows normally can’t exit behind or in front of the
 ;; app. Personally I hate this for of fullscreen, but emacs supports using a
@@ -140,6 +129,7 @@
 ;; :SOURCE https://www.reddit.com/r/emacs/comments/n68q16/fullscreen_and_makeframe_on_osx/
 (setq ns-use-native-fullscreen nil)
 
+
 ;;; ==============================
 ;;; :NOTE Get `mon-set-print-length-and-level' into the environment early so we
 ;;; can actually read the *Backtace* buffer contents.
@@ -174,11 +164,13 @@ Sets following variables:\n
 ;;
 (mon-set-print-length-and-level)
 
-;; :show-flags :show-locals :print-circle :print-gensym
-;; (setq backtrace-view nil)
-;; (custom-note-var-changed 'backtrace-view)
+;;; ==============================
+;; `debug-ignored-errors' `inhibit-debugger'
+;; (setq debug-on-error t)
+(toggle-debug-on-error t)
 
 
+;;; ==============================
 ;; Begin setting up the local Emacs environment:
 (let* ((uname  (apply 'concat (mapcar 'char-to-string  '(109 111 110 107 112 101 97 114 109 97 110))))
        (user  (concat "USER=" uname))
@@ -221,8 +213,8 @@ Sets following variables:\n
 
 
 ;;; ==============================
-;; On i3_i3_i3 GNU This was i the file ~/emacs-environment because xdg didn't
-;; pick it up otherwise keep it here for future reference in case it's neeeded
+;; :NOTE On i3_i3_i3 GNU This was i the file ~/emacs-environment because xdg didn't
+;; pick it up otherwise keep it here for future reference in case it's neeeded.
 ;; (let ((environs '(("EMACSCLIENT" . "emacsclient -c")
 ;; 	          ("EDITOR"      . "$EMACSCLIENT")
 ;; 	          ("VISUAL"      . "$EMACSCLIENT")
@@ -251,8 +243,6 @@ Sets following variables:\n
 ;; :FILE src/xsettings.c src/xfns.c
 ;; :SEE-ALSO `x-get-resource', `x-parse-geometry', `frame-parameters',
 
-
-;; `window-system-default-frame-alist'
 (setq window-system-default-frame-alist
       '((x   (menu-bar-lines   . 1)
              (tool-bar-lines   . 0))
@@ -273,7 +263,6 @@ Sets following variables:\n
         (mouse-color       . "white")))
 (custom-note-var-changed 'initial-frame-alist)
 
-;; `default-frame-alist'
 (setq default-frame-alist
       '((menu-bar-lines    . 1)
         (tool-bar-lines    . 0)
@@ -289,6 +278,28 @@ Sets following variables:\n
 
 ;; When they do become visible, put them on the right.
 (setq default-frame-scroll-bars 'right)
+(custom-note-var-changed 'default-frame-scroll-bars)
+
+
+;;; ==============================
+;; :NOTE following two forms from `mon-set-split-window-init',
+;; `mon-set-color-themes-init', and 'mon-set-ibuffer-init'.
+;; :SEE :FILE mon-default-start-loads.el These forms are duplicated there. However, we
+;; want to make sure it's in the environment early so we have it here as too.
+(custom-set-variables ; `mon-set-split-window-init'
+    '(split-width-threshold  180 t nil ":DEFAULT 160")
+    '(split-height-threshold 50  t nil ":DEFAULT 80")
+    '(even-window-heights    nil t nil ":DEFAULT t"))
+
+(custom-set-variables ;`mon-set-color-themes-init'
+      '(font-lock-verbose (1+ (* 8 1024)) t nil ":DEFAULT 0")
+      '(global-font-lock-mode t)
+      '(font-lock-maximum-decoration t))
+
+(custom-set-variables ; 'mon-set-ibuffer-init'
+    '(ibuffer-default-shrink-to-minimum-size t)
+    '(ibuffer-always-show-last-buffer nil)
+    '(ibuffer-use-header-line t))
 
 
 ;;; ==============================
@@ -307,6 +318,18 @@ Sets following variables:\n
 ;; How to inhibit or get around this???
 ;; (key-binding (kbd "C-M-q")) ;; -> `indent-pp-sexp'
 
+;; ==============================
+;; Keybinding Interrogation for Darwin:
+;;
+;; mac-function-modifier ;; none
+;; mac-control-modifier ;; control
+;; mac-command-modifier ;; super
+;; mac-option-modifier ;; meta - consider making this something different.
+;; mac-right-command-modifier
+;; mac-right-control-modifier
+;; mac-right-option-modifier
+;; mac-right-option-modifier
+
 ;;; ==============================
 (global-set-key "\C-x\C-d"            'dired)
 (global-set-key (kbd "<C-backspace>") 'backward-kill-word)
@@ -319,14 +342,15 @@ Sets following variables:\n
 ;; (global-set-key "\C-cu:"           'mon-cln-up-colon)
 ;; (global-set-key "\C-cwou"          'mon-wrap-one-url)
 
+
 ;;; ==============================
 ;; Define this early so we can read the info files for the local Environment with sanity.
 ;; :NOTE this may be causing variable `Info-directory-list' and `Info-default-directory-list'
 ;; to behave funny later down the line. Verify.
 (defun mon-info-mode-hook ()
   "Function executed on the `ido-minibuffer-setup-hook' which adds bindings to
-`Info-mode-map' for `Info-mode'.
-:SEE-ALSO `mon-ido-completion-map-hook', `mon-post-load-hooks'"
+`Info-mode-map' for `Info-mode'.\n
+:SEE-ALSO `mon-ido-completion-map-hook', `mon-post-load-hooks'.\n▶▶▶"
   ;; (define-key Info-mode-map "\M-n" 'mon-scroll-up-in-place)
   ;; :NOTE follwing synch w/ MON binding for `help-go-forward' and `help-go-back'
   ;; Move back in history to the last node you were at.
@@ -334,106 +358,21 @@ Sets following variables:\n
   ;; Move forward in history to the node you returned from after using l.
     (define-key Info-mode-map "\C-c\C-f" 'Info-history-forward)
     (define-key Info-mode-map "\C-cia"   'info-apropos))
-
+;;
 (add-hook 'Info-mode-hook 'mon-info-mode-hook)
 
 
 ;;; ==============================
 (defun mon-ido-completion-map-hook ()
   "Function executed on the `ido-minibuffer-setup-hook' which adds bindings to
-`ido-completion-map' for `ido-complete'.
-:SEE-ALSO `mon-info-mode-hook', `mon-post-load-hooks'.\n▶▶▶ ."
+`ido-completion-map' for `ido-complete'.\n
+:SEE-ALSO `mon-info-mode-hook', `mon-post-load-hooks'.\n▶▶▶"
   (define-key ido-completion-map (kbd "<backtab>") 'ido-complete))
-
+;;
 (add-hook 'ido-minibuffer-setup-hook 'mon-ido-completion-map-hook)
 
 
 ;;; ==============================
-;; (setq-default x-select-enable-clipboard 1)
-
-;; Not sure why/if we need this anymore:
-;;
-;; (put 'narrow-to-region  'disabled nil)
-;; (put 'downcase-region   'disabled nil)
-;; (put 'upcase-region     'disabled nil)
-;; (put 'capitalize-region 'disabled nil)
-;; (put 'eval-expression   'disabled nil)
-
-;;; ==============================
-;; From mon-default-start-loads.el functions `mon-set-split-window-init'
-(custom-set-variables
-    '(split-width-threshold  180 t nil ":DEFAULT 160")
-    '(split-height-threshold 50  t nil ":DEFAULT 80")
-    '(even-window-heights    nil t nil ":DEFAULT t"))
-
-;;; ==============================
-;; From `mon-set-color-themes-init'
-(custom-set-variables
-      '(font-lock-verbose (1+ (* 8 1024)) t nil ":DEFAULT 0")
-      '(global-font-lock-mode t)
-      '(font-lock-maximum-decoration t))
-
-;;; ==============================
-(custom-set-variables
-    '(ibuffer-default-shrink-to-minimum-size t)
-    '(ibuffer-always-show-last-buffer nil)
-    '(ibuffer-use-header-line t))
-
-;;; ==============================
-;; (require 'show-point-mode)
-
-
-;;; ==============================
-;; (getenv "MON_EMACS_LOAD")
-;;
-;; uncomment to load everything at inti.
-;; (let* ((melf (getenv "MON_EMACS_LOAD"))
-;;        ;; (if-exists (and (stringp melf)
-;;        ;;                 (file-exists-p melf)
-;;        ;;                 ;; (setq user-emacs-directory (concat melf "/"))
-;;        ;;                 melf))
-;;        ;; just assume they loadfiles exist and are there and exist at this point.
-;;        (loademup (mapcar #'(lambda (x) (substitute-in-file-name  (concat "${MON_EMACS_LOAD}/" x)))
-;;                          (list "site-local-private.el"
-;; 	                       "mon-default-loads.el"
-;;                                "mon-default-start-loads.el"))))
-;;   (when (and loademup (eq (length loademup) 3))
-;;     (mapc #'(lambda (y) (load y)) loademup)))
-
-
-;;; ==============================
-;; Make sure our init-file is .emacs Note, this won't prevent site-start.el from being loaded tho.
-;; (setq init-file-user load-file-name)
-
-;;; ==============================
-;; `debug-ignored-errors' `inhibit-debugger'
-;; (setq debug-on-error t)
-;; (setq debug-on-error nil)
-(toggle-debug-on-error t)
-
-
-
-;;; ==============================
-;;; :NOTE The following three files are loaded in succession to bring up a sane Emacsen on Mon systems.
-;;; :FILE site-local-private.el defines the following global variables which are
-;;; used to pull private and site-specific configs that we don't necessarily
-;;; want to share publically or which are otherwise irrelevant to others:
-;;; `*IS-MON-OBARRAY*'      <- says if this is our system. We intern symbols here instead of into the global obarray
-;;; `*mon-emacsd*'          <- alist to encapusulate common site local and default system paths
-;;; `*mon-misc-path-alist*' <- alist of miscellaneous paths not available on all MON systems
-;;; `*MON-NAME*'            <- list of MON nameform representations needed with various `mon-*' functions.
-;;; `*MON-ORG-NAME*'        <- list mapping key (integer) to values (strings) either an organization or URL.
-;;;  `*mon-lisp-safe-local-variable-values*' <- list of `safe-local-variable-values' appearing in Common Lisp files.
-;;;
-;;; `mon-user-name-conditionals'   <- interrogates the current environment to determine if it is a MON system.
-;;; `mon-system-type-conditionals' <- interrogates the current environment to determine which type of MON system we're on.
-;;; `mon-gnu-system-conditionals'  <- helps setup the environment for a GNU based MON system.
-;;;
-;;; For additional discussion of how these files configure the remainder of the MON system configs
-;;; :SEE the DESCRIPTION section at header of :FILE mon-default-loads.el and :FILE mon-default-start-loads.el
-
-
-
 ;; :NOTE inspect value of `register-alist'. Consider just setting value for that
 ;; variable here instead of using `set-register'.
 (set-register (string-to-char "e")
@@ -456,6 +395,63 @@ Sets following variables:\n
               ;; :TODO set and pickup value of current SBCL version in the environment and build these paths from components instead of hardwiring this.
               `(file . ,(substitute-env-vars "${HOME}/.cache/common-lisp/sbcl-2.4.6-macosx-arm64/Users/monkpearman/Documents/HG-Repos/CL-MON-CODE/")))
 
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-14T15:52:19-04:00Z}#{24376} - by MON KEY>
+(defun mon-set-initial-buffer-choice-init ()
+  "Set the `initial-buffer-choice' at init time.
+Does the following:
+ - Opens a dired buffer in dirctory identified by environmental variable
+  \"MON_EMACS_LOAD\" if it exists.e
+ - Opens a scratch-buffer in the above directory if it exists as if by `scratch-buffer'.\n
+:EXAMPLE\n\n \(getenv \"MON_EMACS_LOAD\"\)\n
+:SEE-ALSO `mon-set-print-length-and-level',`mon-ido-completion-map-hook',
+`mon-ido-completion-map-hook'.\n▶▶▶"
+  (if (getenv "MON_EMACS_LOAD")
+      (progn (dired (getenv "MON_EMACS_LOAD"))
+             (scratch-buffer))
+    (scratch-buffer))
+  (setq initial-buffer-choice 'mon-set-initial-buffer-choice-init)
+  (custom-note-var-changed 'initial-buffer-choice))
+
+;;; ==============================
+;; (getenv "MON_EMACS_LOAD")
+;;
+;; Uncomment below to load everything at init.
+;; (let* ((melf (getenv "MON_EMACS_LOAD"))
+;;        ;; (if-exists (and (stringp melf)
+;;        ;;                 (file-exists-p melf)
+;;        ;;                 ;; (setq user-emacs-directory (concat melf "/"))
+;;        ;;                 melf))
+;;        ;; Just assume they loadfiles exist and are there and exist at this point.
+;;        (loademup (mapcar #'(lambda (x) (substitute-in-file-name  (concat "${MON_EMACS_LOAD}/" x)))
+;;                          (list "site-local-private.el"
+;; 	                       "mon-default-loads.el"
+;;                                "mon-default-start-loads.el"))))
+;;   (when (and loademup (eq (length loademup) 3))
+;;     (mapc #'(lambda (y) (load y)) loademup)))
+;;; ==============================
+
+
+;;; ==============================
+;;; :NOTE The following three files are loaded in succession to bring up a sane Emacsen on Mon systems.
+;;; :FILE site-local-private.el defines the following global variables which are
+;;; used to pull private and site-specific configs that we don't necessarily
+;;; want to share publically or which are otherwise irrelevant to others:
+;;;
+;;; `*IS-MON-OBARRAY*'      <- :DEPREACTED Indicates if this is our system. We used to intern symbols here instead of into the global obarray.
+;;; `*mon-emacsd*'          <- alist to encapusulate common site local and default system paths.
+;;; `*mon-misc-path-alist*' <- alist of miscellaneous paths not available on all MON systems.
+;;; `*MON-NAME*'            <- list of MON nameform representations needed with various `mon-*' functions.
+;;; `*MON-ORG-NAME*'        <- list mapping key (integer) to values (strings) either an organization or URL.
+;;;  `*mon-lisp-safe-local-variable-values*' <- list of `safe-local-variable-values' appearing in Common Lisp files.
+;;;
+;;; `mon-user-name-conditionals'   <- interrogates the current environment to determine if it is a MON system.
+;;; `mon-system-type-conditionals' <- interrogates the current environment to determine which type of MON system we're on.
+;;; `mon-gnu-system-conditionals'  <- helps setup the environment for a GNU based MON system.
+;;;
+;;; For additional discussion of how these files configure the remainder of the MON system configs
+;;; :SEE the DESCRIPTION section at header of :FILE mon-default-loads.el and :FILE mon-default-start-loads.el
 
 (message ":FILE ~/.emacs -- :LOADING :FILE emacs-load-files/site-local-private.el\n")
 (load "site-local-private.el")

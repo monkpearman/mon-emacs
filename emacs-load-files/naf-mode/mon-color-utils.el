@@ -811,7 +811,8 @@ The string is formatted #RRGGBB (hash followed by six hex digits).\n
           (define-key mcm-map "G" 'mon-colorcomp-G-more)
           (define-key mcm-map "b" 'mon-colorcomp-B-less)
           (define-key mcm-map "B" 'mon-colorcomp-B-more)
-          (define-key mcm-map " " 'mon-colorcomp-copy-as-kill-and-exit)
+          (define-key mcm-map "k" 'mon-colorcomp-copy-as-kill-and-exit)
+          (define-key mcm-map "q" 'bury-buffer)
           mcm-map)))
 
 ;;; ==============================

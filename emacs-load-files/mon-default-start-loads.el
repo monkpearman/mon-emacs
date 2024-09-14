@@ -2887,15 +2887,26 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 
    (add-hook 'ekg-capture-mode-hook #'ekg-auto-save-mode)
    (add-hook 'ekg-edit-mode-hook #'ekg-auto-save-mode)
+
+   (set-face-attribute 'ekg-notes-mode-title nil 
+                       :foreground "LightBlue"
+                       :height 1.3)
+
+   ;; (set-face-attribute 'ekg-tag nil 
+   ;;                     :box t ;'(:line-width (-1 . -1))
+   ;;                     )
+
    ;; Following adds some ekg related helper functions. We're not currently
    ;; running a forked version of ekg so we need to check for the presence of
    ;; these functions in the environment before requiring them on the grounds
    ;; that they may eventually be merged into ekg.
    ;; :SEE (URL `https://github.com/ahyatt/ekg/discussions/181')
-   (when (and (locate-library "ekg-GIT/mon-ekg")
-              (or (not (fboundp 'ekg-tags-complete))
-                  (not (fboundp 'ekg-tags-complete-doc))))
-     (require 'mon-ekg))
+   ;; (when (and (locate-library "ekg-GIT/mon-ekg")
+   ;;            (or (not (fboundp 'ekg-tags-complete))
+   ;;                (not (fboundp 'ekg-tags-complete-doc))))
+   ;;   (require 'mon-ekg))
+
+
    ))
 ;;
 ;; (mon-set-triples-ekg-init t)

@@ -32,7 +32,7 @@
 ;; `mon-alpha-char-p', `mon-symbol-to-string', `mon-string-to-symbol',
 ;; `mon-string-to-sequence', `mon-string-from-sequence',
 ;; `mon-hash-or-mappable-p', `mon-fractionp', `mon-xor', `mon-bitset-ternary',
-;; `mon-symbol-cells-bound-p',
+;; `mon-symbol-cells-bound-p', `mon-digit-char-p',
 ;; FUNCTIONS:◀◀◀
 ;;
 ;; MACROS:
@@ -60,6 +60,7 @@
 ;; `stringp-and-zerop-or-null'       -> `mon-string-or-null-and-zerop'
 ;; `string-not-null-nor-zerop'       -> `mon-string-not-null-nor-zerop'
 ;; `alpha-char-p'                    -> `mon-alpha-char-p'
+;; `digit-char-p'                    -> `mon-digit-char-p'
 ;;
 ;;  <PREFIX>-<QUALIFIED>                <PREFIX>-<NON-CORE-SYMBOL>
 ;; `mon-one-or-zerop'                -> `mon-zero-or-onep'
@@ -175,7 +176,7 @@
 ;;; CODE:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
@@ -183,9 +184,7 @@
 
 (require 'mon-type-utils-vars)
 
-
 ;;; ==============================
-;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T19:08:54-05:00Z}#{11022} - by MON KEY>
 (defgroup mon-type-utils nil
   "Customization group for variables and functions of :FILE mon-type-utils.el\n
@@ -201,9 +200,7 @@
           "mon-type-utils.el")
   :group 'mon-base)
 
-
 ;;; ==============================
-;;; :CHANGESET 2387
 ;;; :CREATED <Timestamp: #{2011-01-11T19:08:57-05:00Z}#{11022} - by MON KEY>
 (defcustom *mon-type-utils-xrefs*
   '(mon-function-object-p mon-symbol-cells-bound-p mon-equality-or-predicate
@@ -215,6 +212,7 @@
     mon-is-letter mon-is-alphanum mon-is-digit-simp mon-is-letter-simp
     mon-is-alphanum-simp mon-coerce->char mon-string-to-symbol
     mon-symbol-to-string mon-string-to-sequence mon-string-from-sequence
+    mon-digit-char-p
     ;; :VARIABLES
     *mon-bit-table* *mon-type-utils-xrefs*)
   "Xrefing list of mon type/predicate symbols, functions constants, and variables.\n
@@ -259,8 +257,7 @@ The symbols contained of this list are defined in :FILE mon-type-utils.el\n
 ;;; But, first must decide how to handle return value for interpreted functions
 ;;; and macros. See comments below.
 ;;; :PREFIX "mfop-"
-;;; :CHANGESET 2119 <Timestamp: #{2010-09-17T21:11:32-04:00Z}#{10375} - by MON KEY>
-;;; <Timestamp: #{2010-09-16T17:43:19-04:00Z}#{10374} - by MON>
+;;; :CREATED <Timestamp: #{2010-09-16T17:43:19-04:00Z}#{10374} - by MON>
 (defun mon-function-object-p (fncn-sym)
   "Test if FNCN-SYM is a function object.\n
 Return non-nil if FNCN-SYM object is \"function-like\" which is any of the
@@ -434,7 +431,6 @@ An autoload symbol, note <TYPE> may be a quoted symbol either macro or keymap:\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2372
 ;;; :CREATED <Timestamp: #{2010-12-31T16:21:21-05:00Z}#{10525} - by MON KEY>
 (defun mon-symbol-cells-bound-p (sym-string &optional w-obarray)
   "Check for values of symbol-cells for symbol named by SYM-STRING.\n
@@ -528,7 +524,6 @@ key/value pairs with the format:\n
 
 ;;; ==============================
 ;;; :PREFIX "meop-"
-;;; :CHANGESET 2178
 ;;; :CREATED <Timestamp: #{2010-10-04T22:30:05-04:00Z}#{10401} - by MON KEY>
 (defun mon-equality-or-predicate (predicate arg1 arg2)
   "Evaluate PREDICATE with ARG1 ARG2.\n
@@ -575,7 +570,6 @@ PREDICATE is function accepting two args and is either a member of
 ;;; ==============================
 ;;; :TODO Define a boolean type w/ `deftype'
 ;;; :SEE (URL `http://lists.gnu.org/archive/html/bug-gnu-emacs/2010-09/msg00488.html')
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-24T12:14:50-04:00Z}#{10385} - by MON KEY>
 (defun mon-booleanp (putative-boolean)
   "Like `booleanp' but return two element list when PUTATIVE-BOOLEAN is either `t' or `nil'.\n
@@ -624,7 +618,6 @@ Whereas with a two element proper list:\n
 
 ;;; ==============================
 ;;; :COURTESY org
-;;; :CHANGESET 2369
 ;;; :CREATED <Timestamp: #{2010-12-20T21:32:24-05:00Z}#{10511} - by MON KEY>
 (defun mon-xor (a b)
   "Exclusive or.\n
@@ -669,7 +662,6 @@ Whereas with a two element proper list:\n
    (or (and c1/0 1) 0)))
 
 ;;; ==============================
-;;; :CHANGESET 2211
 ;;; :CREATED <Timestamp: #{2010-10-26T11:58:20-04:00Z}#{10432} - by MON KEY>
 (defun mon-string-or-null-and-zerop (maybe-str-or-null-obj)
   "Return non-nil when both `string-or-null-p' and of `length' `zerop'.\n
@@ -696,7 +688,6 @@ Arg MAYBE-STR-OR-NULL-OBJ is an object to interrogate.\n
 ;;; :TEST-ME (mon-string-or-null-and-zerop-TEST)
 
 ;;; ==============================
-;;; :CHANGESET 2233
 ;;; :CREATED <Timestamp: #{2010-11-03T11:48:37-04:00Z}#{10443} - by MON KEY>
 (defun mon-string-not-null-nor-zerop (w-putative-string)
   "Return W-PUTATIVE-STRING if it is `stringp' and greater than `length' 0.\n
@@ -720,7 +711,6 @@ Arg MAYBE-STR-OR-NULL-OBJ is an object to interrogate.\n
 ;;; :TEST-ME (and (not (mon-string-not-null-nor-zerop 'I-am-not-a-good-string)) "got symbol")
 
 ;;; ==============================
-;;; :CHANGESET 2206
 ;;; :CREATED <Timestamp: #{2010-10-23T13:54:40-04:00Z}#{10426} - by MON KEY>
 (defun mon-zero-or-onep (maybe-one-or-zero)
   "Return non-nil when arg MAYBE-ONE-OR-ZERO is and integer 0 or 1.\n
@@ -767,7 +757,6 @@ Arg MAYBE-STR-OR-NULL-OBJ is an object to interrogate.\n
 ;; |      (not (mon-zero-or-onep (not nil))))
 ;; `----
 ;;; ==============================
-;;; :CHANGESET 2206
 ;;; :CREATED <Timestamp: #{2010-10-23T15:08:40-04:00Z}#{10426} - by MON KEY> 
 (defun mon-booleanp-to-binary (maybe-a-boolean &optional return-if-not)
   "Convert a boolean value to 1 or 0.\n
@@ -818,9 +807,7 @@ return MAYBE-A-BOOLEAN.\n
 ;;
 ;;; :TEST-ME (mon-booleanp-to-binary-TEST)
 
-
 ;;; ==============================
-;;; :CHANGESET 2291
 ;;; :CREATED <Timestamp: #{2010-11-10T20:05:57-05:00Z}#{10453} - by MON KEY>
 (defun mon-sequence-all-booleanp (check-t-or-nil w-map-fun w-map-seq 
                                                  &optional w-type-on-fail)
@@ -957,7 +944,6 @@ according to some heuristic per the type indicated at `caar'.\n
 
 ;;; ==============================
 ;;; :COURTESY :FILE lisp/format.el :WAS `format-proper-list-p'
-;;; :CHANGESET 2001
 ;;; :CREATED <Timestamp: #{2010-07-27T16:48:36-04:00Z}#{10302} - by MON KEY>
 (defun mon-list-proper-p (putatively-proper)
   "Return t if list PUTATIVELY-PROPER is a proper list.\n
@@ -992,7 +978,6 @@ A proper list is a list ending with a nil or cdr, not an atom.\n
 ;;; :TEST-ME (mon-list-proper-p '(a  b))
 
 ;;; ==============================
-;;; :CHANGESET 2337
 ;;; :CREATED <Timestamp: #{2010-12-02T17:10:56-05:00Z}#{10484} - by MON KEY>
 (defun mon-list-dotted-p (putatively-dotted)
   "Return non-nil when PUTATIVELY-DOTTED is a consed pair with non-null cdr.\n
@@ -1017,7 +1002,6 @@ considered to be a list of any kind--not even a dotted list.\n
        (eq (last putatively-dotted) putatively-dotted)))
 
 ;;; ==============================
-;;; :CHANGESET 2331
 ;;; :CREATED <Timestamp: #{2010-12-02T20:24:14-05:00Z}#{10484} - by MON KEY>
 (defun mon-list-proper-and-dotted-p (proper-and-dotted)
   "Return non-nil when list is proper and each elt is dotted.\n
@@ -1044,7 +1028,6 @@ sublists is `mon-list-dotted-p'. Signal an error if not.\n
                    proper-and-dotted))))
 
 ;;; ==============================
-;;; :CHANGESET 2211
 ;;; :CREATED <Timestamp: #{2010-10-27T15:43:58-04:00Z}#{10433} - by MON KEY>
 (defun mon-sequence-mappable-p (seq-putatively-mappable &optional no-map-null
                                                         w-return-as-list)
@@ -1202,7 +1185,6 @@ However, its list conterpart returns non-nil \(maybe no what you are expecting\)
 
 
 ;;; ==============================
-;;; :CHANGESET 2064
 ;;; :CREATED <Timestamp: #{2010-08-16T20:10:59-04:00Z}#{10331} - by MON KEY>
 (defvar *mon-bit-table* nil
   "Variable caching the results of `mon-get-bit-table'.\n
@@ -1214,7 +1196,6 @@ However, its list conterpart returns non-nil \(maybe no what you are expecting\)
 
 ;;; ==============================
 ;;; :PREFIX "mgbt-"
-;;; :CHANGESET 2064
 ;;; :CREATED <Timestamp: #{2010-08-16T20:11:02-04:00Z}#{10331} - by MON KEY>
 (defun mon-get-bit-table (&optional dsplyp intrp)
   "Return a list of bit values for bits 1-29.\n
@@ -1296,10 +1277,8 @@ evaluation to the variable `*mon-bit-table*'.\n
 ;;; :TEST-ME (assq :bit-29 (mon-get-bit-table))
 ;;; :TEST-ME (memq :max-uint (assq :bit-29 (mon-get-bit-table)))
 
-
 ;;; ==============================
 ;;; :COURTESY ido.el :WAS `ido-fractionp'
-;;; :CHANGESET 2360
 ;;; :CREATED <Timestamp: #{2010-12-13T14:23:28-05:00Z}#{10501} - by MON KEY>
 (defun mon-fractionp (putative-fraction)
   "Return non-nil when PUTATIVE-FRACTION is in the range -1.0 to 1.0.\n
@@ -1323,9 +1302,7 @@ PUTATIVE-FRACTION should be a number satisfying `numberp' and not `zerop'.\n
            (and (< putative-fraction 0.0) 
                 (>= putative-fraction -1.0)))))
 
-
 ;;; ==============================
-;;; :CHANGESET 2389
 ;;; :CREATED <Timestamp: #{2011-01-13T14:22:38-05:00Z}#{11024} - by MON KEY>
 (defun mon-integer-and-chacterp (int-or-char)
   "Whether INT-OR-CHAR is both an integer and a `characterp'
@@ -1335,7 +1312,6 @@ Return INT-OR-CHAR if it is `wholenump' and of the range 0 - `max-char'  inclusi
        int-or-char))
 
 ;;; ==============================
-;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T16:06:56-04:00Z}#{10381} - by MON KEY>
 (defun mon-char-code (w-char)
   "Return the integer code of W-CHAR.\n
@@ -1362,7 +1338,6 @@ W-CHAR is a char-literal, string, or symbol.\n
               "arg W-CHAR greater-than `max-char' or not coercable to char")))))
 
 ;;; ==============================
-;;; :CHANGESET 2320
 ;;; :CREATED <Timestamp: #{2010-11-22T15:21:09-05:00Z}#{10471} - by MON KEY>
 (defun mon-alpha-char-p (maybe-alpha-char)
   "Like Common Lisps `alpha-char-p'.\n
@@ -1375,6 +1350,17 @@ MAYBE-ALPHA-CHAR is a string or character.
 :SEE-ALSO `mon-is-letter', `*mon-ascii-alpha-chars*', `mon-is-letter-simp',
 `mon-is-alphanum', `mon-is-alphanum-simp', `mon-help-char-functions'.\n▶▶▶"
   (mon-is-letter maybe-alpha-char t))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-13T14:51:03-04:00Z}#{24375} - by MON KEY>
+(defun mon-digit-char-p (char &optional radix)
+   "Test if CHAR is a digit in the specified RADIX \(default 10\).\n
+If true return the decimal value of digit CHAR in RADIX.\n
+:NOTE Convenience wrapper funciton around `cl-digit-char-p'.\n
+:EXAMPLE\n\n\(mon-digit-char-p ?9\)\n
+:ALIASED-BY `digit-char-p'\n
+:SEE-ALSO `mon-is-digit'.\n▶▶▶"
+   (cl-digit-char-p char))
 
 ;;; ==============================
 ;;; :NOTE Erik Naggum already defined `digit-char-p' as a defsubst which arefs a
@@ -1392,8 +1378,11 @@ MAYBE-ALPHA-CHAR is a string or character.
   "Reutrn non-nil when MAYBE-DIGIT-CHAR is a digit character.\n
 MAYBE-DIGIT-CHAR is a character or string when `stringp' it is coerced to a char
 as if by `string-to-char'.\n
-:SEE-ALSO `mon-is-digit-simp', `mon-is-letter', `mon-is-alphanum',
-`mon-string-index', `mon-string-position', `mon-char-code',
+:EXAMPLE\n
+\(mon-is-digit \(char-after \(point\)\)\)8\n
+\(mon-is-digit \(char-after \(point\)\)\)x\n
+:SEE-ALSO `mon-digit-char-p', `mon-is-digit-simp', `mon-is-letter',
+`mon-is-alphanum', `mon-string-index', `mon-string-position', `mon-char-code',
 `mon-coerce->char', `mon-alpha-char-p', `digit-char-p',
 `mon-help-number-functions'.\n▶▶▶"
   (eval-when-compile (require 'parse-time))
@@ -1402,7 +1391,7 @@ as if by `string-to-char'.\n
         ((natnump maybe-digit-char)
          ;; (and (>= maybe-digit-char ?0)
          ;;      (<= maybe-digit-char ?9))
-         (digit-char-p maybe-digit-char))
+         (cl-digit-char-p maybe-digit-char))
         (t nil)))
 ;;
 ;;; :TEST-ME (mon-is-digit (char-after (point)))8
@@ -1501,7 +1490,6 @@ Wants char literals.\n:EXAMPLE\n\(mon-is-digit-simp ?0\)
 
 ;;; ==============================
 ;;; :COURTESY Nelson H. F. Beebe :HIS bibtools.el :WAS `bibtex-isalpha'
-;;; :MODIFICATIONS <Timestamp: #{2010-03-30T16:35:04-04:00Z}#{10132} - by MON KEY>
 ;;; :RENAMED Arg `C' -> SIMP-LTR
 ;;; :CREATED <Timestamp: 2009-08-03-W32-1T10:26:57-0400Z - by MON KEY>
 (defun mon-is-letter-simp (simp-ltr) 
@@ -1547,9 +1535,7 @@ Wants char literals.\n
 ;;; :TEST-ME (mon-is-alphanum-simp "A");should fail
 ;;; :TEST-ME (mon-is-alphanum-simp (prin1-char 88)) ;should fail
 
-
 ;;; ==============================
-;;; :CHANGESET 1985 <Timestamp: #{2010-07-16T18:36:28-04:00Z}#{10285} - by MON KEY>
 ;;; :CREATED <Timestamp: 2009-08-03-W32-1T18:47:33-0400Z - by MON KEY>
 (defun mon-coerce->char (thing->char &optional no-abs-no-flt)
   "Convert THING->CHAR with length of 1 to a char as per `string-to-char'.\n
@@ -1651,8 +1637,6 @@ integer that does not satisfy the predicate `wholenump'.\n
 
 ;;; ==============================
 ;;; :PREFIX "msts-" 
-;;; :CHANGESET 2119 <Timestamp: #{2010-09-14T17:02:55-04:00Z}#{10372} - by MON KEY>
-;;; :MODIFICATIONS <Timestamp: #{2009-10-14T11:06:04-04:00Z}#{09423} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-26T17:08:02-04:00Z}#{09353} - by MON KEY>
 (defun mon-string-to-symbol (str-to-sym &optional start end)
   "Return string STR-TO-SYM as a symbol.\n
@@ -1741,7 +1725,6 @@ list `nil'.\n
 ;;; ==============================
 ;;; :NOTE Periodically MON is completely at a loss for how to accomplish this.
 ;;;       Lets make _damn_ sure it never happens again!!
-;;; :CHANGESET 1911 <Timestamp: #{2010-06-22T15:13:06-04:00Z}#{10252} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-09-29T21:00:43-04:00Z}#{09403} - by MON KEY>
 (defun mon-symbol-to-string (symbol-to-frob) 
   "Return SYMBOL as a string.\n
@@ -1776,7 +1759,6 @@ list `nil'.\n
 
 ;;; ==============================
 ;;; :PREFIX "msts-"
-;;; :CHANGESET 1899 <Timestamp: #{2010-06-22T14:58:14-04:00Z}#{10252} - by MON KEY>
 ;;; :CREATED <Timestamp: Wednesday June 24, 2009 @ 11:50.11 AM - by MON KEY>
 (defun mon-string-to-sequence (string-to-frob &rest more-strings)
   "Return string STRING-TO-FROB as a list of chars.\n
@@ -1820,7 +1802,6 @@ Signal an error if MORE-STRINGS does not satisfy predicate `string-or-null-p'.\n
 
 ;;; ==============================
 ;;; :PREFIX "msfs-"
-;;; :MODIFICATIONS <Timestamp: #{2009-10-09T16:07:57-04:00Z}#{09415} - by MON>
 ;;; :CREATED <Timestamp: #{2009-09-30T13:31:42-04:00Z}#{09403} - by MON KEY>
 (defun mon-string-from-sequence (stringify-seq &rest other-seqs)
   "Return STRINGIFY-SEQ - a sequence of character integers - as a string.\n

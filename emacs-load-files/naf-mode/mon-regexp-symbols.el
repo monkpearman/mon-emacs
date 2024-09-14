@@ -76,7 +76,6 @@
 ;; ALIASED/ADVISED/SUBST'D:
 ;; `*mon-regexp-version-alist*' -> `version-regexp-alist'
 ;; `*whitespace-chars*'         -> `*mon-whitespace-chars*'
-;; `*mon-digit-chars*'          -> `parse-time-digits'
 ;; :NOTE Aliases located in :FILE mon-aliases.el
 ;;
 ;; DEPRECATED:

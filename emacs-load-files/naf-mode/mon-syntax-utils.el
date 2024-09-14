@@ -347,8 +347,7 @@ This variable `read-symbol-positions-list' is modified during calls to `read' or
 \(mon-get-text-properties-elisp-string *mon-help-reference-keys*\)\n
 :SEE-ALSO `mon-get-text-properties-region', `mon-get-text-properties-print',
 `mon-get-text-properties-read-temp', `mon-get-text-properties-elisp-string',
-`mon-get-text-properties-elisp-string-pp'.
-▶▶▶"
+`mon-get-text-properties-elisp-string-pp'.\n▶▶▶"
   (let ((mgtpfes-buf (get-buffer-create "*MGTPFES*"))
         mgtpes-buf2
         mgtpfes-rd)

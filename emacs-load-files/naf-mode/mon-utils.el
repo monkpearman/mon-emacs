@@ -582,6 +582,7 @@ needs.\n
           mon-dir-utils-local
           mon-button-utils
           mon-cifs-utils
+          mon-cl-compat-regexps
           mon-insertion-utils
           naf-mode-insertion-utils
           ;; :FILE mon-get-mon-packages.el :AFTER-LOAD :FILE mon-wget-utils.el
@@ -621,7 +622,7 @@ needs.\n
     *mon-window-utils-xrefs* *naf-mode-xref-of-xrefs* *naf-mode-faces-xrefs*
     *naf-mode-date-xrefs* *mon-ulan-utils-xrefs* *google-define-redux-xrefs*
     *mon-type-utils-vars-xrefs* *mon-insertion-utils-xrefs*
-    *mon-doc-help-char-encoding-lossage-xrefs*
+    *mon-doc-help-char-encoding-lossage-xrefs* *mon-color-utils-xrefs*
     *mon-xrefs-xrefs*)
   "Meta list of mon-xrefing variables, e.g. those named `*mon-.*-xrefs*'.\n
 :SEE-ALSO `*mon-default-loads-xrefs*', `*mon-default-start-loads-xrefs*',
@@ -903,7 +904,8 @@ Peforms loadtime evaluation of functions defined in mon-utils.el:\n
     ;;
     ;; :NOTE we no longer evaluate following as the drive doesn't  exist.
     ;;  Uncomment if we ever establis another CIFS routine
-    ;; (eval-after-load "mon-cifs-utils"           '(mon-bind-cifs-vars-at-loadtime))
+    ;; (eval-after-load "mon-cifs-utils"         '(mon-bind-cifs-vars-at-loadtime))
+    
     (eval-after-load "mon-cl-compat-regexps"    '(mon-CL-cln-colon-swap t))    
     (eval-after-load "mon-empty-registers"      '(progn (mon-set-register-tags-loadtime t)
                                                         (mon-cntl-char-registers-loadtime)))

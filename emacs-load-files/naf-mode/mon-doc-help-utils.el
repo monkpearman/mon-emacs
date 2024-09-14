@@ -10939,6 +10939,7 @@ provided in Emacs packages outside of lisp/emacs-lisp, and 3rd party packages.\n
 ;;;###autoload
 (defun mon-help-color-chart (&optional insertp intrp)
   "Chart of Netscape Color Names with their Color Values.\n
+:NOTE Similar to `color-name-rgb-alist'.\n
        ______________
       |              |                                                          
       | :COLOR-CHART |                                                          
@@ -11086,7 +11087,7 @@ provided in Emacs packages outside of lisp/emacs-lisp, and 3rd party packages.\n
 \n:COURTESY Tay Vaughan, July, 1996. Timestream, Inc.\n
 :SEE \(URL `http://www.timestream.com/mmedia/graphics/colors/ns3names.txt'\).
 :SEE :FILE w23fns.c struct colormap_t w32_color_map.\n
-:SEE-ALSO `mon-help-color-functions',`mon-help-css-color'.\n▶▶▶"
+:SEE-ALSO `mon-help-color-functions',`mon-help-css-color',`x-colors'.\n▶▶▶"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-color-chart :insertp t)

@@ -849,17 +849,36 @@ an element of a procss returned by `list-system-processes' warn and return nil.\
   "Return a URL and it's title as per `mon-get-chrome-url' and insert it in
 `current-buffer' moving point.\n
 Inserted values are as follows:\n
-:URL <URL>
-:URL-TILE <URL-TITLE>\n
+:URL-TILE <URL-TITLE>
+:URL <URL>\n
 :EXAMPLE\n
  \(let \(\(buffer-read-only nil\)\)
-   (newline)
+   \(newline\)
   \(call-interactively 'mon-get-chrome-url-insert\)\)\n
+:SEE-ALSO `mon-get-chrome-url-insert-org-link', `do-applescript',
+`mon-wrap-one-url', `mon-wrap-all-urls'.\n▶▶▶"
+  (interactive)
+  (let ((url-data (mon-get-chrome-url)))
+    (when url-data 
+      (insert (format ":TITLE %s\n:URL %s" (cdr url-data) (car url-data) )))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-09T14:26:58-04:00Z}#{24371} - by MON KEY>
+(defun mon-get-chrome-url-insert-org-link ()
+  "Return a URL and it's title as per `mon-get-chrome-url' and insert it in
+`current-buffer' moving point.\n
+Inserted URL is in a format suitable for autmagic `org-mode' linking.\n
+Inserted values are as follows:\n
+[[<URl>][<URL-TITLE>]]
+:EXAMPLE\n
+ \(let \(\(buffer-read-only nil\)\)
+   \(newline\)
+  \(call-interactively 'mon-get-chrome-url-insert-org-link\)\)\n
 :SEE-ALSO `do-applescript', `mon-wrap-one-url', `mon-wrap-all-urls'.\n▶▶▶"
   (interactive)
   (let ((url-data (mon-get-chrome-url)))
     (when url-data 
-      (insert (format ":URL %s\n:URL-TITLE %s" (car url-data) (cdr url-data))))))
+      (insert (format ":URL [[%s][%s]]" (car url-data) (cdr url-data))))))
     
 ;;; ==============================
 ;;; :PREFIX "mwou-"

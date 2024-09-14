@@ -50,7 +50,9 @@
 ;; `mon-colorcomp-R-more', `mon-colorcomp-G-more', `mon-colorcomp-B-more',
 ;; `mon-colorcomp-R-less', `mon-colorcomp-G-less', `mon-colorcomp-B-less',
 ;; `mon-colorcomp-copy-as-kill-and-exit', `mon-color-mix', `mon-color-mix-display',
-;; `mon-color-list-display', `mon-color-read', `mon-colorcomp-get-data',
+;;  `mon-color-list-display', `mon-color-read', `mon-colorcomp-get-data',
+;; `mon-colorcomp-get-buffer', `mon-colorcomp-get-data-rgb-hex',
+;; `mon-colorcomp-get-saturion-rgb',
 ;; FUNCTIONS:◀◀◀
 ;;
 ;; MACROS:
@@ -66,7 +68,7 @@
 ;; VARIABLES:
 ;; `*mon-colorcomp-ewoc*', `*mon-colorcomp-data*',
 ;; `*mon-colorcomp-mode-map*',`*mon-colorcomp-labels*',
-;; `*mon-colorcomp-buffer-name*',
+;; `*mon-colorcomp-buffer-name*', `*mon-colorcomp-adjust-alist*'
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
 ;; `list-colors-defined'       -> `defined-colors'
@@ -192,6 +194,9 @@
     mon-colorcomp-B-more
     mon-colorcomp-B-less
     mon-colorcomp-copy-as-kill-and-exit
+    mon-colorcomp-get-buffer
+    mon-colorcomp-get-data-rgb-hex
+    mon-colorcomp-get-saturion-rgb
     ;; :VARIABLES
     *mon-colorcomp-mode-map*
     *mon-colorcomp-ewoc*
@@ -199,6 +204,7 @@
     *mon-colorcomp-mode-map*
     *mon-colorcomp-labels*
     *mon-colorcomp-buffer-name*
+    *mon-colorcomp-adjust-alist*
     )
   "Xrefing list of mon string related symbols, functions constants, and variables.\n
 The symbols contained of this list are defined in :FILE mon-color-utils.el\n
@@ -436,7 +442,6 @@ to that buffer by `mon-colorcomp'.\n
 `*mon-colorcomp-ewoc*'.\n▶▶▶")
 
 ;;; ==============================
-;;; :TODO add to header and xrefs `*mon-colorcomp-adjust-alist*'
 ;;; :CREATED <Timestamp: #{2024-09-13T20:46:34-04:00Z}#{24375} - by MON KEY>
 (defvar *mon-colorcomp-adjust-alist* '((:lighten      .  color-lighten-name)
                                         (:darken      .  color-darken-name)
@@ -517,7 +522,6 @@ NUMBER must be less than or equal to 100.
       (mon-colorcomp-read-percentage))))
 
 ;;; ==============================
-;;; :TODO add to header and xrefs `mon-colorcomp-get-buffer'
 ;;; :CREATED <Timestamp: #{2024-09-13T22:54:30-04:00Z}#{24375} - by MON KEY>
 (defun mon-colorcomp-get-buffer ()
   "Return buffer named `*mon-colorcomp-buffer-name*' if it exists.\n
@@ -538,7 +542,6 @@ named by `*mon-colorcomp-buffer-name*' if that buffer exists, else return nil.\n
       (buffer-local-value '*mon-colorcomp-data* comp-buffer))))
 
 ;;; ==============================
-;;; :TODO add to file header and xerf `mon-colorcomp-get-data-rgb-hex'
 ;;; :CREATED <Timestamp: #{2024-09-13T20:09:27-04:00Z}#{24375} - by MON KEY>
 (defun mon-colorcomp-get-data-rgb-hex ()
   "Return a hex string for current RGB data in buffer named by
@@ -556,7 +559,6 @@ names in that format, eg `color-saturate-name'.\n
           (format "#%02X%02X%02X" red green blue))))
 
 ;;; ==============================
-;;; :TODO add to file header and xerf `mon-colorcomp-get-saturion-rgb'
 ;;; :CREATED <Timestamp: #{2024-09-13T20:19:51-04:00Z}#{24375} - by MON KEY>  
 (defun mon-colorcomp-get-color-adjust-rgb (color-adjust-key percent)
   "Return an alist of 8 bit R G B values.

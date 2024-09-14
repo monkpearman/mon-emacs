@@ -36,6 +36,7 @@
 ;; `mon-url-retrieve-to-new-buffer', `mon-its-all-text-purge-on-quit',
 ;; `mon-html-fontify-generate-file-name', `mon-w3m-goto-url-at-point',
 ;; `mon-get-chrome-url', `mon-get-chrome-url-insert',
+;; `mon-get-chrome-url-insert-org-link',
 ;; FUNCTIONS:◀◀◀
 ;;
 ;; MACROS:
@@ -226,6 +227,7 @@
     mon-get-w3m-url-at-point mon-w3m-goto-url-at-point
     mon-w3m-read-gnu-lists-nxt-prv mon-tld-tld mon-tld-name mon-tld-find-tld
     mon-tld-find-name mon-tld mon-get-chrome-url mon-get-chrome-url-insert
+    mon-get-chrome-url-insert-org-link
     ;; :VARIABLES
     *mon-url-search-paths* *mon-purge-on-its-all-text-on-quit*
     **mon-purge-htmlfontify-dir-on-quit* *regexp-hexcolor-keywords*
@@ -809,7 +811,7 @@ Inserts:\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2024-09-04T18:42:21-04:00Z}#{24363} - by MON KEY>
 (defun mon-get-chrome-url ()
-  "Get current URL and it's title from  Chrome browser.\n
+  "Get current URL and it's title from Chrome browser.\n
 Return a cons cell of the form:\n
  \(<URL> . <URL-TITLE>\)\n
 :NOTE This funciton leverages `do-applescript', as such, when `system-type' is
@@ -817,7 +819,8 @@ not darwin or when \"Google Chrome\" is not present in `process-attributes' as
 an element of a procss returned by `list-system-processes' warn and return nil.\n
 :EXAMPLE\n
  \(mon-get-chrome-url\)\n
-:SEE-ALSO `mon-get-chrome-url-insert', `do-applescript', `mon-wrap-one-url'.\n▶▶▶"
+:SEE-ALSO `mon-get-chrome-url-insert', `mon-get-chrome-url-insert-org-link',
+`do-applescript', `mon-wrap-one-url'.\n▶▶▶"
   (interactive)
   (if (not (eq system-type  'darwin))
       (prog1 nil

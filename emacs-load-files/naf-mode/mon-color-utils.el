@@ -394,13 +394,60 @@ Output values for saturation and value are in [0..1] range.\n
 ;;; ==============================
 ;;; :WAS `colorcomp-ewoc' `colorcomp-data' 
 ;;;      `colorcomp-mode-map' `colorcomp-labels'
-(defvar *mon-colorcomp-ewoc* nil)
+(defvar *mon-colorcomp-ewoc* nil
+  "An ewoc object created as per `ewoc-create'.\n
+It is buffer-local to buffer `*mon-colorcomp-buffer-name*' and is bound on entry
+to that buffer by `mon-colorcomp'.\n
+:EXAMPLE\n\n
+ \(buffer-local-value '*mon-colorcomp-ewoc* \(get-buffer *mon-colorcomp-buffer-name*\)\)\n
+:SEE-ALSO `*mon-colorcomp-data*', `*mon-colorcomp-labels*',
+`*mon-colorcomp-buffer-name*', `*mon-colorcomp-mode-map*'.\n▶▶▶")
 ;;
-(defvar *mon-colorcomp-data* nil)
+(defvar *mon-colorcomp-data* nil
+"An array of three 8bit R G B color values.\n
+It is buffer-local to buffer `*mon-colorcomp-buffer-name*' and is bound on entry
+to that buffer by `mon-colorcomp'.\n
+:EXAMPLE\n\n
+ \(buffer-local-value '*mon-colorcomp-data* \(get-buffer *mon-colorcomp-buffer-name*\)\)\n
+:SEE-ALSO `*mon-colorcomp-ewoc*', `*mon-colorcomp-labels*',
+`*mon-colorcomp-buffer-name*', `*mon-colorcomp-mode-map*'.\n▶▶▶")
 ;;
-(defvar *mon-colorcomp-mode-map* nil)
+(defvar *mon-colorcomp-mode-map* nil
+  "A keymap for buffers created with `mon-colorcomp'.\n
+:EXAMPLE\n\n
+:SEE-ALSO `*mon-colorcomp-data*',`*mon-colorcomp-labels*',
+`*mon-colorcomp-buffer-name*', `*mon-colorcomp-ewoc*'.\n▶▶▶")
 ;;
-(defvar *mon-colorcomp-labels* ["Red" "Green" "Blue"])
+(defvar *mon-colorcomp-labels* ["Red" "Green" "Blue"]
+"An array of names for R G B labels for us in buffer `*mon-colorcomp-buffer-name*'.
+:EXAMPLE\n\n\(equal \(aref *mon-colorcomp-labels* 0\) \"Red\"\)\n
+:SEE-ALSO `*mon-colorcomp-data*',`*mon-colorcomp-labels*',
+`*mon-colorcomp-ewoc*'.\n▶▶▶")
+;;
+(defvar *mon-colorcomp-buffer-name* "*MON-COLOR-COMPONENTS*"
+  "A string denoting a buffer-name for `mon-colorcomp'.\n
+:EXAMPLE\n\n
+ \(get-buffer *mon-colorcomp-buffer-name*\)\n
+:SEE-ALSO `*mon-colorcomp-data*',`*mon-colorcomp-labels*',
+`*mon-colorcomp-ewoc*'.\n▶▶▶")
+
+;;; ==============================
+;;; :TODO add to header and xrefs `*mon-colorcomp-adjust-alist*'
+;;; :CREATED <Timestamp: #{2024-09-13T20:46:34-04:00Z}#{24375} - by MON KEY>
+(defvar *mon-colorcomp-adjust-alist* '((:lighten      .  color-lighten-name)
+                                        (:darken      .  color-darken-name)
+                                        (:saturate    .  color-saturate-name)
+                                        (:desaturate  . color-desaturate-name))
+  "An alist mapping color adjustment keywords to their function names for use with 
+`mon-colorcomp-get-color-adjust-rgb'.\n
+Elements of alist map as follows:\n
+  :ligten     -> `color-lighten-name'
+  :darken     -> `color-darken-name'
+  :saturate   -> `color-saturate-name'
+  :desaturate -> `color-desaturate-name'\n
+:EXAMPLE\n\n \(assoc :lighten *mon-colorcomp-adjust-alist*\)\n
+:SEE-ALSO `*mon-colorcomp-data*',`*mon-colorcomp-labels*',
+`*mon-colorcomp-buffer-name*', `*mon-colorcomp-ewoc*', `mon-colorcomp'.\n▶▶▶")
 
 ;;; ==============================
 ;;; :WAS `colorcomp-pp'
@@ -410,56 +457,217 @@ Output values for saturation and value are in [0..1] range.\n
 `mon-colorcomp-copy-as-kill-and-exit', `mon-help-color-functions',
 `mon-help-color-chart', `mon-help-css-color'.\n▶▶▶"
   (if data
-      (let ((comp (aref *mon-colorcomp-data* data)))
-	(insert (aref *mon-colorcomp-labels* data) "\t: #x"
-		(format "%02X" comp) " "
-		(make-string (ash comp -2) ?#) "\n"))
-      (let ((cstr (format "#%02X%02X%02X"
-                          (aref *mon-colorcomp-data* 0)
-                          (aref *mon-colorcomp-data* 1)
-                          (aref *mon-colorcomp-data* 2)))
-            (samp " (sample text) "))
-        (insert "Color\t: "
-                (propertize samp 'face `(foreground-color . ,cstr))
-                (propertize samp 'face `(background-color . ,cstr))
-	      "\n"))))
+      (let* ((comp (aref *mon-colorcomp-data* data))
+             (comp-base-color 
+              (cl-case data
+                (0 (format "#%02X%02X%02X" comp 0 0 ))
+                (1 (format "#%02X%02X%02X"  0 comp 0 ))
+                (2 (format "#%02X%02X%02X"  0  0 comp ))))
+             (rgb-string 
+              (concat
+               (aref *mon-colorcomp-labels* data) 
+               "\t: "
+	       (format "%d | #x%02X" comp comp)
+               " "
+	       (make-string (ash comp -2) ?#) "\n")))
+	(insert (propertize rgb-string 'face `(foreground-color . ,comp-base-color))))
+    (let* ((red (aref *mon-colorcomp-data* 0))
+           (green (aref *mon-colorcomp-data* 1))
+           (blue (aref *mon-colorcomp-data* 2))
+           ;; (rgb-list (list red green blue))
+           (rgb-list-string (format "%S" (list red green blue)))
+           (rgb-hex (format "#x%02X%02X%02X" red green blue))
+           (cstr (format "#%02X%02X%02X" red green blue))
+           (samp "(sample text) "))
+      (insert 
+       "Color\t: "
+       (propertize samp 'face `(foreground-color . ,cstr))
+       (propertize samp 'face `(background-color . ,cstr))
+       "\n\n"
+       "RGB\t: " (propertize rgb-list-string 'face `(foreground-color . ,cstr))
+       "\n\n"       
+       "RGB HEX\t: " (propertize rgb-hex 'face `(foreground-color . ,cstr))))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-13T19:48:52-04:00Z}#{24375} - by MON KEY>
+(defun mon-color-read ()
+  "A `completing-read' function for `mon-colorcomp' related functions.\n
+Defaults do \"green\" if user bails or no input is recieved.\n
+:ALIASED-BY `mon-read-color'
+:EXAMPLE\n\n \(mon-color-read\)\n
+:SEE-ALSO `mon-colorcomp-read-percentage', `mon-colorcomp-get-data'.\n▶▶▶"
+  (completing-read "Color: " (mapcar #'car color-name-rgb-alist) nil t nil nil '("green")))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-13T19:10:03-04:00Z}#{24375} - by MON KEY>
+(defun mon-colorcomp-read-percentage ()
+  "Read a number as if by `read-number' and return it.\n
+NUMBER must be less than or equal to 100.
+:EXAMPLE\n\n\(call-interactively 'mon-colorcomp-read-percentage\)
+\(mon-colorcomp-read-percentage\)\n
+:SEE-ALSO `mon-color-read'.\n▶▶▶"
+  (interactive)
+  (let ((read-num (read-number "NUMBER less than 100: " 0)))
+    (if (<= read-num 100)
+        read-num
+      (mon-colorcomp-read-percentage))))
+
+;;; ==============================
+;;; :TODO add to header and xrefs `mon-colorcomp-get-buffer'
+;;; :CREATED <Timestamp: #{2024-09-13T22:54:30-04:00Z}#{24375} - by MON KEY>
+(defun mon-colorcomp-get-buffer ()
+  "Return buffer named `*mon-colorcomp-buffer-name*' if it exists.\n
+:EXAMPLE\n\n \(mon-colorcomp-get-buffer\)\n
+:SEE-ALSO `mon-colorcomp-get-data'.\n▶▶▶"
+  (get-buffer *mon-colorcomp-buffer-name*))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-13T20:02:00-04:00Z}#{24375} - by MON KEY>
+(defun mon-colorcomp-get-data ()
+  "Return current `buffer-local-value' of `*mon-colorcomp-data*' in buffer
+named by `*mon-colorcomp-buffer-name*' if that buffer exists, else return nil.\n
+:EXAMPLE\n\n \(mon-colorcomp-get-data\)\n
+:SEE-ALSO `mon-colorcomp-get-buffer', `mon-colorcomp-get-color-adjust-rgb',
+`mon-colorcomp-get-data-rgb-hex', `mon-colorcomp'.\n▶▶▶"
+  (let ((comp-buffer (mon-colorcomp-get-buffer)))
+    (when comp-buffer
+      (buffer-local-value '*mon-colorcomp-data* comp-buffer))))
+
+;;; ==============================
+;;; :TODO add to file header and xerf `mon-colorcomp-get-data-rgb-hex'
+;;; :CREATED <Timestamp: #{2024-09-13T20:09:27-04:00Z}#{24375} - by MON KEY>
+(defun mon-colorcomp-get-data-rgb-hex ()
+  "Return a hex string for current RGB data in buffer named by
+`*mon-colorcomp-buffer-name*' as if that buffer existsif by
+`mon-colorcomp-get-data', esle return nil.\n
+The hex string returned is suitable for use with functions which read color
+names in that format, eg `color-saturate-name'.\n
+:EXAMPLE\n\n \(mon-colorcomp-get-data-rgb-hex\)\n
+:SEE-ALSO `mon-colorcomp-get-color-adjust-rgb', `mon-colorcomp'.\n▶▶▶"
+  (let* ((cur-rgb (mon-colorcomp-get-data))
+          (red     (and cur-rgb (aref cur-rgb 0)))
+          (green   (and cur-rgb (aref cur-rgb 1)))
+          (blue    (and cur-rgb (aref cur-rgb 2))))
+     (and cur-rgb
+          (format "#%02X%02X%02X" red green blue))))
+
+;;; ==============================
+;;; :TODO add to file header and xerf `mon-colorcomp-get-saturion-rgb'
+;;; :CREATED <Timestamp: #{2024-09-13T20:19:51-04:00Z}#{24375} - by MON KEY>  
+(defun mon-colorcomp-get-color-adjust-rgb (color-adjust-key percent)
+  "Return an alist of 8 bit R G B values.
+ returned by `color-saturate-name'.\n
+COLOR-ADJUST-KEY is keyword denoting how to adjust color it should be one
+an elemnts of `*mon-colorcomp-adjust-alist*' which maps as follows:\n
+ :lighten    -> `color-lighten-name'
+ :darken     -> `color-darken-name'
+ :saturate   -> `color-saturate-name'
+ :desaturate -> `color-desaturate-name'\n
+PERCENT is a percentage to saturate current color in in buffer
+`*mon-colorcomp-buffer-name*'.\n
+PERCENTAGE should satisfy `natnump' and be less `<=' 100. an error is signaled
+if not.\n
+Return value, when non-nil has the form:\n
+ \(\(:NEW <RED> <GREEN> <BLUE>\)
+  \(:OLD <RED> <GREEN> <BLUE>\)\)\n
+Key :NEW is list of rgb values returned by functioin associated with COLOR-ADJUST-KEY.
+key :OLD is list of rgb values currently active in buffer
+:NOTE This funcion returns nil if `mon-colorcomp-get-data' does not find an 
+active `mon-colorcomp' buffer.\n
+:EXAMPLE\n\n \(mon-colorcomp-get-color-adjust-rgb :lighten 25\)\n
+ \(mon-colorcomp-get-color-adjust-rgb :darken 25\)\n
+ \(mon-colorcomp-get-color-adjust-rgb :saturate 25\)\n
+ \(mon-colorcomp-get-color-adjust-rgb :desaturate 25\)\n
+ \(cdr \(assoc :new \(mon-colorcomp-get-color-adjust-rgb :lighten    25\)\)\)\n
+ \(cdr \(assoc :old \(mon-colorcomp-get-color-adjust-rgb :lighten    25\)\)\)\n
+:SEE-ALSO `mon-colorcomp-get-data-rgb-hex'.\n▶▶▶"
+  (unless (and (natnump percent)
+               (<=  percent 100))
+    (error ":FUNCTION `mon-colorcomp-get-saturion-rgb' -- arg PERCENT not `natnump' and `<=' 100. got: %S" percent))
+  (unless (assoc color-adjust-key   *mon-colorcomp-adjust-alist*)
+    (error ":FUNCTION `mon-colorcomp-get-saturion-rgb' -- arg COLOR-ADJUST-KEY not a key to alist `*mon-colorcomp-adjust-alist*'. got: %S" color-adjust-key))
+  (let* ((sat-fun   (cdr (assoc color-adjust-key   *mon-colorcomp-adjust-alist*)))
+         (maybe-sat (mon-colorcomp-get-data-rgb-hex))
+         (sat-vals (and maybe-sat
+                        (color-name-to-rgb (funcall sat-fun maybe-sat percent))))
+         (red 
+          (and sat-vals
+               (truncate (* (nth 0 sat-vals) 255))))
+         (green
+          (and sat-vals
+               (truncate (* (nth 1 sat-vals) 255))))
+         (blue
+          (and sat-vals
+               (truncate (* (nth 2 sat-vals) 255))))
+         (change-val
+          (and red green blue
+               (list red green blue)))
+         (maybe-old-val 
+          (and change-val (mon-colorcomp-get-data)))
+         (old-val
+          (and maybe-old-val
+               (list (aref maybe-old-val  0)
+                     (aref maybe-old-val  1)
+                     (aref maybe-old-val 2)))))
+    (when change-val
+      `((:new . ,change-val)
+        (:old . ,old-val)))))
 
 ;;; ==============================
 ;;; :WAS `colorcomp'
 (defun mon-colorcomp (color)
   "Allow fiddling with COLOR in a new buffer.\n
 The buffer is in MON Color Components mode.\n
+:EXAMPLE\n\n\(mon-colorcomp \"systemMintColor\"\)\n
+\(mon-colorcomp \(mon-color-random-html\)\)\n
+:ALIASED-BY `mon-color-adjust'\n
 :SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp',
 `mon-colorcomp-copy-as-kill-and-exit', `mon-help-color-functions',
-`mon-help-color-chart', `mon-help-css-color'.\n▶▶▶"
-  (interactive "sColor (name or #RGB or #RRGGBB): ")
-  (when (string= "" color)
+`*mon-colorcomp-mode-map*', `mon-help-color-chart', `mon-help-css-color',
+`read-color', `color-name-to-rgb', `color-name-rgb-alist'.\n▶▶▶"
+  ;; :WAS (interactive "sColor (name or #RGB or #RRGGBB): ")  
+  ;; :WAS (list (read-color "Color (name or #RGB or #RRGGBB): " t nil))
+  (interactive (list (mon-color-read)))
+  (when (string= "" color)    ;this shouldn't happen now that using `read-color'
+    ;; (setq color (mon-colorcomp (mon-color-random-html)))
+    ;; :NOTE Green is a good defaul as it's in the middle of the color space.
     (setq color "green"))
   (unless (color-values color)
     (mon-format :w-fun  #'error 
-            :w-spec '(":FUNCTION `mon-colorcomp' "
-                      "-- no such color: %S")
-            :w-args color))
+                :w-spec '(":FUNCTION `mon-colorcomp' "
+                          "-- no such color: %S")
+                :w-args color))
   (switch-to-buffer
-   (generate-new-buffer (format "originally: %s" color)))
-  (kill-all-local-variables)
-  (setq major-mode 'mon-colorcomp-mode
-	mode-name "MON Color Components")
-  (use-local-map *mon-colorcomp-mode-map*)
-  (erase-buffer)
-  (buffer-disable-undo)
-  (let ((mclrcmp-data (apply 'vector (mapcar #'(lambda (mclrcmp-L-1) (ash mclrcmp-L-1 -8))
-                                             (color-values color))))
-	(mclrcmp-ewoc (ewoc-create 'mon-colorcomp-pp
-			   "\nMON Color Components\n\n"
-			   (substitute-command-keys
-			    "\n\\{*mon-colorcomp-mode-map*}"))))
-    (set (make-local-variable '*mon-colorcomp-data*) mclrcmp-data)
-    (set (make-local-variable '*mon-colorcomp-ewoc*) mclrcmp-ewoc)
-    (ewoc-enter-last mclrcmp-ewoc 0)
-    (ewoc-enter-last mclrcmp-ewoc 1)
-    (ewoc-enter-last mclrcmp-ewoc 2)
-    (ewoc-enter-last mclrcmp-ewoc nil)))
+   ;; (generate-new-buffer (format "*MON COLOR COMPONENTS originally: %s*" color)))
+   (if (mon-colorcomp-get-buffer)
+       (progn (kill-buffer (mon-colorcomp-get-buffer))
+              (get-buffer-create *mon-colorcomp-buffer-name*))
+     (get-buffer-create *mon-colorcomp-buffer-name*)))
+  (with-current-buffer (mon-colorcomp-get-buffer)
+    (kill-all-local-variables)
+    (setq major-mode 'mon-colorcomp-mode
+	  mode-name "MON Color Components")
+    (use-local-map *mon-colorcomp-mode-map*)
+    (erase-buffer)
+    (buffer-disable-undo)
+    (let* ((mclrcmp-data (apply 'vector (mapcar #'(lambda (mclrcmp-L-1) (ash mclrcmp-L-1 -8))
+                                                (color-values color))))
+           (mclrcmp-header 
+            (concat "\nMON Color Components - original color: "
+                    (propertize color 'face `(foreground-color . ,color))
+                    "\n\n"))
+	   (mclrcmp-ewoc (ewoc-create 'mon-colorcomp-pp
+			              mclrcmp-header
+			              (substitute-command-keys
+			               "\n\\{*mon-colorcomp-mode-map*}"))))
+      (set (make-local-variable '*mon-colorcomp-data*) mclrcmp-data)
+      (set (make-local-variable '*mon-colorcomp-ewoc*) mclrcmp-ewoc)
+      (ewoc-enter-last mclrcmp-ewoc 0)
+      (ewoc-enter-last mclrcmp-ewoc 1)
+      (ewoc-enter-last mclrcmp-ewoc 2)
+      (ewoc-enter-last mclrcmp-ewoc nil))))
+
+;; (ewoc-enter-last *mon-colorcomp-ewoc* 0)
 
 ;;; ==============================
 ;;; :WAS `colorcomp-mod'
@@ -468,13 +676,52 @@ The buffer is in MON Color Components mode.\n
 :SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp',
 `mon-colorcomp-copy-as-kill-and-exit', `mon-help-color-functions',
 `mon-help-color-chart', `mon-help-css-color'.\n▶▶▶"
+  (with-current-buffer (mon-colorcomp-get-buffer)
   (let ((cur (aref *mon-colorcomp-data* index)))
     (unless (= limit cur)
       (aset *mon-colorcomp-data* index (+ cur delta)))
     (ewoc-invalidate
      *mon-colorcomp-ewoc*
      (ewoc-nth *mon-colorcomp-ewoc* index)
-     (ewoc-nth *mon-colorcomp-ewoc* -1))))
+     (ewoc-nth *mon-colorcomp-ewoc* -1)))))
+
+;; (ewoc-data (ewoc-nth *mon-colorcomp-ewoc* 0))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-13T21:42:23-04:00Z}#{24375} - by MON KEY>
+(defun mon-colorcomp-get-color-adjust-if (comp-data)
+"BORKEN, oversteps the boundds of limit with `mon-colorcomp-mod' doesn't "
+  (unless (null comp-data)
+    (let* ((maybe-new  (assoc :new comp-data))
+           (new (and maybe-new
+                     (cdr maybe-new)))
+           (maybe-old (assoc :old comp-data))
+           (old (and maybe-old
+                     (cdr maybe-old)))
+           (red-pair (and old new
+                          (cons (nth 0 new) (nth 0 old))))
+           (green-pair (and old new
+                            (cons (nth 1 new) (nth 1 old))))
+           (blue-pair (and old new
+                           (cons (nth 2 new) (nth 2 old))))
+           (list-pairs (and red-pair green-pair blue-pair
+                           (list red-pair green-pair blue-pair))))
+      ;;list-pairs)))
+      (when list-pairs
+        (cl-loop
+         for idx from 0 to 2
+         for pairs in list-pairs ; ((249 . 238) (243 . 221) (210 . 130))
+         for new = (car pairs)
+         for old = (cdr pairs)
+         do 
+         (with-current-buffer (mon-colorcomp-get-buffer)
+           (cond 
+             ;; new is greater than old, , we want to substract DELTA
+             ((> new old)
+              (mon-colorcomp-mod idx 255 (-  new old)))
+             ;; New is less than old, we want to add  DELTA
+             ((< new old)
+              (mon-colorcomp-mod idx 0   (-  new old))))))))))
 
 ;;; ==============================
 ;;; :WAS `colorcomp-R-more', `colorcomp-G-more', `colorcomp-B-more'

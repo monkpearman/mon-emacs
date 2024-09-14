@@ -45,10 +45,12 @@
 ;; is their assembly in the aggregate.!!!
 ;;
 ;; FUNCTIONS:▶▶▶
+;; `mon-color-random-rgb', `mon-color-random-html',
 ;; `mon-rgb-to-hsv', `mon-colorcomp-pp',`mon-colorcomp', `mon-colorcomp-mod',
 ;; `mon-colorcomp-R-more', `mon-colorcomp-G-more', `mon-colorcomp-B-more',
 ;; `mon-colorcomp-R-less', `mon-colorcomp-G-less', `mon-colorcomp-B-less',
 ;; `mon-colorcomp-copy-as-kill-and-exit', `mon-color-mix', `mon-color-mix-display',
+;; `mon-color-list-display', `mon-color-read', `mon-colorcomp-get-data',
 ;; FUNCTIONS:◀◀◀
 ;;
 ;; MACROS:
@@ -64,16 +66,18 @@
 ;; VARIABLES:
 ;; `*mon-colorcomp-ewoc*', `*mon-colorcomp-data*',
 ;; `*mon-colorcomp-mode-map*',`*mon-colorcomp-labels*',
+;; `*mon-colorcomp-buffer-name*',
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
 ;; `list-colors-defined'       -> `defined-colors'
 ;; `mon-color-list-defined'    -> `defined-colors'
 ;; `mon-color-list-duplicates' -> `list-colors-duplicates'
-;; `mon-color-list-display'    -> `list-colors-display'
 ;; `mon-color-read'            -> `read-color' 
+;; `mon-color-adjust'          -> `mon-colorcomp'
+;; `mon-color-read'            -> `mon-read-color'
 ;;
 ;; DEPRECATED:
-;; `mon-list-colors-display', `mon-list-colors-key', `*mon-list-colors-sort*',
+;; `mon-list-colors-key', `*mon-list-colors-sort*',
 ;;
 ;; RENAMED:
 ;;
@@ -247,7 +251,7 @@ The symbols contained of this list are defined in :FILE mon-color-utils.el\n
 RETURN:  A triplet \(red green blue\)\n
          = COLOR-A + \( COLOR-B - COLOR-A \) * FACTOR\n
  (mon-color-mix '(61166 57311 52428) '(61166 41634 44461) 0.6)
-:SEE-ALSO `mon-color-mix-display', `color-distance',
+:SEE-ALSO `mon-color-list-display', `mon-color-mix-display', `color-distance',
 `mon-defined-colors-without-duplicates', `mon-help-color-functions',
 `mon-help-color-chart', `mon-help-css-color'.\n▶▶▶"
   (or (and (null factor) (setq factor 0.5))
@@ -274,10 +278,10 @@ RETURN:  A triplet \(red green blue\)\n
   "Read two color names and return a mixed color value.\n
 Return value displaye in buffer \"*COLOR-MIX-RESULTS*\".\n
 :EXAMPLE\n\n\(mon-color-mix-interactive\)=n
-:SEE-ALSO `mon-color-mix'.\n▶▶▶"
+:SEE-ALSO `mon-color-mix', `mon-color-list-display', `mon-colorcomp'.\n▶▶▶"
   (interactive)
-  (let* ((color1 (color-values (read-color "color: ")))
-         (color2 (color-values (read-color "color: ")))
+  (let* ((color1 (color-values (read-color "Color1: ")))
+         (color2 (color-values (read-color "Color2: ")))
          (color3 (mon-color-mix color1 color2 (or mix-factor 0.7))))
     (with-current-buffer (get-buffer-create "*COLOR-MIX-RESULTS*")
       (erase-buffer)
@@ -743,7 +747,8 @@ The buffer is in MON Color Components mode.\n
 `mon-colorcomp-G-more', `mon-colorcomp-B-more', `mon-colorcomp-R-less',
 `mon-colorcomp-G-less', `mon-colorcomp-B-less', `mon-help-color-functions',
 `mon-help-color-chart', `mon-help-css-color'.\n▶▶▶"
-  (interactive) (mon-colorcomp-mod 1 255 1))
+  (interactive)
+  (mon-colorcomp-mod 1 255 1))
 ;;
 (defun mon-colorcomp-B-more () 
   "Increase Blue value.\n
@@ -752,7 +757,8 @@ The buffer is in MON Color Components mode.\n
 `mon-colorcomp-G-more', `mon-colorcomp-B-more', `mon-colorcomp-R-less',
 `mon-colorcomp-G-less', `mon-colorcomp-B-less', `mon-help-color-functions',
 `mon-help-color-chart', `mon-help-css-color'.\n▶▶▶"
-  (interactive) (mon-colorcomp-mod 2 255 1))
+  (interactive)
+  (mon-colorcomp-mod 2 255 1))
 ;;
 (defun mon-colorcomp-R-less () 
   "Decrease Red value.\n
@@ -761,7 +767,8 @@ The buffer is in MON Color Components mode.\n
 `mon-colorcomp-G-more', `mon-colorcomp-B-more', `mon-colorcomp-R-less',
 `mon-colorcomp-G-less', `mon-colorcomp-B-less', `mon-help-color-functions',
 `mon-help-color-chart', `mon-help-css-color'.\n▶▶▶"
-  (interactive) (mon-colorcomp-mod 0 0 -1))
+  (interactive)
+  (mon-colorcomp-mod 0 0 -1))
 ;;
 (defun mon-colorcomp-G-less () 
    "Decrease Green value.\n
@@ -770,7 +777,8 @@ The buffer is in MON Color Components mode.\n
 `mon-colorcomp-G-more', `mon-colorcomp-B-more', `mon-colorcomp-R-less',
 `mon-colorcomp-G-less', `mon-colorcomp-B-less',`mon-help-color-functions',
 `mon-help-color-chart', `mon-help-css-color'.\n▶▶▶"
-  (interactive) (mon-colorcomp-mod 1 0 -1))
+   (interactive)
+   (mon-colorcomp-mod 1 0 -1))
 ;;
 (defun mon-colorcomp-B-less () 
    "Decrease Blue value.\n
@@ -779,7 +787,8 @@ The buffer is in MON Color Components mode.\n
 `mon-colorcomp-G-more', `mon-colorcomp-B-more', `mon-colorcomp-R-less',
 `mon-colorcomp-G-less', `mon-colorcomp-B-less', `mon-help-color-functions',
 `mon-help-color-chart', `mon-help-css-color'.\n▶▶▶"
-  (interactive) (mon-colorcomp-mod 2 0 -1))
+   (interactive)
+   (mon-colorcomp-mod 2 0 -1))
 
 ;;; ==============================
 ;;; :WAS `colorcomp-copy-as-kill-and-exit'
@@ -794,6 +803,12 @@ The string is formatted #RRGGBB (hash followed by six hex digits).\n
 		    (aref *mon-colorcomp-data* 1)
 		    (aref *mon-colorcomp-data* 2)))
   (kill-buffer nil))
+
+
+;; color-desaturate-name
+;; color-saturate-name
+;; color-darken-name
+;; color-lighten-name
 
 ;;; ==============================
 ;;; :PREFIX "mcm-"

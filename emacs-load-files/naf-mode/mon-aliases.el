@@ -1197,6 +1197,10 @@ If char is not a character, return nil.\n
 ;;
 ;;;  <UNQUALIFIED-ALIAS>  <PREFIX>-<NON-CORE-SYMBOL>
 ;;
+(unless (and (intern-soft "digit-char-p" obarray) 
+             (fboundp 'digit-char-p))
+(defalias 'digit-char-p 'mon-digit-char-p))
+;;
 (unless (and (intern-soft "alpha-char-p" obarray) 
              (fboundp 'alpha-char-p))
 (defalias 'alpha-char-p 'mon-alpha-char-p))
@@ -1272,6 +1276,14 @@ If char is not a character, return nil.\n
 (unless (and (intern-soft "mon-symbol-cells-boundp")
              (fboundp 'mon-symbol-cells-boundp))
 (defalias 'mon-symbol-cells-boundp 'mon-symbol-cells-bound-p))
+;;
+;; (defvaralias '*mon-digit-chars* 'cl-digit-char-table
+;;   "A 256 elt simple array with indexes for the digit chars 0-9 in multiple radixes.\n
+;; :EXAMPLE\n\n\(aref *mon-digit-chars* ?0\)\n
+;; \(mapcar #'\(lambda \(dgt-chr\)
+;;              \(aref *mon-digit-chars* dgt-chr\)\)
+;;         \(number-sequence 48 57\)\)\n
+;; :SEE-ALSO `*mon-whitespace-chars*', `*mon-ascii-alpha-chars*', `mon-is-digit'.\n▶▶▶")
 
 ;;; ==============================
 ;;; mon-type-utils.el◀◀◀
@@ -2027,16 +2039,7 @@ Conditional upon `IS-BUG-P' returning non-nil.\n
 (unless (and (intern-soft "*whitespace-chars*" obarray) 
              (bound-and-true-p *whitespace-chars*))
 (defvaralias '*whitespace-chars* '*mon-whitespace-chars*))
-;;
-(unless (and (intern-soft "*mon-digit-chars*" obarray) 
-             (bound-and-true-p *mon-digit-chars*))
-(defvaralias '*mon-digit-chars* 'parse-time-digits
-  "A 256 elt simple array with indexes for the digit chars 0-9.\n
-:EXAMPLE\n\n\(aref *mon-digit-chars* ?0\)\n
-\(mapcar #'\(lambda \(dgt-chr\)
-             \(aref *mon-digit-chars* dgt-chr\)\)
-        \(number-sequence 48 57\)\)\n
-:SEE-ALSO `*mon-whitespace-chars*', `*mon-ascii-alpha-chars*', `mon-is-digit'.\n▶▶▶"))
+
 
 ;;; ==============================
 ;;; mon-regexp-symbols.el◀◀◀
@@ -2227,15 +2230,16 @@ Conditional upon `IS-BUG-P' returning non-nil.\n
 ;; :NOTE there is also `facemenu-read-color'
 (unless (and (intern-soft "mon-color-read" obarray)
               (fboundp 'mon-color-read))
-(defalias 'mon-color-read 'read-color))
+  (defalias 'mon-color-read 'mon-read-color))
 ;;
 (unless (and (intern-soft "mon-color-list-duplicates" obarray)
               (fboundp 'mon-color-list-duplicates))
 (defalias 'mon-color-list-duplicates 'list-colors-duplicates))
 ;;
-(unless (and (intern-soft "mon-color-list-display" obarray)
-              (fboundp 'mon-color-list-display))
-(defalias 'mon-color-list-display 'list-colors-display))
+(unless (and (intern-soft "mon-color-adjust" obarray) 
+             (fboundp 'mon-color-adjust))
+(defalias 'mon-color-adjust 'mon-colorcomp))
+
 
 ;;; ==============================
 ;;; mon-color-utils.el◀◀◀

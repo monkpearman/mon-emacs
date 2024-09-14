@@ -151,6 +151,93 @@
  ;; `mon-mapcar' <- `mon-color-mix'
 (declare-function mon-mapcar "mon-seq-utils" (mapcar-fun mapcar-lst &rest more-lsts))
 
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-13T13:58:18-04:00Z}#{24375} - by MON KEY>
+(defgroup mon-color-utils  nil
+  "Customization group for variables and functions of :FILE mon-color-utils.el\n
+:SEE-ALSO `mon-base', `mon-xrefs', `mon-macs', `mon-dir-locals', `mon-error-warn',
+`mon-regexp-symbols', `mon-dir-utils', `mon-line-utils', `mon-seq-utils',
+`mon-plist-utils', `mon-string-utils', `mon-insertion-utils',
+`mon-replacement-utils', `mon-buffer-utils', `mon-window-utils',
+`mon-button-utils', `mon-type-utils', `mon-type-utils-vars', `mon-image-utils',
+`mon-bzr-utils', `mon-env-proc-utils', `mon-testme-utils', `mon-error-utils',
+`mon-url-utils', `mon-boxcutter'.\n▶▶▶"
+  :link '(emacs-library-link "mon-color-utils.el")
+  :group 'mon-base)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-13T14:04:45-04:00Z}#{24375} - by MON KEY>
+(defcustom *mon-color-utils-xrefs* 
+  '(mon-color-list-display
+    mon-color-random-rgb
+    mon-color-random-html
+    mon-color-mix
+    mon-color-mix-display
+    mon-defined-colors-without-duplicates
+    mon-rgb-to-hsv
+    mon-color-read
+    mon-colorcomp-get-data
+    mon-colorcomp
+    mon-colorcomp-pp
+    mon-colorcomp-mod
+    mon-colorcomp-R-more
+    mon-colorcomp-R-less
+    mon-colorcomp-G-more
+    mon-colorcomp-G-less
+    mon-colorcomp-B-more
+    mon-colorcomp-B-less
+    mon-colorcomp-copy-as-kill-and-exit
+    ;; :VARIABLES
+    *mon-colorcomp-mode-map*
+    *mon-colorcomp-ewoc*
+    *mon-colorcomp-data*
+    *mon-colorcomp-mode-map*
+    *mon-colorcomp-labels*
+    *mon-colorcomp-buffer-name*
+    )
+  "Xrefing list of mon string related symbols, functions constants, and variables.\n
+The symbols contained of this list are defined in :FILE mon-color-utils.el\n
+:SEE-ALSO `*mon-default-loads-xrefs*', `*mon-default-start-loads-xrefs*',
+`*mon-dir-locals-alist-xrefs*', `*mon-testme-utils-xrefs*',
+`*mon-button-utils-xrefs*', `*mon-buffer-utils-xrefs*',
+`*mon-line-utils-xrefs*', `*mon-plist-utils-xrefs*'
+`*mon-seq-utils-xrefs*', `*mon-window-utils-xrefs*', `*naf-mode-xref-of-xrefs*',
+`*naf-mode-faces-xrefs*', `*naf-mode-date-xrefs*', `*mon-ulan-utils-xrefs*',
+`*mon-xrefs-xrefs'.\n▶▶▶"
+  :type '(repeat symbol)
+  :group 'mon-string-utils 
+  :group 'mon-xrefs)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-13T16:23:36-04:00Z}#{24375} - by MON KEY>
+(defun mon-color-list-display ()
+  "Return a list of colors defined in the `color-name-rgb-alist' in buffer \"*MON-COLORS*\".\n
+:EXAMPLE\n\n\(mon-color-list-display\)\n
+:SEE-ALSO `mon-colorcomp', `mon-color-mix-display'.\n▶▶▶"
+  (list-colors-display
+   (mapcar #'car color-name-rgb-alist)
+   "*MON-COLORS*"))
+
+;;; ==============================
+;;; :COURTESY (URL `https://www.reddit.com/r/emacs/comments/1bxw4n2/elisp_snippets_random_color/')
+;;; :CREATED <Timestamp: #{2024-09-13T13:56:20-04:00Z}#{24375} - by MON KEY>
+(defun mon-color-random-rgb ()
+  "Return a list of randomized RGB color values.\n
+:EXAMPLE\n\n\(mon-color-random-rgb\)
+:SEE-ALSO `mon-color-random-html'.\n▶▶▶"
+  (cl-loop repeat 3 collect (random 256)))
+
+;;; ==============================
+;;; :COURTESY (URL `https://www.reddit.com/r/emacs/comments/1bxw4n2/elisp_snippets_random_color/')
+;;; :CREATED <Timestamp: #{2024-09-13T13:56:17-04:00Z}#{24375} - by MON KEY>
+(defun mon-color-random-html ()
+"Return a list of randomized HTML color values.\n
+:EXAMPLE\n\n\(mon-color-random-html\)\n
+:SEE-ALSO `mon-color-random-rgb'.\n▶▶▶"
+  (apply #'format "#%02x%02x%02x" ;"#%x%x%x"
+         (mon-color-random-rgb)))
+
 ;;; ==============================
 ;;; :PREFIX "mcm-"
 ;;; :COURTESY PJB HIS: pjb-utilities.el WAS: `color-mix'

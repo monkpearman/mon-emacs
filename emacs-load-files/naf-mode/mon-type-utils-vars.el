@@ -115,14 +115,13 @@
 ;;; CODE:
 
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
-(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
+  (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 ;;; ==============================
-;;; :CHANGESET 2411
 ;;; :CREATED <Timestamp: #{2011-02-19T13:28:47-05:00Z}#{11076} - by MON KEY>
 (defgroup mon-type-utils-vars nil
   "Customization group for variables and functions of :FILE mon-type-utils-vars.el\n
@@ -138,7 +137,6 @@
   :group 'mon-type-utils)
 
 ;;; ==============================
-;;; :CHANGESET 2411
 ;;; :CREATED <Timestamp: #{2011-02-19T13:29:13-05:00Z}#{11076} - by MON KEY>
 (defcustom *mon-type-utils-vars-xrefs*
   '(;; :VARIABLES
@@ -169,7 +167,6 @@ The symbols contained of this list are defined in :FILE mon-type-utils.el\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2299
 ;;; :CREATED <Timestamp: #{2010-11-11T17:01:49-05:00Z}#{10454} - by MON KEY>
 (defvar *mon-special-forms-types*
   '(setq quote let let* 
@@ -205,7 +202,6 @@ These are defined in :FILE lisp/emacs-lisp/byte-run.el\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2211
 ;;; :CREATED <Timestamp: #{2010-10-27T15:06:17-04:00Z}#{10433} - by MON KEY>
 (defvar *mon-non-mappable-object-types* 
   '(compiled-function subr
@@ -246,7 +242,6 @@ provided by the current list.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2178
 ;;; :CREATED <Timestamp: #{2010-10-04T22:30:10-04:00Z}#{10401} - by MON KEY>
 (defcustom *mon-equality-or-predicate-function-types*
   '(eq eql equal 
@@ -306,7 +301,6 @@ For use with `mon-equality-or-predicate'.\n
 ;;; - Improving/adjusting it
 ;;; - Still working out what to do w/ compiled vs. interpretted 
 ;;; - Pending lexbind integration might change things...
-;;; :CHANGESET 2211
 ;;; :CREATED <Timestamp: #{2010-10-26T16:50:41-04:00Z}#{10432} - by MON KEY>
 (defvar *mon-function-object-types* '(function compiled-function 
                                       subr macro lambda autoload)
@@ -320,7 +314,6 @@ For use with `mon-equality-or-predicate'.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2325
 ;;; :CREATED <Timestamp: #{2010-11-22T14:51:38-05:00Z}#{10471} - by MON KEY>
 (defvar *mon-ascii-alpha-chars* (make-vector 256 nil)
    "A 256 elt simple array with indexes for the ASCII alpha chars 65-90 and 92-122.\n
@@ -343,7 +336,6 @@ For use with `mon-equality-or-predicate'.\n
 ;; `(,@(number-sequence 1 8) ,@(number-sequence 11 26)) 
 
 ;;; ==============================
-;;; :CHANGESET 2411
 ;;; :CREATED <Timestamp: #{2011-02-19T13:40:51-05:00Z}#{11076} - by MON KEY>
 ;;(defvar *mon-ascii-punct-chars*
 (defcustom *mon-ascii-punct-chars*
@@ -365,7 +357,6 @@ These are the character integer values in the decimal ranges:\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2256
 ;;; :CREATED <Timestamp: #{2010-11-01T13:04:03-04:00Z}#{10441} - by MON KEY>
 (defvar *mon-whitespace-chars* '(12 11 13 10 9 32) 
   "List of ASCII whitespace chars.\n

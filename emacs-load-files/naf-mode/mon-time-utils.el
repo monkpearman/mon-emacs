@@ -261,7 +261,7 @@
              (bound-and-true-p *IS-MON-OBARRAY*))
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
-(eval-when-compile (require 'cl)
+(eval-when-compile (require 'cl-lib)
   ;; `mon-convert-ebay-time'            <- `parse-time-string'
   ;; `mon-convert-ebay-time-mvb'        <- `parse-time-string'
   ;; `mon-calculate-ebay-timezone-diff' <- `parse-time-string'
@@ -299,7 +299,6 @@
 ;;; ==============================
 
 ;;; ==============================
-;;; :MODIFICATIONS <Timestamp: #{2010-02-17T15:49:27-05:00Z}#{10073} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-10-24T12:51:14-04:00Z}#{09436} - by MON KEY>
 (defun mon-comment-divider-w-len (divider-length 
                                   &optional alt-comment-start alt-divide-char)
@@ -354,9 +353,7 @@ If ALT-DIVIDE-CHAR \(a character or string\) is non-nil use it to instead.\n
 ;;; :TEST-ME (length (mon-comment-divider-w-len 85 95 45))
 
 ;;; ==============================
-;;; :CHANGESET 1711 <Timestamp: #{2010-05-06T15:28:04-04:00Z}#{10184} - by MON KEY>
 ;;; :RENAMED :FUNCTION `mon-today' -> `mon-date-stamp' 
-;;; :ADDED keywords INSRTP and INTRP
 ;;; :CREATED <Timestamp: #{2009-10-23T20:57:47-04:00Z}#{09436} - by MON KEY>
 (cl-defun mon-date-stamp (&key as-string as-symbol as-list-str as-list-num
                              as-vec-str as-vec-num insrtp intrp)
@@ -538,7 +535,6 @@ This timestring is per the return value of the following format spec:
 
 ;;; ==============================
 ;;; :NOTE (file-newer-than-file-p filename1 filename2)
-;;; :MODIFICATIONS <Timestamp: #{2010-03-11T12:01:56-05:00Z}#{10104} - by MON KEY>
 ;;; :CREATED <Timestamp: Friday May 15, 2009 @ 01:16.43 PM - by MON KEY>
 (defun mon-get-file-mod-times (file-or-dir &optional as-list)
   "Return FILE-OR-DIR's modification and accessed time as a list or string.\n
@@ -656,7 +652,6 @@ returned it is dropped.\n
 ;;; :TODO The `IS-*-P' checks should be factored to a separate fncn and passed
 ;;;       as an arg instead.
 ;;; :PREFIX "mt-"
-;;; :CHANGESET 1712 <Timestamp: #{2010-05-06T16:23:37-04:00Z}#{10184} - by MON KEY>
 ;;; :CREATED <Timestamp: Saturday July 18, 2009 @ 05:35.09 PM - by MON KEY>
 (cl-defun mon-timestamp (&key insrtp accessed naf intrp)
   "Core timestamping function generates conditional timestamps.\n
@@ -807,7 +802,6 @@ Invoked from a `naf-mode' buffer acessed-stamp fontlocked by
 
 ;;; ==============================
 ;;; :PREFIX "msic-"
-;;; :CHANGESET 2155 <Timestamp: #{2010-09-27T13:07:03-04:00Z}#{10391} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-09-26T09:40:49-04:00Z}#{10387} - by MON>
 (cl-defun mon-stamp-in-context (&optional insrtp intrp 
                                         &key 
@@ -898,8 +892,6 @@ the ALT-DIVIDE-CHAR to `mon-comment-divider-w-len'. Default is \"=\" \(char 61\)
 ;;;  (mon-stamp-in-context t nil :w-changed t :w-divider t :w-newline t)
 ;;; But, the newline handling/comment dividers can be orthogonal.
 ;;; :PREFIX "mls-"
-;;; :CHANGESET 1701 <Timestamp: #{2010-04-06T15:48:44-04:00Z}#{10142} - by MON KEY>
-;;; :MODIFICATIONS <Timestamp: #{2009-10-23T18:06:13-04:00Z}#{09435} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-06-W32-4T15:18:23-0400Z} - by MON KEY>
 (defun mon-lisp-stamp (&optional insrtp intrp w-modifications)
   "Return or insert at point a `mon-comment-divider' newline and `mon-stamp'.\n
@@ -968,7 +960,6 @@ Use after creating new elisp functions to delimit and date them.\n
 ;;;       -  The above may require/encourage converting from `let' to `let*'
 ;;;
 ;;; :PREFIX "mfsvpe-"
-;;; :MODIFICATIONS <Timestamp: #{2009-12-17T17:35:35-05:00Z}#{09514} - by MON>
 ;;; :CREATED <Timestamp: #{2009-10-24T11:52:41-04:00Z}#{09436} - by MON>
 (defun mon-file-stamp-vrfy-put-eof (&optional insrtp) 
   "Return the preferred EOF delimiter if not present in current-buffer.\n
@@ -1017,8 +1008,6 @@ Does not move point.\n
 ;;; :NOTE The comment prefix `;;;' in the docstring uses "\x3b" to prevent false
 ;;;       positives with other source processing regexps which manipulate
 ;;;       `mon-*' docstings examples.
-;;; :MODIFICATIONS <Timestamp: #{2009-12-17T19:56:13-05:00Z}#{09515} - by MON KEY>
-;;; :MODIFICATIONS <Timestamp: #{2009-10-24T12:20:13-04:00Z}#{09436} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-24T15:46:26-04:00Z}#{09351} - by MON KEY>
 (defun mon-file-stamp (&optional insrtp intrp w/url at-point)
   "Return MON's default `time-stamp'd file header with EOF footer.\n
@@ -1548,7 +1537,7 @@ Replaces existing time-string in region with converted form.\n
 ;;; :TEST-ME (mon-cln-ebay-time-string "Jul-29-09 11:05:14 PDT" nil nil t)
 
 ;;; ==============================
-;;; :MODIFICATIONS <Timestamp: Tuesday July 28, 2009 @ 08:28.46 PM - by MON KEY>
+;;; :CREATED <Timestamp: Tuesday July 28, 2009 @ 08:28.46 PM - by MON KEY>
 (defun mon-calculate-ebay-timezone-diff (ebay-time-string)
   "Return hour difference between ebay-time (PDT or PST) and `current-time-zone'.\n
 EBAY-TIME-STRING should have the format:\n

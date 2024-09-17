@@ -3226,7 +3226,9 @@ Binds the following variables:\n
   "Add keybindings to various mode-hooks at init.\n
 Evaluated at init time by `mon-set-system-specific-and-load-init'.\n
 :SEE-ALSO `mon-keybind-w3m', `mon-keybind-dired-mode', `mon-keybind-w32-init',
+`mon-keybind-completions',`mon-keybind-lisp-mode',
 `mon-keybind-lisp-interaction-mode', `mon-keybind-emacs-lisp-mode',
+`mon-keybind-globally', `mon-keybind-slime-fuzzy-completions',
 `mon-help-key-functions', `mon-help-keys'.\n▶▶▶"
   (mon-default-start-error/sane
    'mon-set-system-specific-and-load-init warn-only
@@ -3241,6 +3243,10 @@ Evaluated at init time by `mon-set-system-specific-and-load-init'.\n
    ;; (remove-hook 'emacs-lisp-mode-hook 'mon-keybind-emacs-lisp-mode)
    (add-hook 'emacs-lisp-mode-hook  'mon-keybind-emacs-lisp-mode)
    ;; (remove-hook 'lisp-interaction-mode-hook 'mon-keybind-lisp-interaction-mode)
+   
+   (add-hook 'lisp-mode-hook 'mon-keybind-lisp-mode t)
+   ;; (remove-hook 'lisp-interaction-mode-hook 'mon-keybind-lisp-interaction-mode)
+
    (add-hook 'lisp-interaction-mode-hook 'mon-keybind-lisp-interaction-mode t)
    ;; (remove-hook 'slime-mode-hook 'mon-keybind-slime)
    (add-hook 'slime-mode-hook 'mon-keybind-slime t)
@@ -3254,6 +3260,7 @@ Evaluated at init time by `mon-set-system-specific-and-load-init'.\n
        '(progn (mon-keybind-globally)
                (mon-keybind-slime-fuzzy-completions))))
    ))
+
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2011-05-14T17:47:22-04:00Z}#{11196} - by MON KEY>

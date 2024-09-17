@@ -189,7 +189,6 @@ If *IS-MON-OBARRAY* is present in obarray following values will satisfy the form
 
 ;; (eq system-type 'darwin) "IS-DARWIN-P" "IS-MON-P-DARWIN"
 
-
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-04-02T22:40:33-04:00Z}#{10136} - by MON KEY>
 (defcustom *mon-default-loads-xrefs* nil
@@ -347,7 +346,6 @@ Used in conditional system type tests in lieu of:\n
 ;;;(progn (makunbound 'IS-GNU-P) (unintern "IS-GNU-P" obarray)
 ;;;       (makunbound 'gnu-linuxp) (unintern "gnu-linuxp" obarray) )
 
-
 ;;; ==============================
 (defconst IS-DARWIN-P
   (if (and (intern-soft "mon-system-type-conditionals" obarray)
@@ -371,7 +369,6 @@ Used in conditional system type tests in lieu of:\n
   (unless (and (intern-soft "darwin-p" obarray)
                (bound-and-true-p gnu-linuxp))
 (defvaralias 'darwinp 'IS-DARWIN-P)))
-
 
 ;;; ==============================
 (defconst IS-BUG-P (string-equal (mon-user-name-conditionals) "IS-BUG-P")
@@ -426,7 +423,6 @@ Used in conditional system type tests in lieu of:\n
 ;;; :TEST-ME IS-MON-P-GNU
 ;;;(progn (makunbound 'IS-MON-P-GNU) (unintern "IS-MON-P-GNU" obarray) )
 
-
 ;;; ==============================
 (defconst IS-MON-P-DARWIN 
   (string-equal (mon-user-name-conditionals)  "IS-MON-P-DARWIN")
@@ -440,7 +436,6 @@ Used in conditional system type tests in lieu of:\n
 ;;
 ;;; :TEST-ME IS-MON-P-DARWIN
 ;;;(progn (makunbound 'IS-MON-P-DARWIN) (unintern "IS-MON-P-DARWIN" obarray) )
-
 
 ;;; ==============================
 (defconst IS-MON-P

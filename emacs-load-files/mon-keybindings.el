@@ -25,8 +25,11 @@
 ;; `mon-keybind-globally', `mon-keybind-w3m', `mon-keybind-emacs-lisp-mode',
 ;; `mon-keybind-slime', `mon-keybind-lisp-interaction-mode',
 ;; `mon-keybind-dired-mode', `mon-keybind-conf-mode', 
+;; `mon-keybind-info-mode', `mon-keybind-completions',
 ;; `mon-keybind-slime-inspector',
 ;; `mon-keybind-slime-fuzzy-completions',
+;; `mon-keybind-lisp-mode', `mon-keybind-slime-selector-helper'
+;; `mon-conf-stamp-in-context',
 ;; FUNCTIONS:◀◀◀
 ;; 
 ;; VARIABLES:
@@ -224,9 +227,15 @@
 ;;; :CREATED <Timestamp: #{2011-01-12T13:32:43-05:00Z}#{11023} - by MON KEY>
 (defcustom *mon-keybindings-xrefs* 
   '(mon-keybind-globally mon-keybind-dired-mode mon-keybind-completions
-    mon-keybind-w3m mon-keybind-emacs-lisp-mode
-    mon-keybind-lisp-interaction-mode mon-keybind-slime mon-keybind-conf-mode
+    mon-keybind-w3m
+    mon-keybind-info-mode    
+    mon-keybind-emacs-lisp-mode
+    mon-keybind-lisp-mode
+    mon-keybind-lisp-interaction-mode
+    mon-keybind-slime
+    mon-keybind-conf-mode
     mon-keybind-slime-fuzzy-completions
+    mon-conf-stamp-in-context
     *mon-keybindings-xrefs*)
   "Xrefing list of `mon-keybind-*' symbols, functions constants, and variables.\n
 The symbols contained of this list are defined in :FILE mon-keybindings.el\n
@@ -456,7 +465,7 @@ Binds `mon-line-move-next', `mon-line-move-prev', and `scroll-up'.\n
 (defun mon-keybind-info-mode ()
 "keybinding function for putting on the mon specific bindings on the  `Info-mode-map'.
 This function is invoked by `info-mode-hook' on entry to `Info' mode.
-:SEE-ALSO .\n▶▶▶"
+:SEE-ALSO `mon-keybind-w3m'.\n▶▶▶"
   (define-key Info-mode-map (kbd "M-n") 'mon-scroll-up-in-place)
   ;; :NOTE follwing synch w/ MON binding for `help-go-forward' and `help-go-back'
   ;; Move back in history to the last node you were at.
@@ -641,7 +650,8 @@ Can be manually removed later with:
 Run on the `emacs-lisp-mode-hook'\n
 :EXAMPLE\n\n\(symbol-function 'mon-keybind-emacs-lisp-mode\)\n
 :SEE-ALSO `mon-keybind-w3m', `mon-keybind-dired-mode', `mon-keybind-w32-init'
-`mon-keybind-lisp-interaction-mode', `mon-help-key-functions', `mon-help-keys'.\n▶▶▶"
+`mon-keybind-lisp-mode', `mon-keybind-lisp-interaction-mode',
+`mon-help-key-functions', `mon-help-keys'.\n▶▶▶"
   (let ((kmp '(("M-i"             .    indent-according-to-mode)
                ("C-c c"           .    comment-region)
                ("C-c C-u c"       .    uncomment-region)
@@ -693,9 +703,9 @@ Run on the `lisp-interaction-mode-hook'\n
 Added to the `lisp-interaction-mode-hook' at init with `mon-keybind-put-hooks-init'.\n
 :EXAMPLE\n\n\(symbol-function 'mon-keybind-emacs-lisp-mode\)\n
 \(symbol-value 'lisp-interaction-mode-map\)\n
-:SEE-ALSO `mon-keybind-emacs-lisp-mode', `mon-keybind-dired-mode',
-`mon-keybind-w3m', `mon-keybind-w32-init', `mon-help-key-functions',
-`mon-help-keys'.\n▶▶▶"
+:SEE-ALSO `mon-keybind-lisp-mode', `mon-keybind-emacs-lisp-mode',
+`mon-keybind-dired-mode', `mon-keybind-w3m', `mon-keybind-w32-init',
+`mon-help-key-functions', `mon-help-keys'.\n▶▶▶"
   (let ((mklim-msg (and w-msg
                         (cons 
                          (concat ":FUNCTION `mon-keybind-lisp-interaction-mode' "
@@ -706,33 +716,59 @@ Added to the `lisp-interaction-mode-hook' at init with `mon-keybind-put-hooks-in
                 ("<S-tab>"     .     completion-at-point)
                 ("<S-tab>"     .     lisp-complete-symbol)
                 ("<backtab>"   .     lisp-complete-symbol)
-                ( "C-c s t"    .      mon-insert-lisp-stamp))))
+                ( "C-c s t"    .     mon-insert-lisp-stamp))))
     (cl-loop 
      for keys in kmp
      do (define-key lisp-interaction-mode-map (kbd (car keys)) (cdr keys)))
     (and mklim-msg (message (car mkb-slm-msg) (cdr mkb-slm-msg)))))
-;; 
-(when (and (intern-soft "IS-MON-P" obarray)
-           (bound-and-true-p IS-MON-P))
-  ;; (remove-hook 'lisp-interaction-mode-hook 'mon-keybind-lisp-interaction-mode)
-  (add-hook 'lisp-interaction-mode-hook 'mon-keybind-lisp-interaction-mode t))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-17T16:50:51-04:00Z}#{24382} - by MON KEY>
+(defun mon-keybind-lisp-mode (&optional w-msg)
+  "Bind keys on the `lisp-mode-map'.\n
+When optional arg W-MSG is non-nil message that new keybinding were made on
+buffer-local entry to `lisp-mode'.\n
+Run on the `lisp-mode-hook'\n
+Added to the `lisp-mode-hook' at init with `mon-keybind-put-hooks-init'.\n
+:EXAMPLE\n\n\(symbol-function 'mon-keybind-lisp-mode\)\n
+\(symbol-value 'lisp-mode-map\)\n
+(symbol-value 'lisp-mode-hook)
+:SEE-ALSO `mon-keybind-slime', `mon-keybind-lisp-interaction-mode',
+`mon-keybind-emacs-lisp-mode'.\n▶▶▶"
+  (let ((mklim-msg (and w-msg
+                        (cons 
+                         (concat ":FUNCTION `mon-keybind-lisp-mode' "
+                                 "-- evaluated on `lisp-mode-hook' on entry in buffer %S")
+                         (get-buffer (current-buffer)))))
+        (kmp  '(("C-c C-k"  .     nil) ; :WAS `lisp-compile-file'
+                ("C-c C-z"  .     nil) ; :WAS `switch-to-lisp'
+                ;; :DARWIN logsout!
+                ("C-M-q"    .     nil)
+                ("C-c C-p"  .     nil) ; :WAS `lisp-eval-paragraph'
+                ("C-c C-r"  .     nil) ; :WAS `lisp-eval-region'
+                ("M-q"      .     indent-sexp) ; :WAS `fill-paragraph' 
+                ("C-c M-q"  .     indent-sexp)
+                )))
+    (cl-loop 
+     for keys in kmp
+     do (define-key lisp-mode-map (kbd (car keys)) (cdr keys)))
+    (and mklim-msg (message (car mkb-slm-msg) (cdr mkb-slm-msg)))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2024-03-22T18:21:38-04:00Z}#{24125} - by MON KEY>
 (defun mon-keybind-slime-selector-helper ()
-"Helper function for keybding `slime-selector' withoug frobbing `interactive' directly.\n
+  "Helper function for keybding `slime-selector' withoug frobbing `interactive' directly.\n
 :EXAMPLE\n\(mon-keybind-slime-inspector-helper\)\n
-:SEE-ALSO `mon-keybind-lisp-interaction-mode', `mon-keybind-slime'.\n▶▶▶"
-(interactive)
-(save-excursion
-  (funcall ;; (cl-third (cl-find 63 slime-selector-methods :key #'car))
-   (cl-third (assoc 63 slime-selector-methods)))))
+:SEE-ALSO `mon-keybind-lisp-mode', `mon-keybind-lisp-interaction-mode',
+`mon-keybind-slime'.\n▶▶▶"
+  (interactive)
+  (save-excursion
+    (funcall ;; (cl-third (cl-find 63 slime-selector-methods :key #'car))
+     (cl-third (assoc 63 slime-selector-methods)))))
 ;;;
 ;; (mon-keybind-slime-inspector-helper)
 
 
-;; (add-hook 'slime-mode-map 'mon-keybind-slime)
-;; (remove-hook 'slime-mode-map 'mon-keybind-slime)
 ;;; ==============================
 ;;; :PREFIX "mkb-slm-"
 ;;; :CREATED <Timestamp: #{2010-06-17T15:04:09-04:00Z}#{10244} - by MON KEY>
@@ -797,7 +833,7 @@ always easy.\n As a friendly reminder, here is how it is done:\n
 ;; :SLIME-PRESENTATION-COMMAND-MAP
 \\{slime-presentation-command-map\\}\n
 :SEE-ALSO `mon-help-CL-slime-keys', `slime-cheat-sheet', `mon-slime-setup-init',
-`mon-keybind-lisp-interaction-mode', `mon-keybind-emacs-lisp-mode',
+`mon-keybind-lisp-mode', `mon-keybind-lisp-interaction-mode', `mon-keybind-emacs-lisp-mode',
 `mon-keybind-dired-mode', `mon-keybind-w3m', `mon-keybind-w32-init',
 `mon-help-key-functions', `mon-help-keys'.\n▶▶▶"
   (let ((mkb-slm-msg (and w-msg 
@@ -862,51 +898,49 @@ always easy.\n As a friendly reminder, here is how it is done:\n
       ;; (define-key 'slime-mode-map 'mon-quit-slime-description-window)
       ;; 'mon-next-xref-slime)
       ;; 'mon-prev-xref-slime)
-      ;; (when IS-MON-P-W32
-      ;;   (define-key slime-mode-map  (kbd "<backtab>") 'slime-complete-symbol)
-      ;;   (define-key slime-mode-map  (kbd "<S-tab>")  'slime-complete-symbol)
-      ;;   (define-key slime-repl-mode-map  (kbd "<backtab>") 'slime-complete-symbol)
-      ;;   (define-key slime-repl-mode-map  (kbd "<S-tab>")  'slime-complete-symbol)
-      ;;   ;; :NOTE I don't think this is getting used. Can it hurt?
-      ;;   (define-key slime-mode-map (kbd "<S-iso-lefttab>") 'slime-complete-symbol))
-       (let ((kmp   '(("M-c"               nil)
-                      ("M-n"               nil) ;; :WAS `slime-next-note'
-                      ("M-p"               nil) ;; :WAS `slime-previous-note'
-                      ;; ("C-c C-u"           undefinedl) ;; :WAS `slime-undefine-function'
-                      ("C-x M-c"    .      upcase-word)
-                      ("C-c c"      .      comment-region)
-                      ("C-c C-u c"  .      uncomment-region)
-                      ("C-c e l"    .      mon-escape-lisp-string-region)
-                      ("C-c u l"    .      mon-unescape-lisp-string-region)
-                      ("C-c M-a l"  .      align-let)
-                      ("C-c B"      .      slime-interrupt)
-                      ("C-c C-u d"  .      slime-undefine-function)
-                      ("C-c C-d f"  .      slime-documentation)
-                      ("C-c C-h"    .      slime-documentation)
-                      ("C-c M-h"    .      info-lookup-symbol)
-                      ;; mon-help-CL-symbols slime-hyperspec-lookup
-                      ;; slime-documentation-lookup
-                      ("C-c e x"    .      slime-export-symbol-at-point)
-                      ("C-c C-o"    .      slime-compile-defun)
-                      ("M-i"        .      slime-indent-and-complete-symbol) ;; :WAS `indent-according-to-mode'
-                      ("C-c M-n"    .      slime-next-note)
-                      ("C-c C-j"    .      slime-eval-last-expression-in-repl)
-                      ("C-c M-j"    .      slime-eval-print-last-expression)
-                      ("C-c M-p"    .      slime-previous-note)
-                      ("M-n"        .      mon-scroll-up-in-place)
-                      ("M-p"        .      mon-scroll-down-in-place)
-                      ("C-c M-a c"  .      mon-align-conses)                      
-                      ("C-c C-d r"  .      mon-insert-slime-arglist)
-                      ("C-c C-d c"  .      mon-insert-lisp-doc-eg-xref)
-                      ("C-c C-d j"  .      mon-insert-lisp-CL-jump-doc)
-                      ("C-c C-d 5"  .      mon-insert-lisp-CL-eol-tilde-no-at)
-                      ("C-c C-d %"  .      mon-insert-lisp-CL-eol-tilde)
-                      ("C-c t m"    .      mon-insert-lisp-testme)
-                      ("C-c s t"    .      mon-insert-lisp-stamp)
-                      ("C-c M-s l"  .      mon-keybind-slime-selector-helper) ;;'mon-slime-setup-init)
-                      ("<S-tab>"         .  completion-at-point)
-                      ("<S-iso-lefttab>" .  completion-at-point)
-                      ("<backtab>"       .  completion-at-point))))
+
+      (keymap-unset  slime-mode-map "M-c" t)
+      (keymap-unset  slime-mode-map "C-c C-u" t) ;; :WAS `slime-undefine-function'
+      (keymap-unset  slime-mode-map "M-n" t)     ;; :WAS `slime-next-note'
+      (keymap-unset  slime-mode-map "M-p" t)     ;; :WAS `slime-previous-note'
+      (keymap-unset  slime-mode-map "C-c C-k" t) ;; :WAS `slime-compile-and-load-file'
+      (keymap-unset  slime-mode-map "C-c M-i" t) ;; :WAS `slime-fuzzy-complete-symbol' 
+
+      (let ((kmp   '(("C-x M-c"    .      upcase-word)
+                     ("C-c c"      .      comment-region)
+                     ("C-c C-u c"  .      uncomment-region)
+                     ("C-c e l"    .      mon-escape-lisp-string-region)
+                     ("C-c u l"    .      mon-unescape-lisp-string-region)
+                     ("C-c M-a l"  .      align-let)
+                     ("C-c B"      .      slime-interrupt)
+                     ("C-c C-u d"  .      slime-undefine-function)
+                     ("C-c C-d f"  .      slime-documentation)
+                     ("C-c C-h"    .      slime-documentation)
+                     ("C-c M-h"    .      info-lookup-symbol)
+                     ;; mon-help-CL-symbols slime-hyperspec-lookup
+                     ;; slime-documentation-lookup
+                     ("C-c e x"    .      slime-export-symbol-at-point)
+                     ("C-c C-o"    .      slime-compile-defun)
+                     ("M-i"        .      slime-indent-and-complete-symbol) ;; :WAS `indent-according-to-mode'
+                     ("C-c M-n"    .      slime-next-note)
+                     ("C-c C-j"    .      slime-eval-last-expression-in-repl)
+                     ("C-c M-j"    .      slime-eval-print-last-expression)
+                     ("C-c M-p"    .      slime-previous-note)
+                     ("M-n"        .      mon-scroll-up-in-place)
+                     ("M-p"        .      mon-scroll-down-in-place)
+                     ("C-c M-a c"  .      mon-align-conses)                      
+                     ("C-c C-d r"  .      mon-insert-slime-arglist)
+                     ("C-c C-d c"  .      mon-insert-lisp-doc-eg-xref)
+                     ("C-c C-d j"  .      mon-insert-lisp-CL-jump-doc)
+                     ("C-c C-d 5"  .      mon-insert-lisp-CL-eol-tilde-no-at)
+                     ("C-c C-d %"  .      mon-insert-lisp-CL-eol-tilde)
+                     ("C-c t m"    .      mon-insert-lisp-testme)
+                     ("C-c s t"    .      mon-insert-lisp-stamp)
+                     ("C-c M-s l"  .      mon-keybind-slime-selector-helper) ;;'mon-slime-setup-init)
+                     ("M-/"             .  completion-at-point)
+                     ("<S-tab>"         .  completion-at-point)
+                     ("<S-iso-lefttab>" .  completion-at-point)
+                     ("<backtab>"       .  completion-at-point))))
          (cl-loop 
           for keys in kmp
           do (define-key slime-mode-map (kbd (car keys)) (cdr keys))))
@@ -956,9 +990,9 @@ always easy.\n As a friendly reminder, here is how it is done:\n
 Binds `slime-fuzzy-sroll-completions-up-from-target-buffer' and
 `slime-fuzzy-sroll-completions-down-from-target-buffer'.
 Assumes following returns true: 
- (featurep 'slime-fuzzy)
+ \(featurep 'slime-fuzzy\)\n
 Function `mon-keybind-put-hooks-init' arranges that this function is called
-after file mon-keybindings.el is loaded.
+after file mon-keybindings.el is loaded.\n
 :SEE-ALSO `slime-get-fuzzy-buffer', `slime-fuzzy-choices-buffer'.\n▶▶▶"
   (when (and (or (and (intern-soft "IS-MON-P-GNU" obarray)
                       (bound-and-true-p IS-MON-P-GNU))

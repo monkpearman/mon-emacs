@@ -304,7 +304,7 @@
 
 ;;; ==============================
 ;;; :DARWIN 
-;;; (executable-find "sbcl") => /opt/homebrew/bin/spcl
+;;; (executable-find "sbcl") => /opt/homebrew/bin/sbcl
 ;;;
 ;;; :NOTE on Darwin with sbcl from homebrew the executable (executable-find "sbcl")
 ;;;  exports the following variable: "SBCL_SOURCE_ROOT" and "SBCL_HOME".
@@ -443,7 +443,6 @@ The symbols contained of this list are defined in :FILE slime-loads-GNU-clbuild.
   :prefix "quicklisp-"
   :group 'mon-slime
   :group 'mon-doc-help-utils)
-
 
 ;;; ==============================
 ;;; :PASTED (URL `http://paste.lisp.org/+2EGF')
@@ -696,9 +695,6 @@ quicklisp directory as per `quicklisp-find-slime'./n
              (bound-and-true-p *quicklisp-systems*))
   (setq *quicklisp-systems* (make-hash-table :test 'equal)))
 
-
-;; (define-hash-table-test name test hash)
-
 ;;; ==============================
 ;;; :NOTE Can/should this leverage `lazy-completion-table'?
 ;;; :CREATED <Timestamp: #{2010-06-30T23:12:22-04:00Z}#{10263} - by MON KEY>
@@ -750,7 +746,7 @@ hash-table, this effectivley forces a rehash of existing systems.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-06-30T23:12:53-04:00Z}#{10263} - by MON KEY>
 (defun quicklisp-system-complete (&optional insrtp intrp)
-  "A `completing-read' for currenlty provided quicklisp systems.\n
+  "A `completing-read' for currently provided quicklisp systems.\n
 When called-interactively or ptional arg INSRTP is non-nil insert retrun value
 in current-buffer moving point.\n
 :EXAMPLE\n\n(quicklisp-system-complete\)\n
@@ -836,8 +832,8 @@ Optional args INSRTP and INTRP are as per `quicklisp-system-complete'.\n
     (when (and ql-cur-slm-if cur-slm-as-el (string-equal ql-cur-slm-if cur-slm-as-el))
       (ignore-errors (quicklisp-hash-system-completions)))))
 ;;
-;; :FIXME This needs t0 be run on a siome mode hook
-;; slime-lisp-mode-hook or slime-setup-first-change-hook
+;; :FIXME This needs to be run on a `slime-mode-hook', `slime-lisp-mode-hook' or
+;; `slime-setup-first-change-hook'
 (add-hook 'slime-load-hook 'quicklisp-hash-system-completions-slime-loadtime)
 ;; (eval-after-load "slime" '(quicklisp-hash-system-completions-slime-loadtime))
 ;;
@@ -1000,8 +996,9 @@ Run on the `lisp-mode-hook'.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2011-07-04T13:01:36-04:00Z}#{11271} - by MON KEY>
 (defun mon-slime-setup-add-hooks ()
-  "
-:SEE-ALSO .\n▶▶▶"
+  "Setup some Slime related hooks.\n
+:SEE-ALSO `slime-mode-hook', `slime-connected-hook',
+`slime-inspector-mode-hook', `slime-repl-mode-hook', `lisp-mode-hook'.\n▶▶▶"
   ;; :TODO Need to set whitespace-style on the lisp-interaction-mode-hook and/or
   ;;       add it to file-local-variables
   ;;
@@ -1030,7 +1027,7 @@ Run on the `lisp-mode-hook'.\n
   ;; (add-hook 'slime-mode-hook             'mon-slime-ensure-file-local-variables)
   
   ;; DARWIN TEST-ME
-  ;; (add-hook 'slime-connected-hook 
+  ;; (add-hook 'slime-connected-hook
   ;;           (function (lambda () (slime-make-quicklisp-completion-table))) t)
   ;;
   
@@ -1038,9 +1035,10 @@ Run on the `lisp-mode-hook'.\n
   ;; `lisp-mode-hook' if slime-setup was evald
   (add-hook 'slime-mode-hook ;; (remove-hook 'slime-mode-hook
             (function (lambda () (set (make-local-variable 'lisp-indent-function) 'common-lisp-indent-function))))  
-  (add-hook 'slime-inspector-mode-hook 'mon-keybind-slime-inspector t t)
-  (add-hook 'slime-mode-hook           'mon-keybind-slime t))
-
+  
+  (add-hook 'slime-mode-hook           'mon-keybind-slime t)
+  
+  (add-hook 'slime-inspector-mode-hook 'mon-keybind-slime-inspector t t))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2011-07-04T13:02:41-04:00Z}#{11271} - by MON KEY>
@@ -1050,7 +1048,9 @@ Run on the `lisp-mode-hook'.\n
 file-local-variables; specifically `show-trailing-whitespace' isn't being
 recognized -- this function fixes that.\n
 :EXAMPLE\n\n
-:SEE-ALSO .\n▶▶▶"
+:SEE-ALSO `mon-slime-ensure-fasl-temp-directory-exists',
+`mon-add-lisp-system-paths-to-mon-lisp-system-paths',
+`mon-add-lisp-system-paths-to-tags-table-list'.\n▶▶▶"
   (let ( ;;(mseflv-blv  (buffer-local-variables (current-buffer))))
         (mseflv-flva file-local-variables-alist))
     (dolist (mseflv-D-0 '(indent-tabs-mode show-trailing-whitespace))
@@ -1074,7 +1074,11 @@ To make sure the directory exists:\n
 :NOTE The /tmp dire gets cleaned on each reboot.\n
 :SEE (URL `http://slime-tips.tumblr.com/post/11398866534/keeping-fasls-away')
 :EXAMPLE\n\n
-:SEE-ALSO `slime-compile-file-options'.\n▶▶▶"
+:SEE-ALSO `mon-slime-ensure-file-local-variables',
+`mon-slime-ensure-fasl-temp-directory-exists',
+`mon-add-lisp-system-paths-to-mon-lisp-system-paths',
+`mon-add-lisp-system-paths-to-tags-table-list',
+`slime-compile-file-options'.\n▶▶▶"
   (let ((mseftde-dir "/tmp/slime-temp-fasls/"))
     (make-directory mseftde-dir t)
     (when (file-directory-p mseftde-dir)
@@ -1140,7 +1144,7 @@ Used as a value for `*mon-common-lisp-hyperspec-browser-function*'.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2024-08-26T18:33:04-04:00Z}#{24351} - by MON KEY>
 (defun mon-common-lisp-hyperspec-browse-url-w3m (url &rest args)
-"Handler function for `browse-url' cdr of a cons cell as per `browse-url-handlers'.\n
+  "Handler function for `browse-url' cdr of a cons cell as per `browse-url-handlers'.\n
 Used in conjunction with `mon-common-lisp-hyperspec-use-dedicated-browser-p'
 which if URL satisfies will cause allow this function to invoke `w3m-browse-url'
 with URL as it's argument.\n
@@ -1150,7 +1154,7 @@ Used as a value for `*mon-common-lisp-hyperspec-browser-function*'.\n
    \(concat common-lisp-hyperspec-root \"Body/m_defpar.htm\"\)\)\n
 :SEE-ALSO `mon-common-lisp-hyperspec-browse-url-eww',`common-lisp-hyperspec',
 `common-lisp-hyperspec-root',`browse-url-generic-program', `browse-url-browser-function'.\n▶▶▶"
- (w3m-browse-url url))
+  (w3m-browse-url url))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2024-08-26T20:30:26-04:00Z}#{24351} - by MON KEY>
@@ -1234,10 +1238,15 @@ Attempts to disable `slime-use-autodoc-mode' in various ways \(mostly w/out succ
 Requires slime package.\n
 Evaluates `slime-setup', `slime-require'.\n
 :SEE-ALSO `mon-set-lisp-init', `mon-slime-start-sbcl', `mon-keybind-slime',
+`mon-slime-ensure-fasl-temp-directory-exists',
+`mon-add-lisp-system-paths-to-mon-lisp-system-paths',
+`mon-add-lisp-system-paths-to-tags-table-list', `mon-lisp-set-indent',
+`mon-lisp-set-indent-hook', `mon-slime-setup-add-hooks',
+`mon-slime-ensure-file-local-variables',
 `mon-slime-ensure-fasl-temp-directory-exists', `mon-help-CL-slime-keys',
-`slime-cheat-sheet', `mon-slime-setup-mon', `init-keybind-lisp-interaction-mode',
-`mon-keybind-emacs-lisp-mode', `slime-setup-contribs', `slime-load-contribs',
-`slime-required-modules'.\n▶▶▶"
+`slime-cheat-sheet', `mon-slime-setup-mon',
+`init-keybind-lisp-interaction-mode', `mon-keybind-emacs-lisp-mode',
+`slime-setup-contribs', `slime-load-contribs', `slime-required-modules'.\n▶▶▶"
 
   ;; Evaluate `mon-add-lisp-system-paths-to-mon-lisp-system-paths'
   ;; to make sure value of `*mon-lisp-system-paths*' is non-null and it's
@@ -1256,35 +1265,7 @@ Evaluates `slime-setup', `slime-require'.\n
    (add-to-list 'auto-mode-alist '("\\(?:\\.pctd\\)" . lisp-mode))
 
   (custom-set-variables
-   '(inferior-lisp-program (concat (executable-find "sbcl") " --noinform --no-linedit"))
-   ;; '(slime-net-coding-system 'iso-latin-1-unix))
-   '(slime-net-coding-system 'utf-8-unix)
-   '(slime-backend (quicklisp-write-dot-swank-loader-if))
-   '(slime-truncate-lines nil)
-   ;; :NOTE Setting `slime-use-autodoc-mode' is about the only to stop the
-   ;;       insanity once it starts.
-   ;; :OBSOLETE `slime-complete-symbol-function' :USE `slime-completion-at-point-functions'
-   ;; '(slime-complete-symbol-function 'slime-fuzzy-complete-symbol)
-   ;; '(slime-completion-at-point-functions  (add-to-list  'slime-completion-at-point-functions 'slime-fuzzy-complete-symbol) t)
-   '(slime-completion-at-point-functions
-     '(slime-fuzzy-complete-symbol
-       slime-filename-completion
-       slime-simple-completion-at-point))
-   '(slime-use-autodoc-mode nil)
-   '(slime-autodoc-delay 2)
-   '(slime-autodoc-accuracy-depth 4) ;; The default: 10 is prob. way to much IMHO
-   '(slime-repl-history-remove-duplicates t)
-   '(slime-repl-history-trim-whitespaces t)
-   ;; '(slime-repl-history-file "~/.slime/.slime-history.eld") :DEFAULT "~/.slime-history.eld"
-   ;; `comint-replace-by-expanded-filename', `comint-dynamic-complete-as-filename'
-   '(slime-when-complete-filename-expand t)
-   '(lisp-align-keywords-in-calls t)
-   '(lisp-lambda-list-keyword-alignment t)
-   '(lisp-lambda-list-keyword-parameter-alignment t)
-   '(lisp-lambda-list-keyword-parameter-indentation 0)
-   ;; '(slime-asdf-collect-notes t) ; :DEFAULT T
-   ;; :NOTE :SEE (common-lisp-style-names)
-   '(common-lisp-style-default "mon"))
+   '(inferior-lisp-program (concat (executable-find "sbcl") " --noinform --no-linedit")))
   
   (mon-slime-ensure-fasl-temp-directory-exists)
   
@@ -1348,6 +1329,43 @@ Evaluates `slime-setup', `slime-require'.\n
   ;; (require 'slime-asdf) (slime-asdf-init)
   ;; (require 'slime-mdot-fu) (slime-mdot-fu-init)
   ;;; ==============================
+  
+  (custom-set-variables
+   ;; '(slime-net-coding-system 'iso-latin-1-unix))
+   '(slime-net-coding-system 'utf-8-unix)
+   '(slime-backend (quicklisp-write-dot-swank-loader-if))
+   '(slime-truncate-lines nil)
+   ;; :NOTE Setting `slime-use-autodoc-mode' is about the only to stop the
+   ;;       insanity once it starts.
+   ;; :OBSOLETE `slime-complete-symbol-function' :USE `slime-completion-at-point-functions'
+   ;; '(slime-complete-symbol-function 'slime-fuzzy-complete-symbol)
+   ;; '(slime-completion-at-point-functions  (add-to-list  'slime-completion-at-point-functions 'slime-fuzzy-complete-symbol) t)
+   '(slime-completion-at-point-functions
+     '(slime-fuzzy-complete-symbol
+       slime-c-p-c-completion-at-point
+       slime-filename-completion
+       slime-simple-completion-at-point))
+   
+   ;; '(slime-use-autodoc-mode nil)   ; obsolote
+   ;; '(slime-autodoc-delay 2)         ; obsolote
+   '(slime-autodoc-accuracy-depth 4)  ; The default: 10 is prob. way to much IMHO
+   '(slime-repl-history-remove-duplicates t)
+   '(slime-repl-history-trim-whitespaces t)
+   ;; '(slime-repl-history-file "~/.slime/.slime-history.eld") :DEFAULT "~/.slime-history.eld"
+   ;; `comint-replace-by-expanded-filename', `comint-dynamic-complete-as-filename'
+   '(slime-when-complete-filename-expand t)
+   '(lisp-align-keywords-in-calls t)
+   '(lisp-lambda-list-keyword-alignment t)
+   '(lisp-lambda-list-keyword-parameter-alignment t)
+   '(lisp-lambda-list-keyword-parameter-indentation 0)
+   ;; '(slime-asdf-collect-notes t) ; :DEFAULT T
+   ;; :NOTE :SEE (common-lisp-style-names)
+   '(common-lisp-style-default "mon"))
+
+  ;; (slime-fuzzy-completion-limit   100) ; :DEFAULT 300
+
+  ;; (setq slime-fuzzy-completion-in-place nil)  ; :DEFAULT t
+  ;; (custom-note-var-changed 'slime-fuzzy-completion-in-place)
 
   (add-hook 'slime-mode-hook
             (function (lambda () (set (make-local-variable 'slime-use-autodoc-mode) nil))) t)

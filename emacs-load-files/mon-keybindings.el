@@ -748,6 +748,7 @@ Added to the `lisp-mode-hook' at init with `mon-keybind-put-hooks-init'.\n
                 ("C-c C-r"  .     nil) ; :WAS `lisp-eval-region'
                 ("M-q"      .     indent-sexp) ; :WAS `fill-paragraph' 
                 ("C-c M-q"  .     indent-sexp)
+                ;; ("C-c C-d i" .    mon-comment-divider)
                 )))
     (cl-loop 
      for keys in kmp
@@ -929,6 +930,7 @@ always easy.\n As a friendly reminder, here is how it is done:\n
                      ("M-n"        .      mon-scroll-up-in-place)
                      ("M-p"        .      mon-scroll-down-in-place)
                      ("C-c M-a c"  .      mon-align-conses)                      
+                     ("C-c C-d i"  .      mon-comment-divider)
                      ("C-c C-d r"  .      mon-insert-slime-arglist)
                      ("C-c C-d c"  .      mon-insert-lisp-doc-eg-xref)
                      ("C-c C-d j"  .      mon-insert-lisp-CL-jump-doc)
@@ -937,7 +939,10 @@ always easy.\n As a friendly reminder, here is how it is done:\n
                      ("C-c t m"    .      mon-insert-lisp-testme)
                      ("C-c s t"    .      mon-insert-lisp-stamp)
                      ("C-c M-s l"  .      mon-keybind-slime-selector-helper) ;;'mon-slime-setup-init)
-                     ("M-/"             .  completion-at-point)
+                     ;; :NOTE We use ;; `dabbrev-expand' because we often
+                     ;; need to complete on stings that aren't CL related or
+                     ;; symbols in any CL package.
+                     ("M-/"             . dabbrev-expand) ;; completion-at-point
                      ("<S-tab>"         .  completion-at-point)
                      ("<S-iso-lefttab>" .  completion-at-point)
                      ("<backtab>"       .  completion-at-point))))

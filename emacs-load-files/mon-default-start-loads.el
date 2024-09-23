@@ -52,7 +52,7 @@
 ;; `mon-set-github-paths-init', `mon-set-bbdb-init',
 ;; `mon-set-printer-postscript-init', `mon-set-split-window-init',
 ;; `mon-set-vc-init', `mon-set-magit-init', `mon-set-triples-ekg-init'
-;; `mon-set-markdown-mode-init',
+;; `mon-set-markdown-mode-init', `mon-set-ekg-db-file',
 ;; FUNCTIONS:◀◀◀
 ;;
 ;; MACROS:
@@ -64,6 +64,9 @@
 ;; `*mon-default-start-loads-xrefs*'
 ;; `*mon-default-start-load-sanity*'
 ;; `*mon-default-start-load-sanity-WARN-ONLY*'
+;; `*mon-ekg-db-file*'
+;; `*mon-desktop-desktop-locals-to-save*'
+;; `*mon-desktop-desktop-modes-not-to-save*'
 ;;
 ;; GROUPS:
 ;; `mon-default-start-loads'
@@ -293,9 +296,13 @@ The symbols contained of this list are defined in :FILE mon-default-start-loads.
           mon-set-pdf-view-init
           mon-set-epa-configs-init
           mon-set-erc-configs-init
+          mon-set-ekg-db-file
           mon-set-triples-ekg-init
           mon-set-markdown-mode-init
           ;; :VARIABLES
+          *mon-ekg-db-file*
+          *mon-desktop-desktop-locals-to-save*
+          *mon-desktop-desktop-modes-not-to-save*
           *mon-default-start-load-sanity*
           *mon-default-start-load-sanity-WARN-ONLY*
           *mon-default-start-loads-xrefs*))
@@ -2552,7 +2559,10 @@ in variable `*mon-misc-path-alist*'.\n
      ;;
      ;; (require 'erc-log)
      (push 'services erc-modules)
-     (push 'notifications erc-modules)
+
+     ;; don't enable this if emacs wasn't compiled with dbus support
+
+     ;; (push 'notifications erc-modules)
      (custom-note-var-changed 'erc-modules)
 
      (erc-update-modules)
@@ -2830,15 +2840,54 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;; (mon-set-markdown-mode-init t)
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-22T19:49:22-04:00Z}#{24387} - by MON KEY>
+(defvar *mon-ekg-db-file*
+  (file-name-concat user-emacs-directory "ekg-SDP-testing-2024-09-08.db")  
+"The current ekg database file.\n
+For use with `ekg-db-file'.\n
+:EXAMPLE\n\n *mon-ekg-db-file*\n
+:SEE-ALSO `mon-set-ekg-db-file', `mon-set-triples-ekg-init'.\n▶▶▶")
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-09-22T20:01:19-04:00Z}#{24387} - by MON KEY>
+(defun mon-set-ekg-db-file (db-file)
+  "Update the path to `*mon-ekg-db-file*' which in turn will update `ekg-db-file'.\n
+DB-FILE is a pathname to an `ekg-db-file'.\n
+When called interactively read a value for DB-FILE as if by `read-file' with
+`default-filename' as:\n
+ \"~<user-emacs-directory>/ekg-<YYYY-MM-DD>.db\"\n
+:EXAMPLE\n
+ \(symbol-value '*mon-ekg-db-file*\)\n
+ \(mon-set-ekg-db-file *mon-ekg-db-file*\)\n
+ \(let \(\(unwind-file *mon-ekg-db-file*\)
+      \(db-file '\(\)\)\)
+  \(unwind-protect
+      \(setq db-file \(call-interactively #'mon-set-ekg-db-file nil\)\)
+    \(mon-set-ekg-db-file unwind-file\)\)\)\n
+:SEE-ALSO `*mon-ekg-db-file*' `mon-set-ekg-db-file', `mon-set-triples-ekg-init'.\n▶▶▶"
+  (interactive (list (read-file-name "ekg-db-file path (possibly non-existent):" 
+                                     user-emacs-directory
+                               (concat "ekg-" (format-time-string "%F") ".db")
+                               nil
+                               (concat "ekg-" (format-time-string "%F") ".db"))))
+  (setq *mon-ekg-db-file* db-file)
+  (prog1 
+      (setq ekg-db-file *mon-ekg-db-file*)
+    (custom-note-var-changed  'ekg-db-file)))
+;;
+;; (mon-set-ekg-db-file (file-name-concat user-emacs-directory "ekg-SDP-PSCCB-2024-09-22.db"))
+
+;;; ==============================
 ;;; :CREATED <Timestamp: #{2024-09-04T11:42:24-04:00Z}#{24363} - by MON KEY>
 (defun mon-set-triples-ekg-init (&optional warn-only)
   "Set loadpath for triples and ekg libraries.\n
+Set value of ekg-db*mon-ekg-db-file* *mon-ekg-db-file* 
 :EXAMPLE\n
  \(locate-library \"ekg\"\)\n
  \(locate-library \"triples\"\)\n
 :SEE info node `(ekg)'\n
-:SEE-ALSO `ekg-capture-mode-hook', `ekg-edit-mode-hook', `ekg-auto-save-mode'
-`mon-set-markdown-mode-init'\n▶▶▶"
+:SEE-ALSO `*mon-ekg-db-file*', `mon-set-ekg-db-file', `ekg-capture-mode-hook',
+`ekg-edit-mode-hook', `ekg-auto-save-mode' `mon-set-markdown-mode-init'\n▶▶▶"
   (mon-default-start-error/sane
    'mon-set-browser-init warn-only
    ;; triples-mon-fork-GIT
@@ -2863,7 +2912,8 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    (custom-note-var-changed 'ekg-capture-default-mode)
 
    ;; (setq ekg-db-file <FILENAME> )  ; :DEFAULT nil when null defaults to `triples-default-database-filename'
-   (setq ekg-db-file (file-name-concat user-emacs-directory "ekg-SDP-testing-2024-09-08.db"))
+   (setq ekg-db-file *mon-ekg-db-file*)
+
    (custom-note-var-changed 'ekg-db-file)
 
    ;; (setq ekg-acceptable-modes <MODES-LIST>) ; :DEFAULT '(org-mode markdown-mode text-mode)
@@ -2905,9 +2955,8 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    ;;            (or (not (fboundp 'ekg-tags-complete))
    ;;                (not (fboundp 'ekg-tags-complete-doc))))
    ;;   (require 'mon-ekg))
-
-
    ))
+
 ;;
 ;; (mon-set-triples-ekg-init t)
 

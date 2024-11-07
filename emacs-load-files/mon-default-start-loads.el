@@ -2803,7 +2803,8 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 :SEE-ALSO `google-define'.\n▶▶▶"
   (mon-default-start-error/sane
    'mon-set-goolge-maps-init warn-only
-   (mon-build-path-for-load-path *mon-site-lisp-root* "google-maps")
+   (add-to-list 'load-path
+                (mon-build-path-for-load-path *mon-site-lisp-root* "google-maps"))
    (require 'google-maps)
    ;; ==============================
    ;; :CREATED <Timestamp: #{2010-08-19T17:28:36-04:00Z}#{10334} - by MON>

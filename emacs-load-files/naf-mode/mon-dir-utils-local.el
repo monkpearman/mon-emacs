@@ -247,10 +247,10 @@ Image directories defined in global variables: \n
 ;;; ==============================
 ;;; :PREFIX "mfmef-"
 ;;; :CREATED <Timestamp: #{2009-08-21T18:02:47-04:00Z}#{09345} - by MON KEY>
-(defun* mon-file-map-elisp-fileset (&optional (to-fileset-file nil got-tff) insrtp intrp 
-                                              &rest these-dirs 
-                                              &aux (got-tff (concat *mon-naf-mode-root* 
-                                                                    "/mon-elisp-fileset.el")))
+(cl-defun mon-file-map-elisp-fileset (&optional (to-fileset-file nil got-tff) insrtp intrp 
+                                                &rest these-dirs 
+                                                &aux (got-tff (concat *mon-naf-mode-root* 
+                                                                      "/mon-elisp-fileset.el")))
   "Return the list of *.el files in local Emacs load files.\n
 When TO-FILESET-FILE is non-nil string write return value to the file named by
 string.  Default is to write to file named:
@@ -930,8 +930,8 @@ Second elt is its range.\n
 ;;; :CREATED <Timestamp: Saturday June 27, 2009 @ 04:27.24 PM - by MON>
 (defun mon-dir-nef-keep-3 (folder-alist)
   "Return FOLDER-ALIST folder names as string as two string alist.\n
-Return FOLDER-ALIST names identified as two elt 'empty' `nil' directories,
-e.g. those formatted as:\nNNN_(NNNN-NNNN)\n1...3..........\n
+Return FOLDER-ALIST names identified as two elt \\='empty' `nil' directories,
+e.g. those formatted as:\nNNN_\(NNNN-NNNN\)\n1...3..........\n
 These were removed from surrounding list by `mon-dir-nef-remove-if-empty' for use by
 `mon-dir-nef-find-dups'. We need them back, so get them.\n
 :EXAMPLE\n\n\(mon-dir-nef-keep-3 *mon-nefs_photos_nefs-alist*\)\n

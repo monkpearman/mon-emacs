@@ -387,7 +387,8 @@
     ;; :VARIABLES
     *mon-common-lisp-hyperspec-browser-function*
     *slime-echo-arglist-STFU*
-    *quicklisp-path* *quicklisp-systems*
+    *quicklisp-path*
+    *quicklisp-systems*
     *slime-quicklisp-systems* 
     *mon-slime-xrefs*
     *mon-lisp-system-paths*)
@@ -452,10 +453,10 @@ The symbols contained of this list are defined in :FILE slime-loads-GNU-clbuild.
 Defaults to the value of:\n
  \(merge-pathnames \"quicklisp/\" \(user-homedir-pathname\)\)\n
 :SEE (URL `http://www.quicklisp.org').\n
-:SEE-ALSO `slime-backend', `quicklisp-find-slime',
-`quicklisp-current-swank-loader', `quicklisp-write-dot-swank-loader-if',
-`quicklisp-write-dot-swank-loader', `quicklisp-dot-swank-current-p',
-`*quicklisp-path*'.\n▶▶▶"
+:SEE-ALSO `*mon-sbcl-version*', `*mon-lisp-system-paths*', `slime-backend',
+`quicklisp-find-slime', `quicklisp-current-swank-loader',
+`quicklisp-write-dot-swank-loader-if', `quicklisp-write-dot-swank-loader',
+`quicklisp-dot-swank-current-p'.\n▶▶▶"
   :type  'directory
   :group 'mon-quicklisp
   :group 'mon-doc-help-CL)
@@ -1372,7 +1373,6 @@ Evaluates `slime-setup', `slime-require'.\n
 
   ;; (add-hook 'slime-mode-hook
   ;;              (function (lambda () (slime-list-threads))))
-
   ;; (add-hook 'slime-load-hook
   ;;           (when (buffer-local-value 'slime-highlight-edits-mode (current-buffer))
   ;;             (slime-highlight-edits-mode -1)))

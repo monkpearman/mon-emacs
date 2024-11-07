@@ -209,12 +209,12 @@ Bound at loadtime when `IS-MON-SYSTEM-P'.\n
 ;;; CREATED: <Timestamp: #{2009-08-11T13:42:35-04:00Z}#{09332} - by MON KEY>
 (defcustom *mon-smith-poster-HG-path* nil
   "Path to the local Smith HG docs folder.\n
-:EXAMPLE\n\n(cons *mon-smith-poster-HG-path*
+:EXAMPLE\n\n\(cons *mon-smith-poster-HG-path*
   \(file-directory-p *mon-smith-poster-HG-path*\)\)\n
 When `IS-MON-SYSTEM-P' path is bound to the value returned by the lambda form held
-in the cadr of the return value for the key 'the-smith-poster-docs-pth in
+in the cadr of the return value for the key \\='the-smith-poster-docs-pth in
 `*mon-misc-path-alist*', e.g:\n
- \(cadr \(assoc 'the-smith-poster-docs-pth *mon-misc-path-alist*\)\)\n
+ \(cadr \(assoc \\='the-smith-poster-docs-pth *mon-misc-path-alist*\)\)\n
 :SEE :FILE mon-site-local-defaults.el
 :SUBDIR-OF `*mon-HG-root-path*'\n
 :SEE-ALSO `*mon-emacsd*'.\n▶▶▶"

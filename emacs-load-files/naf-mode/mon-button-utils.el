@@ -144,8 +144,8 @@
     mon-button-at-point-describe-button-plist
     *mon-default-button-map*)
   "Xrefing list mon button related functions and variables.\n
-Symbols  defined in :FILE mon-button-utils.el\n
-:EXAMPLE\n\n(memq 'mon-button-get-plist *mon-button-utils-xrefs*)
+Symbols defined in :FILE mon-button-utils.el\n
+:EXAMPLEn\n\(memq \\='mon-button-get-plist *mon-button-utils-xrefs*\)
 :SEE-ALSO `*mon-regexp-symbols-xrefs*', `*mon-button-utils-xrefs*',
 `*mon-default-loads-xrefs*', `*mon-default-start-loads-xrefs*',
 `*mon-dir-locals-alist-xrefs*', `*naf-mode-xref-of-xrefs*',
@@ -186,7 +186,7 @@ Arg PUTATIVE-BUTTON-AT when non-nil, is a buffer-position to check for button pr
 :EXAMPLE\n\n\(progn
   \(goto-char \(buffer-end 0\)\)
   \(list \(mon-button-at-point-p 
-         \(while \(not \(get-char-property \(point\) 'button\)\) \(forward-char\)\)\)
+         \(while \(not \(get-char-property \(point\) \\='button\)\) \(forward-char\)\)\)
        :BUTTON-AT-POINT \(point\)\)\)\n
 :SEE-ALSO `mon-button-get-plist', `mon-button-get-plist-props',
 `mon-button-at-point-p', `mon-button-at-point-describe-button-plist'
@@ -281,7 +281,7 @@ is implemented by both overlays and text-properties this indirection allows:
 (defun mon-button-get-plist-props (type-of-button)
   "Return a plist properties for TYPE-OF-BUTTON.\n
 TYPE-OF-BUTTON is a button constructed with `define-button-type'.\n
-:EXAMPLE\n\n\(mon-button-get-plist-props 'button\)\n
+:EXAMPLE\n\n\(mon-button-get-plist-props \\='button\)\n
 :ALIASED-BY `mon-get-button-plist-props'\nn
 :SEE-ALSO `mon-button-get-plist', `mon-button-at-point-p',
 `mon-button-at-point-describe-button-plist', `mon-get-overlays-map-props',

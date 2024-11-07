@@ -503,24 +503,24 @@ do not execute.\n
        \(*mon-CIFS-domain* \"BUBBAS-CIFS\"\)
        \(*mon-CIFS-mount-points*
         \(mon-map-cifs-domain->local-mount
-         '\(\(LIL-BUBBA \"REMOTE-lil-bubba\" \"LOCAL-lil-bubba\"\)
+         \\='\(\(LIL-BUBBA \"REMOTE-lil-bubba\" \"LOCAL-lil-bubba\"\)
            \(BIG-BUBBA \"REMOTE-big-bubba\" \"LOCAL-big-bubba\"\)\)
          \"/mnt/local-bubba\" \"BUBBAS-CIFS\"\)\)
-       \(mn-str \(mon-mount-cifs 'LIL-BUBBA nil nil t\)\)
-       \(um-str \(mon-mount-cifs 'BIG-BUBBA t nil t\)\)
+       \(mn-str \(mon-mount-cifs \\='LIL-BUBBA nil nil t\)\)
+       \(um-str \(mon-mount-cifs \\='BIG-BUBBA t nil t\)\)
        \(mn-str-creds 
-        \(mon-mount-cifs 'BIG-BUBBA nil 
+        \(mon-mount-cifs \\='BIG-BUBBA nil 
                         \(directory-file-name default-directory\) t\)\)
        \(lbep \(line-beginning-position 2\)\)\)
   \(setq mn-str 
         \(format 
          \(concat 
-          \"\\nSample MOUNT for shell-command:\\n\\n shell> %s\\n\\n\"
-          \"Sample UMOUNT string for shell-command:\\n\\n  shell> %s\\n\\n\"
-          \"Sample MOUNT string using credntials file:\\n\\n  shell> %s\\n\\n\"\)
+          \"\nSample MOUNT for shell-command:\n\n shell> %s\n\n\"
+          \"Sample UMOUNT string for shell-command:\n\n  shell> %s\n\n\"
+          \"Sample MOUNT string using credntials file:\n\n  shell> %s\n\n\"\)
          mn-str um-str mn-str-creds\)\)
   \(mon-help-overlay-result lbep \(+ \(length mn-str\) lbep\) 81 mn-str\)\)\n
-:SEE \(man \"mount.cifs\"\)\n:SEE \(man \"mount\")
+:SEE \(man \"mount.cifs\"\)\n:SEE \(man \"mount\"\)
 :SEE \(man \"umount.cifs\"\)\n:SEE \(man \"samba\"\)\n:SEE \(man \"sudo\"\)\n
 :SEE-ALSO `mon-unmount-cifs', `mon-map-cifs-domain->local-mount',
 `mon-get-cifs-credentials', `mon-build-cifs-credentials',
@@ -669,14 +669,14 @@ o Bind or rebind the following variables:\n
   `*mon-CIFS-domain*', `*mon-CIFS-mount-root*', `*mon-CIFS-mount-points*',\n
 o When the variable `*mon-CIFS-misc-path-alist*' is not present bind it to a
   symbol holding an alist of safe dummy values which present examples for the
-  alist keys 'the-shr-prfix', 'the-mnt-prfx', and 'the-mnt-maps' which are
+  alist keys \\='the-shr-prfix', \\='the-mnt-prfx', and \\='the-mnt-maps' which are
   evaluated elsewhere in with this procedure.\n
  The `*mon-CIFS-misc-path-alist*' keys map to variables:\n
-  'the-shr-prfix' <- `*mon-CIFS-domain*'
-  'the-mnt-prfx'  <- `*mon-CIFS-mount-root*'
-  'the-mnt-maps'  <- `*mon-CIFS-mount-points*'\n
+  \\='the-shr-prfix' <- `*mon-CIFS-domain*'
+  \\='the-mnt-prfx'  <- `*mon-CIFS-mount-root*'
+  \\='the-mnt-maps'  <- `*mon-CIFS-mount-points*'\n
 o When optional arg NO-MISC-PATH is non-nil does not map the domain and mount
-  points specified by the alist key values 'the-mnt-prfx' and 'the-mnt-maps' in
+  points specified by the alist key values \\='the-mnt-prfx' and \\='the-mnt-maps' in
   `*mon-CIFS-misc-path-alist*'; instead uses the user symbol-values of
   `*mon-CIFS-domain*' and `*mon-CIFS-mount-root*'.\n
 o Evaluate `mon-map-cifs-domain->local-mount' which maps the values of
@@ -793,11 +793,11 @@ When you are finished debugging, make sure to kill the buffer named
 *MON-AUTH-SOURCE-DEBUG-VAR* and set *mon-auth-source-debug-var* to nil.\n
 :EXAMPLE\n\n\(dotimes \(i 3 \(progn \(setq *mon-auth-source-debug-var*\)
                      \(kill-buffer \"*MON-AUTH-SOURCE-DEBUG-VAR*\"\)\)\)
-  \(let \(\(auth-source-debug  'mon-spit-auth-source-debug->var\)
+  \(let \(\(auth-source-debug  \\='mon-spit-auth-source-debug->var\)
         \(*mon-auth-source-cache-debug-var* t\)\)
     \(mon-spit-auth-source-debug->var
      \"auth-source-user-or-password: found %s=%s for %s \(%s\)\" 
-     '\(\"login\" \"password\"\) '\(\"MY-LOGIN\" \"MY-PASSWORD\"\) 'MY-HOST 'HER-PROTOCOL\)
+     \\='\(\"login\" \"password\"\) \\='\(\"MY-LOGIN\" \"MY-PASSWORD\"\) \\='MY-HOST \\='HER-PROTOCOL\)
     \(sit-for 1.5\)\)\)\n
 :SEE-ALSO `netrc-machine-user-or-password'.\n▶▶▶"
   (unwind-protect

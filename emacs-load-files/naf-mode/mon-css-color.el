@@ -469,7 +469,7 @@ These are the W3C SVG color keywords found here:
 (defun css-color:html-color-both-cases ()
   "Return both cases of HTML colors in car of `*css-color:html-colors*'.\n
 :EXAMPLE\n\n\(css-color:html-color-both-cases\)\n
-\(mapcar #'car *css-color:html-colors*\)\n
+\(mapcar #\\='car *css-color:html-colors*\)\n
 :SEE-ALSO `css-color:html-color-by-name', `*css-color:html-colors*',
 `css-color:examine-color', `*regexp-css-color-html*', `mon-help-css-color',
 `mon-help-color-functions', `mon-help-color-chart'.\n▶▶▶"
@@ -1531,12 +1531,12 @@ When INSRTP is non-nil or called-interactively insert return value at point.
 Does not move point.\n
 Optional arg PROMPT is a string for `completing-read'.
 Default prompt is: \"CSS color name: \"\n
-:EXAMPLE\n\n(css-color:html-color-by-name 'aliceblue)\n
+:EXAMPLE\n\n\(css-color:html-color-by-name \\='aliceblue\)\n
 \(css-color:html-color-by-name \"aliceblue\"\)\n
 \(css-color:html-color-by-name \"AliceBlue\"\)\n
 \(css-color:html-color-by-name\)\n
 \(css-color:html-color-by-name\)\n
-\(with-temp-buffer \(css-color:html-color-by-name nil nil t) \(buffer-string\)\)\n
+\(with-temp-buffer \(css-color:html-color-by-name nil nil t\) \(buffer-string\)\)\n
 :SEE-ALSO `css-color:examine-color', `css-color:html-color-both-cases',
 `mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n▶▶▶"
   (interactive "i\ni\np")
@@ -1567,7 +1567,7 @@ One can specify the colors of any viable CSS color.\n
 :EXAMPLE\n\n\(css-color:examine-color \"Red\" \"#000\"\)\n
 \(css-color:examine-color \"#0C0\" \"#b0ff00\"\)\n
 \(css-color:examine-color \"hsla\(100, 50%, 25%\)\" \"rgb\(255,100,120\)\"\)\n
-\(call-interactively 'css-color:examine-color\)\n 
+\(call-interactively \\='css-color:examine-color\)\n
 :SEE-ALSO `css-color:html-color-by-name', `css-color:hexify-anystring',
 `*css-color:bg-history*', `*css-color:fg-history*' `list-colors-display',
 `mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n▶▶▶"

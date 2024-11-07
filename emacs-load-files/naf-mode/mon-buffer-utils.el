@@ -725,8 +725,8 @@ buffers include:\n
  \" *xgit-process*\" \" *xgit-errors*\"
  \" *Unicode Data*\" \" *url-work\"\n\n
 :EXAMPLE\n\n\(mon-get-buffer-hidden\)\n
-\(mapcar #'car \(mon-get-hidden-buffers\)\)\n
-\(mapcar #'cdr \(mon-get-hidden-buffers\)\)\n
+\(mapcar #\\='car \(mon-get-hidden-buffers\)\)\n
+\(mapcar #\\='cdr \(mon-get-hidden-buffers\)\)\n
 :ALIASED-BY `mon-get-hidden-buffers'\n
 :ALIASED-BY `mon-help-hidden-buffers'\n
 :SEE-ALSO `*mon-get-hidden-buffers-known*', `mon-get-buffer-hidden-if',
@@ -845,8 +845,8 @@ Default is to return a lisp form for `eval'.\n
   "Return the most recently visited buffer whose major-mode is W-MODE.\n
 When optional arg NOT-VISIBLE-ONLY is non-nil only considers buffers that are
 not already visible. Default is to consider all buffers on all frames.\n
-:EXAMPLE\n\n\(mon-get-buffer-w-mode 'help-mode 'not-visible-only\)\n
-\(mon-get-buffer-w-mode 'fundamental-mode\)\n
+:EXAMPLE\n\n\(mon-get-buffer-w-mode \\='help-mode \\='not-visible-only\)\n
+\(mon-get-buffer-w-mode \\='fundamental-mode\)\n
 :ALIASED-BY `mon-buffer-get-w-mode'\n
 :SEE-ALSO `mon-buffer-exists-p', `mon-with-file-buffer', `mon-buffer-written-p',
 `mon-buffer-narrowed-p', `mon-buffer-sub-no-prop',
@@ -858,13 +858,13 @@ not already visible. Default is to consider all buffers on all frames.\n
 `with-temp-buffer', `mon-help-buffer-functions'.\n▶▶▶"
   ;; 
   (cl-loop for mgbwm-bfr in (buffer-list)
-        when (and (with-current-buffer mgbwm-bfr (eq major-mode w-mode))
+           when (and (with-current-buffer mgbwm-bfr (eq major-mode w-mode))
                   (not (string-match-p "^ " (buffer-name mgbwm-bfr)))
                   (null (if not-visible-only
                             (get-buffer-window mgbwm-bfr 'visible)
                           (get-buffer-window mgbwm-bfr t))))
-        return mgbwm-bfr
-        finally (mon-format :w-fun #'error
+           return mgbwm-bfr
+           finally (mon-format :w-fun #'error
                             :w-spec '(":FUNCTION `mon-get-buffer-w-mode' "
                                       "-- can not locate buffer W-MODE: %S")
                             :w-args w-mode)))
@@ -882,12 +882,12 @@ CHECK-FOR is a value to test for.\n
 When optional arg W-BUFFER is non-nil it is a buffer object or string naming one.
 Signal an error if W-BUFFER does not satisfy `mon-buffer-exists-p'.
 Default is value of current-buffer.\n
-:EXAMPLE\n\n\(mon-buffer-check-local-value 'eq 'major-mode 'help-mode\)\n
-\(mon-buffer-check-local-value 'eq 'major-mode 'help-mode \(current-buffer\)\)\n
-\(mon-buffer-check-local-value 'eq 'buffer-read-only t \(current-buffer\)\)\n
-\(mon-buffer-check-local-value 'eq 'buffer-read-only t \"*Help*\"\)\n
+:EXAMPLE\n\n\(mon-buffer-check-local-value \\='eq \\='major-mode \\='help-mode\)\n
+\(mon-buffer-check-local-value \\='eq \\='major-mode \\='help-mode \(current-buffer\)\)\n
+\(mon-buffer-check-local-value \\='eq \\='buffer-read-only t \(current-buffer\)\)\n
+\(mon-buffer-check-local-value \\='eq \\='buffer-read-only t \"*Help*\"\)\n
 ;; Following successfully signals an error:
-\(mon-buffer-check-local-value 'eq 'major-mode 'help-mode \"Probably-not-a-real-buffer\"\)
+\(mon-buffer-check-local-value \\='eq \\='major-mode \\='help-mode \"Probably-not-a-real-buffer\"\)
 :SEE-ALSO `mon-buffer-exists-p', `mon-buffer-name-is-file-name-p',
 `*mon-equality-or-predicate-function-types*'.\n▶▶▶"
   (mon-equality-or-predicate 
@@ -911,11 +911,11 @@ CHECK-MODE is a symbol naming a major-mode.\n
 When optional arg IN-BUFFER is non-nil it is a buffer object or string naming one.
 Signal an error if IN-BUFFER does not satisfy `mon-buffer-exists-p'.
 Default is value of current-buffer.\n
-:EXAMPLE\n\n\(mon-buffer-check-major-mode 'help-mode\)\n
-\(mon-buffer-check-major-mode 'help-mode \(current-buffer\)\)\n
-\(mon-buffer-check-major-mode 'help-mode \"*Help*\"\)\n
+:EXAMPLE\n\n\(mon-buffer-check-major-mode \\='help-mode\)\n
+\(mon-buffer-check-major-mode \\='help-mode \(current-buffer\)\)\n
+\(mon-buffer-check-major-mode \\='help-mode \"*Help*\"\)\n
 ;; Following successfully and signals an error:\n
-\(mon-buffer-check-major-mode 'help-mode \"Probably-not-a-real-buffer\"\)\n
+\(mon-buffer-check-major-mode \\='help-mode \"Probably-not-a-real-buffer\"\)\n
 :SEE-ALSO `mon-get-buffer-w-mode', `mon-buffer-name-is-file-name-p',
 `mon-buffer-check-local-value'.\n▶▶▶"
   (mon-buffer-check-local-value 'eq 'major-mode check-mode in-buffer))
@@ -936,7 +936,7 @@ Signal an error if that buffer does not exist. Default is current-buffer.\n
     \(nreverse chk\)\)\)\n
 \(let* \(ltb-chk
        \(ltb \(get-buffer-create \"*LLM-TEST*\"\)\)
-       \(do-ltb #'\(lambda \(\) \(with-current-buffer ltb \(longlines-mode\)\)
+       \(do-ltb #\\='\(lambda \(\) \(with-current-buffer ltb \(longlines-mode\)\)
                          \(push \(mon-buffer-longlines-mode-p \(get-buffer ltb\)\) ltb-chk\)\)\)\)
   \(dotimes \(l 2 \(progn \(with-current-buffer ltb \(kill-buffer\)\)
                        \(nreverse ltb-chk\)\)\)
@@ -974,8 +974,8 @@ Signal an error if that buffer does not exist. Default is current-buffer.\n
 When OR-BUFFER is non-nil put that buffer's name on kill ring instead.
 When INSRTP is non-nil or called-interactively with prefix arg insert 
 buffer-name at point. Does not move point.\n
-:EXAMPLE\\n(mon-buffer-name->kill-ring)\n
-\(call-interactively 'mon-buffer-name->kill-ring)\n
+:EXAMPLE\n\(mon-buffer-name->kill-ring\)\n
+\(call-interactively \\='mon-buffer-name->kill-ring\)\n
 :SEE-ALSO `mon-buffer-exists-p', `mon-buffer-exists-so-kill',
 `mon-buffer-written-p', `mon-print-in-buffer-if-p', `mon-with-file-buffer',
 `mon-with-buffer-undo-disabled', `mon-get-buffer-w-mode',

@@ -49,7 +49,8 @@
 ;; `mon-nuke-and-eval', `mon-unbind-defun', `mon-unbind-symbol',
 ;; `mon-unbind-function', `mon-unbind-command', `mon-unbind-variable',
 ;;
-;; `mon-list-fonts-display', `mon-font-at-point'
+;; `mon-list-fonts-display', `mon-font-at-point',
+;; `mon-reescape-lisp-string-region',
 ;;
 ;; FUNCTIONS:◀◀◀
 ;; 

@@ -256,7 +256,7 @@ The symbols contained of this list are defined in :FILE mon-color-utils.el\n
   "PRE:  FACTOR is a float in the range [0.0 1.0]. Default is 0.5.\n
 RETURN:  A triplet \(red green blue\)\n
          = COLOR-A + \( COLOR-B - COLOR-A \) * FACTOR\n
- (mon-color-mix '(61166 57311 52428) '(61166 41634 44461) 0.6)
+ \(mon-color-mix \\='\(61166 57311 52428\) \\='\(61166 41634 44461\) 0.6\)
 :SEE-ALSO `mon-color-list-display', `mon-color-mix-display', `color-distance',
 `mon-defined-colors-without-duplicates', `mon-help-color-functions',
 `mon-help-color-chart', `mon-help-css-color'.\n▶▶▶"
@@ -351,7 +351,7 @@ RED-VAL, GREEN-VAL, BLUE-VAL input values should be in [0..65535] range.\n
 Output values for hue are in [0..360] range.\n
 Output values for saturation and value are in [0..1] range.\n
 :EXAMPLE\n\n\(xw-color-values \"NavajoWhite\"\)\n
-\(apply 'mon-rgb-to-hsv \(xw-color-values \"NavajoWhite\"\)\)\n
+\(apply \\='mon-rgb-to-hsv \(xw-color-values \"NavajoWhite\"\)\)\n
 :NOTE This fncn returns different hsv value than `css-color:rgb-to-hsv'.\n
 :SEE-ALSO `mon-defined-colors-without-duplicates', `mon-color-mix',
 `htmlfontify-load-rgb-file', `mon-help-color-functions', `mon-help-color-chart',
@@ -511,8 +511,8 @@ Defaults do \"green\" if user bails or no input is recieved.\n
 ;;; :CREATED <Timestamp: #{2024-09-13T19:10:03-04:00Z}#{24375} - by MON KEY>
 (defun mon-colorcomp-read-percentage ()
   "Read a number as if by `read-number' and return it.\n
-NUMBER must be less than or equal to 100.
-:EXAMPLE\n\n\(call-interactively 'mon-colorcomp-read-percentage\)
+NUMBER must be less than or equal to 100.\n
+:EXAMPLE\n\n\(call-interactively \\='mon-colorcomp-read-percentage\)
 \(mon-colorcomp-read-percentage\)\n
 :SEE-ALSO `mon-color-read'.\n▶▶▶"
   (interactive)

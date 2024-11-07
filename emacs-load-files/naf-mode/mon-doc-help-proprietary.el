@@ -89,12 +89,12 @@ This is usually located in the \"system32\" folder in the Windows folder:
   "Return the action accomplished with the cmd command named CMD-SEARCH.\n
 CMD-SEARCH is a string which names a cmd command to search.
 When called interactively prompt for a command name to search.
-:EXAMPLE\n\n\(mon-help-w32-cmd-commands nil t)\n
-\(call-interactively 'mon-help-w32-cmd-commands\)\n
+:EXAMPLE\n\n\(mon-help-w32-cmd-commands nil t\)\n
+\(call-interactively \\='mon-help-w32-cmd-commands\)\n
 \(mon-help-w32-cmd-commands \"FIND\"\)\n
-\(mon-help-w32-cmd-commands \"find\")\n
-:SEE (URL `http://www.kapcom.com.au/Windows-CMD-Commands-CMD-Network-Commands.html')
-:SEE (URL `http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/cmd.mspx?mfr=true')\n
+\(mon-help-w32-cmd-commands \"find\"\)\n
+:SEE \(URL `http://www.kapcom.com.au/Windows-CMD-Commands-CMD-Network-Commands.html'\)
+:SEE \(URL `http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/cmd.mspx?mfr=true'\)\n
 :SEE-ALSO `mon-bind-doc-help-proprietery-vars-at-loadtime', 
 `*mon-help-w32-CMD-commands*' `mon-help-w32-shell-execute'.\n▶▶▶"
 (interactive "i\np")
@@ -117,7 +117,7 @@ Loadtime binding of variable at `*mon-help-w32-CMD-commands*' to hashtable for
 `mon-help-w32-cmd-commands'.\n
 CMD-VAR-LIST is an alphabetically keyed list containing sublists of conses which
 are key value pairs of the form symbol . string e.g.:\n
- '((A (consA . \"consA string\")) (B (consB .\"consB\")) { ... } )\n
+ \\='\(\(A \(consA . \"consA string\"\)\) \(B \(consB .\"consB\"\)\) { ... } \)\n
 When BIND-NEW is non-nil rebind the variable `*mon-help-w32-CMD-commands*' with
 any new key value pairs in the sublists of CMD-VAR-LIST.\n
 When FORCE-BIND is non-nil clear existing hashtable before populating the key

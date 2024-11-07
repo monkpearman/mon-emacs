@@ -365,7 +365,7 @@ Directory namestrings matched by this regexp are filted from return values of:\n
  `mon-add-subdirs-to-list' `mon-dir-get-subdirs'\n
 :EXAMPLE\n\n\(let \(\(fltr-if *regexp-add-subdirs-to-list-filter-ignorables*\)\)
   \(setq fltr-if ; Re-using the local var
-        \(mapcar #'\(lambda \(dirs\)
+        \(mapcar #\\='\(lambda \(dirs\)
                     \(and \(not \(or \(string-or-null-p \(cadr dirs\)\)
                                   \(string-match-p fltr-if \(car dirs\)\)\)\)
                          \(file-name-as-directory \(car dirs\)\)\)\)
@@ -393,7 +393,7 @@ This requires that arg W-PUTATIVE-FILE-TRUENAME satisfy the following constraint
  - that it is `file-name-absolute-p';
  - that it is not `file-symlink-p';
  - that it is existent per `file-exists-p';
- - that it is the string equivalent (as per `equal') of its `file-truename';\n
+ - that it is the string equivalent (as per `equal'\) of its `file-truename';\n
 When all constraints are satisfied return W-PUTATIVE-FILE-TRUENAME, else nil.\n
 When optional arg W-BOOLEAN-LIST-RETURN is non-nil return value is a list, such
 that when all constraints are satisfied, car is `t' and cadr is the string
@@ -401,7 +401,7 @@ W-PUTATIVE-FILE-TRUENAME. In which case it has the format:\n
  \(t <W-PUTATIVE-FILE-TRUENAME>\)\n
 and evaluating the cadr of return value should return non-nil.\n
 When a constraint failed, car is `nil' and cadr is a cons. It has the format:\n
- (nil (<FAILED-CONSTRAINT> <W-PUTATIVE-FILE-TRUENAME>))\n
+ \(nil \(<FAILED-CONSTRAINT> <W-PUTATIVE-FILE-TRUENAME>\)\)\\n
 and evaluating the cadr of return value should return `nil'.\n
 :EXAMPLE\n
 \(file-truename default-directory\)
@@ -454,8 +454,8 @@ more of Emacs' file/path related functions must interact things become slippery:
  \(equal \(file-truename \"\"\) \(directory-file-name default-directory\)\)\n
  \(let* \(\(empty-nm \"\"\)
         \(true-nm \(file-truename empty-nm\)\)\)
-   \(format \(mapconcat #'identity
-                      '\(\"\"
+   \(format \(mapconcat #\\='identity
+                      \\='\(\"\"
                         \"`empty-nm` string-value: %S\"
                         \"`true-nm`  string-value: %S\"
                         \"`empty-nm` `length': %d\"
@@ -905,17 +905,17 @@ When current-buffer is not a dired-mode buffer kill is as if by `mon-copy-file-p
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-12-09T13:08:08-05:00Z}#{10494} - by MON KEY>
 (defun mon-dired-buffers-complete (&optional other-window/frame)
-  "Switch to a dired-buffer visiting one of the directories of `dired-buffers'.
+  "Switch to a dired-buffer visiting one of the directories of `dired-buffers'.\n
 When called interactively with prefix arg >= 1 visit dired-buffer in another
 window on selected-frame.\n
 When called interactively with prefix arg < 0 visit dired-buffer on a different
 frame creating one if it doesn't already exist.\n
 Default is to find the dired-buffer in another window other than selected-window.\n
 :EXAMPLE\n\n\(mon-dired-buffers-complete\)
-\(apply  #'mon-dired-buffers-complete\) '\(-1\)\)
-\(apply  #'mon-dired-buffers-complete '\(1\)\)
-\(mon-dired-buffers-complete 'this-window\)
-\(mon-dired-buffers-complete 'another-frame\)\n
+\(apply #\\='mon-dired-buffers-complete\) \\='\(-1\)\)
+\(apply #\\='mon-dired-buffers-complete \\='\(1\)\)
+\(mon-dired-buffers-complete \\='this-window\)
+\(mon-dired-buffers-complete \\='another-frame\)\n
 Where dired buffer is displayed when called-interactively with prefix or arg
 OTHER-WINDOW/FRAME is `integerp' and passed explicitly:\n
 = 0    another-window
@@ -1072,6 +1072,8 @@ null                                                             this-window\n
             ;; This is not really a very good thing do to:
             ;; (redirect-frame-focus (selected-frame) (selected-frame))  
             (selected-frame)))))))))
+
+
 
 ;;; ==============================
 ;;; :TODO fix command remapping in docstriing
@@ -1333,7 +1335,7 @@ Its path is also expanded relative to W-BASE-DIR.\n
 Assumes W-BASE-DIR exists. Will \(without prompting\) overwrite as if by
 `write-file' any pre-existing file name at W-BASE-DIR/W-FILE.\n
 :EXAMPLE\n
-\(mon-dir-make-xargs-arg-file '\(\"mum-dir-1600-1699\" \"num-dir-1700-1799\"
+\(mon-dir-make-xargs-arg-file \\='\(\"mum-dir-1600-1699\" \"num-dir-1700-1799\"
                                \"num-dir-1800-1899\" \"num-dir-1900-1999\"\)
                              default-dirctory \"mmbd-dir-1600-1999-maker\"\)\n
 :SEE info node `(find)xargs options'\n
@@ -1365,7 +1367,7 @@ When called-interactively prompts for NEW-BUFFER-W-NAME.\n
 When AUTO-SAVE is non-nil or called-interactively with prefix-arg 
 do not prompt before saving NEW-BUFFER-W-NAME.\n
 If NEW-BUFFER-W-NAME is an existing file in default-directory signal an error.\n
-:EXAMPLE\n(call-interactively 'mon-get-new-buffer-w-stamp)\n
+:EXAMPLE\n\(call-interactively \\\\='mon-get-new-buffer-w-stamp\)\n
 :ALIASED-BY `mon-buffer-get-new-w-stamp'\n
 :SEE-ALSO `mon-file-stamp-buffer-filename', `mon-file-stamp',
 `mon-file-stamp-minibuffer', `mon-insert-file-template', `mon-lisp-stamp',
@@ -1648,7 +1650,7 @@ Signal an error if any of the args aren't in the path.\n
 \(mon-build-path *mon-artist-naf-path* \"C-Artists-names\" \"Cappiello \(Leonetto\)\"\)
 \(mon-build-path *mon-artist-naf-path* \"C-Artists-names\"\)\n
 :EXAMPLE {:CALLED-PROGRAMATICALLY}
-\(apply 'mon-build-path *mon-artist-naf-path* \"C-Artists-names\"
+\(apply \\='mon-build-path *mon-artist-naf-path* \"C-Artists-names\"
 \(split-string \"Cappiello \(Leonetto\)/Aux Trois Quartier/mmm\" \"/\" t\)\)\n
 :SEE-ALSO `mon-get-relative-w-absolute' `mon-get-dir-name-absolute',
 `mon-file-reduce-name', `mon-build-path', `mon-file-dir-attributes->plist',
@@ -1858,7 +1860,7 @@ But, not without the checks or a facility for sanity checks in programmatic
 situations where `default-directory' of a non-written buffer may not evaluate to
 what is expected. This is esp. the case where a calling function(s) has or might
 `cd' to some alien path to do some stuff. We don't neccesarily want to blindly
-write a buffer assuming that it will wind up in 'the' current directory.
+write a buffer assuming that it will wind up in \\='the' current directory.
 It might not.\n
 :ALIASED-BY `mon-buffer-get-parent-dir'\n
 :SEE-ALSO `mon-buffer-exists-p', `mon-buffer-written-p', `mon-with-file-buffer',
@@ -1929,7 +1931,7 @@ pathname prefixes.\n
 \(mon-string-split-pathname \"\"\)\n
 \(mon-string-split-pathname nil\)\n
 ;; Following successfully signals an error:\n
- \(mon-string-split-pathname 'mon-string-split-pathname\)\n
+ \(mon-string-split-pathname \\='mon-string-split-pathname\)\n
 :SEE-ALSO `string-split', `file-truename', `expand-file-name', `file-relative-name'.\n▶▶▶"
   (catch 'mon-string-split-pathname 
     (let ((mssp-list
@@ -2147,7 +2149,7 @@ When optional arg W-NO-SYMLINKS is non-nil and W-DIRECTORY is `file-symlink-p'
 signal an error.\n
 :EXAMPLE\n\n(mon-add-subdirs-to-list default-directory\)\n
 \(let \(gets-set\)
-  \(mon-add-subdirs-to-list default-directory 'gets-set\)
+  \(mon-add-subdirs-to-list default-directory \\='gets-set\)
   gets-set\)\n
 :ALIASED-BY `mon-dir-get-subdirs-descend'\n
 :ALIASED-BY `mon-get-directory-and-subdirs-list'

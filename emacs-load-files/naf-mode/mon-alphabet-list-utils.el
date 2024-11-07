@@ -196,8 +196,8 @@ Used to genrate `mon-alphabet-as-*' functions at loadtime.\n
 When elements of list have an associated byte-compiled funtion generated at
 loadtime with `mon-alphabet-as-bc' and `mon-alphabet-as-doc-loadtime' the
 functions symbol-name will appear on the plist property `is-bytcomp`.\n
-:EXAMPLE\n\n\(apropos-describe-plist '*mon-alphabet-as-type-generate*\)\n
-\(get '*mon-alphabet-as-type-generate* 'is-bytcomp\)\n
+:EXAMPLE\n\n\(apropos-describe-plist \\='*mon-alphabet-as-type-generate*\)\n
+\(get \\='*mon-alphabet-as-type-generate* \\='is-bytcomp\)\n
 :NOTE Elements of the plist value may be `unintern' and `fmakunbound'd
 by evaluating `mon-alphabet-as-unintern-fun'\n
 :SEE-ALSO `mon-alphabet-as-bc', `mon-alphabet-as-defun',
@@ -232,16 +232,16 @@ Possible args for TYPE are:\n
  `stringU-w-spc'       `stringD-w-spc'
  `stringU-w-nl'        `stringD-w-nl'\n
 :EXAMPLE\n
-\(mon-alphabet-as-type 'cons-keyU->num\)\n\(mon-alphabet-as-type 'cons-keyD->num\)
-\(mon-alphabet-as-type 'cons-keyU->stringU\)\n\(mon-alphabet-as-type 'cons-keyD->stringD\)
-\(mon-alphabet-as-type 'cons-symU->num\)\n\(mon-alphabet-as-type 'cons-symD->num\)
-\(mon-alphabet-as-type 'cons-stringU->num\)\n\(mon-alphabet-as-type 'cons-stringD->num\)
-\(mon-alphabet-as-type 'plistU->stringU\)\n\(mon-alphabet-as-type 'plistD->stringD\)
-\(mon-alphabet-as-type 'plistU->num\)\n\(mon-alphabet-as-type 'plistD->num\)
-\(mon-alphabet-as-type 'list-stringU\)\n\(mon-alphabet-as-type 'list-stringD\)
-\(mon-alphabet-as-type 'list-symbolU\)\n\(mon-alphabet-as-type 'list-symbolD\)
-\(mon-alphabet-as-type 'stringU-w-nl\)\n\(mon-alphabet-as-type 'stringD-w-nl\)
-\(mon-alphabet-as-type 'stringU-w-spc\)\n\(mon-alphabet-as-type 'stringD-w-spc\)\n
+\(mon-alphabet-as-type \\='cons-keyU->num\)\n\(mon-alphabet-as-type \\='cons-keyD->num\)
+\(mon-alphabet-as-type \\='cons-keyU->stringU\)\n\(mon-alphabet-as-type \\='cons-keyD->stringD\)
+\(mon-alphabet-as-type \\='cons-symU->num\)\n\(mon-alphabet-as-type \\='cons-symD->num\)
+\(mon-alphabet-as-type \\='cons-stringU->num\)\n\(mon-alphabet-as-type \\='cons-stringD->num\)
+\(mon-alphabet-as-type \\='plistU->stringU\)\n\(mon-alphabet-as-type \\='plistD->stringD\)
+\(mon-alphabet-as-type \\='plistU->num\)\n\(mon-alphabet-as-type \\='plistD->num\)
+\(mon-alphabet-as-type \\='list-stringU\)\n\(mon-alphabet-as-type \\='list-stringD\)
+\(mon-alphabet-as-type \\='list-symbolU\)\n\(mon-alphabet-as-type \\='list-symbolD\)
+\(mon-alphabet-as-type \\='stringU-w-nl\)\n\(mon-alphabet-as-type \\='stringD-w-nl\)
+\(mon-alphabet-as-type \\='stringU-w-spc\)\n\(mon-alphabet-as-type \\='stringD-w-spc\)\n
 :NOTE This procedure isn't necessarily efficient but it does have the benefit
 of being entirely self contained, and therefor does not rely on external calls.\n
 :ALIASED-BY `mon-make-list-alphabet'\n
@@ -411,7 +411,7 @@ of being entirely self contained, and therefor does not rely on external calls.\
 (defmacro mon-alphabet-as-defun (as-fun-type)
   "Return a defun form with AS-FUN-TYPE as arg to `mon-alphabet-as-type'.\n
 :EXAMPLE\n\n\(pp-macroexpand-expression 
-               '\(mon-alphabet-as-defun \"cons-keyU->num\"\)\)\n
+               \\='\(mon-alphabet-as-defun \"cons-keyU->num\"\)\)\n
 :SEE-ALSO `mon-alphabet-as-bc', `mon-alphabet-as-defun',
 `mon-alphabet-as-doc-loadtime', `mon-alphabet-as-unintern-fun',
 `mon-alphabet-as-map-fun-prop', `*mon-alphabet-as-type-generate*'.\n▶▶▶"
@@ -462,19 +462,19 @@ Elements of return value have the form:\n
 Where car is a symbol satisfisying the predicate `byte-code-function-p' and cdr
 is the string arg element of FUN-NAME-LST evaluated to produce the byte-code
 function.\n
-:EXAMPLE\n\(mon-alphabet-as-map-bc '\(\"cons-keyD->num\" \"cons-keyU->num\"\)\)\n
+:EXAMPLE\n\(mon-alphabet-as-map-bc \\='\(\"cons-keyD->num\" \"cons-keyU->num\"\)\)\n
 ;=> \(\(mon-alphabet-as-cons-keyD->num . \"cons-keyD->num\"\) 
       \(mon-alphabet-as-cons-keyU->num . \"cons-keyU->num\"\)\)\n
 \(mon-alphabet-as-cons-keyD->num\)\n
-\(indirect-function 'mon-alphabet-as-cons-keyD->num\)\n
+\(indirect-function \\='mon-alphabet-as-cons-keyD->num\)\n
 \(mon-alphabet-as-cons-keyD->num\)\n
 \(byte-code-function-p 
- \(indirect-function 'mon-alphabet-as-cons-keyD->num\)\)\n
+ \(indirect-function \\='mon-alphabet-as-cons-keyD->num\)\)\n
 \(progn 
-  \(fmakunbound 'mon-alphabet-as-cons-keyD->num\)
-  \(fmakunbound 'mon-alphabet-as-cons-keyU->num\)
-  \(unintern 'mon-alphabet-as-cons-keyD->num\)
-  \(unintern 'mon-alphabet-as-cons-keyU->num\)\)\n
+  \(fmakunbound \\='mon-alphabet-as-cons-keyD->num\)
+  \(fmakunbound \\='mon-alphabet-as-cons-keyU->num\)
+  \(unintern \\='mon-alphabet-as-cons-keyD->num\)
+  \(unintern \\='mon-alphabet-as-cons-keyU->num\)\)\n
 :SEE-ALSO `mon-alphabet-as-bc', `mon-alphabet-as-defun',
 `mon-alphabet-as-doc-loadtime', `mon-alphabet-as-unintern-fun',
 `mon-alphabet-as-map-fun-prop', `*mon-alphabet-as-type-generate*'.\n▶▶▶"
@@ -565,15 +565,15 @@ Add function-documentation property to functions plist for following functions:
 ;;; :CREATED <Timestamp: #{2010-09-11T13:33:38-04:00Z}#{10366} - by MON KEY>
 (defun mon-alphabet-as-map-fun-prop (prop-fun-lst)
   "Plist of functions generated with `*mon-alphabet-as-type-generate*'.\n
-Put a list of functions on the property 'is-bytcomp. Property value is a list of
+Put a list of functions on the property \\='is-bytcomp. Property value is a list of
 each function that was byte-compiled at loadtime using the arg strings on the
 variable `*mon-alphabet-as-type-generate*' plist.\n
 Used for symbol-> string lookup via intern-soft  if/when we want to unintern.\n
-:EXAMPLE\n\n\(symbol-plist '*mon-alphabet-as-type-generate*\)\n
-\(get '*mon-alphabet-as-type-generate* 'is-bytcomp\)\n
-\(mapcar #'\(lambda \(intrd-p\)
+:EXAMPLE\n\n\(symbol-plist \\='*mon-alphabet-as-type-generate*\)\n
+\(get \\='*mon-alphabet-as-type-generate* \\='is-bytcomp\)\n
+\(mapcar #\\='\(lambda \(intrd-p\)
             \(intern-soft intrd-p\)\)
-        \(get '*mon-alphabet-as-type-generate* 'is-bytcomp\)\)\n
+        \(get \\='*mon-alphabet-as-type-generate* \\='is-bytcomp\)\)\n
 :SEE-ALSO `mon-alphabet-as-bc', `mon-alphabet-as-defun',
 `mon-alphabet-as-doc-loadtime', `mon-alphabet-as-unintern-fun',
 `mon-alphabet-as-map-fun-prop', `*mon-alphabet-as-type-generate*'.\n▶▶▶"
@@ -594,7 +594,7 @@ Where the first most form \(a list of strings\) is the preferred format.\n
 :NOTE Elements of FUNINTERN-LST should name functions which satisfy
 `byte-code-function-p', and should be present in the list returned as value of
 `is-bytcomp` property, e.g.:\n
- \(get '*mon-alphabet-as-type-generate* 'is-bytcomp\)\n
+ \(get \\='*mon-alphabet-as-type-generate* \\='is-bytcomp\)\n
 :SEE-ALSO `mon-alphabet-as-bc', `mon-alphabet-as-defun',
 `mon-alphabet-as-doc-loadtime', `mon-alphabet-as-unintern-fun',
 `mon-alphabet-as-map-fun-prop', `*mon-alphabet-as-type-generate*'.\n▶▶▶"

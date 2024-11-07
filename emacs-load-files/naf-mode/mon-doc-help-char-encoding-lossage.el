@@ -155,8 +155,8 @@ When an elt of TABLE-KEYS is a consed pair, the corresponding elt of the
 <values-list> being mapped should be either `integerp' or `stringp', an error is
 signalled if not.\n
 :EXAMPLE\n\n\(mon-make-encoding-position-lossage-table
-  '\(:CP1252 :CODE-PSN-ORIG :8859-15 \(:CODE-PSN-MOVE . :CHANGE\)\)
-  '\(\(\"\\u0161\" #x9A \"unassigned\" #xA8\)
+  \\='\(:CP1252 :CODE-PSN-ORIG :8859-15 \(:CODE-PSN-MOVE . :CHANGE\)\)
+  \\='\(\(\"\\u0161\" #x9A \"unassigned\" #xA8\)
     \(\"\\u00A8\" #xA8 \"\\u0161\"    \"lost\"\)\)\)\n
 :SEE-ALSO `mon-get-encoding-codepoint', `mon-get-encoding-position-lossage',
 `mon-get-encoding-point-hist', `mon-get-encoding-map-results',
@@ -248,7 +248,7 @@ proper names e.g. the city of l'Haÿ-les-Roses or of poet Pierre Louÿs.\n
     (mon-get-encoding-codepoint :8859-15))
   "Formatting rules for character encoding lossage table `*8859-1-8859-15-lossage*'.\n
 :EXAMPLE\n
- \(assoc 'mon-get-encoding-position-lossage *8859-1-8859-15-lossage-rules*\)\n
+ \(assoc \\='mon-get-encoding-position-lossage *8859-1-8859-15-lossage-rules*\)\n
 :SEE-ALSO `*cp1252-8859-15-lossage*', `*cp1252-8859-1-lossage*',
 `*cp1252-8859-1-lossage-rules*', `*8859-1-8859-15-lossage-rules*'.\n▶▶▶"
   :type '(repeat (list function symbol))
@@ -299,7 +299,7 @@ proper names e.g. the city of l'Haÿ-les-Roses or of poet Pierre Louÿs.\n
     (mon-get-encoding-codepoint :CHANGE "lost"))
 "Formatting rules for character encoding lossage table `*cp1252-8859-15-lossage*'.\n
 :EXAMPLE\n
- \(assoc 'mon-get-encoding-position-lossage *cp1252-8859-15-lossage-rules**\)\n
+ \(assoc \\='mon-get-encoding-position-lossage *cp1252-8859-15-lossage-rules**\)\n
 :SEE-ALSO `*cp1252-8859-1-lossage*', `*cp1252-8859-1-lossage-rules*',
 `*8859-1-8859-15-lossage*', `*8859-1-8859-15-lossage-rules*'.\n▶▶▶"
   :type '(repeat sexp)
@@ -346,7 +346,7 @@ proper names e.g. the city of l'Haÿ-les-Roses or of poet Pierre Louÿs.\n
     (mon-get-encoding-codepoint :CHANGE "lost"))
   "Formatting rules for character encoding lossage table `*cp1252-8859-15-lossage*'.\n
 :EXAMPLE\n
- \(assoc 'mon-get-encoding-position-lossage *cp1252-8859-1-lossage-rules*\)\n
+ \(assoc \\='mon-get-encoding-position-lossage *cp1252-8859-1-lossage-rules*\)\n
 :SEE-ALSO `*cp1252-8859-15-lossage*', `*cp1252-8859-15-lossage-rules*',
 `*8859-1-8859-15-lossage*', `*8859-1-8859-15-lossage-rules*'.\n▶▶▶"
   :type '(repeat sexp)
@@ -368,19 +368,19 @@ Arg REST is effectively a \(declare \(ignore rest\)\) were it possible w/ Emacs 
 It is required in order to allow callers to pass a value for W-RAW-BYTE args in
 lieu of WHEN-NOT-CHAR.\n
 :EXAMPLE\n\n
- \(mon-get-encoding-codepoint '\(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #xA4 :8859-15 \"\\u20ac\"\) :8859-1 t\)
- \(mon-get-encoding-codepoint '\(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #xA4 :8859-15 \"\\u20ac\"\) :8859-15\)
- \(mon-get-encoding-codepoint '\(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #xA4 :8859-15 \"\\u20ac\"\) :8859-15 \"unassigned\"\)
- \(mon-get-encoding-codepoint '\(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #xA4 :8859-15 \"unassigned\"\) :8859-15 \"unassigned\"\)
- \(mon-get-encoding-codepoint '\(:CP1252 \"\\u00BE\" :CODE-PSN-ORIG #xBE :8859-15 \"\\u0178\" :CHANGE \"lost\"\) :CHANGE  \"lost\"\)
- \(mon-get-encoding-codepoint '\(:CP1252 \"\\u00BE\" :CODE-PSN-ORIG #xBE :8859-15 \"\\u0178\" :CHANGE \"lost\"\) :CHANGE t\)
- \(mon-get-encoding-codepoint '\(:CP1252 \"\\u00BE\" :CODE-PSN-ORIG #xBE :8859-15 \"\\u0178\" :CHANGE \"lost\"\) :NOT-key \"bubba\"\)
- \(mon-get-encoding-codepoint '\(:CP1252 \"\\u00BE\" :CODE-PSN-ORIG #xBE :8859-15 \"\\u0178\" :CHANGE \"lost\"\) :CHANGE\)
- \(let \(\(chk '\(mon-get-encoding-codepoint :8859-1\)\)
-       \(pl '\(:8859-1 \"\\u00A4\"  :CODE-PSN-ORIG #xA4  :8859-15 \"\\u20ac\"\)\)\)
+ \(mon-get-encoding-codepoint \\='\(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #xA4 :8859-15 \"\\u20ac\"\) :8859-1 t\)
+ \(mon-get-encoding-codepoint \\='\(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #xA4 :8859-15 \"\\u20ac\"\) :8859-15\)
+ \(mon-get-encoding-codepoint \\='\(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #xA4 :8859-15 \"\\u20ac\"\) :8859-15 \"unassigned\"\)
+ \(mon-get-encoding-codepoint \\='\(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #xA4 :8859-15 \"unassigned\"\) :8859-15 \"unassigned\"\)
+ \(mon-get-encoding-codepoint \\='\(:CP1252 \"\\u00BE\" :CODE-PSN-ORIG #xBE :8859-15 \"\\u0178\" :CHANGE \"lost\"\) :CHANGE  \"lost\"\)
+ \(mon-get-encoding-codepoint \\='\(:CP1252 \"\\u00BE\" :CODE-PSN-ORIG #xBE :8859-15 \"\\u0178\" :CHANGE \"lost\"\) :CHANGE t\)
+ \(mon-get-encoding-codepoint \\='\(:CP1252 \"\\u00BE\" :CODE-PSN-ORIG #xBE :8859-15 \"\\u0178\" :CHANGE \"lost\"\) :NOT-key \"bubba\"\)
+ \(mon-get-encoding-codepoint \\='\(:CP1252 \"\\u00BE\" :CODE-PSN-ORIG #xBE :8859-15 \"\\u0178\" :CHANGE \"lost\"\) :CHANGE\)
+ \(let \(\(chk \\='\(mon-get-encoding-codepoint :8859-1\)\)
+       \(pl \\='\(:8859-1 \"\\u00A4\"  :CODE-PSN-ORIG #xA4  :8859-15 \"\\u20ac\"\)\)\)
    \(apply \(car chk\)  pl \(cdr chk\)\)\)
 ;; Following successfully signals an error:
- \(mon-get-encoding-codepoint '\(:CP1252  \"\\u00BE\" :CODE-PSN-ORIG #xBE :8859-15 \"\\u0178\" :CHANGE \"lost\"\) :CHANGE \"bubba\"\)\n
+ \(mon-get-encoding-codepoint \\='\(:CP1252  \"\\u00BE\" :CODE-PSN-ORIG #xBE :8859-15 \"\\u0178\" :CHANGE \"lost\"\) :CHANGE \"bubba\"\)\n
 :SEE-ALSO `mon-get-encoding-codepoint', `mon-get-encoding-position-lossage',
 `mon-get-encoding-point-hist', `mon-get-encoding-map-results',
 `mon-get-encoding-point-hist-map-plists',
@@ -418,7 +418,7 @@ lieu of WHEN-NOT-CHAR.\n
 (defun mon-get-encoding-position-lossage (from-plist key-for-int-val 
                                                      &optional w-raw-byte)
   "Return value of key KEY-FOR-INT-VAL in FROM-PLIST as consed pair.
-Return value has the form:
+nReturn value has the form:
  \( { <BOOLEAN> | <INT> } .  
    { \"<KEY-FOR-INT-VAL> :HEX #x<HEX> :OCTAL #o<OCT> :DECIMAL <DEC>\" |
    { \"<KEY-FOR-INT-VAL> :HEX #x<HEX> :OCTAL #o<OCT> :DECIMAL <DEC> :RAW-BYTE\" } \)\n
@@ -427,13 +427,13 @@ If KEY-FOR-INT-VAL was found in FROM-PLIST and W-RAW-BYTE is ommitted car is T.
 When W-RAW-BYTE is non-nil and KEY-FOR-INT-VAL was found it is an INT.\n
 When W-RAW-BYTE is non-nil cdr of return value will contain \" :RAW-BYTE \".\n
 :EXAMPLE\n
-\(mon-get-encoding-codepoint '\(:CP1252 \"\\u00BE\" :CODE-PSN-ORIG #xBE :8859-15 \"\\u0178\" :CHANGE \"lost\"\) :CHANGE t\)\n
-\(mon-get-encoding-position-lossage '\(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #xA4 :8859-15 \"\\u20ac\"\) :CODE-PSN-ORIG\)\n
-\(mon-get-encoding-position-lossage '\(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #xA4 :8859-15 \"\\u20ac\"\) :CODE-PSN-ORIG t\)\n
-\(mon-get-encoding-position-lossage '\(:CP1252 \"\\u0161\" :CODE-PSN-ORIG #x9A :8859-15 \"unassigned\" :CODE-PSN-MOVE #xA8\) :CODE-PSN-MOVE\)\n
-\(mon-get-encoding-position-lossage '\(:CP1252 \"\\u0161\" :CODE-PSN-ORIG #x9A :8859-15 \"unassigned\" :CODE-PSN-MOVE #xA8\) :CODE-PSN-MOVE t\)\n
-\(cdr \(mon-get-encoding-position-lossage '\(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #xA4 :8859-15 \"\\u20ac\"\) :CODE-PSN-ORIG t\)\)\n
-\(car \(mon-get-encoding-position-lossage '\(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #xA4 :8859-15 \"\\u20ac\"\) :NOT-A-PSN-ORIG t\)\)\n
+\(mon-get-encoding-codepoint \\='\(:CP1252 \"\\u00BE\" :CODE-PSN-ORIG #xBE :8859-15 \"\\u0178\" :CHANGE \"lost\"\) :CHANGE t\)\n
+\(mon-get-encoding-position-lossage \\='\(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #xA4 :8859-15 \"\\u20ac\"\) :CODE-PSN-ORIG\)\n
+\(mon-get-encoding-position-lossage \\='\(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #xA4 :8859-15 \"\\u20ac\"\) :CODE-PSN-ORIG t\)\n
+\(mon-get-encoding-position-lossage \\='\(:CP1252 \"\\u0161\" :CODE-PSN-ORIG #x9A :8859-15 \"unassigned\" :CODE-PSN-MOVE #xA8\) :CODE-PSN-MOVE\)\n
+\(mon-get-encoding-position-lossage \\='\(:CP1252 \"\\u0161\" :CODE-PSN-ORIG #x9A :8859-15 \"unassigned\" :CODE-PSN-MOVE #xA8\) :CODE-PSN-MOVE t\)\n
+\(cdr \(mon-get-encoding-position-lossage \\='\(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #xA4 :8859-15 \"\\u20ac\"\) :CODE-PSN-ORIG t\)\)\n
+\(car \(mon-get-encoding-position-lossage \\='\(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #xA4 :8859-15 \"\\u20ac\"\) :NOT-A-PSN-ORIG t\)\)\n
 :SEE-ALSO `mon-get-encoding-codepoint', `mon-get-encoding-position-lossage',
 `mon-get-encoding-point-hist', `mon-get-encoding-map-results',
 `mon-get-encoding-point-hist-map-plists',
@@ -460,17 +460,17 @@ When W-RAW-BYTE is non-nil cdr of return value will contain \" :RAW-BYTE \".\n
 Helper function for `mon-get-encoding-point-hist-map-plists' which calls it
 iteratively within a `mon-get-encoding-map-results' form.\n
 :EXAMPLE\n
-\(let \(\(eg-rules '\(\(mon-get-encoding-codepoint :8859-1\)
+\(let \(\(eg-rules \\='\(\(mon-get-encoding-codepoint :8859-1\)
                   \(mon-get-encoding-position-lossage   :CODE-PSN-ORIG\)
                   \(mon-get-encoding-codepoint :8859-15 \"unassigned\"\)
                   \(mon-get-encoding-position-lossage   :CODE-PSN-MOVE\)
                   \(mon-get-encoding-codepoint :CHANGE \"lost\"\)\)\)
-      \(eg-plists '\(\(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #x9A 
+      \(eg-plists \\='\(\(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #x9A 
                             :8859-15 \"unassigned\" :CHANGE \"lost\"\)
                    \(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #x9A
                             :8859-15 \"unassigned\" :CODE-PSN-MOVE  #xA8\)
                    \(:8859-1 \"\\u00A4\" :CODE-PSN-ORIG #xA4 :8859-15 \"\\u20ac\"\)\)\)\)
-  \(mapcar #'\(lambda \(pl\)
+  \(mapcar #\\='\(lambda \(pl\)
               \(mon-get-encoding-point-hist pl eg-rules t\)\)
           eg-plists\)\)\n
 :SEE-ALSO `mon-get-encoding-codepoint', `mon-get-encoding-position-lossage',

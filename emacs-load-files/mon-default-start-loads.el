@@ -52,7 +52,8 @@
 ;; `mon-set-github-paths-init', `mon-set-bbdb-init',
 ;; `mon-set-printer-postscript-init', `mon-set-split-window-init',
 ;; `mon-set-vc-init', `mon-set-magit-init', `mon-set-triples-ekg-init'
-;; `mon-set-markdown-mode-init', `mon-set-ekg-db-file',
+;; `mon-set-markdown-mode-init', `mon-set-ekg-db-file', `mon-casual-markdown-cv-init', 
+;; `mon-set-byte-compile-warnings-init',
 ;; FUNCTIONS:◀◀◀
 ;;
 ;; MACROS:

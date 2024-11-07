@@ -1167,25 +1167,65 @@ supplied without the surrounding quotes.\n
 return values.\n
 :ALIASED-BY `mon-string-escape-lisp-region'
 :ALIASED-BY `mon-lisp-escape-region'\n
-:SEE-ALSO `mon-unescape-lisp-string-region', `mon-escape-string-for-cmd',
-`mon-exchange-slash-and-backslash', `mon-quote-sexp'.\n▶▶▶"
+:SEE-ALSO `mon-unescape-lisp-string-region', `mon-reescape-lisp-string-region',
+`mon-escape-string-for-cmd', `mon-exchange-slash-and-backslash',
+`mon-quote-sexp'.\n▶▶▶"
   (interactive "*r")
-  (save-excursion
-    (save-restriction
-      (narrow-to-region start end)
-      (goto-char start)
-      (while (search-forward "\\" nil t)
-	(replace-match "\\\\" nil t))
-      (goto-char start)
-      (while (search-forward "\"" nil t)
-        (replace-match "\\\"" nil t))
-      ;; :MON-ADDITIONS
-      (goto-char start)
-      (while (search-forward "(" nil t)
-	(replace-match "\\\(" nil t))
-      (goto-char start)
-      (while (search-forward ")" nil t)
-	(replace-match "\\\)" nil t)))))
+  (cond ((eq major-mode 'lisp-interaction-mode)
+         (save-excursion
+           (save-restriction
+             (narrow-to-region start end)
+             (goto-char start)
+             (while (search-forward "\\" nil t)               
+	       (replace-match "\\\\" nil t))
+             (goto-char start)
+             (while (search-forward "\"" nil t)
+               (replace-match "\\\"" nil t))
+             ;; :MON-ADDITIONS
+             (goto-char start)
+             (while (search-forward "(" nil t)
+	       (replace-match "\\\(" nil t))
+             (goto-char start)
+             (while (search-forward ")" nil t)
+	       (replace-match "\\\)" nil t)))))
+        ((eq major-mode 'emacs-lisp-mode)
+         (save-excursion
+           (save-restriction
+             (narrow-to-region start end)
+             (goto-char start)
+             (while (search-forward "\\" nil t)
+               ;; don't escape "\n"
+               (unless (char-equal 110 (char-after (point)))
+	       (replace-match "\\\\" nil t)))
+             (goto-char start)
+             (while (search-forward "\"" nil t)
+               (replace-match "\\\"" nil t))
+             ;; :MON-ADDITIONS
+             (goto-char start)
+             (while (search-forward "(" nil t)
+	       (replace-match "\\\(" nil t))
+             (goto-char start)
+             (while (search-forward ")" nil t)
+	       (replace-match "\\\)" nil t))
+             
+             ;; :SEE `byte-compile--docstring-style-warn'
+             ;; (rx (| (in " \t") bol)
+             ;;     (? (in "\"#"))
+             ;;     "'"
+             ;;     (in "A-Za-z" "("))
+             ;;  "\\(?:[	 ]\\|^\\)[\"#]?'[(A-Za-z]"
+
+             ;; " #'"
+             (goto-char (point-min))
+             (while (search-forward " #'" nil t)
+               (replace-match " #\\\\='" nil t))
+
+             ;; " '"
+             (goto-char (point-min))
+             (while (search-forward " '" nil t)
+               (replace-match " \\\\='" nil t)))
+             ))
+        ))
 
 ;;; ==============================
 (defun mon-unescape-lisp-string-region (start end)
@@ -1195,16 +1235,45 @@ This amounts to removing preceeding backslashes from characters they escape.\n
 without the surrounding quotes.\n
 :ALIASED-BY `mon-string-unescape-lisp-region'
 :ALIASED-BY `mon-lisp-unescape-region'\n
-:SEE-ALSO `mon-escape-lisp-string-region', `mon-quote-sexp',
-`mon-escape-string-for-cmd', `mon-exchange-slash-and-backslash'.\n▶▶▶"
+:SEE-ALSO `mon-escape-lisp-string-region', `mon-reescape-lisp-string-region', 
+`mon-quote-sexp', `mon-escape-string-for-cmd',
+`mon-exchange-slash-and-backslash'.\n▶▶▶"
   (interactive "*r")
   (save-excursion
     (save-restriction
       (narrow-to-region start end)
+      
+      (when (eq major-mode 'emacs-lisp-mode)
+        (goto-char start)
+        (while (search-forward " #\\\\='" nil t)
+          (replace-match " #'" nil t))
+
+        (goto-char start)
+        (while (search-forward " \\\\='" nil t)
+               (replace-match " '" nil t)))
+        
       (goto-char start)
       (while (search-forward "\\" nil t)
-	(replace-match "" nil t)
-	(forward-char)))))
+        ;; don't replace "\n"
+        (unless (char-equal 110 (char-after (point)))
+	  (replace-match "" nil t)
+	  (forward-char))
+      ))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-11-06T19:28:37-05:00Z}#{24453} - by MON KEY>
+(defun mon-reescape-lisp-string-region (start end)
+  "Unescape and then escape special characters in region from START to END as if
+by `mon-unescape-lisp-string-region' and `mon-escape-lisp-string-region'.\n
+:SEE-ALSO 
+`byte-compile-warnings', `byte-compile-docstring-max-column', `byte-compile-warning-types',
+`byte-compile--docstring-style-warn',`*mon-byte-compile-warnings*'.\n▶▶▶"
+  (interactive "*r")
+  (save-excursion
+    (save-restriction
+      (narrow-to-region start end)
+      (mon-unescape-lisp-string-region start end)
+      (mon-escape-lisp-string-region   start end))))
 
 ;;; ==============================
 ;;; :COURTESY :FILE custom.el :WAS `custom-quote'

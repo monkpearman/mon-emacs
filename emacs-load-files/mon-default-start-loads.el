@@ -979,6 +979,7 @@ to help make it a little less so.\n
 ;;; :CREATED <Timestamp: #{2010-04-03T17:03:10-04:00Z}#{10136} - by MON KEY>
 (defun mon-set-C-source-directory-init (&optional warn-only)
   "Set source paths at on MON local systems at loadtime.\n
+Evaluated by function `mon-set-system-specific-and-load-init'.\n
 Sets the following variables:\n
  `source-directory', `find-function-C-source-directory'
 Signal an error when `IS-NOT-MON-SYSTEM'.\n

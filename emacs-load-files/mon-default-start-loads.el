@@ -2933,6 +2933,11 @@ When called interactively read a value for DB-FILE as if by `read-file' with
                                (concat "ekg-" (format-time-string "%F") ".db")
                                nil
                                (concat "ekg-" (format-time-string "%F") ".db"))))
+  ;; Make sure we close the sqllite connection held by `ekg-db' otherwise even
+  ;; if we set a new value for `ekg-db-file' it won't reset the database
+  ;; connection, and we will continue to save notes to the old database
+  (when ekg-db
+    (ekg-close))
   (setq *mon-ekg-db-file* db-file)
   (prog1 
       (setq ekg-db-file *mon-ekg-db-file*)
@@ -2950,9 +2955,9 @@ Set value of ekg-db*mon-ekg-db-file* *mon-ekg-db-file*
  \(locate-library \"triples\"\)\n
 :SEE info node `(ekg)'\n
 :SEE-ALSO `*mon-ekg-db-file*', `mon-set-ekg-db-file', `ekg-capture-mode-hook',
-`ekg-edit-mode-hook', `ekg-auto-save-mode' `mon-set-markdown-mode-init'\n▶▶▶"
+`ekg-edit-mode-hook', `ekg-auto-save-mode' `mon-set-markdown-mode-init'.\n▶▶▶"
   (mon-default-start-error/sane
-   'mon-set-browser-init warn-only
+   'mon-set-triples-ekg-init warn-only
    ;; triples-mon-fork-GIT
    (cl-pushnew (mon-build-path-for-load-path *mon-site-lisp-root* "triples-mon-fork-GIT")
                load-path :test 'equal)

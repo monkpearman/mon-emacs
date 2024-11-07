@@ -68,6 +68,7 @@
 ;; `*mon-ekg-db-file*'
 ;; `*mon-desktop-desktop-locals-to-save*'
 ;; `*mon-desktop-desktop-modes-not-to-save*'
+;; `*mon-byte-compile-warnings*'
 ;;
 ;; GROUPS:
 ;; `mon-default-start-loads'
@@ -300,13 +301,16 @@ The symbols contained of this list are defined in :FILE mon-default-start-loads.
           mon-set-ekg-db-file
           mon-set-triples-ekg-init
           mon-set-markdown-mode-init
+          mon-casual-markdown-cv-init
           ;; :VARIABLES
           *mon-ekg-db-file*
           *mon-desktop-desktop-locals-to-save*
           *mon-desktop-desktop-modes-not-to-save*
           *mon-default-start-load-sanity*
           *mon-default-start-load-sanity-WARN-ONLY*
-          *mon-default-start-loads-xrefs*))
+          *mon-default-start-loads-xrefs*
+          *mon-byte-compile-warnings*
+          ))
   (custom-note-var-changed '*mon-default-start-loads-xrefs*))
 
 
@@ -483,6 +487,38 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;;
 ;; (mon-set-load-path-init t)
 (mon-set-load-path-init)
+
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2024-11-06T17:34:28-05:00Z}#{24453} - by MON KEY>
+(defvar *mon-byte-compile-warnings* '(not docstrings-wide)
+  ;; :NOTE other potential values we might want to include
+  ;; docstrings  ; various docstring stylistic issues, such as incorrect use of single quotes 
+  ;; docstrings-control-chars ; docstrings that contain control characters other than NL and TAB
+  ;; docstrings-non-ascii-quotes ; docstrings that have non-ASCII quotes.
+  "A list of warnings that the byte-compiler should issue (or not) as per `byte-compile-warnings'.
+:EXAMPLE\n\n \(member 'not *mon-byte-compile-warnings*\)\n
+:SEE-ALSO `mon-set-byte-compile-warnings-init', `byte-compile-docstring-max-column'.\n▶▶▶")
+
+;;; ==============================
+(defun mon-set-byte-compile-warnings-init (&optional warn-only)
+ "Set value of `byte-compile-warnings' according to value of `*mon-byte-compile-warnings*'.\n
+Set value of `byte-compile-docstring-max-column'.\n
+:EXAMPLE\n\n
+:SEE-ALSO `byte-compile-docstring-max-column', `byte-compile-warning-types',
+`byte-compile--docstring-style-warn', `mon-reescape-lisp-string-region'.\n▶▶▶"
+  (mon-default-start-error/sane
+   'mon-set-byte-compile-warnings-init
+   (setq byte-compile-warnings *mon-byte-compile-warnings*)
+   (custom-note-var-changed 'byte-compile-warnings)
+
+   (setq byte-compile-docstring-max-column  (* 80 4)) ; a reasonable amount :)
+   (custom-note-var-changed 'byte-compile-docstring-max-column)
+   (message ":FUNCTION `mon-set-byte-compile-warnings-init' -- value of variable `byte-compile-warnings' set to value of variable `*mon-byte-compile-warnings*' at loadtime\n")
+   (message ":FUNCTION `mon-set-byte-compile-warnings-init' -- value of variable `byte-compile-docstring-max-column' set at loadtime\n")
+   )) 
+;;
+(mon-set-byte-compile-warnings-init)
 
 ;;; ==============================
 ;; :FONT-LOCK/COLOR-THEME

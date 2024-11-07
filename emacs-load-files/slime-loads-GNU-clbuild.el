@@ -313,7 +313,7 @@
   (unless (getenv "SBCL_HOME")
     (setenv "SBCL_HOME" "opt/homebrew/lib/sbcl"))
   (unless (getenv "SBCL_SOURCE_ROOT")
-    (setenv "SBCL_SOURCE_ROOT" "/opt/homebrew/Cellar/sbcl/2.4.1/share/sbcl/src"))
+    (setenv "SBCL_SOURCE_ROOT" (concat "/opt/homebrew/Cellar/sbcl/" *mon-sbcl-version* "/share/sbcl/src"))
   (setq inferior-lisp-program (concat (executable-find "sbcl") " --noinform")) ;;--no-linedit"))
   (custom-note-var-changed 'inferior-lisp-program))
 
@@ -844,7 +844,7 @@ Optional args INSRTP and INTRP are as per `quicklisp-system-complete'.\n
 ;; `(%%swank-compile-load-ql-inspect-file 
 ;;   "slime-quicklisp-inspect"
 ;;   `(%%swank-compile-load-ql-inspect-file 
-;;     (slime-eval-async `(cl:make-pathname :directory '(:absolute "Users" "monkpearman""Documents" "HG-Repos" "CL-MON-CODE" "mon-slime-extend")))
+;;     (slime-eval-async `(cl:make-pathname :directory '(:absolute "Users" "monkpearman" "Documents" "HG-Repos" "CL-MON-CODE" "mon-slime-extend")))
 
 
 ;;; ==============================

@@ -6,17 +6,17 @@
 ;; See bottom of file for additional details.
 ;; We use the following sequence for loading files into in our Emacs environment:
 ;;
-;; 1. ~/.emacs is loaded
-;; 2. ~/Documents/HG-Repos/site-local-private.el
-;; 3. ~/Documents/HG-Repos/mon-default-loads.el
-;; 4. ~/Documents//HG-Repos/mon-default-start-loads.el
+;; 1. ~/.emacs is loaded 
+;; 2. <MON-EMACS-SITE-FILES>/site-local-private.el
+;; 3. <MON-EMACS-SITE-FILES>/mon-default-loads.el
+;; 4. <MON-EMACS-SITE-FILES>/mon-default-start-loads.el
 ;;  - The :FILE mon-default-start-loads.el in turn does the following:
 ;; `mon-set-system-specific-and-load-init'
 ;; -> (require 'slime-loads-GNU-clbuild)
 ;; -> (mon-slime-setup-init)
 ;; -> (mon-define-common-lisp-style)
 ;; -> (mon-set-common-lisp-hspec-init)
-;; -> (require 'mon-utils)      ; !!!!!! :NOTE This is where evyerthing else of the mon-*.el packages gets loaded. !!!!!!
+;; -> (require 'mon-utils)      ; !!!!!! :NOTE This is where evyerthing else of the mon-*.el packages gets loaded!!!!!!
 ;;
 ;; ==============================
 ;; :NOTE ‘C-x C-c’ will kill the current Emacs. :NOTE Behaves specially if using Emacs as a server.

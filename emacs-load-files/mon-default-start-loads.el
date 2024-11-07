@@ -2871,7 +2871,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 \(locate-library \"edit-indirect\"\)\n
 :SEE-ALSO `mon-set-triples-ekg-init'.\n▶▶▶"
   (mon-default-start-error/sane
-   'mon-set-browser-init warn-only
+   'mon-set-markdown-mode-init warn-only
 
    ;; :NOTE edit-indirect is required by markdown-mode
    ;; edit-indirect

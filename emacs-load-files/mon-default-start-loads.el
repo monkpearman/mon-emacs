@@ -3485,6 +3485,7 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
   (mon-default-start-error/sane
    'mon-set-system-specific-and-load-init warn-only
    (mon-set-mon-feature-customs-init)
+   (mon-set-C-source-directory-init)
    (cond ((or (and (intern-soft "IS-MON-P-W32" obarray)
                    (bound-and-true-p IS-MON-P-W32))
               (and (intern-soft "IS-BUG-P" obarray)

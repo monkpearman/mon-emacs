@@ -194,7 +194,7 @@ Sets following variables:\n
     (unless (equal (getenv "DEVHOME") (substitute-in-file-name "${HOME}/Documents/HG-Repos"))
       (setenv "DEVHOME" (substitute-in-file-name "${HOME}/Documents/HG-Repos")))
     ;; On i3_i3_i3 GNU This was the file ~/emacs-environment because xdg didn't pick it up otherwise, do it here instead.
-    (let ((environs '(("MON_HOME"    .  "$HOME")
+    (let ((environs `(("MON_HOME"    .  "$HOME")
                       ("MON_EMACS_LOAD" . "${DEVHOME}/SDP_EMACS/emacs-load-files")
                       ;; ("DEVHOME"     . "$MON_HOME/Documents/HG-Repos")              ; already set above keep here for reference
                       ;; ("LOCAL_MON"   .  "$MON_HOME/LOCAL-MON")
@@ -209,7 +209,7 @@ Sets following variables:\n
 	              ("INFO_MON"           .  "$DEVHOME/SDP_INFO")
 	              ;; ("MAN_MON"         . "$SHARE_MON/MAN-MON")
                       ("SBCL_HOME"          . "opt/homebrew/lib/sbcl")
-                      ("SBCL_SOURCE_ROOT"   . "/opt/homebrew/Cellar/sbcl/2.4.1/share/sbcl/src")
+                      ("SBCL_SOURCE_ROOT"   . ,(concat "/opt/homebrew/Cellar/sbcl/" *mon-sbcl-version* "/share/sbcl/src"))
 	              ("QUICKLISP_HOME"     . "${DEVHOME}/quicklisp")
                       ("CL_MON_CODE"        . "$DEVHOME/CL-MON-CODE") ;; (getenv "CL_MON_CODE")
                       ;; :NOTE on i3-i3 there was a directory "CL-repo-HG" we aren't using that anymore.
@@ -227,10 +227,10 @@ Sets following variables:\n
 ;; :NOTE On i3_i3_i3 GNU This was i the file ~/emacs-environment because xdg didn't
 ;; pick it up otherwise keep it here for future reference in case it's neeeded.
 ;; (let ((environs '(("EMACSCLIENT" . "emacsclient -c")
-;; 	          ("EDITOR"      . "$EMACSCLIENT")
-;; 	          ("VISUAL"      . "$EMACSCLIENT")
-;; 	          ("EMACS"       . "$EDITOR")
-;; 	          ("ALTERNATE_EDITOR" . "emacsclient --alternate-editor emacs +%d %s"))))
+;;                   ("EDITOR"      . "$EMACSCLIENT")
+;; 	             ("VISUAL"      . "$EMACSCLIENT")
+;;                   ("EMACS"       . "$EDITOR")
+;; 	             ("ALTERNATE_EDITOR" . "emacsclient --alternate-editor emacs +%d %s"))))
 ;;   (mapc #'(lambda (x) (setenv (car x) (substitute-env-vars (cdr x)))) environs))
 
 ;;; ==============================
@@ -397,14 +397,20 @@ Sets following variables:\n
 ;; QL Fasls
 (set-register (string-to-char "Q")
               ;; :TODO set and pickup value of current SBCL version in the environment and build these paths from components instead of hardwiring this.
-              `(file . ,(substitute-env-vars "${HOME}/.cache/common-lisp/sbcl-2.4.6-macosx-arm64/Users/monkpearman/Documents/HG-Repos/quicklisp/dists/quicklisp/software/")))
+              `(file . ,(concat (getenv "HOME")
+                                "/.cache/common-lisp/" "sbcl-" *mon-sbcl-version* "-macosx-arm64"
+                                (getenv "DEVHOME")
+                                "/quicklisp/dists/quicklisp/software/")))
+
 ;; CL-MON-CODE
 (set-register (string-to-char "m")
               `(file . ,(substitute-env-vars "${DEVHOME}/CL-MON-CODE/")))
 ;; MON Fasls
 (set-register (string-to-char "M")
-              ;; :TODO set and pickup value of current SBCL version in the environment and build these paths from components instead of hardwiring this.
-              `(file . ,(substitute-env-vars "${HOME}/.cache/common-lisp/sbcl-2.4.6-macosx-arm64/Users/monkpearman/Documents/HG-Repos/CL-MON-CODE/")))
+              `(file . ,(concat (getenv "HOME")
+                                "/.cache/common-lisp/sbcl-" *mon-sbcl-version* "-macosx-arm64"
+                                (getenv "DEVHOME")
+                                "/CL-MON-CODE/")))
 
 
 ;;; ==============================

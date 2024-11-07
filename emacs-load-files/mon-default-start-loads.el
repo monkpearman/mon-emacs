@@ -990,15 +990,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 `find-function-source-path', `internal-doc-file-name', `mon-help-emacs-introspect'.\n▶▶▶"
   (mon-default-start-error/sane
    'mon-set-C-source-directory-init warn-only
-   (cond  ((and (intern-soft "IS-MON-P-W32" obarray)
-                (bound-and-true-p IS-MON-P-W32))
-           (let ((c-srcs
-                  (file-expand-wildcards (concat (getenv "SP_BIN") "/*/emacs-cur-src/*/src") t)))
-             (when (car c-srcs)
-               (setq-default source-directory (car c-srcs))
-               ;; (require 'find-func)
-               (setq find-function-C-source-directory (car c-srcs)))))
-          ;;
+   
           ;; Newly installed/built Emacs may need to have these adjusted accrodingly:
           ;; (setq source-directory "/usr/local/*/emacs/src")
           ;; (setq find-function-C-source-directory "/usr/local/*/emacs/src")
@@ -1009,36 +1001,68 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
           ;; shared repo bzr setup, e.g. wildcard expansion of the environment
           ;; variable "DEVHOME".
           ;;
-          ((and (intern-soft "IS-MON-P-GNU" obarray)
-                (bound-and-true-p IS-MON-P-GNU))
-           (let ((c-srcs
-                  (or (car (file-expand-wildcards (concat (getenv "DEVHOME") "/ema*/tr*/src") t))
-                      ;; (car (file-expand-wildcards (concat *mon-HG-root-path* "/ema*/tr*/src") t))
-                      (car (file-expand-wildcards
-                            (concat (file-name-directory *mon-emacs-root*) "/ema*/tr*/src") t)))))
-             (when (and c-srcs (file-directory-p c-srcs) (file-readable-p c-srcs))
-               (setq find-function-C-source-directory (file-name-as-directory c-srcs))
-               (setq source-directory
-                     (file-name-directory (directory-file-name find-function-C-source-directory))))))
-          ;; :NOTE When using the standard homebrew formulae the C sources don't get retained.
-          ;; How do we remedy this when using brew?
-          ((and (intern-soft "IS-MON-P-DARWIN" obarray)
-                (bound-and-true-p IS-MON-P-DARWIN))
-           ;; { ... DO STUFF `source-directory' HERE  ... }
-           ;; (message ":FUNCTION `mon-set-C-source-directory-init' -- update me for `source-directory'\n")
-           )
           ;;
-          ;; :NOTE Most likely this is already in environ as the
-          ;; button-type `help-function-def' has the plist prop
-          ;; `help-function` with a lambda form requiring it.
-          ;; (require 'find-func)
-          ;;
-          ;; (custom-set-variables '(find-function-source-path ... ))
-          )
-   ))
+   (cond     
+    ;; :NOTE When using the standard homebrew formulae the C sources don't get retained.
+    ;; How do we remedy this when using brew?
+    ((and (intern-soft "IS-MON-P-DARWIN" obarray)
+          (bound-and-true-p IS-MON-P-DARWIN))
+     ;; /Users/monkpearman/Documents/HG-Repos/SDP_EMACS/emacs-sources-GIT/src
+     (let ((c-srcs 
+            (or (car (file-expand-wildcards (concat (getenv "DEVHOME") ; *mon-HG-root-path*
+                                                    "/SDP_EMACS"
+                                                    "/emacs*/src") 
+                                            t))
+                (car (file-expand-wildcards (concat (file-name-directory *mon-emacs-root*)
+                                                    "/emacs*/src")
+                                            t)))))
+       (when (and c-srcs
+                  (file-directory-p c-srcs) 
+                  (file-readable-p c-srcs))
+         (setq find-function-C-source-directory (file-name-as-directory c-srcs))
+         (setq source-directory
+               (file-name-directory (directory-file-name find-function-C-source-directory)))
+         (custom-note-var-changed 'find-function-C-source-directory)
+         (custom-note-var-changed 'source-directory)
+         (message ":FUNCTION `mon-set-C-source-directory-init' -- value of variables `find-function-C-source-directory' and `source-directory' set at loadtime\n"))))
+    
+    ((and (intern-soft "IS-MON-P-GNU" obarray)
+          (bound-and-true-p IS-MON-P-GNU))
+     (let ((c-srcs
+            (or (car (file-expand-wildcards (concat (getenv "DEVHOME") "/ema*/tr*/src") t))
+                ;; (car (file-expand-wildcards (concat *mon-HG-root-path* "/ema*/tr*/src") t))
+                (car (file-expand-wildcards
+                      (concat (file-name-directory *mon-emacs-root*) "/ema*/tr*/src") t)))))
+       (when (and c-srcs
+                  (file-directory-p c-srcs)
+                  (file-readable-p c-srcs))
+         (setq find-function-C-source-directory (file-name-as-directory c-srcs))
+         (setq source-directory (file-name-directory (directory-file-name find-function-C-source-directory)))
+         (custom-note-var-changed 'find-function-C-source-directory)
+         (custom-note-var-changed 'source-directory)
+         (message ":FUNCTION `mon-set-C-source-directory-init' -- value of variables `find-function-C-source-directory' and `source-directory' set at loadtime\n"))))
+
+    ((and (intern-soft "IS-MON-P-W32" obarray)
+          (bound-and-true-p IS-MON-P-W32))
+     (let ((c-srcs
+            (file-expand-wildcards (concat (getenv "SP_BIN") "/*/emacs-cur-src/*/src") t)))
+       (when (car c-srcs)
+         (setq-default source-directory (car c-srcs))
+         ;; (require 'find-func)
+         (setq find-function-C-source-directory (car c-srcs))
+         (custom-note-var-changed 'find-function-C-source-directory)
+         (custom-note-var-changed 'source-directory)
+         (message ":FUNCTION `mon-set-C-source-directory-init' -- value of variables `find-function-C-source-directory' and `source-directory' set at loadtime\n")))))
+
+    ;; :NOTE Most likely this is already in environ as the
+    ;; button-type `help-function-def' has the plist prop
+    ;; `help-function` with a lambda form requiring it.
+    ;; (require 'find-func) ;; (locate-library "find-func")
+    )
+   )
 ;;
 ;; (mon-set-C-source-directory-init t)
-(mon-set-C-source-directory-init)
+;; (mon-set-C-source-directory-init)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-04-03T17:28:12-04:00Z}#{10136} - by MON KEY>

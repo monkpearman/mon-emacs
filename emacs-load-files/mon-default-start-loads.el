@@ -488,7 +488,6 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;; (mon-set-load-path-init t)
 (mon-set-load-path-init)
 
-
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2024-11-06T17:34:28-05:00Z}#{24453} - by MON KEY>
 (defvar *mon-byte-compile-warnings* '(not docstrings-wide)
@@ -515,8 +514,7 @@ Set value of `byte-compile-docstring-max-column'.\n
    (setq byte-compile-docstring-max-column  (* 80 4)) ; a reasonable amount :)
    (custom-note-var-changed 'byte-compile-docstring-max-column)
    (message ":FUNCTION `mon-set-byte-compile-warnings-init' -- value of variable `byte-compile-warnings' set to value of variable `*mon-byte-compile-warnings*' at loadtime\n")
-   (message ":FUNCTION `mon-set-byte-compile-warnings-init' -- value of variable `byte-compile-docstring-max-column' set at loadtime\n")
-   )) 
+   (message ":FUNCTION `mon-set-byte-compile-warnings-init' -- value of variable `byte-compile-docstring-max-column' set at loadtime\n"))) 
 ;;
 (mon-set-byte-compile-warnings-init)
 
@@ -821,8 +819,8 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;; (mon-set-infopath-init t)
 ;;
 (mon-set-infopath-init)
-
 
+
 (cl-eval-when (compile load eval)
   (unless (featurep 'info-look) (require 'info-look)))
 ;;; ==============================
@@ -857,8 +855,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
     :ignore-case t
     ;; DOC-SPEC is a list of documentation specifications of the form
     ;;           (INFO-NODE             TRANS-FUNC PREFIX SUFFIX)
-    :doc-spec '(("(ansicl)Symbol Index" nil        nil    nil)))
-   ))
+    :doc-spec '(("(ansicl)Symbol Index" nil        nil    nil)))))
 ;;
 (mon-set-info-lookup-init)
 
@@ -911,8 +908,7 @@ A bookmark file typically has a .bmk extension, for additional discussion:
       ;; `bookmark-bmenu-toggle-filenames' is also a <FUNCTION>.
       ;; '(bookmark-bmenu-toggle-filenames nil)      
       '(bookmark-save-flag        1)
-      '(bookmark-use-annotations  t))
-     ))
+      '(bookmark-use-annotations  t))))
 ;;
 ;; (mon-set-bookmark-file-init t)
 
@@ -965,9 +961,8 @@ to help make it a little less so.\n
                                      cygman-csf)
                                 (dolist (csf cygmans (setq cygman-csf (nreverse cygman-csf)))
                                   (push (concat cygman-root csf) cygman-csf))))))))
-       (mapc #'(lambda (addp)
-                 (unless (null addp) (add-to-list 'woman-manpath addp))) wmn-p)))
-   ))
+       (mapc #'(lambda (addp) (unless (null addp) (add-to-list 'woman-manpath addp)))
+             wmn-p)))))
 ;;
 ;; (mon-set-woman-manpath-init t)
 (mon-set-woman-manpath-init)
@@ -1007,7 +1002,6 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
     ;; How do we remedy this when using brew?
     ((and (intern-soft "IS-MON-P-DARWIN" obarray)
           (bound-and-true-p IS-MON-P-DARWIN))
-     ;; /Users/monkpearman/Documents/HG-Repos/SDP_EMACS/emacs-sources-GIT/src
      (let ((c-srcs 
             (or (car (file-expand-wildcards (concat (getenv "DEVHOME") ; *mon-HG-root-path*
                                                     "/SDP_EMACS"
@@ -1058,8 +1052,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
     ;; button-type `help-function-def' has the plist prop
     ;; `help-function` with a lambda form requiring it.
     ;; (require 'find-func) ;; (locate-library "find-func")
-    )
-   )
+    ))
 ;;
 ;; (mon-set-C-source-directory-init t)
 ;; (mon-set-C-source-directory-init)
@@ -1097,8 +1090,7 @@ Sets the following variables:\n
        (custom-set-variables
         '(describe-char-unidata-list '(name general-category decomposition
                                        digit-value numeric-value old-name
-                                       iso-10646-comment)))))
-   ))
+                                       iso-10646-comment)))))))
 ;;
 ;; (mon-set-unicodedata-init)
 ;; (mon-set-unicodedata-init)
@@ -1144,8 +1136,7 @@ Sets the following variables:\n
     (require 'bbdb)
     (require 'bbdb-com)
     (require 'bbdb-migrate)
-    (require 'bbdb-anniv)
-   )))
+    (require 'bbdb-anniv))))
 ;;
 ;; (mon-set-bbdb-init)
 
@@ -1342,8 +1333,7 @@ ensure that `deskptop-path' lives in it's default directory location:  ~/.emacs.
            (custom-note-var-changed 'desktop-locals-to-save)))
    ;; `desktop-buffers-not-to-save-function' 
    (setq desktop-buffers-not-to-save-function 'mon-desktop-buffers-not-to-save-function)
-   (custom-note-var-changed 'desktop-buffers-not-to-save-function)
-   ))
+   (custom-note-var-changed 'desktop-buffers-not-to-save-function)))
 ;;
 ;; (mon-set-desktop-init t)
 
@@ -1390,7 +1380,7 @@ ensure that `deskptop-path' lives in it's default directory location:  ~/.emacs.
     ;; '(ps-switch-header     'duplex)
     ;; '(ps-spool-duplex      )
     ;; '(ps-spool-tumble      )
-    ) ;; :CLOSE `custom-set-variables'
+    ) ; :CLOSE `custom-set-variables'
    ))
 ;;
 ;; (mon-set-printer-postscript-init t)
@@ -1436,8 +1426,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
       '(doc-view-ps2pdf-program
         (or (and (file-exists-p (file-truename (concat (getenv "SP_TEXLIV") "\\ps2pdf.exe")))
                  (file-truename (concat (getenv "SP_TEXLIV") "\\ps2pdf.exe")))
-         (executable-find "ps2pdf")))))
-   ))
+         (executable-find "ps2pdf")))))))
 ;;
 ;; (mon-set-doc-view-programs-init t)
 (mon-set-doc-view-programs-init)
@@ -1463,6 +1452,7 @@ of the ImageMagick executables convert.exe and imconvert.exe\n
    ;; :IMAGE-FILE lisp/image-file.el
    (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
               (bound-and-true-p IS-MON-SYSTEM-P))
+     ;; IS-W32-P
      (or (and (intern-soft "IS-W32-P" obarray)
               (bound-and-true-p IS-W32-P))
          ;; :NOTE Imagemagick is supplied with Emacs Emacs 24. at which point we
@@ -1483,6 +1473,7 @@ of the ImageMagick executables convert.exe and imconvert.exe\n
               (set-variable            'thumbs-conversion-program tcp)
               (custom-note-var-changed 'thumbs-conversion-program))
             t)))
+     ;; IS-MON-P-GNU
      (and (intern-soft "IS-MON-P-GNU")
               (bound-and-true-p IS-MON-P-GNU)
               ;; progn is to prevent exiting the and too early
@@ -1494,12 +1485,12 @@ of the ImageMagick executables convert.exe and imconvert.exe\n
                  '("png" "jpeg" "jpg" "gif" "tiff" "tif"
                    "xbm" "xpm" "pbm" "pgm" "ppm"
                    "pnm" "nef" "bmp" "png" "svg"))))
+     ;; IS-MON-P-DARWIN
      ;; :NOTE on Darwin we should rebuild from brew with this flag activated: --with-imagemagick
      (and (intern-soft "IS-MON-P-DARWIN")
           (bound-and-true-p IS-MON-P-GNU))
      ;; { ...DO STUFF HERE ... }
-      (message ":FUNCTION `mon-set-thumbs-conversion-program-init' -- consider building Emacs --with-imagemagick\n"))
-   ))
+      (message ":FUNCTION `mon-set-thumbs-conversion-program-init' -- consider building Emacs --with-imagemagick\n"))))
 ;;
 ;; (mon-set-thumbs-conversion-program-init t)
 (mon-set-thumbs-conversion-program-init)
@@ -1692,27 +1683,27 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
     ;; :DEFAULT (executable-find "pngnq")
     ;; '(image-dired-cmd-pngnq-program "")
     ;;
-   ;; :DEFAULT "exiftool" (executable-find "exiftool")
-   ;; '(image-dired-cmd-write-exif-data-program )
-   ;;
-   ;; :DEFAULT "mogrify"
-   ;; '(image-dired-cmd-rotate-thumbnail-program )
-   ;;
-   ;;
-   ;; pngcrush takes preferrence by image-dired-cmd-create-standard-thumbnail-command
-   ;; (custom-set-variables '(image-dired-cmd-pngnq-program "/usr/bin/pngnq"))
-   ;; (custom-set-variables '(image-dired-cmd-pngcrush-program "/usr/bin/pngcrush"))
-   ;;
-   ;; :NOTE `image-dired-cmd-rotate-thumbnail-program', `image-dired-cmd-rotate-original-program'
-   ;; `image-dired-cmd-rotate-original-options' should prob. use
-   ;; exiftran/jpegtran if availabe whenever thumbnail/original-image is a jpeg.
-   ;; exiftran is preferred because it won't alter existing exif data.
-   ;;
+    ;; :DEFAULT "exiftool" (executable-find "exiftool")
+    ;; '(image-dired-cmd-write-exif-data-program )
+    ;;
+    ;; :DEFAULT "mogrify"
+    ;; '(image-dired-cmd-rotate-thumbnail-program )
+    ;;
+    ;;
+    ;; pngcrush takes preferrence by image-dired-cmd-create-standard-thumbnail-command
+    ;; (custom-set-variables '(image-dired-cmd-pngnq-program "/usr/bin/pngnq"))
+    ;; (custom-set-variables '(image-dired-cmd-pngcrush-program "/usr/bin/pngcrush"))
+    ;;
+    ;; :NOTE `image-dired-cmd-rotate-thumbnail-program', `image-dired-cmd-rotate-original-program'
+    ;; `image-dired-cmd-rotate-original-options' should prob. use
+    ;; exiftran/jpegtran if availabe whenever thumbnail/original-image is a jpeg.
+    ;; exiftran is preferred because it won't alter existing exif data.
+    ;;
    (if IS-MON-P-GNU
        (custom-set-variables
         '(image-dired-thumbnail-storageimage-dired-thumbnail-storage 'standard)) ; in users ~/.cache directory
      (custom-set-variables
-      '(image-dired-thumbnail-storage 'use-image-dired-dir))) ;default
+      '(image-dired-thumbnail-storage 'use-image-dired-dir))) ; default
    (when IS-MON-P-GNU
      (cond ((executable-find "mirage")
             (setq image-dired-external-viewer (executable-find "mirage") ))
@@ -1757,8 +1748,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
             ((and (intern-soft "IS-W32-P" obarray)
                   (bound-and-true-p IS-W32-P))
              (or (convert-standard-filename (executable-find "aspell"))
-                 (convert-standard-filename (concat (getenv "SP_ASPLL") "\\aspell.exe")))))))
-   ))
+                 (convert-standard-filename (concat (getenv "SP_ASPLL") "\\aspell.exe")))))))))
 ;;
 ;; (mon-set-ispell-init t)
 (mon-set-ispell-init)
@@ -1823,8 +1813,7 @@ returned from `find-function-search-for-symbol' is in `view-mode'.\n
 returned from `find-variable-noselect' is in `view-mode'.\n
 :SEE-ALSO `variable-at-point', `find-function-search-for-symbol'.\n▶▶▶"
      (with-current-buffer (car ad-return-value)
-       (unless view-mode (view-mode 1))))
-   ))
+       (unless view-mode (view-mode 1))))))
 ;;
 ;; (mon-set-help-mode-init t)
 (mon-set-help-mode-init)
@@ -1937,8 +1926,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
                (list ".*lost+found.*"
                      (concat ".*" (regexp-opt '(".git" ".bzr" ".hg" ".svn"
                                                 "_darcs" "RCS" "CVS" "rcs" "cvs"))))
-               t)))))
-   ))
+               t)))))))
 ;;
 ;; (mon-set-ido-init t)
 (mon-set-ido-init)
@@ -1958,8 +1946,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    (add-hook 'org-mode-hook
              (function (lambda ()
                          (local-unset-key "\C-c\C-a")
-                         (local-set-key "\C-c\C-a" 'show-all))))
-   ))
+                         (local-set-key "\C-c\C-a" 'show-all))))))
 ;;
 (mon-set-org-init)
 
@@ -2005,8 +1992,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    (add-hook 'Custom-mode-hook ;; (remove-hook 'Custom-mode-hook
              (function (lambda ()
                          (local-unset-key (kbd "\C-x\C-s"))
-                         (local-set-key   (kbd "\C-x\C-s") 'save-buffer))))
-   ))
+                         (local-set-key   (kbd "\C-x\C-s") 'save-buffer))))))
 ;;
 (mon-set-custom-customizations-init)
 
@@ -2089,8 +2075,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
      (ansi-color-for-comint-mode-on)
      ;; :SEE `edebug-form-spec' :SEE (info "(elisp Instrumenting Macro Calls")
      ;; (edebug-eval-macro-args t)
-     (mon-set-printer-postscript-init))
-   ))
+     (mon-set-printer-postscript-init))))
 ;;
 ;; (mon-set-customizations-before-custom-file-init t)
 (mon-set-customizations-before-custom-file-init)
@@ -2241,8 +2226,7 @@ the function `mon-help-CL-symbols' and variable `*mon-help-CL-symbols*' in:
      (eval-after-load (locate-library  "lib/hyperspec")
        (progn
          (mon-common-lisp-hyperspec-browse-url-set-init)
-         (message ":FUNCTION `mon-set-common-lisp-hspec-init'' evaluated `mon-common-lisp-hyperspec-browse-url-set-init'\n") ))
-     )))
+         (message ":FUNCTION `mon-set-common-lisp-hspec-init'' evaluated `mon-common-lisp-hyperspec-browse-url-set-init'\n"))) )))
 ;;
 ;; (mon-set-common-lisp-hspec-init t)
 
@@ -2692,8 +2676,7 @@ in variable `*mon-misc-path-alist*'.\n
       ;; ("<NICK>" ([erc-server-user <NICKNAME> <HOST> <LOGIN> <FULL-NAME> <INFO>] .
       ;;           [erc-channel-user <OP> <VOICE> <LAST-MESSAGE-TIME>))
       ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-      )
-   ))
+      ) ))
 ;; erc-log-insert-log-on-open
 ;; erc-log-channels-directory
 ;; "~/erc-logs"
@@ -2788,8 +2771,7 @@ Evaluate `url-setup', set `url-debug' t, and require :FILE url/url-http.el
 
    (url-cookie-setup-save-timer)
    (url-history-setup-save-timer)
-   (url-setup-privacy-info)
-   ))
+   (url-setup-privacy-info) ))
 ;;
 ;; (mon-set-url-pkg-init t)
 
@@ -2849,16 +2831,15 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
       ;; :NOTE Not sure if this is the best way/thing to do here.
       '(browse-url-browser-function 'w3m-browse-url t)
       '(w3m-use-cookies t t)
-      '(w3m-home-page             "https://duckduckgo.com" t) ;; http://www.google.com
+      '(w3m-home-page             "https://duckduckgo.com" t) ; http://www.google.com
       '(w3m-fill-column 80 t)
       '(w3m-add-user-agent nil t)
       ;; '(w3m-language (symbol-value 'current-language-environment)))
-      ;; '(w3m-accept-languages )       ;;
-      '(w3m-init-file nil)              ;; :DEFAULT "~/.emacs-w3m"
-      '(w3m-profile-directory     "~/.emacs.d/emacs-w3m")  ;; (expand-file-name "~/.emacs.d/emacs-w3m")
-      '(w3m-default-save-directory "~/.emacs.d/emacs-w3m/w3m-deflault-saves") ;; :DEFAULT ~/.w3m
-      )
-     )))
+      ;; '(w3m-accept-languages )       
+      '(w3m-init-file nil)              ; :DEFAULT "~/.emacs-w3m"
+      '(w3m-profile-directory     "~/.emacs.d/emacs-w3m")   ; (expand-file-name "~/.emacs.d/emacs-w3m")
+      '(w3m-default-save-directory "~/.emacs.d/emacs-w3m/w3m-deflault-saves")  ; :DEFAULT ~/.w3m
+      ) )))
 ;;
 ;; (mon-set-w3m-init t)
 
@@ -2897,8 +2878,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
      "Major mode for editing GitHub Flavored Markdown files" t)
 
    (with-eval-after-load 'markdown-mode
-     (define-key markdown-mode-map (kbd "C-c C-e") #'markdown-do))
-   ))
+     (define-key markdown-mode-map (kbd "C-c C-e") #'markdown-do)) ))
 ;;
 ;; (mon-set-markdown-mode-init t)
 
@@ -3066,8 +3046,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
                     (bound-and-true-p IS-MON-P-W32))
                '(browse-url-browser-function 'browse-url-generic)
                '(browse-url-generic-program (nth 9 (mon-get-mon-emacsd-paths))))
-              )))
-   ))
+              ))) ))
 ;;
 ;; (mon-set-browser-init t)
 ;; (mon-get-mon-emacsd-paths t)
@@ -3375,9 +3354,7 @@ Evaluated at init time by `mon-set-system-specific-and-load-init'.\n
               (bound-and-true-p IS-MON-SYSTEM-P))
      (eval-after-load "mon-keybindings"
        '(progn (mon-keybind-globally)
-               (mon-keybind-slime-fuzzy-completions))))
-   ))
-
+               (mon-keybind-slime-fuzzy-completions)))) ))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2011-05-14T17:47:22-04:00Z}#{11196} - by MON KEY>
@@ -3470,8 +3447,7 @@ Evaluate `mon-set-boxcutter-init'.\n
       (custom-set-variables
        '(*mon-purge-on-its-all-text-on-quit* t)))
    ;;
-   (mon-set-boxcutter-init)
-   ))
+   (mon-set-boxcutter-init) ))
 ;;
 ;; (mon-set-mon-feature-customs-init)
 
@@ -3670,8 +3646,7 @@ When `IS-MON-P-GNU' intiate Slime/Swank hyperspec related stuff.\n
 
    (font-lock-add-keywords 
     'lisp-mode
-    '((mon-help-font-lock-comment-keywords-matcher . (0 'mon-help-COMMENT-tag t))))
-   ))
+    '((mon-help-font-lock-comment-keywords-matcher . (0 'mon-help-COMMENT-tag t)))) ))
 ;;
 ;; (mon-set-system-specific-and-load-init t)
 

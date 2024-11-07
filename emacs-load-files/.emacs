@@ -169,10 +169,21 @@ Sets following variables:\n
 ;; (setq debug-on-error t)
 (toggle-debug-on-error t)
 
+;;; ==============================
+(defvar *mon-user-name* (substring (getenv "HOME") 7)
+  "The current user name as per return value of \(getenv \"HOME\"\).\n
+:EXAMPLE\n\n \(equal *mon-user-name* \(substring \(getenv \"HOME\"\) 7\)\)\n
+:SEE-ALSO `*mon-user-emacsd*', `*mon-emacs-root*', `*mon-emacsd*',
+`*mon-site-lisp-root*'.\n▶▶▶")
+
+(defvar *mon-sbcl-version* "2.4.6"
+  "A string designating the current installed SBCL version number.\n
+:SEE-ALSO `*mon-lisp-system-paths*', `*quicklisp-path*'.\n▶▶▶")
+
 
 ;;; ==============================
 ;; Begin setting up the local Emacs environment:
-(let* ((uname  (apply 'concat (mapcar 'char-to-string  '(109 111 110 107 112 101 97 114 109 97 110))))
+(let* ((uname *mon-user-name*)
        (user  (concat "USER=" uname))
        (home  (concat "/Users/" uname))
        (uhome  (concat "HOME=" home)))

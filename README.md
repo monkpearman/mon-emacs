@@ -2,10 +2,7 @@
 
 You can clone MON with:
 
- shell> git clone git://github.com/monkpearman/mon-emacs.git
- 
  shell> git clone https://github.com/monkpearman/mon-emacs.git
-
 
 # :MON-PACKAGES
 
